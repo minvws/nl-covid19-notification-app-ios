@@ -23,7 +23,7 @@ final class StatusViewControllerTests: TestCase {
     private var mockWebViewBuildable: WebviewBuildableMock!
     private var mockPauseController: PauseControllingMock!
     private var mockPushNotificationStream: PushNotificationStreamingMock!
-
+    private var mockExposureController: ExposureControllingMock!
     private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
     override func setUp() {
@@ -36,6 +36,7 @@ final class StatusViewControllerTests: TestCase {
         mockWebViewBuildable = WebviewBuildableMock()
         mockPauseController = PauseControllingMock()
         mockPushNotificationStream = PushNotificationStreamingMock()
+        mockExposureController = ExposureControllingMock()
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
@@ -47,13 +48,16 @@ final class StatusViewControllerTests: TestCase {
             .compactMap { $0 }
 
         cardBuilder.buildHandler = { listener, cardTypes in
-            return CardRouter(viewController: CardViewController(listener: self.mockCardListener,
-                                                                 theme: self.theme,
-                                                                 types: cardTypes,
-                                                                 dataController: self.mockExposureDataController,
-                                                                 pauseController: self.mockPauseController),
-                              enableSettingBuilder: EnableSettingBuildableMock(),
-                              webviewBuilder: self.mockWebViewBuildable)
+            return CardRouter(
+                viewController: CardViewController(
+                    listener: self.mockCardListener,
+                    theme: self.theme,
+                    types: cardTypes,
+                    dataController: self.mockExposureDataController,
+                    pauseController: self.mockPauseController),
+                enableSettingBuilder: EnableSettingBuildableMock(),
+                webviewBuilder: self.mockWebViewBuildable,
+                exposureController: self.mockExposureController)
         }
 
         viewController = StatusViewController(exposureStateStream: exposureStateStream,

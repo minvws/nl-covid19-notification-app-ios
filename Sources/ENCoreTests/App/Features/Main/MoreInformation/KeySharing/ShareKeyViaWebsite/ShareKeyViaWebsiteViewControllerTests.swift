@@ -80,7 +80,7 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
         sut.state = .loadingError
         snapshots(matching: sut, waitForMainThread: true)
     }
-    
+        
     func test_viewDidLoad_calls_exposureController() {
         XCTAssertNotNil(sut.view)
         XCTAssertEqual(mockExposureController.requestLabConfirmationKeyCallCount, 1)

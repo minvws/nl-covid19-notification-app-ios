@@ -31,6 +31,7 @@ protocol StatusDependency {
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
     var pushNotificationStream: PushNotificationStreaming { get }
+    var exposureController: ExposureControlling { get }
 }
 
 private final class StatusDependencyProvider: DependencyProvider<StatusDependency>, CardDependency {
@@ -60,7 +61,11 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
 
     var pauseController: PauseControlling {
         dependency.pauseController
-    }    
+    }
+    
+    var exposureController: ExposureControlling {
+        dependency.exposureController
+    }
 }
 
 final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {

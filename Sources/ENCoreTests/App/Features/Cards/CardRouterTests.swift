@@ -14,17 +14,20 @@ final class CardRouterTests: TestCase {
     private var mockViewController = CardViewControllableMock()
     private var mockEnableSettingBuilder = EnableSettingBuildableMock()
     private var mockWebviewBuildable: WebviewBuildableMock!
-
+    private var mockExposureController: ExposureControllingMock!
+    
     override func setUp() {
         super.setUp()
 
         mockViewController = CardViewControllableMock()
         mockEnableSettingBuilder = EnableSettingBuildableMock()
         mockWebviewBuildable = WebviewBuildableMock()
+        mockExposureController = ExposureControllingMock()
 
         router = CardRouter(viewController: mockViewController,
                             enableSettingBuilder: mockEnableSettingBuilder,
-                            webviewBuilder: mockWebviewBuildable)
+                            webviewBuilder: mockWebviewBuildable,
+                            exposureController: mockExposureController)
     }
 
     func test_routeToEnableSetting_buildsAndPresents() {
@@ -116,6 +119,17 @@ final class CardRouterTests: TestCase {
 
         XCTAssertEqual(mockWebviewBuildable.buildCallCount, 1)
         XCTAssertEqual(mockViewController.presentViewControllerCallCount, 1)
+    }
+    
+    func test_routeToRequestExposureNotificationPermission() {
+        // Arrange
+        XCTAssertEqual(mockExposureController.requestExposureNotificationPermissionCallCount, 0)
+        
+        // Act
+        router.routeToRequestExposureNotificationPermission()
+        
+        // Assert
+        XCTAssertEqual(mockExposureController.requestExposureNotificationPermissionCallCount, 1)
     }
 
     func test_setTypes_shouldUpdateTypesOnViewController() {

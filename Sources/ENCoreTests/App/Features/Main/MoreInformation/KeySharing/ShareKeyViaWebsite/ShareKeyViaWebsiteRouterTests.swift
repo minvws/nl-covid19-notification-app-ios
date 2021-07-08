@@ -127,7 +127,24 @@ class ShareKeyViaWebsiteRouterTests: TestCase {
         }
         
         // Act
-        sut.showInactiveCard()
+        sut.showInactiveCard(state: .authorizationDenied)
+        
+        // Assert
+        XCTAssertTrue(mockViewController.setArgValues.first! === cardRouter.viewControllable)
+    }
+    
+    func test_showInactiveCard_shouldSetCardOnViewController_notAuthorized() {
+        // Arrange
+        let cardRouter = CardRouterMock()
+        cardRouter.viewControllable = ViewControllableMock()
+        
+        mockCardBuilder.buildHandler = { listener, types in
+            XCTAssertEqual(types, [.notAuthorized])
+            return cardRouter
+        }
+        
+        // Act
+        sut.showInactiveCard(state: .notAuthorized)
         
         // Assert
         XCTAssertTrue(mockViewController.setArgValues.first! === cardRouter.viewControllable)
@@ -145,7 +162,7 @@ class ShareKeyViaWebsiteRouterTests: TestCase {
         }
         
         // Act
-        sut.showInactiveCard()
+        sut.showInactiveCard(state: .authorizationDenied)
         sut.removeInactiveCard()
         
         // Assert

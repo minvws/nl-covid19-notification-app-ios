@@ -11,6 +11,7 @@ import Foundation
 enum CardType: Equatable {
     case notifiedMoreThanThresholdDaysAgo(date: Date, explainRiskHandler: () -> (), removeNotificationHandler: () -> ())
     case exposureOff
+    case notAuthorized
     case bluetoothOff
     case noInternet(retryHandler: () -> ())
     case noInternetFor24Hours
@@ -20,7 +21,13 @@ enum CardType: Equatable {
 
     static func == (lhs: CardType, rhs: CardType) -> Bool {
         switch (lhs, rhs) {
-        case (.notifiedMoreThanThresholdDaysAgo, .notifiedMoreThanThresholdDaysAgo), (.exposureOff, .exposureOff), (.bluetoothOff, .bluetoothOff), (.noInternet, .noInternet), (.noLocalNotifications, .noLocalNotifications), (.paused, .paused):
+        case (.notifiedMoreThanThresholdDaysAgo, .notifiedMoreThanThresholdDaysAgo),
+            (.exposureOff, .exposureOff),
+            (.notAuthorized, .notAuthorized),
+            (.bluetoothOff, .bluetoothOff),
+            (.noInternet, .noInternet),
+            (.noLocalNotifications, .noLocalNotifications),
+            (.paused, .paused):
             return true
         default:
             return false
@@ -32,7 +39,7 @@ protocol CardTypeSettable {
     var types: [CardType] { get set }
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol CardBuildable {
     /// Builds CardViewController
     func build(listener: CardListening?, types: [CardType]) -> Routing & CardTypeSettable
@@ -45,6 +52,7 @@ protocol CardDependency {
     var environmentController: EnvironmentControlling { get }
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
+    var exposureController: ExposureControlling { get }
 }
 
 /// @mockable
@@ -90,6 +98,7 @@ final class CardBuilder: Builder<CardDependency>, CardBuildable {
 
         return CardRouter(viewController: viewController,
                           enableSettingBuilder: dependencyProvider.enableSettingBuilder,
-                          webviewBuilder: dependencyProvider.webviewBuilder)
+                          webviewBuilder: dependencyProvider.webviewBuilder,
+                          exposureController: dependencyProvider.dependency.exposureController)
     }
 }

@@ -210,6 +210,10 @@ final class InfoView: View {
             stackView.addArrangedSubview(view)
         }
     }
+    
+    func removeAllSections() {
+        stackView.arrangedSubviews.forEach({ $0.removeFromSuperview()})
+    }
 
     // MARK: - Private
 

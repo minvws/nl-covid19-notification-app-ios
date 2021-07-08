@@ -14,7 +14,7 @@ import UIKit
 protocol ShareKeyViaPhoneRouting: Routing {
     func didUploadCodes(withKey key: ExposureConfirmationKey)
     func shareKeyViaPhoneWantsDismissal(shouldDismissViewController: Bool)
-    func showInactiveCard()
+    func showInactiveCard(state: ExposureActiveState)
     func removeInactiveCard()
 
     func showFAQ()
@@ -164,7 +164,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     private func update(exposureState: ExposureState) {
         switch exposureState.activeState {
         case .authorizationDenied, .notAuthorized, .inactive(.disabled):
-            router?.showInactiveCard()
+            router?.showInactiveCard(state: exposureState.activeState)
         default:
             requestLabConfirmationKey()
             router?.removeInactiveCard()
@@ -274,7 +274,8 @@ private final class ShareKeyViaPhoneView: View {
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationInfectedStep1,
-                                      stepImage: .moreInformationStep1)
+                                      stepImage: .moreInformationStep1,
+                                      disabledStepImage: .moreInformationStep1Gray)
     }()
 
     private lazy var waitForTheGGD: View = {

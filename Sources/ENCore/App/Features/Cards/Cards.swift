@@ -15,6 +15,7 @@ enum CardAction {
     case dismissAnnouncement(_ announcement: Announcement)
     case custom(action: () -> ())
     case unpause
+    case requestExposureNotificationPermission
 }
 
 enum CardIcon {
@@ -105,6 +106,18 @@ struct Card {
                     actionTitle: action)
     }
 
+    static func notAuthorized(theme: Theme) -> Card {
+        let title: String = .cardsExposureOffTitle
+        let content: String = .cardsExposureOffContent
+        let action: String = .cardsExposureOffAction
+        
+        return Card(icon: .warning, title: .makeFromHtml(text: title, font: theme.fonts.title3, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                    message: .makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left),
+                    action: .requestExposureNotificationPermission,
+                    actionTitle: action)
+    }
+    
+    
     static func noInternet(theme: Theme, retryHandler: @escaping () -> ()) -> Card {
         let title: String = .cardsNoInternetTitle
         let content: String = .cardsNoInternetContent
