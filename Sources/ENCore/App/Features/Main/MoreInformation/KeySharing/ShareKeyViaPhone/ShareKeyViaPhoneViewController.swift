@@ -274,7 +274,8 @@ private final class ShareKeyViaPhoneView: View {
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationInfectedStep1,
-                                      stepImage: .moreInformationStep1)
+                                      stepImage: .moreInformationStep1,
+                                      disabledStepImage: .moreInformationStep1Gray)
     }()
 
     private lazy var waitForTheGGD: View = {
