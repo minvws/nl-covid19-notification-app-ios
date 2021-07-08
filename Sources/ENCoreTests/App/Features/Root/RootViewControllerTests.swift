@@ -18,7 +18,6 @@ final class RootViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = true
         viewController = RootViewController(theme: theme)
         viewController.router = router
 
