@@ -39,7 +39,7 @@ protocol CardTypeSettable {
     var types: [CardType] { get set }
 }
 
-/// @mockable
+/// @mockable(history:build=true)
 protocol CardBuildable {
     /// Builds CardViewController
     func build(listener: CardListening?, types: [CardType]) -> Routing & CardTypeSettable

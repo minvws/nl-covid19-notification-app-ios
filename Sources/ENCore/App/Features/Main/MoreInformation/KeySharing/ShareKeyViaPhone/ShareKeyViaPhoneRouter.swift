@@ -7,7 +7,7 @@
 
 import UIKit
 
-/// @mockable
+/// @mockable(history:set=true)
 protocol ShareKeyViaPhoneViewControllable: ViewControllable, ThankYouListener, HelpDetailListener {
     var router: ShareKeyViaPhoneRouting? { get set }
 
