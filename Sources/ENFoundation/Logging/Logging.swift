@@ -59,7 +59,7 @@ public final class LogHandler: Logging {
 
         isSetup = true
 
-        let level = Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
+        let level = "debug" // Bundle.main.infoDictionary?["LOG_LEVEL"] as? String ?? "debug"
 
         switch level {
         case "debug":
