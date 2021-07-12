@@ -53,7 +53,7 @@ final class MessageManager: MessageManaging, Logging {
             }
         #endif
 
-        let resource = treatmentPerspective.resources[.currentLanguageIdentifier]
+        let resource = treatmentPerspective.resources[.treatmentPerspectiveLanguage]
         let fallbackResource = treatmentPerspective.resources["en"]
 
         guard let exposureDate = exposureDataController.lastExposure?.date else {
