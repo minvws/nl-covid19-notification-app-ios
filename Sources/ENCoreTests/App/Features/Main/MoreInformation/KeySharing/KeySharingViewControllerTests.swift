@@ -7,15 +7,19 @@
 
 import XCTest
 @testable import ENCore
+import RxSwift
 
 class KeySharingViewControllerTests: TestCase {
 
     private var sut: KeySharingViewController!
     private var mockRouter: KeySharingRoutingMock!
-    
+    private var mockInterfaceOrientationStream: InterfaceOrientationStreamingMock!
     override func setUp() {
         mockRouter = KeySharingRoutingMock()
-        sut = KeySharingViewController(theme: theme)
+        mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
+        mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
+        
+        sut = KeySharingViewController(theme: theme, interfaceOrientationStream: mockInterfaceOrientationStream)
         sut.router = mockRouter
     }
             
