@@ -707,6 +707,27 @@ extension String {
         }
     }
 
+    static var treatmentPerspectiveLanguage: String {
+        #if DEBUG
+                if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                    return overriddenCurrentLanguageIdentifier
+                }
+        #endif
+        
+        let defaultLanguageIdentifier = "en"
+        
+        guard let languageCode = Locale.current.languageCode?.lowercased() else {
+            return defaultLanguageIdentifier
+        }
+        
+        let supportedLanguageCodes: [String] = Bundle.main.localizations.compactMap { (code) in
+            let loc = Locale(identifier: code)
+            return loc.languageCode?.lowercased()
+        }
+        
+        return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
+    }
+    
     static var currentLanguageIdentifier: String {
         #if DEBUG
             if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
@@ -720,7 +741,7 @@ extension String {
         guard let languageCode = Locale.current.languageCode else {
             return defaultLanguageIdentifier
         }
-
+        
         return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
     }
 }
