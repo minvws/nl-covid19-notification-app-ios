@@ -7,6 +7,8 @@
 
 import UIKit
 import ENFoundation
+import SnapKit
+import RxSwift
 
 /// @mockable
 protocol KeySharingRouting: Routing {
@@ -21,6 +23,13 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
     // MARK: - KeySharingViewControllable
     
     weak var router: KeySharingRouting?
+    private var disposeBag = DisposeBag()
+    
+    init(theme: Theme,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
+        self.interfaceOrientationStream = interfaceOrientationStream
+        super.init(theme: theme)
+    }
     
     override func loadView() {
         self.view = choiceView
@@ -31,6 +40,13 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = closeBarButtonItem
         router?.viewDidLoad()
+        
+        interfaceOrientationStream
+            .isLandscape
+            .observe(on: MainScheduler.instance)
+            .subscribe { [weak self] isLandscape in
+                self?.choiceView.contentBottomConstraint?.update(inset: isLandscape ? 16 : 64)
+            }.disposed(by: disposeBag)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,7 +90,8 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
     // MARK: - Private
     
     private lazy var choiceView = KeySharingView(theme: self.theme, listener: self)
-    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))    
+    private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))
+    private var interfaceOrientationStream: InterfaceOrientationStreaming
 }
 
 fileprivate protocol KeySharingViewListener: AnyObject {
@@ -85,6 +102,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
     
     private lazy var scrollableStackView = ScrollableStackView(theme: theme)
     private weak var listener: KeySharingViewListener?
+    fileprivate var contentBottomConstraint: Constraint?
     
     private lazy var contentContainer: UIView = {
         let view = UIView(frame: .zero)
@@ -168,7 +186,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         
         descriptionLabel.snp.makeConstraints { (maker) in
             maker.top.equalTo(titleLabel.snp.bottom).offset(21)
-            maker.bottom.equalTo(contentContainer).inset(64)
+            contentBottomConstraint = maker.bottom.equalTo(contentContainer).inset(64).constraint
             maker.leading.trailing.equalTo(contentContainer.safeAreaLayoutGuide).inset(16)
         }
     }

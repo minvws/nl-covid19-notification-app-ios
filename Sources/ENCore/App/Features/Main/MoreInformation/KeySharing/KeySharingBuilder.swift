@@ -54,7 +54,7 @@ private final class KeySharingDependencyProvider: DependencyProvider<KeySharingD
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         dependency.interfaceOrientationStream
     }
-    
+        
     var storageController: StorageControlling {
         dependency.storageController
     }
@@ -87,7 +87,8 @@ final class KeySharingBuilder: Builder<KeySharingDependency>, KeySharingBuildabl
         
         let dependencyProvider = KeySharingDependencyProvider(dependency: dependency)
         
-        let viewController = KeySharingViewController(theme: dependencyProvider.dependency.theme)
+        let viewController = KeySharingViewController(theme: dependencyProvider.dependency.theme,
+                                                      interfaceOrientationStream: dependencyProvider.dependency.interfaceOrientationStream)
         
         return KeySharingRouter(listener: listener,
                                           viewController: viewController,
