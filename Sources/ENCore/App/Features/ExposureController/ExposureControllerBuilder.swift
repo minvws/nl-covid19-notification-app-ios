@@ -31,7 +31,7 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Updates
 
-    func refreshStatus()
+    func refreshStatus(completion: (() -> Void)?)
 
     func updateWhenRequired() -> Completable
     func processPendingUploadRequests() -> Completable

@@ -788,11 +788,15 @@ final class ExposureControllerTests: TestCase {
             updateStreamExpectation.fulfill()
         }
         
+        let completionExpectation = expectation(description: "completionExpectation")
+        
         // Act
-        controller.refreshStatus()
+        controller.refreshStatus {
+            completionExpectation.fulfill()
+        }
         
         // Assert
-        waitForExpectations(timeout: 2, handler: nil)
+        waitForExpectations()
     }
 
     // MARK: - Private
@@ -817,7 +821,7 @@ final class ExposureControllerTests: TestCase {
     }
 
     private func triggerUpdateStream() {
-        controller.refreshStatus()
+        controller.refreshStatus(completion: nil)
     }
 
     private func expect(activeState: ExposureActiveState? = nil, notifiedState: ExposureNotificationState? = nil, noUpdateExpected: Bool = false) -> ExpectStatusEvaluator {

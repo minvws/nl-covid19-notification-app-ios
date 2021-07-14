@@ -286,7 +286,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
                     self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
                     self?.storageController.store(object: exposureDate, identifiedBy: ExposureDataStorageKey.previousExposureDate) { _ in
-                        self?.exposureController.refreshStatus()
+                        self?.exposureController.refreshStatus(completion: nil)
                     }
                 }
             }
@@ -317,7 +317,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
                     self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
                     self?.storageController.store(object: exposureDate, identifiedBy: ExposureDataStorageKey.previousExposureDate) { _ in
-                        self?.exposureController.refreshStatus()
+                        self?.exposureController.refreshStatus(completion: nil)
                         self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue)
                     }
                 }
@@ -348,8 +348,10 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self?.mutableNetworkConfigurationStream.update(configuration: configuration)
                 self?.eraseCompleteStorage()
 
-                self?.exposureController.refreshStatus()
-                self?.internalView.tableView.reloadData()
+                self?.exposureController.refreshStatus(completion: {
+                    self?.internalView.tableView.reloadData()
+                })
+                
             }
 
             return UIAlertAction(title: configuration.name,
@@ -440,15 +442,17 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private func removeStoredConfirmationKey() {
         storageController.removeData(for: ExposureDataStorageKey.labConfirmationKey, completion: { _ in })
 
-        exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        exposureController.refreshStatus {
+            self.internalView.tableView.reloadData()
+        }
     }
 
     private func removeLastExposure() {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
         
-        exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        exposureController.refreshStatus {
+            self.internalView.tableView.reloadData()
+        }
     }
 
     private func removeAllExposureKeySets() {
@@ -459,8 +463,9 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             try? FileManager.default.removeItem(at: folder)
         }
 
-        exposureController.refreshStatus()
-        internalView.tableView.reloadData()
+        exposureController.refreshStatus {
+            self.internalView.tableView.reloadData()
+        }
     }
 
     private func emailLogFiles() {
