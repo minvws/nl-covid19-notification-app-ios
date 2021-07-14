@@ -183,10 +183,11 @@ final class ExposureController: ExposureControlling, Logging {
             .getPadding()
     }
 
-    func refreshStatus() {
+    func refreshStatus(completion: (() -> Void)?) {
         updatePushNotificationState { [weak self] in
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 self?.updateStatusStream()
+                completion?()
             }
         }
     }
@@ -207,7 +208,7 @@ final class ExposureController: ExposureControlling, Logging {
             .flatMap { (state: ExposureState) -> Completable in
                 // update when active, or when inactive due to no recent updates
                 guard [.active, .inactive(.noRecentNotificationUpdates), .inactive(.pushNotifications), .inactive(.bluetoothOff)].contains(state.activeState) else {
-                    self.logDebug("Not updating as inactive")
+                    self.logDebug("Not updating as inactive (status: \(state.activeState))")
                     return .empty()
                 }
 

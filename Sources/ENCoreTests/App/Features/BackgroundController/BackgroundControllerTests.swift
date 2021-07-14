@@ -56,6 +56,7 @@ final class BackgroundControllerTests: TestCase {
         exposureController.sendNotificationIfAppShouldUpdateHandler = { .empty() }
         exposureController.updateTreatmentPerspectiveHandler = { .empty() }
         exposureController.lastOpenedNotificationCheckHandler = { .empty() }
+        exposureController.refreshStatusHandler = { completion in completion?() }
         
         dataController.removePreviousExposureDateIfNeededHandler = { .empty() }
     }
@@ -136,6 +137,25 @@ final class BackgroundControllerTests: TestCase {
 
         controller.refresh(task: nil)
         waitForExpectations(timeout: 1, handler: nil)
+    }
+    
+    func test_refresh_shouldNotFetchAndProcessKeySetsIfRefreshStatusStreamDoesNotFinish() {
+        let completableCreationExpectation = expectation(description: "completable created")
+        let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
+        completableSubscriptionExpectation.isInverted = true
+        
+        exposureController.refreshStatusHandler = { completion in /* intentionally not calling completion handler */ }
+
+        exposureController.updateWhenRequiredHandler = {
+            completableCreationExpectation.fulfill()
+            return Completable.empty().do(onSubscribe: {
+                completableSubscriptionExpectation.fulfill()
+            })
+        }
+
+        controller.refresh(task: nil)
+        
+        waitForExpectations()
     }
 
     func test_refresh_shouldProcessPendingUploads() {
