@@ -41,8 +41,6 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
         setThemeNavigationBar()
         view.backgroundColor = theme.colors.viewControllerBackground
         edgesForExtendedLayout = []
-        
-        setupShareLogFilesGesture()
     }
 
     override open func viewSafeAreaInsetsDidChange() {
@@ -52,15 +50,7 @@ open class ViewController: UIViewController, ViewControllable, Themeable {
     }
 
     // MARK: - Private
-    
-    private func setupShareLogFilesGesture() {
-        let gestureRecognizer = UISwipeGestureRecognizer(target: self, action: #selector(shareLog(gestureRecognizer:)))
-        gestureRecognizer.numberOfTouchesRequired = 2
-        gestureRecognizer.direction = .left
         
-        view.addGestureRecognizer(gestureRecognizer)
-    }
-    
     @objc
     private func shareLog(gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
         let activityViewController = UIActivityViewController(activityItems: LogHandler.logFiles(),
