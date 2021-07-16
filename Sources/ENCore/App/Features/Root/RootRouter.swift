@@ -155,7 +155,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
     
     func didBecomeActive() {
-        exposureController.refreshStatus()
+        exposureController.refreshStatus(completion: nil)
 
         if mainRouter != nil || onboardingRouter != nil {
             // App was started already. Check if we need to route to update / deactivated screen
@@ -189,7 +189,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             return
         }
 
-        exposureController.refreshStatus()
+        exposureController.refreshStatus(completion: nil)
 
         DispatchQueue.global(qos: .userInitiated).async {
             if !self.pauseController.isAppPaused {
