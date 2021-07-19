@@ -9,18 +9,20 @@ import Foundation
 import RxSwift
 import RxRelay
 import UIKit
+import ENFoundation
 
 /// @mockable
 protocol ApplicationLifecycleStreaming {
     var didBecomeActive: PublishRelay<Void> { get }
 }
 
-final class ApplicationLifecycleStream: ApplicationLifecycleStreaming {
+final class ApplicationLifecycleStream: ApplicationLifecycleStreaming, Logging {
 
     init() {
         // We listen for device orientation changes (which are more sensitive)
         // but we use the interface orientation of the key window to actually determine the rotation of the UI
         NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.logDebug("ApplicationLifecycleStream: received didBecomeActiveNotification")
             self?.didBecomeActive.accept(())
         }
     }
