@@ -27,49 +27,6 @@ final class RootViewControllerTests: TestCase {
         mock = RootViewControllableMock(uiviewController: viewController, router: router)
     }
 
-    func test_presentInNavigationControllerAnimatedPresentFullScreen() {
-        viewController.presentInNavigationController(viewController: emptyViewController,
-                                                     animated: true,
-                                                     presentFullScreen: true)
-    }
-
-    func test_presentInNavigationControllerNotAnimated() {
-        viewController.presentInNavigationController(viewController: emptyViewController,
-                                                     animated: false,
-                                                     presentFullScreen: true)
-    }
-
-    func test_presentInNavigationControllerNotAnimatedPresentNotFullScreen() {
-        viewController.presentInNavigationController(viewController: emptyViewController,
-                                                     animated: false,
-                                                     presentFullScreen: false)
-    }
-
-    func test_presentInNavigationControllerAnimatedPresentNotFullScreen() {
-        viewController.presentInNavigationController(viewController: emptyViewController,
-                                                     animated: true,
-                                                     presentFullScreen: false)
-    }
-
-    func test_present() {
-        viewController.present(viewController: emptyViewController, animated: true, completion: nil)
-    }
-
-    func test_dismiss() {
-        viewController.dismiss(viewController: emptyViewController, animated: true, completion: nil)
-    }
-
-    func test_dismissInNavigationController() {
-        viewController.presentInNavigationController(viewController: emptyViewController,
-                                                     animated: true,
-                                                     presentFullScreen: true)
-        viewController.dismiss(viewController: emptyViewController, animated: true, completion: nil)
-    }
-
-    func test_embed() {
-        viewController.embed(viewController: emptyViewController)
-    }
-
     func test_didCompleteOnboarding_callsDetachOnboardingAndRouteToMain() {
         XCTAssertEqual(router.detachOnboardingAndRouteToMainCallCount, 0)
 
