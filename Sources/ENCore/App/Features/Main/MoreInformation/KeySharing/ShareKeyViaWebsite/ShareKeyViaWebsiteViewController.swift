@@ -281,10 +281,15 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     }
         
     private func requestLabConfirmationKey() {
+        
+        // Only request a key if we don't already have one
+        guard exposureConfirmationKey == nil else { return }
+        
         state = .loading
         exposureController.requestLabConfirmationKey { [weak self] result in
             switch result {
             case let .success(key):
+                self?.logDebug("ShareKeyViaWebsiteViewController: Got labConfirmationKey that expires : \(key.expiration)")
                 self?.exposureConfirmationKey = key
                 self?.state = .uploadKeys(confirmationKey: key)
             case .failure:
