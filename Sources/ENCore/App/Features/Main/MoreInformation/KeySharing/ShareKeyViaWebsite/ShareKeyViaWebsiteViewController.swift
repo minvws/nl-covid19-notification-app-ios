@@ -137,6 +137,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         applicationLifecycleStream
             .didBecomeActive
             .subscribe(onNext: { [weak self] _ in
+                self?.logDebug("ShareKeyViaWebsiteViewController: received didBecomeActive")
                 self?.checkKeyExpiration()
             })
             .disposed(by: disposeBag)
@@ -150,12 +151,18 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     }
     
     private func checkKeyExpiration() {
+        logDebug("ShareKeyViaWebsiteViewController: checking key expiration")
         guard let exposureConfirmationKey = exposureConfirmationKey else {
+            logDebug("ShareKeyViaWebsiteViewController: checking key expiration: no confirmationKey available")
             return
         }
         
         if !exposureConfirmationKey.isValid {
+            logDebug("ShareKeyViaWebsiteViewController: checking key expiration: key is not valid anymore. expired: \(exposureConfirmationKey.expiration)")
+            logDebug("ShareKeyViaWebsiteViewController: dimissing screen")
             router?.shareKeyViaWebsiteWantsDismissal(shouldDismissViewController: true)
+        } else {
+            logDebug("ShareKeyViaWebsiteViewController: checking key expiration: key is still valid. expires: \(exposureConfirmationKey.expiration)")
         }
     }
     
