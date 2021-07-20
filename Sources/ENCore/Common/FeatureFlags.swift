@@ -48,7 +48,7 @@ struct FeatureFlag {
 class FeatureFlagController: FeatureFlagControlling {
     
     private let flags = [
-        FeatureFlag(feature: .independentKeySharing, identifier: "independentKeySharing", enabledByDefault: false, releasable: false)
+        FeatureFlag(feature: .independentKeySharing, identifier: "independentKeySharing", enabledByDefault: false, releasable: true)
     ]
     
     private let userDefaults: UserDefaultsProtocol
