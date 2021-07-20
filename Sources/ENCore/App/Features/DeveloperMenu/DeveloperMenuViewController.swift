@@ -266,7 +266,9 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             ])
         ]
         
-        internalView.tableView.reloadData()
+        DispatchQueue.main.async {
+            self.internalView.tableView.reloadData()
+        }
     }
 
     // MARK: - Actions
