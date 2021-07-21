@@ -239,6 +239,8 @@ extension String {
     static var helpFaqNotificationDescription: String { return Localization.string(for: "help.faq.notification.description") }
     static var helpFaqUploadKeysTitle: String { return Localization.string(for: "help.faq.upload_keys.title") }
     static var helpFaqUploadKeysDescription: String { return Localization.string(for: "help.faq.upload_keys.description") }
+    static var helpFaqUploadKeysViaWebsiteTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.faq.title") }
+    static var helpFaqUploadKeysViaWebsiteDescription: String { return Localization.string(for: "moreInformation.keysharing.coronatest.faq.content") }    
     static var helpFaqBluetoothTitle: String { return Localization.string(for: "help.faq.bluetooth.title") }
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }

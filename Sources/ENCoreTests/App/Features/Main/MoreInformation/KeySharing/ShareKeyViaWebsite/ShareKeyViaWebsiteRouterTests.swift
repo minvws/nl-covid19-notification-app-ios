@@ -178,8 +178,8 @@ class ShareKeyViaWebsiteRouterTests: TestCase {
             XCTAssertTrue(listener === self.mockViewController)
             XCTAssertFalse(shouldShowEnableAppButton)
             
-            XCTAssertEqual(entry.title, .helpFaqUploadKeysTitle)
-            XCTAssertEqual(entry.answer, .helpFaqUploadKeysDescription)
+            XCTAssertEqual(entry.title, .helpFaqUploadKeysViaWebsiteTitle)
+            XCTAssertEqual(entry.answer, .helpFaqUploadKeysViaWebsiteDescription)
             return viewControllable
         }
         

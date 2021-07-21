@@ -93,7 +93,7 @@ final class ShareKeyViaWebsiteRouter: Router<ShareKeyViaWebsiteViewControllable>
             return
         }
 
-        let question = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+        let question = HelpQuestion(question: .helpFaqUploadKeysViaWebsiteTitle, answer: .helpFaqUploadKeysViaWebsiteDescription)
         let controller = helpDetailBuilder.build(withListener: viewController, shouldShowEnableAppButton: false, entry: HelpOverviewEntry.question(question))
         viewController.presentInNavigationController(viewController: controller)
 
