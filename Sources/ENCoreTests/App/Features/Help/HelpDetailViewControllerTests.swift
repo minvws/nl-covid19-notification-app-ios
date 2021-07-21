@@ -45,8 +45,16 @@ final class HelpDetailViewControllerTests: TestCase {
         }
     }
 
-    func test_snapshot_helpDetailViewController_aboutManager() {
-        let aboutManager = AboutManager()
+    func test_snapshot_helpDetailViewController_aboutManager() {        
+        let mockFeatureFlagController = FeatureFlagControllingMock()
+        mockFeatureFlagController.isFeatureFlagEnabledHandler = { feature in
+            switch feature {
+            case .independentKeySharing:
+                return false
+            }
+        }
+        
+        let aboutManager = AboutManager(featureFlagController: mockFeatureFlagController)
         let detailEntries = aboutManager.questionsSection.entries.filter {
             if case .question = $0 {
                 return true

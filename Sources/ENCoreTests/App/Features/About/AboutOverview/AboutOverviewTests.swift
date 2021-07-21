@@ -12,12 +12,16 @@ import XCTest
 
 final class AboutOverviewViewControllerTests: TestCase {
 
-    private let listener = AboutOverviewListenerMock()
-
+    private var mockListener: AboutOverviewListenerMock!
+    private var mockFeatureFlagController: FeatureFlagControllingMock!
+        
     // MARK: - Setup
 
     override func setUp() {
         super.setUp()
+        
+        mockListener = AboutOverviewListenerMock()
+        mockFeatureFlagController = FeatureFlagControllingMock()
 
         recordSnapshots = false
     }
@@ -25,8 +29,15 @@ final class AboutOverviewViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_aboutOverviewViewController_renderCorrectly() {
-        let aboutManager = AboutManager()
-        let viewController = AboutOverviewViewController(listener: listener,
+        mockFeatureFlagController.isFeatureFlagEnabledHandler = { feature in
+            switch feature {
+            case .independentKeySharing:
+                return false
+            }
+        }
+        
+        let aboutManager = AboutManager(featureFlagController: mockFeatureFlagController)
+        let viewController = AboutOverviewViewController(listener: mockListener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
         snapshots(matching: viewController)

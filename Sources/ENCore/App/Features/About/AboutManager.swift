@@ -34,14 +34,26 @@ final class AboutManager: AboutManaging, Logging {
     let appInformationEntry: AboutEntry
     let technicalInformationEntry: AboutEntry
 
+    private let featureFlagController: FeatureFlagControlling
+    
     // MARK: - Init
 
-    init() {
+    init(featureFlagController: FeatureFlagControlling) {
+        
+        self.featureFlagController = featureFlagController
+        
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
         let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "<br><br>" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
         let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
-        let uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+        
+        let uploadKeys: HelpQuestion
+        if featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing) {
+            uploadKeys = HelpQuestion(question: .helpFaqUploadKeysViaWebsiteTitle, answer: .helpFaqUploadKeysViaWebsiteDescription)
+        } else {
+            uploadKeys = HelpQuestion(question: .helpFaqUploadKeysTitle, answer: .helpFaqUploadKeysDescription)
+        }
+        
         let bluetooth = HelpQuestion(question: .helpFaqBluetoothTitle, answer: .helpFaqBluetoothDescription)
         let power = HelpQuestion(question: .helpFaqPowerUsageTitle, answer: .helpFaqPowerUsageDescription)
         let deletion = HelpQuestion(question: .helpFaqDeletionTitle, answer: .helpFaqDeletionDescription)
