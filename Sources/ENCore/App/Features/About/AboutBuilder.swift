@@ -22,7 +22,6 @@ protocol AboutDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
-    var featureFlagController: FeatureFlagControlling { get }
 }
 
 private final class AboutDependencyProvider: DependencyProvider<AboutDependency>, AboutOverviewDependency, HelpDetailDependency, AppInformationDependency, TechnicalInformationDependency, WebviewDependency, ReceivedNotificationDependency {
@@ -30,7 +29,7 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
     // MARK: - HelpOverviewDependency
 
     var aboutManager: AboutManaging {
-        return AboutManager(featureFlagController: dependency.featureFlagController)
+        return AboutManager()
     }
 
     // MARK: - Forwarding Dependencies
