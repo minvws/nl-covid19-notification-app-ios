@@ -6,6 +6,7 @@
  */
 
 import Foundation
+import ENFoundation
 
 /// @mockable
 protocol FeatureFlagControlling {
@@ -45,7 +46,7 @@ struct FeatureFlag {
     let releasable: Bool
 }
 
-class FeatureFlagController: FeatureFlagControlling {
+class FeatureFlagController: FeatureFlagControlling, Logging {
     
     private let flags = [
         FeatureFlag(feature: .independentKeySharing, identifier: "independentKeySharing", enabledByDefault: false, releasable: true)
@@ -71,20 +72,29 @@ class FeatureFlagController: FeatureFlagControlling {
             return false
         }
         
+        logDebug("FeatureFlags: Checking status of feature: \(flag.identifier)")
+        
         // Should this feature even be available in a release build?
         guard environmentController.isDebugVersion || flag.releasable else {
+            logDebug("FeatureFlags: Feature \(flag.identifier) is not releasable and this is not a debug version of the app")
             return false
         }
         
-        // Local feature flag settings override remote settings
-        if let localOverride = userDefaults.object(forKey: flag.identifier) as? Bool {
-            return localOverride
+        // Local feature flag settings override remote settings in debug builds
+        if environmentController.isDebugVersion || environmentController.appSupportsDeveloperMenu {
+            if let localOverride = userDefaults.object(forKey: flag.identifier) as? Bool {
+                logDebug("FeatureFlags: Feature Flag \(flag.identifier) is overriden locally. value: \(localOverride)")
+                return localOverride
+            }
         }
         
         // Find remote feature flag for feature
         guard let remoteFeatureFlag = exposureController.getStoredAppConfigFeatureFlags()?.first(where: { $0.id == flag.identifier }) else {
+            logDebug("FeatureFlags: Feature Flag \(flag.identifier) cannot be found in app config. using enabledByDefault value: \(flag.enabledByDefault)")
             return flag.enabledByDefault
         }
+        
+        logDebug("FeatureFlags: Remote Feature Flag \(flag.identifier) status: \(remoteFeatureFlag.featureEnabled)")
         
         return remoteFeatureFlag.featureEnabled
     }

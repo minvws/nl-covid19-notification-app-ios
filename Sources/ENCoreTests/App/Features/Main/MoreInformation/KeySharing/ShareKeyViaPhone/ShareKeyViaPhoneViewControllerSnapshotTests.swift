@@ -83,7 +83,7 @@ final class ShareKeyViaPhoneViewControllerSnapshotTests: TestCase {
     }
 
     func test_viewDidLoad_calls_exposureController() {
-        XCTAssertNotNil(viewController.view)
-        XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 1)
+        XCTAssertNotNil(viewController.viewDidLoad())
+        XCTAssertTrue(exposureController.requestLabConfirmationKeyCallCount > 0)
     }
 }
