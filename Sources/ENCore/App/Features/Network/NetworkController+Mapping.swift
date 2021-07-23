@@ -55,7 +55,7 @@ extension AppConfig {
                                         repeatedUploadDelay: repeatedUploadDelay ?? 14400,
                                         decativated: coronaMelderDeactivated == "deactivated",
                                         appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
-                                        featureFlags: featureFlags?.map { $0.asApplicationConfigurationFeatureFlag() },
+                                        featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
                                         shareKeyURL: shareKeyURL)
     }
 }

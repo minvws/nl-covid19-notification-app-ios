@@ -23,7 +23,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let repeatedUploadDelay: Int
     let decativated: Bool
     let appointmentPhoneNumber: String
-    let featureFlags: [FeatureFlag]?
+    let featureFlags: [FeatureFlag]
     let shareKeyURL: String?
     
     struct FeatureFlag: Codable, Equatable {
