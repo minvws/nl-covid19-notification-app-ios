@@ -20,6 +20,7 @@ protocol EnvironmentControlling {
     var maximumSupportedExposureNotificationVersion: SupportedENAPIVersion { get }
     var isDebugVersion: Bool { get }
     var appSupportsiOSversion: Bool { get }
+    var appSupportsDeveloperMenu: Bool { get }
 }
 
 enum GAENRateLimitingType {
@@ -101,6 +102,14 @@ class EnvironmentController: EnvironmentControlling {
 
     var isDebugVersion: Bool {
         #if DEBUG
+            return true
+        #else
+            return false
+        #endif
+    }
+    
+    var appSupportsDeveloperMenu: Bool {
+        #if USE_DEVELOPER_MENU
             return true
         #else
             return false
