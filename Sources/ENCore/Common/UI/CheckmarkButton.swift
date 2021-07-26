@@ -70,7 +70,7 @@ final class CheckmarkButton: Button {
     lazy var label: Label = {
         let label = Label(frame: .zero)
         label.numberOfLines = 0
-        label.textColor = theme.colors.gray
+        label.textColor = theme.colors.textSecondary
         label.font = theme.fonts.subhead
         return label
     }()

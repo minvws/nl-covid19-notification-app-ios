@@ -3,6 +3,16 @@
     {
       "filename" : "InfectedHeader.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "InfectedHeader-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -17,7 +17,7 @@ final class OnboardingConsentSummaryStep: NSObject {
 
         self.title = .makeFromHtml(text: title,
                                    font: theme.fonts.body,
-                                   textColor: theme.colors.gray,
+                                   textColor: theme.colors.textSecondary,
                                    textAlignment: Localization.isRTL ? .right : .left)
         if let image = image { self.image = image }
     }

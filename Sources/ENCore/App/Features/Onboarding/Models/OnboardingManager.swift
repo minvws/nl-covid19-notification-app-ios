@@ -36,7 +36,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step2Title,
                 content: .step2Content,
-                illustration: theme.animationsSupported ? .animation(named: "popup", repeatFromFrame: 94, defaultFrame: 121) : .image(named: "Step2"),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("popup"), repeatFromFrame: 94, defaultFrame: 121) : .image(named: "Step2"),
                 buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
@@ -44,7 +44,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step3Title,
                 content: .step3Content,
-                illustration: theme.animationsSupported ? .animation(named: "bluetooth", defaultFrame: 28) : .image(named: "Step3"),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("bluetooth"), defaultFrame: 28) : .image(named: "Step3"),
                 buttonTitle: .nextButtonTitle,
                 isExample: false
             ),
@@ -52,7 +52,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step4Title,
                 content: .step4Content,
-                illustration: theme.animationsSupported ? .animation(named: "ontheway", defaultFrame: 36) : .image(named: "Step4"),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("ontheway"), defaultFrame: 36) : .image(named: "Step4"),
                 buttonTitle: .nextButtonTitle,
                 isExample: true
             ),
@@ -60,7 +60,7 @@ final class OnboardingManager: OnboardingManaging {
                 theme: theme,
                 title: .step5Title,
                 content: .step5Content,
-                illustration: theme.animationsSupported ? .animation(named: "train", repeatFromFrame: 51, defaultFrame: 93) : .image(named: "Step5"),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("train"), repeatFromFrame: 51, defaultFrame: 93) : .image(named: "Step5"),
                 buttonTitle: .nextButtonTitle,
                 isExample: true
             )

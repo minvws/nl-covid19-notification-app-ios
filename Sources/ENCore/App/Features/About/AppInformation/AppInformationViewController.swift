@@ -129,30 +129,30 @@ private final class AppInformationView: View {
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.appInformationProtect,
-                                                       title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectTitle, font: theme.fonts.title2, textColor: .black),
-                                                       message: String.helpWhatAppDoesProtectDescription.attributed())
+                                                       title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                                                       message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
 
     private lazy var notifyView = InformationCardView(theme: theme,
                                                       image: UIImage.appInformationNotify,
-                                                      title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyTitle, font: theme.fonts.title2, textColor: .black),
-                                                      message: String.helpWhatAppDoesNotifyDescription.attributed())
+                                                      title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                                                      message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
 
     private lazy var bluetoothView = InformationCardView(theme: theme,
                                                          image: UIImage.appInformationBluetooth,
-                                                         title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothTitle, font: theme.fonts.title2, textColor: .black),
-                                                         message: String.helpWhatAppDoesBluetoothDescription.attributed())
+                                                         title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                                                         message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
 
     private lazy var cycleExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.appInformationExampleCycle,
                                                             pretitle: String.example.attributed(),
-                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleTitle, font: theme.fonts.title2, textColor: .black),
-                                                            message: String.helpWhatAppDoesExampleCycleDescription.attributed())
+                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
 
     private lazy var trainExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.appInformationExampleTrain,
                                                             pretitle: String.example.attributed(),
-                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: .black),
-                                                            message: String.helpWhatAppDoesExampleTrainDescription.attributed())
+                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
 
     private lazy var buttonWrapperView = View(theme: theme)
     private lazy var tableViewWrapperView = View(theme: theme)

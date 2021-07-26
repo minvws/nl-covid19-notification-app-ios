@@ -46,7 +46,7 @@ extension ViewControllable where Self: ViewController {
         navigationBar.shadowImage = UIImage()
         navigationBar.titleTextAttributes = [
             NSAttributedString.Key.font: theme.fonts.headlineBold,
-            NSAttributedString.Key.foregroundColor: UIColor.black
+            NSAttributedString.Key.foregroundColor: theme.colors.textPrimary
         ]
 
         shouldHideBackTitle ? hideNavigationBarBackTitle() : showNavigationBarBackTitle()

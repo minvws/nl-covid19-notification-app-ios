@@ -138,7 +138,7 @@ final class MessageManager: MessageManaging, Logging {
 
             let paragraphBody = NSAttributedString.htmlWithBulletList(text: htmlBody.string,
                                                                       font: theme.fonts.body,
-                                                                      textColor: theme.colors.gray,
+                                                                      textColor: theme.colors.textSecondary,
                                                                       theme: theme,
                                                                       textAlignment: Localization.isRTL ? .right : .left)
 

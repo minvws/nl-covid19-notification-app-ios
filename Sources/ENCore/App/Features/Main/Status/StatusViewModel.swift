@@ -109,7 +109,8 @@ struct StatusViewModel {
     var buttons: [StatusViewButtonModel]
     var footer: NSAttributedString?
     var shouldShowHideMessage: Bool
-    var gradientColor: ThemeColor
+    var gradientTopColor: ThemeColor
+    var gradientBottomColor: ThemeColor
     var showScene: Bool
     var showClouds: Bool
     var showEmitter: Bool
@@ -125,14 +126,15 @@ struct StatusViewModel {
             buttons: [.moreInfo(), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.statusGradientNotified,
+            gradientTopColor: \.statusGradientNotifiedTop,
+            gradientBottomColor: \.statusGradientNotifiedBottom,
             showScene: false,
             showClouds: false,
             showEmitter: true
         )
     }
 
-    static func activeWithNotNotified(showScene: Bool) -> StatusViewModel {
+    static func activeWithNotNotified(theme: Theme, showScene: Bool) -> StatusViewModel {
 
         return StatusViewModel(
             icon: .ok,
@@ -141,25 +143,10 @@ struct StatusViewModel {
             buttons: [],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.statusGradientActive,
+            gradientTopColor: \.statusGradientActiveTop,
+            gradientBottomColor: \.statusGradientActiveBottom,
             showScene: showScene,
-            showClouds: true,
-            showEmitter: true
-        )
-    }
-
-    static func activeWithNotifiedThresholdDaysAgoCard(showScene: Bool) -> StatusViewModel {
-
-        return StatusViewModel(
-            icon: .ok,
-            title: .init(string: .statusAppState),
-            description: .init(string: String(format: .statusActiveDescription)),
-            buttons: [],
-            footer: nil,
-            shouldShowHideMessage: false,
-            gradientColor: \.statusGradientActive,
-            showScene: showScene,
-            showClouds: true,
+            showClouds: !theme.darkModeEnabled,
             showEmitter: true
         )
     }
@@ -175,7 +162,8 @@ struct StatusViewModel {
             buttons: [.moreInfo(), .removeNotification(title: description)],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.statusGradientNotified,
+            gradientTopColor: \.statusGradientNotifiedTop,
+            gradientBottomColor: \.statusGradientNotifiedBottom,
             showScene: false,
             showClouds: false,
             showEmitter: true
@@ -195,7 +183,8 @@ struct StatusViewModel {
             buttons: [.unpause],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.statusGradientPaused,
+            gradientTopColor: \.statusGradientPausedTop,
+            gradientBottomColor: \.statusGradientPausedBottom,
             showScene: false,
             showClouds: false,
             showEmitter: false
@@ -209,7 +198,8 @@ struct StatusViewModel {
         buttons: [.enableSettings],
         footer: nil,
         shouldShowHideMessage: false,
-        gradientColor: \.lightOrange,
+        gradientTopColor: \.statusGradientInactiveTop,
+        gradientBottomColor: \.statusGradientInactiveBottom,
         showScene: false,
         showClouds: false,
         showEmitter: true
@@ -223,7 +213,8 @@ struct StatusViewModel {
             buttons: [.enableBluetooth],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.lightOrange,
+            gradientTopColor: \.statusGradientInactiveTop,
+            gradientBottomColor: \.statusGradientInactiveBottom,
             showScene: false,
             showClouds: false,
             showEmitter: true
@@ -238,7 +229,8 @@ struct StatusViewModel {
             buttons: [.enableInternet],
             footer: nil,
             shouldShowHideMessage: false,
-            gradientColor: \.lightOrange,
+            gradientTopColor: \.statusGradientInactiveTop,
+            gradientBottomColor: \.statusGradientInactiveBottom,
             showScene: false,
             showClouds: false,
             showEmitter: true
@@ -252,7 +244,8 @@ struct StatusViewModel {
         buttons: [.tryAgain],
         footer: nil,
         shouldShowHideMessage: false,
-        gradientColor: \.lightOrange,
+        gradientTopColor: \.statusGradientInactiveTop,
+        gradientBottomColor: \.statusGradientInactiveBottom,
         showScene: false,
         showClouds: false,
         showEmitter: true

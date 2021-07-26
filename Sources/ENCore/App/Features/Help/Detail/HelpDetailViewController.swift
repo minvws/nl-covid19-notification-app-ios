@@ -40,12 +40,12 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
         internalView.titleLabel.attributedText = .makeFromHtml(text: entry.title,
                                                                font: theme.fonts.largeTitle,
-                                                               textColor: theme.colors.gray,
+                                                               textColor: theme.colors.textPrimary,
                                                                textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.contentLabel.attributedText = .makeFromHtml(text: entry.answer,
                                                                  font: theme.fonts.body,
-                                                                 textColor: theme.colors.gray,
+                                                                 textColor: theme.colors.textSecondary,
                                                                  textAlignment: Localization.isRTL ? .right : .left)
 
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)

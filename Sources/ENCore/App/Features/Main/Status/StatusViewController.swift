@@ -169,7 +169,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         
         switch (status.activeState, notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+            statusViewModel = .activeWithNotNotified(theme: theme, showScene: !isLandscape && announcementCardTypes.isEmpty)
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
@@ -305,12 +305,13 @@ private final class StatusView: View {
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         titleLabel.accessibilityTraits = .header
+        titleLabel.textColor = theme.colors.textPrimary
 
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
-        descriptionLabel.textColor = theme.colors.gray
+        descriptionLabel.textColor = theme.colors.textSecondary
 
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
@@ -431,7 +432,10 @@ private final class StatusView: View {
         }
         buttonContainer.isHidden = viewModel.buttons.isEmpty
 
-        gradientLayer.colors = [theme.colors[keyPath: viewModel.gradientColor].cgColor, UIColor.white.withAlphaComponent(0).cgColor]
+        gradientLayer.colors = [
+            theme.colors[keyPath: viewModel.gradientTopColor].cgColor,
+            theme.colors[keyPath: viewModel.gradientBottomColor].cgColor,
+        ]
 
         sceneImageView.isHidden = !viewModel.showScene
         cloudsView.isHidden = !viewModel.showClouds
@@ -506,7 +510,8 @@ private final class StatusAnimationView: View {
         super.build()
         backgroundColor = .clear
 
-        animationView.animation = LottieAnimation.named("statusactive")
+        
+        animationView.animation = LottieAnimation.named(theme.darkModeEnabled ? "darkmode_statusactive" : "statusactive")
         animationView.loopMode = .playOnce
 
         playAnimation()

@@ -199,11 +199,11 @@ private final class MoreInformationView: View {
         lastTEKProcessingDateLabel.numberOfLines = 0
         lastTEKProcessingDateLabel.lineBreakMode = .byWordWrapping
         lastTEKProcessingDateLabel.font = theme.fonts.footnote
-        lastTEKProcessingDateLabel.textColor = theme.colors.gray
+        lastTEKProcessingDateLabel.textColor = theme.colors.textSecondary
         lastTEKProcessingDateLabel.textAlignment = .center
 
         versionLabel.font = theme.fonts.footnote
-        versionLabel.textColor = theme.colors.gray
+        versionLabel.textColor = theme.colors.textSecondary
         versionLabel.textAlignment = .center
 
         addSubview(stackView)

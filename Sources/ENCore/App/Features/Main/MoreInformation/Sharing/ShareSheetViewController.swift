@@ -132,7 +132,7 @@ final class ShareSheetView: View {
                                                   textAlignment: Localization.isRTL ? .right : .left)
         contentLabel.attributedText = .makeFromHtml(text: .moreInformationShareContent,
                                                     font: theme.fonts.body,
-                                                    textColor: theme.colors.gray,
+                                                    textColor: theme.colors.textSecondary,
                                                     textAlignment: Localization.isRTL ? .right : .left)
         button.title = .moreInformationShareButton
 

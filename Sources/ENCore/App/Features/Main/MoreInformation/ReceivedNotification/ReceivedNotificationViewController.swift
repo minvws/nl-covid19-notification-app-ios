@@ -223,7 +223,7 @@ private final class ReceivedNotificationView: View {
     }
 
     private func attributedContentText(for string: String) -> NSAttributedString {
-        NSAttributedString.makeFromHtml(text: string, font: theme.fonts.body, textColor: theme.colors.gray)
+        NSAttributedString.makeFromHtml(text: string, font: theme.fonts.body, textColor: theme.colors.textSecondary)
     }
 
     private let infoView: InfoView

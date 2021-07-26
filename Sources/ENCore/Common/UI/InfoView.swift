@@ -256,6 +256,7 @@ final class InfoSectionContentView: View, UITextViewDelegate {
         contentTextView.delegate = self
         contentTextView.isEditable = false
         contentTextView.isScrollEnabled = false
+        contentTextView.backgroundColor = theme.colors.viewControllerBackground
         addSubview(contentTextView)
     }
 
@@ -301,8 +302,8 @@ final class InfoSectionStepView: View {
     private func updateEnabledState() {
         iconImageView.image = isDisabled ? disabledStepImage : stepImage
         actionButton?.isEnabled = !isDisabled
-        titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.gray
-        descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.gray
+        titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
+        descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
     }
     
     private lazy var actionButton: Button? = {
@@ -482,7 +483,7 @@ final class InfoSectionTextView: View {
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
             label.font = theme.fonts.body
-            label.textColor = theme.colors.gray
+            label.textColor = theme.colors.textSecondary
             label.attributedText = text            
             if let traits = contentAccessibilityTraits {
                 label.accessibilityTraits = traits
@@ -552,7 +553,7 @@ final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
             textView.isScrollEnabled = false
             textView.isAccessibilityElement = true
             textView.font = theme.fonts.body
-            textView.textColor = theme.colors.gray
+            textView.textColor = theme.colors.textSecondary
             textView.attributedText = text
             contentStack.addArrangedSubview(textView)
         }
@@ -608,7 +609,7 @@ final class InfoSectionContentTextView: View {
             label.numberOfLines = 0
             label.lineBreakMode = .byWordWrapping
             label.font = theme.fonts.body
-            label.textColor = theme.colors.gray
+            label.textColor = theme.colors.textSecondary
             label.attributedText = text
             contentStack.addArrangedSubview(label)
         }
@@ -785,19 +786,19 @@ final class InfoSectionDynamicCalloutView: View {
             add(view)
         case let .loading(title):
             iconImageView.image = stepImage
-            titleLabel.textColor = theme.colors.gray
+            titleLabel.textColor = theme.colors.textSecondary
             
             let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
             add(view)
         case let .success(code):
             iconImageView.image = stepImage
-            titleLabel.textColor = theme.colors.gray
+            titleLabel.textColor = theme.colors.textSecondary
             
             let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
             add(view)
         case let .error(error, actionHandler):
             iconImageView.image = stepImage
-            titleLabel.textColor = theme.colors.gray
+            titleLabel.textColor = theme.colors.textSecondary
             
             let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
             add(view)

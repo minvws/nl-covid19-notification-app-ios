@@ -126,7 +126,7 @@ private final class MobileDataView: View {
                             content: [
                                 .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
                                               font: theme.fonts.largeTitle,
-                                              textColor: theme.colors.gray,
+                                              textColor: theme.colors.textSecondary,
                                               textAlignment: Localization.isRTL ? .right : .left)
                             ],
                             contentAccessibilityTraits: .header)
@@ -135,6 +135,6 @@ private final class MobileDataView: View {
     private lazy var settingsDescription: View = {
         InfoSectionTextView(theme: theme,
                             title: "",
-                            content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.gray)])
+                            content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary)])
     }()
 }

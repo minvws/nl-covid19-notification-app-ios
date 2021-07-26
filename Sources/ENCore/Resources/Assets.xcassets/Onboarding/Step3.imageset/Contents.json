@@ -3,6 +3,16 @@
     {
       "filename" : "3.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Step3-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

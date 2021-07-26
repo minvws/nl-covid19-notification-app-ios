@@ -238,7 +238,7 @@ private final class ShareKeyViaPhoneView: View {
     private var content: NSAttributedString {
         let header = NSAttributedString(string: .moreInformationInfectedHeader,
                                         attributes: [
-                                            NSAttributedString.Key.foregroundColor: theme.colors.gray,
+                                            NSAttributedString.Key.foregroundColor: theme.colors.textSecondary,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
         let howDoesItWork = NSAttributedString(string: .moreInformationInfectedHowDoesItWork,
@@ -298,6 +298,7 @@ private final class ShareKeyViaPhoneView: View {
     override init(theme: Theme) {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationInfectedUpload,
                                     headerImage: .infectedHeader,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
@@ -308,6 +309,8 @@ private final class ShareKeyViaPhoneView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         infoView.addSections([
             contentView,
             stepStackView,

@@ -53,9 +53,11 @@ final class CardButton: Button {
         cardImageView.contentMode = .scaleAspectFit
         cardTitleLabel.numberOfLines = 0
         cardTitleLabel.font = theme.fonts.title3
+        cardTitleLabel.textColor = theme.colors.textDark
         subtitleTextLabel.numberOfLines = 0
         subtitleTextLabel.lineBreakMode = .byWordWrapping
         subtitleTextLabel.font = theme.fonts.body
+        subtitleTextLabel.textColor = theme.colors.textDark
 
         addSubview(cardTitleLabel)
         addSubview(subtitleTextLabel)

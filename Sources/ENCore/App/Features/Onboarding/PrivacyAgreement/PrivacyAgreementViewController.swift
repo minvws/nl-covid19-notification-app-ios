@@ -95,7 +95,7 @@ private final class PrivacyAgreementView: View {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.body
-        label.textColor = theme.colors.gray
+        label.textColor = theme.colors.textSecondary
         label.text = .privacyAgreementStepsTitle
         label.numberOfLines = 0
         label.accessibilityTraits = .header
@@ -199,7 +199,7 @@ private final class PrivacyAgreementView: View {
         let attributtedString = String(format: .privacyAgreementMessage, String.privacyAgreementMessageLink).attributed()
         let linkRange = (attributtedString.string as NSString).range(of: .privacyAgreementMessageLink)
 
-        attributtedString.addAttributes([.font: theme.fonts.body, .foregroundColor: theme.colors.gray],
+        attributtedString.addAttributes([.font: theme.fonts.body, .foregroundColor: theme.colors.textSecondary],
                                         range: NSRange(location: 0, length: attributtedString.string.count))
 
         attributtedString.addAttributes([

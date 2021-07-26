@@ -14,17 +14,27 @@ public protocol Colors: AnyObject {
     var tertiary: UIColor { get }
     var warning: UIColor { get }
 
-    var gray: UIColor { get }
-
+    var textPrimary: UIColor { get }
+    var textSecondary: UIColor { get }
+    var divider: UIColor { get }
+    var textButtonPrimary: UIColor { get }
+    var textButtonTertiary: UIColor { get }
+    var textDark: UIColor { get }
+    
     var ok: UIColor { get }
     var notified: UIColor { get }
     var inactive: UIColor { get }
     var inactiveGray: UIColor { get }
     var disabled: UIColor { get }
 
-    var statusGradientActive: UIColor { get }
-    var statusGradientNotified: UIColor { get }
-    var statusGradientPaused: UIColor { get }
+    var statusGradientActiveTop: UIColor { get }
+    var statusGradientActiveBottom: UIColor { get }
+    var statusGradientNotifiedTop: UIColor { get }
+    var statusGradientNotifiedBottom: UIColor { get }
+    var statusGradientPausedTop: UIColor { get }
+    var statusGradientPausedBottom: UIColor { get }
+    var statusGradientInactiveTop: UIColor { get }
+    var statusGradientInactiveBottom: UIColor { get }
 
     var navigationControllerBackground: UIColor { get }
     var viewControllerBackground: UIColor { get }
@@ -55,8 +65,28 @@ final class ENColors: Colors, Logging {
         return color(for: "WarningColor")
     }
 
-    var gray: UIColor {
-        return color(for: "GrayColor")
+    var textSecondary: UIColor {
+        return color(for: "TextSecondary")
+    }
+    
+    var textPrimary: UIColor {
+        return color(for: "TextPrimary")
+    }
+    
+    var textButtonPrimary: UIColor {
+        return color(for: "TextButtonPrimary")
+    }
+    
+    var textButtonTertiary: UIColor {
+        return color(for: "TextButtonTertiary")
+    }
+    
+    var textDark: UIColor {
+        return color(for: "TextDark")
+    }
+    
+    var divider: UIColor {
+        return color(for: "Divider")
     }
 
     var ok: UIColor {
@@ -79,16 +109,36 @@ final class ENColors: Colors, Logging {
         return color(for: "InactiveGray")
     }
 
-    var statusGradientActive: UIColor {
-        return color(for: "StatusGradientBlue")
+    var statusGradientActiveTop: UIColor {
+        return color(for: "StatusGradientActiveTop")
+    }
+    
+    var statusGradientActiveBottom: UIColor {
+        return color(for: "StatusGradientActiveBottom")
     }
 
-    var statusGradientPaused: UIColor {
-        return color(for: "StatusGradientGray")
+    var statusGradientPausedTop: UIColor {
+        return color(for: "StatusGradientPausedTop")
+    }
+    
+    var statusGradientPausedBottom: UIColor {
+        return color(for: "StatusGradientPausedBottom")
     }
 
-    var statusGradientNotified: UIColor {
-        return color(for: "StatusGradientRed")
+    var statusGradientNotifiedTop: UIColor {
+        return color(for: "StatusGradientNotifiedTop")
+    }
+    
+    var statusGradientNotifiedBottom: UIColor {
+        return color(for: "StatusGradientNotifiedBottom")
+    }
+    
+    var statusGradientInactiveTop: UIColor {
+        return color(for: "StatusGradientInactiveTop")
+    }
+    
+    var statusGradientInactiveBottom: UIColor {
+        return color(for: "StatusGradientInactiveBottom")
     }
 
     var navigationControllerBackground: UIColor {

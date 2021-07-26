@@ -49,7 +49,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 title: .onboardingPermissionsTitle,
                 content: .onboardingPermissionsDescription,
                 bulletItems: [.onboardingPermissionsDescriptionList1, .onboardingPermissionsDescriptionList2],
-                illustration: theme.animationsSupported ? .animation(named: "permission", repeatFromFrame: 100, defaultFrame: 56) : .image(image: Image.named("Step6")),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("permission"), repeatFromFrame: 100, defaultFrame: 56) : .image(image: Image.named("Step6")),
                 primaryButtonTitle: .onboardingPermissionsPrimaryButton,
                 secondaryButtonTitle: .onboardingPermissionsSecondaryButton,
                 hasNavigationBarSkipButton: true

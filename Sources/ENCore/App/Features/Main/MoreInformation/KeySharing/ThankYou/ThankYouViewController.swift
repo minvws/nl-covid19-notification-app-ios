@@ -151,7 +151,7 @@ private final class ThankYouView: View {
                 ? .moreInformationKeySharingThankYouConfirmation
                 : .moreInformationThankYouInfo,
             font: theme.fonts.subhead,
-            textColor: theme.colors.gray,
+            textColor: theme.colors.textSecondary,
             textAlignment: Localization.isRTL ? .right : .left)
         return InfoSectionCalloutView(theme: theme, content: string)
     }

@@ -316,7 +316,7 @@ private final class ShareKeyViaWebsiteView: View {
     private var content: NSAttributedString {
         let header = NSAttributedString(string: .moreInformationKeySharingCoronaTestTitle,
                                         attributes: [
-                                            NSAttributedString.Key.foregroundColor: theme.colors.gray,
+                                            NSAttributedString.Key.foregroundColor: theme.colors.textSecondary,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
         let howDoesItWork = NSAttributedString(string: .moreInformationKeySharingCoronaTestHowDoesItWork,
@@ -444,6 +444,7 @@ private final class ShareKeyViaWebsiteView: View {
     init(theme: Theme, showWebsiteLink: Bool) {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationKeySharingCoronaTestComplete,
                                     headerImage: .infectedHeader,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: false)
         self.showWebsiteLink = showWebsiteLink
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
@@ -454,6 +455,8 @@ private final class ShareKeyViaWebsiteView: View {
     
     override func build() {
         super.build()
+        
+        backgroundColor = theme.colors.viewControllerBackground
         
         updateContentView()
         

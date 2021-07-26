@@ -135,7 +135,7 @@ public extension NSAttributedString {
                            paragraphSpacing: CGFloat = 12,
                            textAlignment: NSTextAlignment = .left) -> NSMutableAttributedString {
 
-        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.gray]
+        let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.textSecondary]
 
         let bulletFont = font.withSize(10)
         let bulletAttributes: [NSAttributedString.Key: Any] = [

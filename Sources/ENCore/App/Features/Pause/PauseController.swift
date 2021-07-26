@@ -167,7 +167,7 @@ final class PauseController: PauseControlling, Logging {
             let attributedString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
                 text: .statusPausedManualUnpause,
                 font: theme.fonts.body,
-                textColor: theme.colors.gray,
+                textColor: theme.colors.textSecondary,
                 textAlignment: Localization.isRTL ? .right : .left
             ))
             return center ? attributedString.centered() : attributedString
@@ -180,7 +180,7 @@ final class PauseController: PauseControlling, Logging {
         var completeString = NSMutableAttributedString(attributedString: NSAttributedString.makeFromHtml(
             text: String(format: .statusPausedCountdown, arguments: [time]),
             font: theme.fonts.body,
-            textColor: theme.colors.gray,
+            textColor: theme.colors.textSecondary,
             textAlignment: Localization.isRTL ? .right : .left
         ))
 
