@@ -3,6 +3,16 @@
     {
       "filename" : "NoContact.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "CallGGD-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

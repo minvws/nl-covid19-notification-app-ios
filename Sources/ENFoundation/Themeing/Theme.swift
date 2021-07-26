@@ -33,7 +33,6 @@ public final class ENTheme: Theme {
     public let fonts: Fonts
     public let colors: Colors
     public let animationsSupported: Bool
-    public let darkModeEnabled: Bool
 
     public init() {
 
@@ -47,18 +46,16 @@ public final class ENTheme: Theme {
         self.fonts = ENFonts()
         self.colors = ENColors()
         self.animationsSupported = animationsSupported()
-        
-        func darkModeEnabled() -> Bool {
-            if #available(iOS 13.0, *) {
-                return UIScreen.main.traitCollection.userInterfaceStyle == .dark
-            }
-            return false
-        }
-        
-        self.darkModeEnabled = darkModeEnabled()
     }
     
     public func appearanceAdjustedAnimationName(_ name: String) -> String {
         return darkModeEnabled ? "darkmode_\(name)" : name
+    }
+    
+    public var darkModeEnabled: Bool {
+        if #available(iOS 13.0, *) {
+            return UIScreen.main.traitCollection.userInterfaceStyle == .dark
+        }
+        return false
     }
 }

@@ -3,6 +3,16 @@
     {
       "filename" : "7.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "Delen - Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

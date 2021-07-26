@@ -97,6 +97,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         updateExposureStateView()
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        // Listen for dark mode change to load dark or light animation
+        refreshCurrentState()
+    }
+    
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
@@ -509,11 +516,8 @@ private final class StatusAnimationView: View {
     override func build() {
         super.build()
         backgroundColor = .clear
-
         
-        animationView.animation = LottieAnimation.named(theme.darkModeEnabled ? "darkmode_statusactive" : "statusactive")
-        animationView.loopMode = .playOnce
-
+        loadAnimation()
         playAnimation()
 
         addSubview(animationView)
@@ -525,6 +529,16 @@ private final class StatusAnimationView: View {
         animationView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        loadAnimation()
+    }
+    
+    private func loadAnimation() {
+        animationView.animation = LottieAnimation.named(theme.appearanceAdjustedAnimationName("statusactive"))
+        animationView.loopMode = .playOnce
     }
 
     // MARK: - Private

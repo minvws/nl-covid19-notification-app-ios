@@ -125,10 +125,10 @@ final class ShareSheetView: View {
     override func build() {
         super.build()
 
-        imageView.image = Image.named("ShareApp")
+        imageView.image = Image.illustrationConnections
         titleLabel.attributedText = .makeFromHtml(text: .moreInformationShareTitle,
                                                   font: theme.fonts.title2,
-                                                  textColor: .black,
+                                                  textColor: theme.colors.textPrimary,
                                                   textAlignment: Localization.isRTL ? .right : .left)
         contentLabel.attributedText = .makeFromHtml(text: .moreInformationShareContent,
                                                     font: theme.fonts.body,

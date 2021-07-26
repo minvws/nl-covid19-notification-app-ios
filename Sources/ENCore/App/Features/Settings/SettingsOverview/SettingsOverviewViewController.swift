@@ -148,7 +148,7 @@ private final class SettingsView: View {
 
     lazy var separatorView: View = {
         let view = View(theme: theme)
-        view.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1)
+        view.backgroundColor = theme.colors.divider
         return view
     }()
 

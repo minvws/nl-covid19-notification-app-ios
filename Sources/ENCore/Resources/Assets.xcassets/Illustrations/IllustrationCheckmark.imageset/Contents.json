@@ -3,6 +3,16 @@
     {
       "filename" : "6.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "IllustrationCheckmark-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

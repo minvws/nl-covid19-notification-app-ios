@@ -89,7 +89,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
@@ -108,7 +108,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsExposureNotificationsStep1),
@@ -133,7 +133,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableBluetoothSettingTitleRow1),
@@ -154,7 +154,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableInternetTitleRow1), action: nil)
@@ -162,7 +162,7 @@ struct EnableSettingModel {
 
             return .init(title: .enableSettingsInternetTitle,
                          introduction: fromHtml(.enableSettingsInternetIntroduction),
-                         stepTitle: .makeFromHtml(text: .enableSettingsInternetStepTitle, font: theme.fonts.title2, textColor: .black),
+                         stepTitle: .makeFromHtml(text: .enableSettingsInternetStepTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
                          footer: fromHtml(.enableInternetFooter),
                          steps: [step1, step2],
                          action: .openSettings,
@@ -174,7 +174,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableSettingsLocalNotificationsStep1),
@@ -195,7 +195,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.updateSoftwareOSDetailStep1),

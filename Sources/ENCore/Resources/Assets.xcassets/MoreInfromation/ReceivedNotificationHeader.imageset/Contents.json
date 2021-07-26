@@ -3,6 +3,16 @@
     {
       "filename" : "ReceivedNotification.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ReceivedNotificationHeader-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
