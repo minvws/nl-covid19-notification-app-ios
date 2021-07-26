@@ -92,6 +92,8 @@ private final class MobileDataView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         infoView.addSections([
             titleLabel,
             settingsDescription
@@ -126,7 +128,7 @@ private final class MobileDataView: View {
                             content: [
                                 .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
                                               font: theme.fonts.largeTitle,
-                                              textColor: theme.colors.textSecondary,
+                                              textColor: theme.colors.textPrimary,
                                               textAlignment: Localization.isRTL ? .right : .left)
                             ],
                             contentAccessibilityTraits: .header)

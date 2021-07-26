@@ -3,6 +3,16 @@
     {
       "filename" : "TechnicalInfoStep4.png",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "TechnicalInfoStep4-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

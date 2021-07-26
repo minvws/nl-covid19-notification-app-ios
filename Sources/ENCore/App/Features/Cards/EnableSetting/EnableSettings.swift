@@ -219,7 +219,7 @@ struct EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: .black,
+                                                                           textColor: theme.colors.textPrimary,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.moreInformationSettingsStep1),

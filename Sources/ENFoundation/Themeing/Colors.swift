@@ -20,6 +20,7 @@ public protocol Colors: AnyObject {
     var textButtonPrimary: UIColor { get }
     var textButtonTertiary: UIColor { get }
     var textDark: UIColor { get }
+    var settingsStepBackground: UIColor { get }
     
     var ok: UIColor { get }
     var notified: UIColor { get }
@@ -83,6 +84,10 @@ final class ENColors: Colors, Logging {
     
     var textDark: UIColor {
         return color(for: "TextDark")
+    }
+    
+    var settingsStepBackground: UIColor {
+        return color(for: "SettingsStepBackground")
     }
     
     var divider: UIColor {

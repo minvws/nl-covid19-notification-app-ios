@@ -18,7 +18,7 @@ final class OnboardingConsentStep: NSObject {
 
     enum Illustration {
         case none
-        case image(image: UIImage?)
+        case image(_ image: UIImage?)
         case animation(named: String, repeatFromFrame: Int? = nil, defaultFrame: CGFloat? = nil)
     }
 

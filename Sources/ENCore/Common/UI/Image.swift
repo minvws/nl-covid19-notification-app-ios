@@ -61,11 +61,14 @@ extension UIImage {
     static var shareApp: UIImage? { return Image.named("ShareApp") }
     static var updateApp: UIImage? { return Image.named("UpdateApp") }
     static var info: UIImage? { return Image.named("Info") }
-    static var appInformationProtect: UIImage? { return Image.named("AppInfoProtect") }
-    static var appInformationNotify: UIImage? { return Image.named("AppInfoNotify") }
-    static var appInformationBluetooth: UIImage? { return Image.named("AppInfoBluetooth") }
-    static var appInformationExampleCycle: UIImage? { return Image.named("AppInfoCycleExample") }
-    static var appInformationExampleTrain: UIImage? { return Image.named("AppInfoTrainExample") }
+    static var illustrationSitWalkCycle: UIImage? { return Image.named("IllustrationSitWalkCycle") }
+    static var illustrationNotification: UIImage? { return Image.named("IllustrationNotification") }
+    static var illustrationBluetooth: UIImage? { return Image.named("IllustrationBluetooth") }
+    static var illustrationCycle: UIImage? { return Image.named("IllustrationCycle") }
+    static var illustrationTrain: UIImage? { return Image.named("IllustrationTrain") }
+    static var illustrationConnections: UIImage? { return Image.named("IllustrationConnections") }
+    static var illustrationCheckmark: UIImage? { return Image.named("IllustrationCheckmark") }
+    
     static var technicalInformationStep1: UIImage? { return Image.named("TechnicalInfoStep1") }
     static var technicalInformationStep2: UIImage? { return Image.named("TechnicalInfoStep2") }
     static var technicalInformationStep3: UIImage? { return Image.named("TechnicalInfoStep3") }

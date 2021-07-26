@@ -3,6 +3,16 @@
     {
       "filename" : "LoadingError.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "LoadingError-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

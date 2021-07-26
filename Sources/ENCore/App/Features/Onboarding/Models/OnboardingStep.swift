@@ -11,7 +11,7 @@ import UIKit
 
 final class OnboardingStep: NSObject {
     enum Illustration {
-        case image(named: String)
+        case image(_ image: UIImage?)
         case animation(named: String, repeatFromFrame: Int? = nil, defaultFrame: CGFloat? = nil)
     }
 

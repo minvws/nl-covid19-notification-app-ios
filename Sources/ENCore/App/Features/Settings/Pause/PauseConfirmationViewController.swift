@@ -130,6 +130,8 @@ private final class PauseConfirmationView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
         scrollableStackView.addSections([

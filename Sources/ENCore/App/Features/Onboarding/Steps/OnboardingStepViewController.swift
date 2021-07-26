@@ -216,8 +216,8 @@ final class OnboardingStepView: View {
         imageEnabledConstraints.forEach { $0.activate() }
 
         switch step.illustration {
-        case let .image(named: name):
-            imageView.image = Image.named(name)
+        case let .image(image):
+            imageView.image = image
             animationView.isHidden = true
             imageView.isHidden = false
         case let .animation(named: name, _, _):
