@@ -165,6 +165,7 @@ private final class RequestTestView: View {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
                                     secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)

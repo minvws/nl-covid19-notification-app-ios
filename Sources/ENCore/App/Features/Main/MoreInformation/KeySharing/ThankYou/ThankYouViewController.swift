@@ -97,7 +97,8 @@ private final class ThankYouView: View {
          exposureConfirmationKey: ExposureConfirmationKey,
          featureFlagController: FeatureFlagControlling) {
         let config = InfoViewConfig(actionButtonTitle: .close,
-                                    headerImage: .thankYouHeader)
+                                    headerImage: .thankYouHeader,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground)
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 8)
         self.exposureConfirmationKey = exposureConfirmationKey
         self.featureFlagController = featureFlagController

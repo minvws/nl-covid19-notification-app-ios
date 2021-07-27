@@ -81,6 +81,7 @@ private final class MobileDataView: View {
         let config = InfoViewConfig(actionButtonTitle: self.model.actionTitle,
                                     secondaryButtonTitle: nil,
                                     headerImage: nil,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: true)
         infoView = InfoView(theme: theme, config: config, itemSpacing: 15)
         infoView.showHeader = false
