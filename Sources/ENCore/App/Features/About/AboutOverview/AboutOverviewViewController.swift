@@ -65,7 +65,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         cell.textLabel?.text = questions[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
-        cell.textLabel?.textColor = theme.colors.textSecondary
+        cell.textLabel?.textColor = theme.colors.additionalInfoLinks        
         cell.textLabel?.accessibilityTraits = .header
 
         cell.accessoryType = .disclosureIndicator

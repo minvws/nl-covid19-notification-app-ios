@@ -25,6 +25,7 @@ public protocol Colors: AnyObject {
     var bulletTextDisabled: UIColor { get }
     var bulletBackground: UIColor { get }
     var bulletBackgroundDisabled: UIColor { get }
+    var additionalInfoLinks: UIColor { get }
     
     var ok: UIColor { get }
     var notified: UIColor { get }
@@ -109,6 +110,10 @@ final class ENColors: Colors, Logging {
     var bulletBackgroundDisabled: UIColor {
         return color(for: "BulletBackgroundDisabled")
     }
+    
+    var additionalInfoLinks: UIColor {
+        return color(for: "AdditionalInfoLinks")
+    }    
     
     var divider: UIColor {
         return color(for: "Divider")
