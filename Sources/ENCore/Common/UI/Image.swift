@@ -28,15 +28,7 @@ extension UIImage {
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
     static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
-    static var infected: UIImage? { return Image.named("Infected") }
-    static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
-    static var moreInformationStep1Gray: UIImage? { return Image.named("MoreInformation.Step1-grayscale") }
-    static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
-    static var moreInformationStep2Gray: UIImage? { return Image.named("MoreInformation.Step2-grayscale") }
-    static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }
-    static var moreInformationStep3Gray: UIImage? { return Image.named("MoreInformation.Step3-grayscale") }
-    static var moreInformationStep4: UIImage? { return Image.named("MoreInformation.Step4") }
-    static var moreInformationStep4Gray: UIImage? { return Image.named("MoreInformation.Step4-grayscale") }
+    static var infected: UIImage? { return Image.named("Infected") }    
     static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }

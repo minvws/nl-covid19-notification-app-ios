@@ -21,6 +21,10 @@ public protocol Colors: AnyObject {
     var textButtonTertiary: UIColor { get }
     var textDark: UIColor { get }
     var settingsStepBackground: UIColor { get }
+    var bulletText: UIColor { get }
+    var bulletTextDisabled: UIColor { get }
+    var bulletBackground: UIColor { get }
+    var bulletBackgroundDisabled: UIColor { get }
     
     var ok: UIColor { get }
     var notified: UIColor { get }
@@ -88,6 +92,22 @@ final class ENColors: Colors, Logging {
     
     var settingsStepBackground: UIColor {
         return color(for: "SettingsStepBackground")
+    }
+    
+    var bulletText: UIColor {
+        return color(for: "BulletText")
+    }
+    
+    var bulletTextDisabled: UIColor {
+        return color(for: "BulletTextDisabled")
+    }
+    
+    var bulletBackground: UIColor {
+        return color(for: "BulletBackground")
+    }
+    
+    var bulletBackgroundDisabled: UIColor {
+        return color(for: "BulletBackgroundDisabled")
     }
     
     var divider: UIColor {

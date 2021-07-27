@@ -37,7 +37,7 @@ class OnboardingConsentStepViewControllerTests: TestCase {
             theme: theme,
             title: "Some Onboarding Step Title",
             content: "Some Onboarding Step Content",
-            illustration: .image(image: .pleaseTurnOnBluetooth),
+            illustration: .image(.pleaseTurnOnBluetooth),
             primaryButtonTitle: .consentStep4PrimaryButton,
             secondaryButtonTitle: .consentStep4SecondaryButton,
             hasNavigationBarSkipButton: false

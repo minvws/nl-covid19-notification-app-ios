@@ -263,8 +263,7 @@ private final class ShareKeyViaPhoneView: View {
     private lazy var stepStackView: UIView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 2
-
+        
         stackView.addArrangedSubview(controlCode)
         stackView.addArrangedSubview(waitForTheGGD)
         stackView.addArrangedSubview(shareYourCodes)
@@ -274,20 +273,19 @@ private final class ShareKeyViaPhoneView: View {
     fileprivate lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationInfectedStep1,
-                                      stepImage: .moreInformationStep1,
-                                      disabledStepImage: .moreInformationStep1Gray)
+                                      stepCount: 1)
     }()
 
     private lazy var waitForTheGGD: View = {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationInfectedStep2,
-                            stepImage: .moreInformationStep2)
+                            stepCount: 2)
     }()
 
     private lazy var shareYourCodes: View = {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationInfectedStep3,
-                            stepImage: .moreInformationStep3,
+                            stepCount: 3,
                             isLastStep: true)
     }()
 
