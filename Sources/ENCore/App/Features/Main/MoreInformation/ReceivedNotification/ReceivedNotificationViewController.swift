@@ -129,7 +129,6 @@ private final class ReceivedNotificationView: View {
         self.tableViewManager = linkedContentTableViewManager
         let config = InfoViewConfig(actionButtonTitle: buttonTitle ?? "",
                                     headerImage: .receivedNotificationHeader,
-                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     showButtons: buttonTitle != nil)
         self.infoView = InfoView(theme: theme, config: config)
         super.init(theme: theme)

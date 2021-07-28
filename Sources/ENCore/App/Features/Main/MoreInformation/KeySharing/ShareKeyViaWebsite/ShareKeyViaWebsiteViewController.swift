@@ -438,7 +438,6 @@ private final class ShareKeyViaWebsiteView: View {
     init(theme: Theme, showWebsiteLink: Bool) {
         let config = InfoViewConfig(actionButtonTitle: .moreInformationKeySharingCoronaTestComplete,
                                     headerImage: .infectedHeader,
-                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: false)
         self.showWebsiteLink = showWebsiteLink
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)

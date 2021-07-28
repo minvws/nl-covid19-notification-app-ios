@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppInfoCycleExample.png",
+      "filename" : "IllustrationCycle.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Step4-Dark.pdf",
+      "filename" : "IllustrationCycle-Dark.pdf",
       "idiom" : "universal"
     }
   ],

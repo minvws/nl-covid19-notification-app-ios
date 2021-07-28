@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppInfoTrainExample.png",
+      "filename" : "IllustrationTrain.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Step5-Dark.pdf",
+      "filename" : "IllustrationTrain-Dark.pdf",
       "idiom" : "universal"
     }
   ],

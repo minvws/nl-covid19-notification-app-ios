@@ -300,7 +300,7 @@ final class InfoSectionStepView: View {
     private func updateEnabledState() {
         stepCountView.disabled = isDisabled
         actionButton?.isEnabled = !isDisabled
-        titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
+        titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textPrimary
         descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
     }
     
@@ -832,19 +832,19 @@ final class InfoSectionDynamicCalloutView: View {
             add(view)
         case let .loading(title):
             stepCountView.disabled = false
-            titleLabel.textColor = theme.colors.textSecondary
+            titleLabel.textColor = theme.colors.textPrimary
             
             let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
             add(view)
         case let .success(code):
             stepCountView.disabled = false
-            titleLabel.textColor = theme.colors.textSecondary
+            titleLabel.textColor = theme.colors.textPrimary
             
             let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
             add(view)
         case let .error(error, actionHandler):
             stepCountView.disabled = false
-            titleLabel.textColor = theme.colors.textSecondary
+            titleLabel.textColor = theme.colors.textPrimary
             
             let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
             add(view)

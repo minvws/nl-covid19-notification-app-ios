@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "AppInfoBluetooth.png",
+      "filename" : "IllustrationBlueTooth.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "Step3-Dark.pdf",
+      "filename" : "IllustrationBlueTooth-Dark.pdf",
       "idiom" : "universal"
     }
   ],
