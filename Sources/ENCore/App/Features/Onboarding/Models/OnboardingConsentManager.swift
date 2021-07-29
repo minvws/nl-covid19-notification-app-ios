@@ -91,7 +91,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
                 theme: theme,
                 title: .consentStep4Title,
                 content: .consentStep4Content,
-                illustration: theme.animationsSupported ? .animation(named: "share", repeatFromFrame: 31, defaultFrame: 35) : .image(.illustrationConnections),
+                illustration: theme.animationsSupported ? .animation(named: theme.appearanceAdjustedAnimationName("share"), repeatFromFrame: 31, defaultFrame: 35) : .image(.illustrationConnections),
                 primaryButtonTitle: .consentStep4PrimaryButton,
                 secondaryButtonTitle: .consentStep4SecondaryButton,
                 hasNavigationBarSkipButton: true
