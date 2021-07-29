@@ -21,6 +21,11 @@ public protocol Colors: AnyObject {
     var textButtonTertiary: UIColor { get }
     var textDark: UIColor { get }
     var settingsStepBackground: UIColor { get }
+    var stickyButtonBackground: UIColor { get }
+    
+    var stickyButtonDropShadowTop: UIColor { get }
+    var stickyButtonDropShadowBottom: UIColor { get }
+    
     var bulletText: UIColor { get }
     var bulletTextDisabled: UIColor { get }
     var bulletBackground: UIColor { get }
@@ -96,6 +101,10 @@ final class ENColors: Colors, Logging {
         return color(for: "SettingsStepBackground")
     }
     
+    var stickyButtonBackground: UIColor {
+        return color(for: "StickyButtonBackground")
+    }
+    
     var bulletText: UIColor {
         return color(for: "BulletText")
     }
@@ -112,6 +121,14 @@ final class ENColors: Colors, Logging {
         return color(for: "BulletBackgroundDisabled")
     }
     
+    var stickyButtonDropShadowTop: UIColor {
+        return color(for: "StickyButtonDropShadowTop")
+    }
+    
+    var stickyButtonDropShadowBottom: UIColor {
+        return color(for: "StickyButtonDropShadowBottom")
+    }
+        
     var additionalInfoLinks: UIColor {
         return color(for: "AdditionalInfoLinks")
     }    

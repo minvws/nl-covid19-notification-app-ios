@@ -152,18 +152,18 @@ struct EnableSettingModel {
     
     static var connectToInternet: (Theme) -> EnableSettingModel {
         return { theme in
-            let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
+            let fromHtml: (String, UIColor) -> NSAttributedString = { .makeFromHtml(text: $0,
                                                                            font: theme.fonts.body,
-                                                                           textColor: theme.colors.textPrimary,
+                                                                           textColor: $1,
                                                                            textAlignment: Localization.isRTL ? .right : .left) }
 
-            let step1 = EnableSettingStep(description: fromHtml(.enableInternetTitleRow1), action: nil)
-            let step2 = EnableSettingStep(description: fromHtml(.enableInternetSettingTitleRow2), action: .custom(image: .mobileData, description: .enableInternetSettingTitleSettingRow2, showChevron: false, showSwitch: true))
+            let step1 = EnableSettingStep(description: fromHtml(.enableInternetTitleRow1, theme.colors.textPrimary), action: nil)
+            let step2 = EnableSettingStep(description: fromHtml(.enableInternetSettingTitleRow2, theme.colors.textPrimary), action: .custom(image: .mobileData, description: .enableInternetSettingTitleSettingRow2, showChevron: false, showSwitch: true))
 
             return .init(title: .enableSettingsInternetTitle,
-                         introduction: fromHtml(.enableSettingsInternetIntroduction),
+                         introduction: fromHtml(.enableSettingsInternetIntroduction, theme.colors.textSecondary),
                          stepTitle: .makeFromHtml(text: .enableSettingsInternetStepTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                         footer: fromHtml(.enableInternetFooter),
+                         footer: fromHtml(.enableInternetFooter, theme.colors.textSecondary),
                          steps: [step1, step2],
                          action: .openSettings,
                          actionTitle: .enableInternetOpenSettingsButton)

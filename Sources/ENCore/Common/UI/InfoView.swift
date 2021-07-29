@@ -60,6 +60,7 @@ final class InfoView: View {
     private let buttonStackView: UIStackView
     private let buttonSeparator: GradientView
     private let actionButton: Button
+    private let stickyButtonBackground: View
 
     private let showButtons: Bool
     private let stickyButtons: Bool
@@ -75,7 +76,9 @@ final class InfoView: View {
         scrollView = UIScrollView(frame: .zero)
         headerBackgroundView = UIView(frame: .zero)
         actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
-        buttonSeparator = GradientView(startColor: UIColor.white.withAlphaComponent(0), endColor: UIColor.black.withAlphaComponent(0.1))
+        stickyButtonBackground = View(theme: theme)
+        
+        buttonSeparator = GradientView(startColor: theme.colors.stickyButtonDropShadowTop, endColor: theme.colors.stickyButtonDropShadowBottom)
         if let title = config.secondaryButtonTitle {
             secondaryButton = Button(title: title, theme: theme)
         } else {
@@ -102,7 +105,9 @@ final class InfoView: View {
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 20
         buttonStackView.distribution = .fillEqually
-
+        
+        stickyButtonBackground.backgroundColor = theme.colors.stickyButtonBackground
+        
         addSubview(scrollView)
         scrollView.addSubview(headerBackgroundView)
         scrollView.addSubview(contentView)
@@ -120,6 +125,7 @@ final class InfoView: View {
             buttonStackView.addArrangedSubview(actionButton)
 
             if stickyButtons {
+                addSubview(stickyButtonBackground)
                 addSubview(buttonSeparator)
                 addSubview(buttonStackView)
             } else {
@@ -199,6 +205,11 @@ final class InfoView: View {
                 maker.bottom.equalTo(buttonStackView.snp.top).offset(-16)
                 maker.leading.trailing.equalToSuperview()
                 maker.height.equalTo(16)
+            }
+            
+            stickyButtonBackground.snp.remakeConstraints { maker in
+                maker.top.equalTo(buttonStackView.snp.top).offset(-16)
+                maker.leading.trailing.bottom.equalToSuperview()
             }
         }
     }
@@ -462,6 +473,7 @@ final class InfoSectionTextView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
+        titleLabel.textColor = theme.colors.textPrimary
         titleLabel.accessibilityTraits = .header
         titleLabel.textAlignment = Localization.isRTL ? .right : .left
 
@@ -550,6 +562,7 @@ final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
             textView.font = theme.fonts.body
             textView.textColor = theme.colors.textSecondary
             textView.attributedText = text
+            textView.backgroundColor = .clear
             contentStack.addArrangedSubview(textView)
         }
     }

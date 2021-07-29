@@ -115,6 +115,7 @@ private final class ThankYouView: View {
         footer.append(NSAttributedString.make(
             text: String(format: .moreInformationThankYouSectionFooter, ""),
             font: theme.fonts.bodyBold,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left,
             lineHeight: 5))
 
@@ -122,6 +123,7 @@ private final class ThankYouView: View {
             NSAttributedString.make(
                 text: String(exposureConfirmationKey.key.asGGDkey),
                 font: theme.fonts.body,
+                textColor: theme.colors.textPrimary,
                 textAlignment: Localization.isRTL ? .right : .left))
 
         var string = [NSAttributedString]()
@@ -152,7 +154,7 @@ private final class ThankYouView: View {
                 ? .moreInformationKeySharingThankYouConfirmation
                 : .moreInformationThankYouInfo,
             font: theme.fonts.subhead,
-            textColor: theme.colors.textSecondary,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         return InfoSectionCalloutView(theme: theme, content: string)
     }

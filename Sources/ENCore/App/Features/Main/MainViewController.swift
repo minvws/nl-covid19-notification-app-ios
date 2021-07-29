@@ -366,7 +366,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 private final class MainView: View {
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
-    fileprivate let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .light))
+    fileprivate let blurView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
 
     override func build() {
         super.build()

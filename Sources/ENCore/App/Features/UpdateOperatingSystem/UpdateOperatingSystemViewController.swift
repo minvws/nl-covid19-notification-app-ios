@@ -40,7 +40,7 @@ final class UpdateOperatingSystemViewController: ViewController, EnableSettingLi
         internalView.titleLabel.attributedText = .makeFromHtml(
             text: .updateSoftwareOSTitle,
             font: theme.fonts.title2,
-            textColor: .black,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         internalView.contentLabel.attributedText = .makeFromHtml(
             text: .updateSoftwareOSDescription,

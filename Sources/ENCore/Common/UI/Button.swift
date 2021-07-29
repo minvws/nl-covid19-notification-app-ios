@@ -99,7 +99,7 @@ class Button: UIButton, Themeable {
             setTitleColor(theme.colors.textButtonPrimary, for: .normal)
         case .tertiary:
             backgroundColor = theme.colors.tertiary
-            setTitleColor(.black, for: .normal)
+            setTitleColor(theme.colors.textPrimary, for: .normal)
         case .warning:
             backgroundColor = theme.colors.warning
             setTitleColor(.white, for: .normal)

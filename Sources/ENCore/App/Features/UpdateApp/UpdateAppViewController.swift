@@ -47,7 +47,7 @@ final class UpdateAppViewController: ViewController, UpdateAppViewControllable, 
         internalView.titleLabel.attributedText = .makeFromHtml(
             text: .updateAppTitle,
             font: theme.fonts.title2,
-            textColor: .black,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         internalView.contentLabel.attributedText = .makeFromHtml(
             text: minimumVersionMessage ?? String.updateAppContent,
