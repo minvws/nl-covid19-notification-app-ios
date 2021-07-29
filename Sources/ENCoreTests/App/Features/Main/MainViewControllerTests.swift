@@ -92,6 +92,40 @@ final class MainViewControllerTests: TestCase {
         XCTAssertEqual(attachMoreInformationCallCountIndex, 2)
     }
 
+    func test_handleButtonAction_updateAppSettings_shouldAlsoRequestPushNotificationPermission() {
+        // Arrange
+        let completionExpectation = expectation(description: "completionExpectation")
+        exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        exposureController.requestExposureNotificationPermissionHandler = { completion in
+            completion?(nil)
+            completionExpectation.fulfill()
+        }
+        
+        // Act
+        viewController.handleButtonAction(.updateAppSettings)
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(mockUserNotificationController.getAuthorizationStatusCallCount, 1)
+    }
+    
+    func test_handleButtonAction_updateAppSettings_shouldNotRequestPushNotificationPermission_ifFailed() {
+        // Arrange
+        let completionExpectation = expectation(description: "completionExpectation")
+        exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
+        exposureController.requestExposureNotificationPermissionHandler = { completion in
+            completion?(.disabled)
+            completionExpectation.fulfill()
+        }
+        
+        // Act
+        viewController.handleButtonAction(.updateAppSettings)
+        
+        // Assert
+        waitForExpectations()
+        XCTAssertEqual(mockUserNotificationController.getAuthorizationStatusCallCount, 0)
+    }
+    
     func test_handleButtonAction_explainRisk() {
         XCTAssertEqual(router.routeToMessageCallCount, 0)
         viewController.handleButtonAction(.explainRisk)
