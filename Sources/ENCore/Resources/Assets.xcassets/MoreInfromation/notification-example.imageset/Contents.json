@@ -3,6 +3,16 @@
     {
       "filename" : "notification-example.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "notification-example-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
