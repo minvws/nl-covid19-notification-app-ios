@@ -58,6 +58,7 @@ public protocol Colors: AnyObject {
     var captionGray: UIColor { get }
     var cardBackground: UIColor { get }
     var cardBackgroundBlue: UIColor { get }
+    var cardBodyText: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
@@ -219,6 +220,10 @@ final class ENColors: Colors, Logging {
     
     var cardBackgroundBlue: UIColor {
         return color(for: "CardBackgroundBlue")
+    }
+    
+    var cardBodyText: UIColor {
+        return color(for: "CardBodyText")
     }
 
     // MARK: - Private
