@@ -282,16 +282,13 @@ class OnboardingConsentManagerTests: TestCase {
         XCTAssertFalse(mockExposureController.didCompleteOnboarding)
         
         // Act
-        sut.didCompleteConsent()
-        
-        // Assert
-        DispatchQueue.global(qos: .userInitiated).async {
+        sut.didCompleteConsent {
             XCTAssertTrue(self.mockExposureController.didCompleteOnboarding)
             XCTAssertEqual(self.mockExposureController.seenAnnouncements, [])
             completionExpectation.fulfill()
         }
-        
-        waitForExpectations(timeout: 2, handler: nil)
+                
+        waitForExpectations()
     }
     
     func test_getStep() {

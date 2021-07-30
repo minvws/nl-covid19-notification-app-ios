@@ -20,7 +20,7 @@ protocol OnboardingConsentManaging {
     func goToBluetoothSettings(_ completion: @escaping (() -> ()))
     func askNotificationsAuthorization(_ completion: @escaping (() -> ()))
     func getAppStoreUrl(_ completion: @escaping ((String?) -> ()))
-    func isNotificationAuthorizationAsked() -> Bool
+    func isNotificationAuthorizationAsked() -> Bool    
     func didCompleteConsent()
 }
 
@@ -204,6 +204,10 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
     }
 
     func didCompleteConsent() {
+        didCompleteConsent(completion: nil)
+    }
+    
+    func didCompleteConsent(completion: (() -> Void)?) {
         logTrace()
         
         // Change stored flags asynchronously to not block the main thread
@@ -212,6 +216,7 @@ final class OnboardingConsentManager: OnboardingConsentManaging, Logging {
             
             // Mark all announcements that were made during the onboarding process as "seen"
             self.exposureController.seenAnnouncements = []
+            completion?()
         }
     }
 
