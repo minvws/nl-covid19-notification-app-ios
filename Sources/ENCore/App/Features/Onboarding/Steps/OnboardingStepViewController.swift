@@ -160,6 +160,13 @@ final class OnboardingStepView: View {
         addSubview(button)
         viewsInDisplayOrder.forEach { scrollView.addSubview($0) }
     }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        // Listen for dark mode change to load dark or light animation
+        updateView()
+    }
 
     override func setupConstraints() {
         super.setupConstraints()
@@ -221,7 +228,7 @@ final class OnboardingStepView: View {
             animationView.isHidden = true
             imageView.isHidden = false
         case let .animation(named: name, _, _):
-            animationView.animation = LottieAnimation.named(name)
+            animationView.animation = LottieAnimation.named(theme.appearanceAdjustedAnimationName(name))
             animationView.isHidden = false
             imageView.isHidden = true
             playAnimation()
