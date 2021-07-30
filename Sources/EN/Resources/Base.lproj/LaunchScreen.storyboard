@@ -26,7 +26,7 @@
                                     <constraint firstAttribute="height" constant="75" id="DCR-Lf-VKQ"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MinVWS" translatesAutoresizingMaskIntoConstraints="NO" id="Hg8-Ye-iih">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MinVWSLogo" translatesAutoresizingMaskIntoConstraints="NO" id="Hg8-Ye-iih">
                                 <rect key="frame" x="240" y="79" width="117" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="hk6-Sn-flT"/>
@@ -34,7 +34,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="ViewControllerBackgroundColor"/>
+                        <color key="backgroundColor" name="LaunchScreenBackground"/>
                         <constraints>
                             <constraint firstItem="Hg8-Ye-iih" firstAttribute="bottom" secondItem="cQK-i3-0Vc" secondAttribute="bottom" id="0oO-X6-sQU"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="top" secondItem="cQK-i3-0Vc" secondAttribute="top" constant="15" id="1p1-Yo-JBJ"/>
@@ -54,10 +54,10 @@
         </scene>
     </scenes>
     <resources>
-        <image name="MinVWS" width="94" height="39"/>
+        <image name="MinVWSLogo" width="94" height="39"/>
         <image name="OnlyTogetherCanWeControlCorona" width="232" height="60"/>
         <image name="Rijkslint" width="50" height="100"/>
-        <namedColor name="ViewControllerBackgroundColor">
+        <namedColor name="LaunchScreenBackground">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
