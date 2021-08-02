@@ -304,7 +304,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         case .authorizationDenied:
             router?.routeToEnableSetting(.enableExposureNotifications)
         case .notAuthorized:
-            requestExposureNotificationPermission()
+            requestExposureNotificationPermission { [weak self] success in
+                guard success else { return }
+                    
+                // Double check that we also got push notification authorisation (or ask if we don't have it yet)
+                self?.getPushNotificationAuthorization()
+            }
         case let .inactive(reason) where reason == .bluetoothOff:
             router?.routeToEnableSetting(.enableBluetooth)
         case let .inactive(reason) where reason == .disabled:
@@ -314,17 +319,21 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
                 }
             }
         case let .inactive(reason) where reason == .pushNotifications:
-            userNotificationController.getAuthorizationStatus { (authorizationStatus) in
-                DispatchQueue.main.async {
-                    self.handlePushNotificationSettings(authorizationStatus: authorizationStatus)
-                }
-            }
+            getPushNotificationAuthorization()
         case let .inactive(reason) where reason == .noRecentNotificationUpdates:
             updateWhenRequired()
         case .inactive:
             logError("Unhandled case")
         case .active:
             logError("Active state = noting nothing to do")
+        }
+    }
+    
+    private func getPushNotificationAuthorization() {
+        userNotificationController.getAuthorizationStatus { (authorizationStatus) in
+            DispatchQueue.main.async {
+                self.handlePushNotificationSettings(authorizationStatus: authorizationStatus)
+            }
         }
     }
 

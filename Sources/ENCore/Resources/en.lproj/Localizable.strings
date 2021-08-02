@@ -463,7 +463,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.keysharing.coronatest.option1.content" = "This is only possible if you receive the test result via coronatest.nl";
 "moreInformation.keysharing.coronatest.option2.title" = "If the GGD calls you";
 "moreInformation.keysharing.coronatest.option2.content" = "This is only possible if you're on the phone with the GGD right now";
-"moreInformation.keysharing.coronatest.steps.header.title" = "Do you discover through coronatest.nl that you have corona? Then you can use CoronaMelder to send a notification immediately.";
+"moreInformation.keysharing.coronatest.steps.header.title" = "If you discover that you have coronavirus through coronatest.nl, you can use CoronaMelder to send a notification immediately.";
 "moreInformation.keysharing.coronatest.steps.header.button" = "How does this work?";
 "moreInformation.keysharing.coronatest.step1.title" = "Share the codes created by CoronaMelder";
 "moreInformation.keysharing.coronatest.step1.button" = "Share codes";
