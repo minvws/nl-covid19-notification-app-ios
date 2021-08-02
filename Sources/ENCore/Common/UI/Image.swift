@@ -33,7 +33,7 @@ extension UIImage {
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }
     static var coronaTestHeader: UIImage? { return Image.named("CoronatestHeader") }
-    static var statusClouds: UIImage? { return Image.named("StatusClouds") }
+    static var statusStars: UIImage? { return Image.named("StatusStars") }
     static var statusCloud1: UIImage? { return Image.named("StatusCloud1") }
     static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }    
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }

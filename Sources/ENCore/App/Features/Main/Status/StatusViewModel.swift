@@ -112,7 +112,7 @@ struct StatusViewModel {
     var gradientTopColor: ThemeColor
     var gradientBottomColor: ThemeColor
     var showScene: Bool
-    var showClouds: Bool
+    var showSky: Bool
     var showEmitter: Bool
 
     static func activeWithNotified(date: Date) -> StatusViewModel {
@@ -129,7 +129,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientNotifiedTop,
             gradientBottomColor: \.statusGradientNotifiedBottom,
             showScene: false,
-            showClouds: false,
+            showSky: false,
             showEmitter: true
         )
     }
@@ -146,7 +146,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientActiveTop,
             gradientBottomColor: \.statusGradientActiveBottom,
             showScene: showScene,
-            showClouds: !theme.darkModeEnabled,
+            showSky: true,
             showEmitter: true
         )
     }
@@ -165,7 +165,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientNotifiedTop,
             gradientBottomColor: \.statusGradientNotifiedBottom,
             showScene: false,
-            showClouds: false,
+            showSky: false,
             showEmitter: true
         )
     }
@@ -186,7 +186,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientPausedTop,
             gradientBottomColor: \.statusGradientPausedBottom,
             showScene: false,
-            showClouds: false,
+            showSky: false,
             showEmitter: false
         )
     }
@@ -201,7 +201,7 @@ struct StatusViewModel {
         gradientTopColor: \.statusGradientInactiveTop,
         gradientBottomColor: \.statusGradientInactiveBottom,
         showScene: false,
-        showClouds: false,
+        showSky: false,
         showEmitter: true
     )
 
@@ -217,7 +217,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientInactiveTop,
             gradientBottomColor: \.statusGradientInactiveBottom,
             showScene: false,
-            showClouds: false,
+            showSky: false,
             showEmitter: true
         )
     }
@@ -233,7 +233,7 @@ struct StatusViewModel {
             gradientTopColor: \.statusGradientInactiveTop,
             gradientBottomColor: \.statusGradientInactiveBottom,
             showScene: false,
-            showClouds: false,
+            showSky: false,
             showEmitter: true
         )
     }
@@ -248,7 +248,7 @@ struct StatusViewModel {
         gradientTopColor: \.statusGradientInactiveTop,
         gradientBottomColor: \.statusGradientInactiveBottom,
         showScene: false,
-        showClouds: false,
+        showSky: false,
         showEmitter: true
     )
 
