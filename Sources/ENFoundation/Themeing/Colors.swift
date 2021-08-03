@@ -13,10 +13,12 @@ public protocol Colors: AnyObject {
     var secondaryLight: UIColor { get }
     var tertiary: UIColor { get }
     var warning: UIColor { get }
+    
 
     var textPrimary: UIColor { get }
     var textSecondary: UIColor { get }
     var divider: UIColor { get }
+    var primaryButton: UIColor { get }
     var textButtonPrimary: UIColor { get }
     var textButtonTertiary: UIColor { get }
     var textDark: UIColor { get }
@@ -68,6 +70,7 @@ final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
     }
+    
 
     var secondaryLight: UIColor {
         return color(for: "SecondaryLight")
@@ -87,6 +90,10 @@ final class ENColors: Colors, Logging {
     
     var textPrimary: UIColor {
         return color(for: "TextPrimary")
+    }
+    
+    var primaryButton: UIColor {
+        return color(for: "PrimaryButton")
     }
     
     var textButtonPrimary: UIColor {

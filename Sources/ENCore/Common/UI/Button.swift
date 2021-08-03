@@ -85,7 +85,7 @@ class Button: UIButton, Themeable {
         switch style {
         case .primary:
             if isEnabled {
-                backgroundColor = theme.colors.primary
+                backgroundColor = theme.colors.primaryButton
                 setTitleColor(.white, for: .normal)
             } else {
                 backgroundColor = theme.colors.tertiary
