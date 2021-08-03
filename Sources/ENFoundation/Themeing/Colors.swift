@@ -58,6 +58,9 @@ public protocol Colors: AnyObject {
     var captionGray: UIColor { get }
     var cardBackground: UIColor { get }
     var cardBackgroundBlue: UIColor { get }
+    var cardBackgroundOrange: UIColor { get }
+    var cardBluePrimary: UIColor { get }
+    var cardBlueSecondary: UIColor { get }
     var cardBodyText: UIColor { get }
 }
 
@@ -220,6 +223,18 @@ final class ENColors: Colors, Logging {
     
     var cardBackgroundBlue: UIColor {
         return color(for: "CardBackgroundBlue")
+    }
+    
+    var cardBackgroundOrange: UIColor {
+        return color(for: "CardBackgroundOrange")
+    }
+    
+    var cardBluePrimary: UIColor {
+        return color(for: "CardBluePrimary")
+    }
+    
+    var cardBlueSecondary: UIColor {
+        return color(for: "CardBlueSecondary")
     }
     
     var cardBodyText: UIColor {

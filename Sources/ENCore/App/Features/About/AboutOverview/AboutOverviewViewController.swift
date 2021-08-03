@@ -113,7 +113,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         }
 
         let technicalInfoButton = CardButton(title: .aboutTechnicalInformationTitle, subtitle: .aboutTechnicalInformationDescription, image: UIImage.aboutTechnicalInformation, theme: theme)
-        technicalInfoButton.backgroundColor = theme.colors.lightOrange
+        technicalInfoButton.backgroundColor = theme.colors.cardBackgroundOrange
         technicalInfoButton.action = { [weak self] in
             self?.listener?.aboutOverviewRequestsRouteToTechnicalInformation()
         }

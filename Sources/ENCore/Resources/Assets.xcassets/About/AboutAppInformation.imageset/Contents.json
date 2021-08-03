@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "AboutAppInformation.png",
+      "filename" : "AboutAppInformation.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "AboutAppInformation-Dark.pdf",
       "idiom" : "universal"
     }
   ],

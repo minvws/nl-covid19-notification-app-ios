@@ -17,8 +17,9 @@ final class CardButton: Button {
     }
 
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
-        self.cardImageView = UIImageView(image: image?.imageFlippedForRightToLeftLayoutDirection())
-
+        self.image = image
+        self.cardImageView = UIImageView(image: image)
+        
         self.cardType = type
         super.init(theme: theme)
 
@@ -42,22 +43,29 @@ final class CardButton: Button {
         fatalError("init(title:theme:) has not been implemented. Use designated CardButton init instead.")
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        cardImageView.image = image
+    }
+    
     // MARK: - Private
 
     private let cardTitleLabel = Label(frame: .zero)
     private let subtitleTextLabel = Label(frame: .zero)
     private let cardImageView: UIImageView
     private let cardType: CardButton.CardType
+    
+    private let image: UIImage?
 
     private func build() {
         cardImageView.contentMode = .scaleAspectFit
         cardTitleLabel.numberOfLines = 0
         cardTitleLabel.font = theme.fonts.title3
-        cardTitleLabel.textColor = theme.colors.textDark
+        cardTitleLabel.textColor = theme.colors.cardBluePrimary
         subtitleTextLabel.numberOfLines = 0
         subtitleTextLabel.lineBreakMode = .byWordWrapping
         subtitleTextLabel.font = theme.fonts.body
-        subtitleTextLabel.textColor = theme.colors.textDark
+        subtitleTextLabel.textColor = theme.colors.cardBlueSecondary
 
         addSubview(cardTitleLabel)
         addSubview(subtitleTextLabel)
@@ -96,7 +104,7 @@ final class CardButton: Button {
                 maker.trailing.equalToSuperview()
             } else {
                 maker.leading.trailing.equalToSuperview().inset(16)
-                maker.top.equalTo(subtitleTextLabel.snp.bottom).offset(4)
+                maker.top.equalTo(subtitleTextLabel.snp.bottom).offset(20)
 
                 // Height constraint has a sightly lower priority to prevent
                 // constraint errors during device rotation

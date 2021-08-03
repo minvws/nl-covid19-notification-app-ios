@@ -73,7 +73,7 @@ private final class AppInformationView: View {
 
     override func build() {
         super.build()
-        technicalInformationButton.backgroundColor = theme.colors.lightOrange
+        technicalInformationButton.backgroundColor = theme.colors.cardBackgroundOrange
 
         addSubview(scrollableStackView)
 

@@ -3,6 +3,16 @@
     {
       "filename" : "AboutCallcenter.png",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "AboutCallcenter-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
