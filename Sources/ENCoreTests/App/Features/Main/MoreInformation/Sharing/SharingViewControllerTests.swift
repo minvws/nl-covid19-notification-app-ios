@@ -34,6 +34,6 @@ final class SharingViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_shareSheetViewController() {
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 }
