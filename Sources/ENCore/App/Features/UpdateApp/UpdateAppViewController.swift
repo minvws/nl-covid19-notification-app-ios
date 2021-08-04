@@ -189,7 +189,7 @@ private final class UpdateAppView: View {
 
         button.snp.makeConstraints { make in
             make.leading.trailing.equalTo(self.safeAreaLayoutGuide).inset(20)
-            make.height.equalTo(50)
+            make.height.greaterThanOrEqualTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: make)
         }

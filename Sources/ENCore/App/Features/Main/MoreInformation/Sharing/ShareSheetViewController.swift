@@ -185,7 +185,7 @@ final class ShareSheetView: View {
 
         button.snp.remakeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            maker.height.equalTo(50)
+            maker.height.greaterThanOrEqualTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }

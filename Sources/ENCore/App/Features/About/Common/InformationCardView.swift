@@ -17,13 +17,24 @@ final class InformationCardView: View {
         self.titleLabel = Label(frame: .zero)
         self.messageLabel = Label(frame: .zero)
         self.imageView = UIImageView(image: image)
+        self.titleStackView = UIStackView(frame: .zero)
+        
         super.init(theme: theme)
 
+        titleStackView.axis = .vertical
+        titleStackView.spacing = 8
+        titleStackView.accessibilityTraits = [.header]
+        titleStackView.isAccessibilityElement = true
+        titleStackView.accessibilityLabel = [pretitle?.string, title.string].compactMap({ $0 }).joined(separator: ". ")
+        
         pretitleLabel.attributedText = pretitle
+        pretitleLabel.isAccessibilityElement = false
         pretitleLabel.font = theme.fonts.subheadBold
         pretitleLabel.textColor = theme.colors.notified
+        pretitleLabel.isHidden = pretitle == nil
 
         titleLabel.attributedText = title
+        titleLabel.isAccessibilityElement = false
         titleLabel.font = theme.fonts.title3
         titleLabel.accessibilityTraits = .header
 
@@ -41,9 +52,11 @@ final class InformationCardView: View {
         messageLabel.numberOfLines = 0
 
         addSubview(imageView)
-        addSubview(pretitleLabel)
-        addSubview(titleLabel)
         addSubview(messageLabel)
+        addSubview(titleStackView)
+        
+        titleStackView.addArrangedSubview(pretitleLabel)
+        titleStackView.addArrangedSubview(titleLabel)
     }
 
     override func setupConstraints() {
@@ -60,14 +73,8 @@ final class InformationCardView: View {
             maker.height.equalTo(snp.width).multipliedBy(imageAspectRatio)
         }
 
-        pretitleLabel.snp.makeConstraints { maker in
-            let offset = pretitleLabel.attributedText?.length == 0 ? 0 : 8
-            maker.top.equalTo(imageView.snp.bottom).offset(offset)
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(pretitleLabel.snp.bottom).offset(8)
+        titleStackView.snp.makeConstraints { (maker) in
+            maker.top.equalTo(imageView.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
         }
 
@@ -85,4 +92,5 @@ final class InformationCardView: View {
     private let titleLabel: Label
     private let messageLabel: Label
     private let pretitleLabel: Label
+    private let titleStackView: UIStackView
 }

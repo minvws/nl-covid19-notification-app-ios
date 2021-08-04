@@ -155,7 +155,7 @@ private final class HelpView: View {
 
         acceptButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(20)
-            maker.height.equalTo(50)
+            maker.height.greaterThanOrEqualTo(50)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
     }
