@@ -34,7 +34,7 @@ final class InformationCardView: View {
         pretitleLabel.isHidden = pretitle == nil
 
         titleLabel.attributedText = title
-        pretitleLabel.isAccessibilityElement = false
+        titleLabel.isAccessibilityElement = false
         titleLabel.font = theme.fonts.title3
         titleLabel.accessibilityTraits = .header
 
