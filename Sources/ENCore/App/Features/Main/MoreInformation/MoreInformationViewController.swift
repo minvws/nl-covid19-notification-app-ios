@@ -205,7 +205,8 @@ private final class MoreInformationView: View {
         versionLabel.font = theme.fonts.footnote
         versionLabel.textColor = theme.colors.gray
         versionLabel.textAlignment = .center
-
+        versionLabel.numberOfLines = 0
+        
         addSubview(stackView)
         addSubview(lastTEKProcessingDateLabel)
         addSubview(versionLabel)
