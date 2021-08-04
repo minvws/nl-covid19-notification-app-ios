@@ -77,17 +77,6 @@ final class InformationCardView: View {
             maker.top.equalTo(imageView.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
         }
-        
-//        pretitleLabel.snp.makeConstraints { maker in
-//            let offset = pretitleLabel.attributedText?.length == 0 ? 0 : 8
-//            maker.top.equalTo(imageView.snp.bottom).offset(offset)
-//            maker.leading.trailing.equalToSuperview().inset(16)
-//        }
-//
-//        titleLabel.snp.makeConstraints { maker in
-//            maker.top.equalTo(pretitleLabel.snp.bottom).offset(8)
-//            maker.leading.trailing.equalToSuperview().inset(16)
-//        }
 
         messageLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(16)
