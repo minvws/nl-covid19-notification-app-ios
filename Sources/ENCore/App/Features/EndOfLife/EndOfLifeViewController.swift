@@ -131,7 +131,7 @@ private final class EndOfLifeView: View {
         }
         actionButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.height.equalTo(50)
+            maker.height.greaterThanOrEqualTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
