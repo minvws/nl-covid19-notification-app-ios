@@ -223,7 +223,7 @@ final class MessageManager: MessageManaging, Logging {
     private func statusNotifiedDaysAgo(withExposureDate exposureDate: Date) -> String {
         let now = currentDate()
         let days = now.days(sinceDate: exposureDate) ?? 0
-        return String.statusNotifiedDaysAgo(days: days)
+        return String.statusNotifiedDaysAgo(days: days, withLocaleIdentifier: .treatmentPerspectiveLanguage)
     }
 
     private let storageController: StorageControlling
