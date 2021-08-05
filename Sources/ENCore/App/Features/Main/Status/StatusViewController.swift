@@ -454,7 +454,8 @@ private final class StatusView: View {
 
         sceneImageView.isHidden = !viewModel.showScene
         cloudsView.isHidden = !(viewModel.showSky && !theme.darkModeEnabled)
-        starsView.isHidden = !(viewModel.showSky && theme.darkModeEnabled)
+        starsView.isHidden = !(viewModel.showSky && theme.darkModeEnabled && viewModel.showScene)
+        gradientLayer.isHidden = theme.darkModeEnabled && starsView.isHidden
         
         evaluateHeight()
         evaluateImageSize()
