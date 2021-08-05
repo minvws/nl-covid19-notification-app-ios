@@ -25,10 +25,10 @@ public final class Localization {
 
     /// Get the Localized string for the current bundle.
     /// If the key has not been localized this will fallback to the Base project strings
-    public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = []) -> String {
-        if let override = localization() {
+    public static func string(for key: String, comment: String = "", _ arguments: [CVarArg] = [], forceLocale localeIdentifier: String? = localization()) -> String {
+        if let localizationOverride = localeIdentifier {
             guard
-                let path = Bundle(for: Localization.self).path(forResource: override, ofType: "lproj"),
+                let path = Bundle(for: Localization.self).path(forResource: localizationOverride, ofType: "lproj"),
                 let bundle = Bundle(path: path) else {
                 let value = NSLocalizedString(key, bundle: Bundle(for: Localization.self), comment: comment)
                 return (arguments.count > 0) ? String(format: value, arguments: arguments) : value
@@ -357,11 +357,22 @@ extension String {
     static var statusActiveDescription: String { return Localization.string(for: "status.active.description") }
     static var statusPausedCardTitle: String { return Localization.string(for: "status.appState.card.paused.title") }
 
-    static func statusNotifiedDaysAgo(days: Int) -> String {
+    static func statusNotifiedDaysAgo(days: Int, withLocaleIdentifier localeIdentifier: String? = .currentLanguageIdentifier) -> String {
+        var daysString = "\(days)"
+        
+        // Translate "days" number
+        if let localeIdentifier = localeIdentifier {
+            let formatter = NumberFormatter()
+            formatter.locale = Locale(identifier: localeIdentifier)
+            if let translatedDays = formatter.string(from: NSNumber(value: days)) {
+                daysString = translatedDays
+            }
+        }
+        
         switch days {
-        case 0: return Localization.string(for: "status.notified.today")
-        case 1: return Localization.string(for: "status.notified.days_ago_one", ["\(days)"])
-        default: return Localization.string(for: "status.notified.days_ago_other", ["\(days)"])
+        case 0: return Localization.string(for: "status.notified.today", forceLocale: localeIdentifier)
+        case 1: return Localization.string(for: "status.notified.days_ago_one", [daysString], forceLocale: localeIdentifier)
+        default: return Localization.string(for: "status.notified.days_ago_other", [daysString], forceLocale: localeIdentifier)
         }
     }
 

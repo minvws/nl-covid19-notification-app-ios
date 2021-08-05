@@ -99,7 +99,7 @@ final class WebViewErrorView: View {
 
         actionButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
-            maker.height.equalTo(50)
+            maker.height.greaterThanOrEqualTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }

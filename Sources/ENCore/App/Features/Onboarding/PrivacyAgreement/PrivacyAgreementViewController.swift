@@ -162,7 +162,7 @@ private final class PrivacyAgreementView: View {
         }
 
         nextButton.snp.makeConstraints { maker in
-            maker.height.equalTo(50)
+            maker.height.greaterThanOrEqualTo(50)
         }
     }
 
