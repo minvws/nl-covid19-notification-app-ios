@@ -11,7 +11,7 @@ import UIKit
 
 final class OnboardingStep: NSObject {
     enum Illustration {
-        case image(named: String)
+        case image(_ image: UIImage?)
         case animation(named: String, repeatFromFrame: Int? = nil, defaultFrame: CGFloat? = nil)
     }
 
@@ -44,13 +44,13 @@ final class OnboardingStep: NSObject {
 
         attributedTitleString.append(.makeFromHtml(text: title,
                                                    font: theme.fonts.title2,
-                                                   textColor: .black,
+                                                   textColor: theme.colors.textPrimary,
                                                    textAlignment: Localization.isRTL ? .right : .left))
 
         self.attributedTitle = attributedTitleString
         self.attributedContent = .makeFromHtml(text: content,
                                                font: theme.fonts.body,
-                                               textColor: theme.colors.gray,
+                                               textColor: theme.colors.textSecondary,
                                                textAlignment: Localization.isRTL ? .right : .left)
     }
 }

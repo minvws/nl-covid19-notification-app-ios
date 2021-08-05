@@ -148,7 +148,7 @@ private final class SettingsView: View {
 
     lazy var separatorView: View = {
         let view = View(theme: theme)
-        view.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1)
+        view.backgroundColor = theme.colors.divider
         return view
     }()
 
@@ -157,6 +157,7 @@ private final class SettingsView: View {
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
         label.text = .moreInformationSettingsPauseTitle
+        label.textColor = theme.colors.textPrimary
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -168,6 +169,7 @@ private final class SettingsView: View {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationSettingsPauseDescriptionShort
+        label.textColor = theme.colors.textSecondary
         return label
     }()
 
@@ -205,6 +207,7 @@ private final class SettingsView: View {
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
         label.text = .moreInformationSettingsMobileDataParagraphTitle
+        label.textColor = theme.colors.textPrimary
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -216,6 +219,7 @@ private final class SettingsView: View {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationSettingsDescription
+        label.textColor = theme.colors.textSecondary
         return label
     }()
 
@@ -248,6 +252,8 @@ private final class SettingsView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
         scrollableStackView.stackViewBottomMargin = 32

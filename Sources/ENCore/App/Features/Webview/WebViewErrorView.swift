@@ -47,7 +47,7 @@ final class WebViewErrorView: View {
         let label = Label()
         label.text = .webviewLoadingFailedSubTitle
         label.font = theme.fonts.body
-        label.textColor = theme.colors.gray
+        label.textColor = theme.colors.textSecondary
         label.accessibilityTraits = .staticText
         label.numberOfLines = 0
         return label

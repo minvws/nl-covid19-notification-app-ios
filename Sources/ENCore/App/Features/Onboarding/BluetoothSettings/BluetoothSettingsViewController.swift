@@ -82,17 +82,17 @@ final class BluetoothSettingsViewController: TableViewController, BluetoothSetti
 
     private lazy var settings: [BluetoothSettingsModel] = [
         BluetoothSettingsModel(index: .enableBluetoothSettingIndexRow1,
-                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow1, font: theme.fonts.body, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow1, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: Localization.isRTL ? .right : .left),
                                settingsTitle: .enableBluetoothSettingTitleSettingRow1,
                                image: .settingsIcon,
                                showDisclosure: false),
         BluetoothSettingsModel(index: .enableBluetoothSettingIndexRow2,
-                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow2, font: theme.fonts.body, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow2, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: Localization.isRTL ? .right : .left),
                                settingsTitle: .enableBluetoothSettingTitleSettingRow2,
                                image: .bluetoothIcon,
                                showDisclosure: true),
         BluetoothSettingsModel(index: .enableBluetoothSettingIndexRow3,
-                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow3, font: theme.fonts.body, textColor: .black, textAlignment: Localization.isRTL ? .right : .left),
+                               title: .makeFromHtml(text: .enableBluetoothSettingTitleRow3, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: Localization.isRTL ? .right : .left),
                                settingsTitle: .enableBluetoothSettingTitleSettingRow3,
                                image: .switchIcon,
                                showDisclosure: false)

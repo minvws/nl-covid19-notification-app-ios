@@ -141,6 +141,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         label.isUserInteractionEnabled = true
         label.font = theme.fonts.title3
         label.text = .moreInformationKeySharingCoronaTestHeaderTitle
+        label.textColor = theme.colors.textPrimary
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -151,6 +152,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = .moreInformationKeySharingCoronaTestHeaderContent
+        label.textColor = theme.colors.textSecondary
         label.font = theme.fonts.body
         return label
     }()

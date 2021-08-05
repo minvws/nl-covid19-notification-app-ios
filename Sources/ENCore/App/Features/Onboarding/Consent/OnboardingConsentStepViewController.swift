@@ -194,7 +194,7 @@ final class OnboardingConsentView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.accessibilityTraits = .header
+        label.accessibilityTraits = .header        
         return label
     }()
 
@@ -317,7 +317,7 @@ final class OnboardingConsentView: View {
             animationView.isHidden = true
             imageView.isHidden = false
         case let .animation(named: name, _, _):
-            animationView.animation = LottieAnimation.named(name)
+            animationView.animation = LottieAnimation.named(theme.appearanceAdjustedAnimationName(name))
             animationView.isHidden = false
             imageView.isHidden = true
             playAnimation()

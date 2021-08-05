@@ -77,10 +77,13 @@ final class MoreInformationCell: UIControl, Themeable {
     private func build() {
 
         addTarget(self, action: #selector(didTap), for: .touchUpInside)
-        borderView.backgroundColor = UIColor(red: 0.933, green: 0.933, blue: 0.933, alpha: 1)
+        borderView.backgroundColor = theme.colors.divider
 
         titleLabel.font = theme.fonts.headline
+        titleLabel.textColor = theme.colors.textPrimary
+        
         subtitleLabel.font = theme.fonts.subhead
+        subtitleLabel.textColor = theme.colors.textSecondary
 
         titleLabel.numberOfLines = 0
         subtitleLabel.numberOfLines = 0

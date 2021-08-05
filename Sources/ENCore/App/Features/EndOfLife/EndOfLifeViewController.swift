@@ -65,7 +65,7 @@ private final class EndOfLifeView: View {
     // MARK: - Init
 
     override init(theme: Theme) {
-        self.headerImageView = UIImageView(image: Image.appInformationNotify)
+        self.headerImageView = UIImageView(image: Image.illustrationNotification)
         self.titleLabel = Label()
         self.descriptionLabel = Label()
         self.actionButton = Button(title: .learnMore, theme: theme)

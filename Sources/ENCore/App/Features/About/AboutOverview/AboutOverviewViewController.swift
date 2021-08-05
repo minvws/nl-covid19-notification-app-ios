@@ -65,7 +65,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         cell.textLabel?.text = questions[indexPath.row].title
         cell.textLabel?.numberOfLines = 0
         cell.textLabel?.font = theme.fonts.body
-        cell.textLabel?.textColor = theme.colors.gray
+        cell.textLabel?.textColor = theme.colors.textSecondary
         cell.textLabel?.accessibilityTraits = .header
 
         cell.accessoryType = .disclosureIndicator
@@ -107,13 +107,13 @@ final class AboutOverviewViewController: TableViewController, Logging {
         headerView.titleLabel.text = String.moreInformationAboutTitle
 
         let appInfoButton = CardButton(title: .aboutAppInformationTitle, subtitle: .aboutAppInformationDescription, image: UIImage.aboutAppInformation, type: .long, theme: theme)
-        appInfoButton.backgroundColor = theme.colors.headerBackgroundBlue
+        appInfoButton.backgroundColor = theme.colors.cardBackgroundBlue
         appInfoButton.action = { [weak self] in
             self?.listener?.aboutOverviewRequestsRouteToAppInformation()
         }
 
         let technicalInfoButton = CardButton(title: .aboutTechnicalInformationTitle, subtitle: .aboutTechnicalInformationDescription, image: UIImage.aboutTechnicalInformation, theme: theme)
-        technicalInfoButton.backgroundColor = theme.colors.lightOrange
+        technicalInfoButton.backgroundColor = theme.colors.cardBackgroundOrange
         technicalInfoButton.action = { [weak self] in
             self?.listener?.aboutOverviewRequestsRouteToTechnicalInformation()
         }
@@ -128,7 +128,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         headerView.sectionHeaderLabel.text = aboutManager.aboutSection.title
 
         let websiteButton = CardButton(title: .aboutWebsiteTitle, subtitle: .aboutWebsiteSubtitle, image: UIImage.aboutWebsite, theme: theme)
-        websiteButton.backgroundColor = theme.colors.headerBackgroundBlue
+        websiteButton.backgroundColor = theme.colors.cardBackgroundBlue
         websiteButton.action = { [weak self] in
             self?.aboutManager.open(.aboutWebsiteLink)
         }
@@ -136,7 +136,7 @@ final class AboutOverviewViewController: TableViewController, Logging {
         headerView.addSections([websiteButton])
 
         let helpdeskButton = CardButton(title: .aboutHelpdeskTitle, subtitle: .aboutHelpdeskSubtitle, image: UIImage.aboutHelpdesk, theme: theme)
-        helpdeskButton.backgroundColor = theme.colors.headerBackgroundBlue
+        helpdeskButton.backgroundColor = theme.colors.cardBackgroundBlue
         helpdeskButton.action = { [weak self] in
             let phoneNumberLink: String = .phoneNumberLink(from: .helpDeskPhoneNumber)
             self?.aboutManager.open(phoneNumberLink)

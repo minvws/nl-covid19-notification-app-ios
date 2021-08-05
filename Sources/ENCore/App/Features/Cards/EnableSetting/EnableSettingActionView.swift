@@ -75,10 +75,7 @@ final class EnableSettingActionView: View {
             contentView.addSubview(switchView)
         }
 
-        contentView.backgroundColor = .init(red: 242.0 / 255.0,
-                                            green: 242.0 / 255.0,
-                                            blue: 247.0 / 255.0,
-                                            alpha: 1.0)
+        contentView.backgroundColor = theme.colors.settingsStepBackground
 
         contentView.layer.masksToBounds = true
         contentView.layer.cornerRadius = 8

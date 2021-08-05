@@ -40,12 +40,12 @@ final class UpdateOperatingSystemViewController: ViewController, EnableSettingLi
         internalView.titleLabel.attributedText = .makeFromHtml(
             text: .updateSoftwareOSTitle,
             font: theme.fonts.title2,
-            textColor: .black,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         internalView.contentLabel.attributedText = .makeFromHtml(
             text: .updateSoftwareOSDescription,
             font: theme.fonts.body,
-            textColor: theme.colors.gray,
+            textColor: theme.colors.textSecondary,
             textAlignment: Localization.isRTL ? .right : .left)
         internalView.button.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
 

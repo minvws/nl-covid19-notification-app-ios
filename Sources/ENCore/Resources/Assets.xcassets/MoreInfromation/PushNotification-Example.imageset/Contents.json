@@ -3,6 +3,16 @@
     {
       "filename" : "PushNotification-Example.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "PushNotification-Example-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

@@ -97,7 +97,8 @@ private final class ThankYouView: View {
          exposureConfirmationKey: ExposureConfirmationKey,
          featureFlagController: FeatureFlagControlling) {
         let config = InfoViewConfig(actionButtonTitle: .close,
-                                    headerImage: .thankYouHeader)
+                                    headerImage: .thankYouHeader,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground)
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 8)
         self.exposureConfirmationKey = exposureConfirmationKey
         self.featureFlagController = featureFlagController
@@ -114,6 +115,7 @@ private final class ThankYouView: View {
         footer.append(NSAttributedString.make(
             text: String(format: .moreInformationThankYouSectionFooter, ""),
             font: theme.fonts.bodyBold,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left,
             lineHeight: 5))
 
@@ -121,6 +123,7 @@ private final class ThankYouView: View {
             NSAttributedString.make(
                 text: String(exposureConfirmationKey.key.asGGDkey),
                 font: theme.fonts.body,
+                textColor: theme.colors.textPrimary,
                 textAlignment: Localization.isRTL ? .right : .left))
 
         var string = [NSAttributedString]()
@@ -151,7 +154,7 @@ private final class ThankYouView: View {
                 ? .moreInformationKeySharingThankYouConfirmation
                 : .moreInformationThankYouInfo,
             font: theme.fonts.subhead,
-            textColor: theme.colors.gray,
+            textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         return InfoSectionCalloutView(theme: theme, content: string)
     }

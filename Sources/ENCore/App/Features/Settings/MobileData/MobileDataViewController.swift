@@ -81,6 +81,7 @@ private final class MobileDataView: View {
         let config = InfoViewConfig(actionButtonTitle: self.model.actionTitle,
                                     secondaryButtonTitle: nil,
                                     headerImage: nil,
+                                    headerBackgroundViewColor: theme.colors.viewControllerBackground,
                                     stickyButtons: true)
         infoView = InfoView(theme: theme, config: config, itemSpacing: 15)
         infoView.showHeader = false
@@ -92,6 +93,8 @@ private final class MobileDataView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         infoView.addSections([
             titleLabel,
             settingsDescription
@@ -126,7 +129,7 @@ private final class MobileDataView: View {
                             content: [
                                 .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
                                               font: theme.fonts.largeTitle,
-                                              textColor: theme.colors.gray,
+                                              textColor: theme.colors.textPrimary,
                                               textAlignment: Localization.isRTL ? .right : .left)
                             ],
                             contentAccessibilityTraits: .header)
@@ -135,6 +138,6 @@ private final class MobileDataView: View {
     private lazy var settingsDescription: View = {
         InfoSectionTextView(theme: theme,
                             title: "",
-                            content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.gray)])
+                            content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary)])
     }()
 }

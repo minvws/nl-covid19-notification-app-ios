@@ -33,7 +33,7 @@ final class CardButtonTests: TestCase {
                                     image: UIImage.aboutAppInformation,
                                     type: .long,
                                     theme: theme)
-        longButton.backgroundColor = theme.colors.headerBackgroundBlue
+        longButton.backgroundColor = theme.colors.cardBackgroundBlue
         assertSnapshot(matching: wrapped(cardButton: longButton), as: .image())
     }
 

@@ -52,6 +52,7 @@ final class HelpTableViewCell: UITableViewCell {
 
     func build() {
         separatorView.backgroundColor = theme.colors.tertiary
+        backgroundColor = theme.colors.viewControllerBackground
         addSubview(separatorView)
     }
 

@@ -87,6 +87,7 @@ private final class PauseConfirmationView: View {
         let label = Label(frame: .zero)
         label.font = theme.fonts.title3
         label.text = .moreInformationSettingsPauseSubtitle
+        label.textColor = theme.colors.textPrimary
         label.numberOfLines = 0
         label.accessibilityTraits = .header
         return label
@@ -96,6 +97,7 @@ private final class PauseConfirmationView: View {
         let label = Label(frame: .zero)
         label.font = theme.fonts.body
         label.text = .moreInformationSettingsPauseDescription
+        label.textColor = theme.colors.textSecondary
         label.numberOfLines = 0
         return label
     }()
@@ -130,6 +132,8 @@ private final class PauseConfirmationView: View {
     override func build() {
         super.build()
 
+        backgroundColor = theme.colors.viewControllerBackground
+        
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
         scrollableStackView.addSections([

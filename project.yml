@@ -67,8 +67,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
-          - UIInterfaceOrientationLandscapeRight
-        UIUserInterfaceStyle: Light
+          - UIInterfaceOrientationLandscapeRight        
         UIViewControllerBasedStatusBarAppearance: true
         ENDeveloperRegion: TEST_NL_TEST
         ENAPIVersion: 2

@@ -85,21 +85,21 @@ class Button: UIButton, Themeable {
         switch style {
         case .primary:
             if isEnabled {
-                backgroundColor = theme.colors.primary
+                backgroundColor = theme.colors.primaryButton
                 setTitleColor(.white, for: .normal)
             } else {
                 backgroundColor = theme.colors.tertiary
-                setTitleColor(.gray, for: .normal)
+                setTitleColor(theme.colors.textButtonTertiary, for: .normal)
             }
         case .secondary:
             backgroundColor = theme.colors.tertiary
-            setTitleColor(theme.colors.primary, for: .normal)
+            setTitleColor(theme.colors.textButtonPrimary, for: .normal)
         case .secondaryLight:
             backgroundColor = theme.colors.secondaryLight
-            setTitleColor(theme.colors.primary, for: .normal)
+            setTitleColor(theme.colors.textButtonPrimary, for: .normal)
         case .tertiary:
             backgroundColor = theme.colors.tertiary
-            setTitleColor(.black, for: .normal)
+            setTitleColor(theme.colors.textPrimary, for: .normal)
         case .warning:
             backgroundColor = theme.colors.warning
             setTitleColor(.white, for: .normal)

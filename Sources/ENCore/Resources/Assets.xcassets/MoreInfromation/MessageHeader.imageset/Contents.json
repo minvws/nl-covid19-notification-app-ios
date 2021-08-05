@@ -3,6 +3,16 @@
     {
       "filename" : "MessageHeader.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "MessageHeader-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

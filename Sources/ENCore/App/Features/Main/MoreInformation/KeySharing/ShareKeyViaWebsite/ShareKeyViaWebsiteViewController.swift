@@ -316,7 +316,7 @@ private final class ShareKeyViaWebsiteView: View {
     private var content: NSAttributedString {
         let header = NSAttributedString(string: .moreInformationKeySharingCoronaTestTitle,
                                         attributes: [
-                                            NSAttributedString.Key.foregroundColor: theme.colors.gray,
+                                            NSAttributedString.Key.foregroundColor: theme.colors.textSecondary,
                                             NSAttributedString.Key.font: theme.fonts.body
                                         ])
         let howDoesItWork = NSAttributedString(string: .moreInformationKeySharingCoronaTestHowDoesItWork,
@@ -341,14 +341,13 @@ private final class ShareKeyViaWebsiteView: View {
     private lazy var stepStackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        stackView.spacing = 2
         return stackView
     }()
     
     private lazy var shareYourCodesLoading: InfoSectionStepView = {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep1Title,
-                            stepImage: .moreInformationStep1,
+                            stepCount: 1,
                             loadingIndicatorTitle: .moreInformationInfectedLoading)
     }()
     
@@ -356,7 +355,7 @@ private final class ShareKeyViaWebsiteView: View {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep1Title,
                             description: .moreInformationInfectedError,
-                            stepImage: .moreInformationStep1,
+                            stepCount: 1,
                             buttonTitle: .retry,
                             disabledButtonTitle: .retry,
                             buttonActionHandler: { [weak self] in
@@ -367,7 +366,7 @@ private final class ShareKeyViaWebsiteView: View {
     private lazy var shareYourCodes: InfoSectionStepView = {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep1Title,
-                            stepImage: .moreInformationStep1,
+                            stepCount: 1,
                             buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
                             disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Done,
                             buttonActionHandler: { [weak self] in
@@ -378,8 +377,7 @@ private final class ShareKeyViaWebsiteView: View {
     private lazy var shareYourCodesDone: InfoSectionStepView = {
         let view = InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep1Title,
-                            stepImage: .moreInformationStep1,
-                            disabledStepImage: .moreInformationStep1Gray,
+                            stepCount: 1,
                             buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
                             disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Done,
                             buttonActionHandler: { [weak self] in
@@ -393,8 +391,7 @@ private final class ShareKeyViaWebsiteView: View {
     private lazy var shareYourCodesNotPossible: InfoSectionStepView = {
         let view = InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep1Title,
-                            stepImage: .moreInformationStep1,
-                            disabledStepImage: .moreInformationStep1Gray,
+                            stepCount: 1,
                             buttonTitle: .moreInformationKeySharingCoronaTestStep1Button,
                             disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Button,
                             buttonActionHandler: { [weak self] in
@@ -409,8 +406,7 @@ private final class ShareKeyViaWebsiteView: View {
     private lazy var controlCode: InfoSectionDynamicCalloutView = {
         InfoSectionDynamicCalloutView(theme: theme,
                                       title: .moreInformationKeySharingCoronaTestStep2Title,
-                                      stepImage: .moreInformationStep2,
-                                      disabledStepImage: .moreInformationStep2Gray,
+                                      stepCount: 2,
                                       initialState: .disabled)
     }()
     
@@ -420,8 +416,7 @@ private final class ShareKeyViaWebsiteView: View {
         
         return InfoSectionStepView(theme: theme,
                                    title: .moreInformationKeySharingCoronaTestStep3Title,
-                                   stepImage: .moreInformationStep3,
-                                   disabledStepImage: .moreInformationStep3Gray,
+                                   stepCount: 3,
                                    buttonTitle: buttonTitle,
                                    buttonActionHandler: buttonActionHandler,
                                    isDisabled: disabled)
@@ -431,8 +426,7 @@ private final class ShareKeyViaWebsiteView: View {
         InfoSectionStepView(theme: theme,
                             title: .moreInformationKeySharingCoronaTestStep4Title,
                             description: .moreInformationKeySharingCoronaTestStep4Content,
-                            stepImage: .moreInformationStep4,
-                            disabledStepImage: .moreInformationStep4Gray,
+                            stepCount: 4,
                             isLastStep: true,
                             isDisabled: disabled)
     }
@@ -454,6 +448,8 @@ private final class ShareKeyViaWebsiteView: View {
     
     override func build() {
         super.build()
+        
+        backgroundColor = theme.colors.viewControllerBackground
         
         updateContentView()
         

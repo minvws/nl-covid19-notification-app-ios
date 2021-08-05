@@ -18,7 +18,7 @@ final class OnboardingConsentStep: NSObject {
 
     enum Illustration {
         case none
-        case image(image: UIImage?)
+        case image(_ image: UIImage?)
         case animation(named: String, repeatFromFrame: Int? = nil, defaultFrame: CGFloat? = nil)
     }
 
@@ -43,7 +43,7 @@ final class OnboardingConsentStep: NSObject {
                      secondaryButtonTitle: String?,
                      hasNavigationBarSkipButton: Bool) {
 
-        let attributedContent = NSAttributedString.makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.gray, textAlignment: Localization.isRTL ? .right : .left)
+        let attributedContent = NSAttributedString.makeFromHtml(text: content, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.isRTL ? .right : .left)
 
         self.init(step: step,
                   theme: theme,
@@ -67,7 +67,7 @@ final class OnboardingConsentStep: NSObject {
 
         let attributedContent = NSMutableAttributedString(attributedString: .makeFromHtml(text: content + "<br>",
                                                                                           font: theme.fonts.body,
-                                                                                          textColor: theme.colors.gray,
+                                                                                          textColor: theme.colors.textSecondary,
                                                                                           textAlignment: Localization.isRTL ? .right : .left))
 
         for bullet in NSAttributedString.bulletList(bulletItems, theme: theme, font: theme.fonts.body) {
@@ -100,7 +100,7 @@ final class OnboardingConsentStep: NSObject {
         self.secondaryButtonTitle = secondaryButtonTitle
         self.hasNavigationBarSkipButton = hasNavigationBarSkipButton
 
-        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: .black, textAlignment: Localization.isRTL ? .right : .left)
+        self.attributedTitle = .makeFromHtml(text: title, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.isRTL ? .right : .left)
         self.attributedContent = attributedContent
     }
 }

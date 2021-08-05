@@ -28,23 +28,14 @@ extension UIImage {
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
     static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
-    static var infected: UIImage? { return Image.named("Infected") }
-    static var moreInformationStep1: UIImage? { return Image.named("MoreInformation.Step1") }
-    static var moreInformationStep1Gray: UIImage? { return Image.named("MoreInformation.Step1-grayscale") }
-    static var moreInformationStep2: UIImage? { return Image.named("MoreInformation.Step2") }
-    static var moreInformationStep2Gray: UIImage? { return Image.named("MoreInformation.Step2-grayscale") }
-    static var moreInformationStep3: UIImage? { return Image.named("MoreInformation.Step3") }
-    static var moreInformationStep3Gray: UIImage? { return Image.named("MoreInformation.Step3-grayscale") }
-    static var moreInformationStep4: UIImage? { return Image.named("MoreInformation.Step4") }
-    static var moreInformationStep4Gray: UIImage? { return Image.named("MoreInformation.Step4-grayscale") }
+    static var infected: UIImage? { return Image.named("Infected") }    
     static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }
     static var coronaTestHeader: UIImage? { return Image.named("CoronatestHeader") }
-    static var statusClouds: UIImage? { return Image.named("StatusClouds") }
+    static var statusStars: UIImage? { return Image.named("StatusStars") }
     static var statusCloud1: UIImage? { return Image.named("StatusCloud1") }
-    static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }
-    static var statusScene: UIImage? { return Image.named("StatusScene") }
+    static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }    
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
     static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
     static var statusIconInactive: UIImage? { return Image.named("StatusIconInactive") }
@@ -61,11 +52,14 @@ extension UIImage {
     static var shareApp: UIImage? { return Image.named("ShareApp") }
     static var updateApp: UIImage? { return Image.named("UpdateApp") }
     static var info: UIImage? { return Image.named("Info") }
-    static var appInformationProtect: UIImage? { return Image.named("AppInfoProtect") }
-    static var appInformationNotify: UIImage? { return Image.named("AppInfoNotify") }
-    static var appInformationBluetooth: UIImage? { return Image.named("AppInfoBluetooth") }
-    static var appInformationExampleCycle: UIImage? { return Image.named("AppInfoCycleExample") }
-    static var appInformationExampleTrain: UIImage? { return Image.named("AppInfoTrainExample") }
+    static var illustrationSitWalkCycle: UIImage? { return Image.named("IllustrationSitWalkCycle") }
+    static var illustrationNotification: UIImage? { return Image.named("IllustrationNotification") }
+    static var illustrationBluetooth: UIImage? { return Image.named("IllustrationBluetooth") }
+    static var illustrationCycle: UIImage? { return Image.named("IllustrationCycle") }
+    static var illustrationTrain: UIImage? { return Image.named("IllustrationTrain") }
+    static var illustrationConnections: UIImage? { return Image.named("IllustrationConnections") }
+    static var illustrationCheckmark: UIImage? { return Image.named("IllustrationCheckmark") }
+    
     static var technicalInformationStep1: UIImage? { return Image.named("TechnicalInfoStep1") }
     static var technicalInformationStep2: UIImage? { return Image.named("TechnicalInfoStep2") }
     static var technicalInformationStep3: UIImage? { return Image.named("TechnicalInfoStep3") }

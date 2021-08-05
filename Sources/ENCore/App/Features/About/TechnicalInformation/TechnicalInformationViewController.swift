@@ -83,7 +83,7 @@ private final class TechnicalInformationView: View {
 
     override func build() {
         super.build()
-        appInfoButton.backgroundColor = theme.colors.headerBackgroundBlue
+        appInfoButton.backgroundColor = theme.colors.cardBackgroundBlue
         githubCardButton.backgroundColor = theme.colors.tertiary
 
         tableViewWrapperView.addSubview(tableView)

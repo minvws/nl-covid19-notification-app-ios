@@ -97,6 +97,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         updateExposureStateView()
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        // Listen for dark mode change to load dark or light animation
+        refreshCurrentState()
+    }
+    
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
@@ -169,7 +176,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         
         switch (status.activeState, notifiedState) {
         case (.active, .notNotified):
-            statusViewModel = .activeWithNotNotified(showScene: !isLandscape && announcementCardTypes.isEmpty)
+            statusViewModel = .activeWithNotNotified(theme: theme, showScene: !isLandscape && announcementCardTypes.isEmpty)
         case let (.inactive(.paused(pauseEndDate)), .notNotified):
             statusViewModel = .pausedWithNotNotified(theme: theme, pauseEndDate: pauseEndDate)
         case let (.active, .notified(date)):
@@ -268,6 +275,7 @@ private final class StatusView: View {
 
     private let gradientLayer = CAGradientLayer()
     private lazy var cloudsView = CloudView(theme: theme)
+    private lazy var starsView = UIImageView(image: .statusStars)
     private lazy var sceneImageView = StatusAnimationView(theme: theme)
     private lazy var sceneImageViewContainer = UIView()
 
@@ -293,6 +301,7 @@ private final class StatusView: View {
         /// Initially hide the status. It will become visible after the first update
         showStatus(false)
 
+        starsView.contentMode = .scaleAspectFill
         contentContainer.axis = .vertical
         contentContainer.spacing = 32
         contentContainer.alignment = .center
@@ -305,12 +314,13 @@ private final class StatusView: View {
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
         titleLabel.accessibilityTraits = .header
+        titleLabel.textColor = theme.colors.textPrimary
 
         descriptionLabel.adjustsFontForContentSizeCategory = true
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textAlignment = .center
-        descriptionLabel.textColor = theme.colors.gray
+        descriptionLabel.textColor = theme.colors.textSecondary
 
         buttonContainer.axis = .vertical
         buttonContainer.spacing = 16
@@ -327,6 +337,7 @@ private final class StatusView: View {
         bottomCardContainer.addArrangedSubview(cardView)
 
         addSubview(cloudsView)
+        addSubview(starsView)
         addSubview(sceneImageViewContainer)
         addSubview(contentContainer)
         addSubview(bottomCardContainer)
@@ -339,6 +350,7 @@ private final class StatusView: View {
         super.setupConstraints()
 
         cloudsView.translatesAutoresizingMaskIntoConstraints = false
+        starsView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageView.translatesAutoresizingMaskIntoConstraints = false
         sceneImageViewContainer.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -349,6 +361,10 @@ private final class StatusView: View {
         sceneImageHeightConstraint = sceneImageView.heightAnchor.constraint(equalToConstant: UIScreen.main.bounds.width * sceneImageAspectRatio)
         sceneImageHeightConstraint?.isActive = true
 
+        starsView.snp.makeConstraints { maker in
+            maker.bottom.equalTo(iconView.snp.centerY)
+            maker.leading.trailing.equalTo(stretchGuide).inset(20)
+        }
         cloudsView.snp.makeConstraints { maker in
             maker.centerY.equalTo(iconView.snp.centerY)
             maker.leading.trailing.equalTo(stretchGuide)
@@ -431,11 +447,15 @@ private final class StatusView: View {
         }
         buttonContainer.isHidden = viewModel.buttons.isEmpty
 
-        gradientLayer.colors = [theme.colors[keyPath: viewModel.gradientColor].cgColor, UIColor.white.withAlphaComponent(0).cgColor]
+        gradientLayer.colors = [
+            theme.colors[keyPath: viewModel.gradientTopColor].cgColor,
+            theme.colors[keyPath: viewModel.gradientBottomColor].cgColor,
+        ]
 
         sceneImageView.isHidden = !viewModel.showScene
-        cloudsView.isHidden = !viewModel.showClouds
-
+        cloudsView.isHidden = !(viewModel.showSky && !theme.darkModeEnabled)
+        starsView.isHidden = !(viewModel.showSky && theme.darkModeEnabled)
+        
         evaluateHeight()
         evaluateImageSize()
         
@@ -505,10 +525,8 @@ private final class StatusAnimationView: View {
     override func build() {
         super.build()
         backgroundColor = .clear
-
-        animationView.animation = LottieAnimation.named("statusactive")
-        animationView.loopMode = .playOnce
-
+        
+        loadAnimation()
         playAnimation()
 
         addSubview(animationView)
@@ -520,6 +538,16 @@ private final class StatusAnimationView: View {
         animationView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        loadAnimation()
+    }
+    
+    private func loadAnimation() {
+        animationView.animation = LottieAnimation.named(theme.appearanceAdjustedAnimationName("statusactive"))
+        animationView.loopMode = .playOnce
     }
 
     // MARK: - Private

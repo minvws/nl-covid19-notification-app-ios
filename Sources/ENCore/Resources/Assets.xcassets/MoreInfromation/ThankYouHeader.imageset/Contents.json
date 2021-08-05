@@ -3,6 +3,16 @@
     {
       "filename" : "ThankYouHeader.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "ThankYouHeader-Dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
