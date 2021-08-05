@@ -89,7 +89,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     @available(iOS 13, *)
     func handle(task: BackgroundTask) {
 
-        guard let task = task as? BGProcessingTask else {
+        guard task.isBackgroundProcessingTask else {
             return logError("Background: Task is not of type `BGProcessingTask`")
         }
         guard let identifier = BackgroundTaskIdentifiers(rawValue: task.identifier.replacingOccurrences(of: bundleIdentifier + ".", with: "")) else {
@@ -209,7 +209,7 @@ final class BackgroundController: BackgroundControlling, Logging {
         exposureController
             .getDecoyProbability()
             .delay(.seconds(randomNumberGenerator.randomInt(in: 1 ... 60)), scheduler: MainScheduler.instance) // random number between 1 and 60 seconds
-            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .utility))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .utility))
             .subscribe(onSuccess: { decoyProbability in
                 execute(decoyProbability: decoyProbability)
             })
@@ -225,15 +225,15 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     func refresh(task: BackgroundTask?) {
         let sequence: [Completable]
-        
+
         if dataController.isAppPaused {
             // When the app is paused we only perform a limited set of actions in the background
-            
+
             sequence = [
                 removePreviousExposureDateIfNeeded(),
                 displayPauseExpirationReminderIfNeeded()
             ]
-            
+
         } else {
             sequence = [
                 removePreviousExposureDateIfNeeded(),
@@ -333,16 +333,16 @@ final class BackgroundController: BackgroundControlling, Logging {
         return .create { (observer) -> Disposable in
             self.exposureController.refreshStatus {
                 observer(.completed)
-            }            
+            }
             return Disposables.create()
         }
     }
-    
+
     private func displayPauseExpirationReminderIfNeeded() -> Completable {
         logDebug("BackgroundTask: displayPauseExpirationReminderIfNeeded")
-        
+
         return .create { (observer) -> Disposable in
-            
+
             if self.shouldShowPauseExpirationReminder {
                 self.userNotificationController.displayPauseExpirationReminder { success in
                     if success {
@@ -354,10 +354,9 @@ final class BackgroundController: BackgroundControlling, Logging {
             } else {
                 observer(.completed)
             }
-            
+
             return Disposables.create()
         }
-    
     }
 
     private func fetchAndProcessKeysets() -> Completable {
@@ -526,7 +525,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             return Disposables.create()
         }
     }
-    
+
     /// Removes stored previous exposure date in case it is longer than 14 days ago
     private func removePreviousExposureDateIfNeeded() -> Completable {
         logDebug("Background: removePreviousExposureDate()")

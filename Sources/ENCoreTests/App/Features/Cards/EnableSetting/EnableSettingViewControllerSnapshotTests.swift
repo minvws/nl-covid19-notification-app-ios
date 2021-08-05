@@ -20,8 +20,8 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         super.setUp()
 
         exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
-        
-        recordSnapshots = false
+
+        recordSnapshots = false || forceRecordAllSnapshots
     }
 
     func test_enableBluetooth() {
@@ -56,7 +56,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
         snapshots(matching: viewController)
     }
 
-    func test_enableLocalNotifications() {        
+    func test_enableLocalNotifications() {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,
                                                      setting: .enableLocalNotifications,
@@ -65,7 +65,7 @@ final class EnableSettingViewControllerSnapshotTests: TestCase {
 
         snapshots(matching: viewController)
     }
-    
+
     func test_enableInternet() {
         viewController = EnableSettingViewController(listener: EnableSettingListenerMock(),
                                                      theme: theme,

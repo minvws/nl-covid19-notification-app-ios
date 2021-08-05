@@ -19,14 +19,14 @@ final class SharingViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
         viewController = ShareSheetViewController(listener: listener,
                                                   theme: theme,
                                                   interfaceOrientationStream: interfaceOrientationStream)
-        
+
         viewController.view.setNeedsLayout()
         viewController.view.layoutIfNeeded()
     }

@@ -7,18 +7,20 @@
 
 @testable import ENCore
 import ENFoundation
+import RxSwift
 import SnapshotTesting
 import XCTest
-import RxSwift
 
 class TestCase: XCTestCase {
 
     var disposeBag = DisposeBag()
-    
+
     var recordSnapshots: Bool {
         get { SnapshotTesting.record }
         set { SnapshotTesting.record = newValue }
     }
+
+    var forceRecordAllSnapshots = false
 
     let theme = ENTheme()
 
@@ -31,10 +33,10 @@ class TestCase: XCTestCase {
         let now = Date()
         DateTimeTestingOverrides.overriddenCurrentDate = now
     }
-    
+
     override func tearDownWithError() throws {
         try super.tearDownWithError()
-        
+
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = nil
         LocalizationOverrides.overriddenIsRTL = nil
         LocalizationOverrides.overriddenLocalization = nil
@@ -54,24 +56,24 @@ class TestCase: XCTestCase {
         line: UInt = #line,
         waitForMainThread: Bool = false
     ) {
-        
+
         var completionExpectation: XCTestExpectation?
         if waitForMainThread {
             completionExpectation = expectation(description: "snapshotCompletion")
         }
-        
+
         var snapshots = [
             Snapshotting.image(on: .iPhoneSe),
             Snapshotting.image(on: .iPhoneX),
             Snapshotting.image(on: .iPhoneXsMax)
         ]
-        
+
         if let snapshotting = snapshotting {
             snapshots.append(snapshotting)
         }
-        
+
         let localization = LocalizationOverrides.overriddenLocalization ?? ""
-        
+
         func doSnapShot() {
             assertSnapshots(matching: viewController,
                             as: snapshots,
@@ -81,24 +83,24 @@ class TestCase: XCTestCase {
                             testName: testName + localization,
                             line: line)
         }
-        
+
         if waitForMainThread {
             DispatchQueue.main.async {
                 doSnapShot()
                 completionExpectation?.fulfill()
             }
-            
+
             waitForExpectations(timeout: 10, handler: { error in
                 if error != nil {
                     XCTFail("Failed waiting for main queue after asserting snapshot")
                 }
             })
-            
+
         } else {
             doSnapShot()
         }
     }
-    
+
     func waitForExpectations() {
         waitForExpectations(timeout: 5, handler: nil)
     }

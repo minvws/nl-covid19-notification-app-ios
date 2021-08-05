@@ -20,7 +20,7 @@ final class PauseConfirmationViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         mockListener = PauseConfirmationListenerMock()
         mockPauseController = PauseControllingMock()

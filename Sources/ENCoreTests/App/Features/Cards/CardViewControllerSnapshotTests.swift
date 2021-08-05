@@ -23,7 +23,7 @@ final class CardViewControllerSnapshotTests: TestCase {
         mockExposureDataController = ExposureDataControllingMock()
         mockPauseController = PauseControllingMock()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
     }
 
     func test_cardViewController_bluetoothOff() {

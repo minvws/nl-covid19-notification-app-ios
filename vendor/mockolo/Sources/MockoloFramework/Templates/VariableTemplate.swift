@@ -23,6 +23,7 @@ extension VariableModel {
                                type: Type,
                                encloser: String,
                                isStatic: Bool,
+                               allowSetCallCount: Bool,
                                shouldOverride: Bool,
                                accessLevel: String) -> String {
         
@@ -40,10 +41,11 @@ extension VariableModel {
         }
         
         var assignVal = ""
-        if let val = underlyingVarDefaultVal {
+        if !shouldOverride, let val = underlyingVarDefaultVal {
             assignVal = "= \(val)"
         }
         
+        let privateSetSpace = allowSetCallCount ? "" :  "\(String.privateSet) "
         let setCallCountStmt = "\(underlyingSetCallCount) += 1"
         
         var template = ""
@@ -51,7 +53,7 @@ extension VariableModel {
             let staticSpace = isStatic ? "\(String.static) " : ""
             template = """
 
-            \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
+            \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
             \(1.tab)\(staticSpace)private var \(underlyingName): \(underlyingType) \(assignVal) { didSet { \(setCallCountStmt) } }
             \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(type.typeName) {
             \(2.tab)get { return \(underlyingName) }
@@ -61,7 +63,7 @@ extension VariableModel {
         } else {
             template = """
 
-            \(1.tab)\(acl)var \(underlyingSetCallCount) = 0
+            \(1.tab)\(acl)\(privateSetSpace)var \(underlyingSetCallCount) = 0
             \(1.tab)\(acl)\(overrideStr)var \(name): \(type.typeName) \(assignVal) { didSet { \(setCallCountStmt) } }
             """
         }
@@ -75,12 +77,13 @@ extension VariableModel {
                                  overrideTypes: [String: String]?,
                                  shouldOverride: Bool,
                                  useMockObservable: Bool,
+                                 allowSetCallCount: Bool,
                                  isStatic: Bool,
                                  accessLevel: String) -> String? {
         
-        
         let staticSpace = isStatic ? "\(String.static) " : ""
-        
+        let privateSetSpace = allowSetCallCount ? "" : "\(String.privateSet) "
+
         if let overrideTypes = overrideTypes, !overrideTypes.isEmpty {
             let (subjectType, _, subjectVal) = type.parseRxVar(overrides: overrideTypes, overrideKey: name, isInitParam: true)
             if let underlyingSubjectType = subjectType {
@@ -108,7 +111,7 @@ extension VariableModel {
 
                 let template = """
 
-                \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
+                \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
                 \(1.tab)\(staticSpace)var \(fallbackName): \(fallbackType)? { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(underlyingSubjectName)\(defaultValAssignStr) { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(type.typeName) {
@@ -164,7 +167,7 @@ extension VariableModel {
 
                 let template = """
                 \(1.tab)\(staticSpace)private var \(whichSubject) = 0
-                \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
+                \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
                 \(1.tab)\(acl)\(staticSpace)var \(publishSubjectName) = \(publishSubjectType)() { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(replaySubjectName) = \(replaySubjectType).create(bufferSize: 1) { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(behaviorSubjectName): \(behaviorSubjectType)! { didSet { \(setCallCountStmt) } }

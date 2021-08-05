@@ -21,7 +21,7 @@ final class CardViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
         mockPauseController = PauseControllingMock()

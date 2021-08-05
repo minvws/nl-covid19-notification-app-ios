@@ -24,7 +24,7 @@ final class SettingsOverviewViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         mockListener = SettingsOverviewListenerMock()
         mockExposureDataController = ExposureDataControllingMock()
