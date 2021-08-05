@@ -22,9 +22,9 @@ enum InputError: Error {
 }
 
 /// Performs end to end mock generation flow
-public func generate(sourceDirs: [String],
-                     sourceFiles: [String],
-                     parser: SourceParser,
+public func generate(sourceDirs: [String]?,
+                     sourceFiles: [String]?,
+                     parser: SourceParsing,
                      exclusionSuffixes: [String],
                      mockFilePaths: [String]?,
                      annotation: String,
@@ -33,17 +33,15 @@ public func generate(sourceDirs: [String],
                      declType: DeclType,
                      useTemplateFunc: Bool,
                      useMockObservable: Bool,
-                     allowSetCallCount: Bool,
                      enableFuncArgsHistory: Bool,
-                     mockFinal: Bool,
-                     testableImports: [String],
-                     customImports: [String],
-                     excludeImports: [String],
+                     testableImports: [String]?,
+                     customImports: [String]?,
+                     excludeImports: [String]?,
                      to outputFilePath: String,
                      loggingLevel: Int,
                      concurrencyLimit: Int?,
                      onCompletion: @escaping (String) -> ()) throws {
-    guard sourceDirs.count > 0 || sourceFiles.count > 0 else {
+    guard sourceDirs != nil || sourceFiles != nil else {
         log("Source files or directories do not exist", level: .error)
         throw InputError.sourceFilesError
     }
@@ -80,8 +78,8 @@ public func generate(sourceDirs: [String],
     
     signpost_begin(name: "Generate protocol map")
     log("Process source files and generate an annotated/protocol map...", level: .info)
-    let paths = !sourceDirs.isEmpty ? sourceDirs : sourceFiles
-    let isDirs = !sourceDirs.isEmpty
+    let paths = sourceDirs ?? sourceFiles
+    let isDirs = sourceDirs != nil
     parser.parseDecls(paths,
                       isDirs: isDirs,
                       exclusionSuffixes: exclusionSuffixes,
@@ -129,8 +127,6 @@ public func generate(sourceDirs: [String],
     renderTemplates(entities: resolvedEntities,
                     useTemplateFunc: useTemplateFunc,
                     useMockObservable: useMockObservable,
-                    allowSetCallCount: allowSetCallCount,
-                    mockFinal: mockFinal,
                     enableFuncArgsHistory: enableFuncArgsHistory) { (mockString: String, offset: Int64) in
                         candidates.append((mockString, offset))
     }
@@ -162,3 +158,4 @@ public func generate(sourceDirs: [String],
     
     onCompletion(result)
 }
+

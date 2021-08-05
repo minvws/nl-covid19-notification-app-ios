@@ -21,12 +21,10 @@ extension MethodModel {
                              identifier: String,
                              kind: MethodKind,
                              useTemplateFunc: Bool,
-                             allowSetCallCount: Bool,
                              enableFuncArgsHistory: Bool,
                              isStatic: Bool,
                              isOverride: Bool,
                              genericTypeParams: [ParamModel],
-                             genericWhereClause: String?,
                              params: [ParamModel],
                              returnType: Type,
                              accessLevel: String,
@@ -40,10 +38,6 @@ extension MethodModel {
         let acl = accessLevel.isEmpty ? "" : accessLevel+" "
         let genericTypeDeclsStr = genericTypeParams.compactMap {$0.render(with: "", encloser: "")}.joined(separator: ", ")
         let genericTypesStr = genericTypeDeclsStr.isEmpty ? "" : "<\(genericTypeDeclsStr)>"
-        var genericWhereStr = ""
-        if let clause = genericWhereClause {
-            genericWhereStr = " \(clause)"
-        }
         let paramDeclsStr = params.compactMap{$0.render(with: "", encloser: "")}.joined(separator: ", ")
         
         switch kind {
@@ -120,11 +114,10 @@ extension MethodModel {
             }
             
             let overrideStr = isOverride ? "\(String.override) " : ""
-            let privateSetSpace = allowSetCallCount ? "" : "\(String.privateSet) "
-            
+
             template = """
 
-            \(1.tab)\(acl)\(staticStr)\(privateSetSpace)var \(callCount) = 0
+            \(1.tab)\(acl)\(staticStr)var \(callCount) = 0
             """
             
             if let argsHistory = argsHistory, argsHistory.enable(force: enableFuncArgsHistory) {
@@ -140,7 +133,7 @@ extension MethodModel {
             template = """
             \(template)
             \(1.tab)\(acl)\(staticStr)var \(handlerVarName): \(handlerVarType)
-            \(1.tab)\(acl)\(staticStr)\(overrideStr)\(keyword)\(name)\(genericTypesStr)(\(paramDeclsStr)) \(suffixStr)\(returnStr)\(genericWhereStr) {
+            \(1.tab)\(acl)\(staticStr)\(overrideStr)\(keyword)\(name)\(genericTypesStr)(\(paramDeclsStr)) \(suffixStr)\(returnStr) {
             \(wrapped)
             \(1.tab)}
             """

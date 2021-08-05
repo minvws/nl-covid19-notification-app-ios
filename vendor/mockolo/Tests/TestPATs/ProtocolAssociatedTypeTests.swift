@@ -17,12 +17,6 @@ class ProtocolAssociatedTypeTests: MockoloTestCase {
                dstContent: patOverrideMock)
     }
     
-    func testPATWithParentMock() {
-        verify(srcContent: simplePat,
-               mockContent: parentPatMock,
-               dstContent: patWithParentMock)
-    }
-
     func testPATNameCollisions() {
         verify(srcContent: patNameCollision,
                dstContent: patNameCollisionMock)

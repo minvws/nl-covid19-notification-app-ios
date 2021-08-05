@@ -54,7 +54,7 @@ class MockoloTestCase: XCTestCase {
         }
     }
     
-    func verify(srcContent: String, mockContent: String? = nil, dstContent: String, header: String = "", declType: DeclType = .protocolType, useTemplateFunc: Bool = false, useMockObservable: Bool = false, testableImports: [String] = [], allowSetCallCount: Bool = false, mockFinal: Bool = false, enableFuncArgsHistory: Bool = false, concurrencyLimit: Int? = 1) {
+    func verify(srcContent: String, mockContent: String? = nil, dstContent: String, header: String = "", declType: DeclType = .protocolType, useTemplateFunc: Bool = false, useMockObservable: Bool = false, testableImports: [String]? = [], concurrencyLimit: Int? = 1, enableFuncArgsHistory: Bool = false) {
         var mockList: [String]?
         if let mock = mockContent {
             if mockList == nil {
@@ -62,10 +62,10 @@ class MockoloTestCase: XCTestCase {
             }
             mockList?.append(mock)
         }
-        verify(srcContents: [srcContent], mockContents: mockList, dstContent: dstContent, header: header, declType: declType, useTemplateFunc: useTemplateFunc, useMockObservable: useMockObservable, testableImports: testableImports, allowSetCallCount: allowSetCallCount, mockFinal: mockFinal, enableFuncArgsHistory: enableFuncArgsHistory, concurrencyLimit: concurrencyLimit)
+        verify(srcContents: [srcContent], mockContents: mockList, dstContent: dstContent, header: header, declType: declType, useTemplateFunc: useTemplateFunc, useMockObservable: useMockObservable, testableImports: testableImports, concurrencyLimit: concurrencyLimit, enableFuncArgsHistory: enableFuncArgsHistory)
     }
     
-    func verify(srcContents: [String], mockContents: [String]?, dstContent: String, header: String, declType: DeclType, useTemplateFunc: Bool, useMockObservable: Bool, testableImports: [String] = [], allowSetCallCount: Bool, mockFinal: Bool, enableFuncArgsHistory: Bool, concurrencyLimit: Int?) {
+    func verify(srcContents: [String], mockContents: [String]?, dstContent: String, header: String, declType: DeclType, useTemplateFunc: Bool, useMockObservable: Bool, testableImports: [String]?, concurrencyLimit: Int?, enableFuncArgsHistory: Bool) {
         var index = 0
         srcFilePathsCount = srcContents.count
         mockFilePathsCount = mockContents?.count ?? 0
@@ -106,9 +106,9 @@ class MockoloTestCase: XCTestCase {
         \(macroEnd)
         """
         
-        try? generate(sourceDirs: [],
+        try? generate(sourceDirs: nil,
                       sourceFiles: srcFilePaths,
-                      parser: SourceParser(),
+                      parser: ParserViaSwiftSyntax(),
                       exclusionSuffixes: ["Mocks", "Tests"],
                       mockFilePaths: mockFilePaths,
                       annotation: String.mockAnnotation,
@@ -116,13 +116,11 @@ class MockoloTestCase: XCTestCase {
                       macro: "MOCK",
                       declType: declType,
                       useTemplateFunc: useTemplateFunc,
-                      useMockObservable: useMockObservable,
-                      allowSetCallCount: allowSetCallCount,
+                      useMockObservable: useMockObservable, 
                       enableFuncArgsHistory: enableFuncArgsHistory,
-                      mockFinal: mockFinal,
                       testableImports: testableImports,
-                      customImports: [],
-                      excludeImports: [],
+                      customImports: nil,
+                      excludeImports: nil,
                       to: dstFilePath,
                       loggingLevel: 3,
                       concurrencyLimit: concurrencyLimit,

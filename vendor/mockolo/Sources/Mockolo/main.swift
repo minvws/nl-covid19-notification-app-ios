@@ -13,21 +13,32 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
-
-import ArgumentParser
 import Foundation
 import TSCUtility
 import TSCBasic
-import MockoloFramework
 
 func main() {
+    let parser = ArgumentParser(usage: "<options>", overview: "Mockolo: Swift mock generator.")
     let inputs = Array(CommandLine.arguments.dropFirst())
     if let arg = inputs.first, (arg == "--version" || arg == "-v") {
         print(Version.current.value)
         return
     }
+    
+    let command = Executor(parser: parser)
 
-    Executor.main(inputs)
+    print("Start...")
+    do {
+        /* Example:
+         .build/release/mockolo -srcs File1.swift File2.swift -out result/Mocks.swift -mocks FooMocks.swift -exclude "Mocks" "Tests"
+         */
+        let args = try parser.parse(inputs)
+        command.execute(with: args)
+    } catch {
+        fatalError("Command-line pasing error (use --help for help): \(error)")
+    }
+    
+    print("Done.")
 }
 
 

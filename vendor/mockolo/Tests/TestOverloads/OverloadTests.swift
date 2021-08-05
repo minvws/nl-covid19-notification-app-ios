@@ -2,16 +2,7 @@ import Foundation
 
 class OverloadTests: MockoloTestCase {
    
-    func testInheritedFuncs() {
-        verify(srcContent: simpleInheritance,
-               dstContent: simpleInheritanceMock)
-    }
-
-    func testSimpleDuplicates() {
-        verify(srcContent: simpleDuplicates,
-               dstContent: simpleDuplicatesMock)
-    }
-
+ 
     func testOverloadInParent() {
         verify(srcContent: overload1,
                mockContent: overloadParent1,

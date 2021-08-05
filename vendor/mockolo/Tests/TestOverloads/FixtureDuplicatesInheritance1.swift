@@ -19,18 +19,19 @@ func updateState(_ state: Int, style: SomeStyle) -> (result: Double?, status: Bo
 
 let overloadMock8 =
 """
-
 import Foundation
-
-
 public class ParentMock: Parent {
-    public init() { }
-
-
-    public private(set) var updateStateCallCount = 0
+    
+    
+    public init() {
+        
+    }
+    
+    public var updateStateCallCount = 0
     public var updateStateHandler: ((Int) -> (result: Double?, status: Bool))?
     public func updateState(_ state: Int) -> (result: Double?, status: Bool) {
         updateStateCallCount += 1
+        
         if let updateStateHandler = updateStateHandler {
             return updateStateHandler(state)
         }
@@ -39,28 +40,34 @@ public class ParentMock: Parent {
 }
 
 public class ChildMock: Child {
-    public init() { }
-
-
-    public private(set) var updateStateIntCallCount = 0
+    
+    
+    
+    public init() {
+        
+        
+    }
+    
+    public var updateStateIntCallCount = 0
     public var updateStateIntHandler: ((Int) -> (result: Double?, status: Bool))?
     public func updateState(_ state: Int) -> (result: Double?, status: Bool) {
         updateStateIntCallCount += 1
+        
         if let updateStateIntHandler = updateStateIntHandler {
             return updateStateIntHandler(state)
         }
         return (nil, false)
     }
 
-    public private(set) var updateStateCallCount = 0
+    public var updateStateCallCount = 0
     public var updateStateHandler: ((Int, SomeStyle) -> (result: Double?, status: Bool))?
     public func updateState(_ state: Int, style: SomeStyle) -> (result: Double?, status: Bool) {
         updateStateCallCount += 1
+        
         if let updateStateHandler = updateStateHandler {
             return updateStateHandler(state, style)
         }
         return (nil, false)
     }
 }
-
 """
