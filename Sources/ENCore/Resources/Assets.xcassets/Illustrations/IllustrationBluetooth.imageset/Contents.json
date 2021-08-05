@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "IllustrationBlueTooth.pdf",
+      "filename" : "IllustrationBluetooth.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "IllustrationBlueTooth-Dark.pdf",
+      "filename" : "IllustrationBluetooth-Dark.pdf",
       "idiom" : "universal"
     }
   ],
