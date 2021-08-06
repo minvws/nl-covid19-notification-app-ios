@@ -16,7 +16,7 @@ final class CardButtonTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
     }
 
     // MARK: - Tests

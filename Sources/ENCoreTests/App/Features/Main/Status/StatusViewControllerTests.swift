@@ -29,7 +29,7 @@ final class StatusViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
@@ -115,12 +115,12 @@ final class StatusViewControllerTests: TestCase {
         set(activeState: .inactive(.noRecentNotificationUpdates), notified: false)
         snapshots(matching: viewController)
     }
-    
+
     func test_snapshot_no_recent_updates_not_notified_noInternet() {
         set(activeState: .inactive(.noRecentNotificationUpdatesInternetOff), notified: false)
         snapshots(matching: viewController)
     }
-    
+
     func test_snapshot_no_recent_updates_notified_noInternet() {
         set(activeState: .inactive(.noRecentNotificationUpdatesInternetOff), notified: true)
         snapshots(matching: viewController)

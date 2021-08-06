@@ -22,11 +22,11 @@ final class RequestTestViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         exposureStateStream.currentExposureState = .init(notifiedState: .notNotified, activeState: .notAuthorized)
-        
+
         datacontroller.getAppointmentPhoneNumberHandler = {
             return .just("0800-1234 (exposed)")
         }

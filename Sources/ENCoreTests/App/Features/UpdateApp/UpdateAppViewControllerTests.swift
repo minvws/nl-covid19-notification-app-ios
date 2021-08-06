@@ -24,7 +24,7 @@ final class UpdateAppViewControllerTests: TestCase {
         mockInterfaceOrientationStream = InterfaceOrientationStreamingMock()
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = UpdateAppViewController(
             theme: theme,

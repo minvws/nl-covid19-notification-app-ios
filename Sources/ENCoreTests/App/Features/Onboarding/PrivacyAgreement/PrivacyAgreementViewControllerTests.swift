@@ -21,7 +21,7 @@ final class PrivacyAgreementViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
         viewController = PrivacyAgreementViewController(listener: listener, theme: theme)
     }
 

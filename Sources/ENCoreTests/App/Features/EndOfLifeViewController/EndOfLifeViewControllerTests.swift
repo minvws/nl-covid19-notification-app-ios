@@ -21,7 +21,7 @@ final class EndOfLifeViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = EndOfLifeViewController(listener: listener, theme: theme)
     }

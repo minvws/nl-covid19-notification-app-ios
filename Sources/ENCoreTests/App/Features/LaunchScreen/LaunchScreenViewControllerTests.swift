@@ -18,7 +18,7 @@ final class LaunchScreenViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = LaunchScreenViewController(theme: theme)
     }

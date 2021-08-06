@@ -27,7 +27,7 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
         mockInterfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         mockEnableSettingsBuilder = EnableSettingBuildableMock()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = UpdateOperatingSystemViewController(
             theme: theme,

@@ -19,7 +19,7 @@ final class CallGGDControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         interfaceOrientationStream.currentOrientationIsLandscape = false
 

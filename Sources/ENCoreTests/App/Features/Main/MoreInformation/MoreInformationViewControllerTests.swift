@@ -24,7 +24,7 @@ final class MoreInformationViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         DateTimeTestingOverrides.overriddenCurrentDate = date

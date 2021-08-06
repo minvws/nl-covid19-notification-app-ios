@@ -19,7 +19,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
 
@@ -30,7 +30,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
                                                             actionButtonTitle: nil,
                                                             theme: theme,
                                                             interfaceOrientationStream: interfaceOrientationStream)
-        
+
         viewController.view.setNeedsLayout()
         viewController.view.layoutIfNeeded()
     }

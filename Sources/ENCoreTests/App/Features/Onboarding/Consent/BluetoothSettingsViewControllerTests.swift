@@ -17,7 +17,7 @@ final class BluetoothSettingsViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = BluetoothSettingsViewController(
             listener: listener,

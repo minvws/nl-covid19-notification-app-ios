@@ -22,7 +22,7 @@ final class OnboardingStepViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         manager = OnboardingManager(theme: theme)
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)

@@ -57,7 +57,7 @@ final class BackgroundControllerTests: TestCase {
         exposureController.updateTreatmentPerspectiveHandler = { .empty() }
         exposureController.lastOpenedNotificationCheckHandler = { .empty() }
         exposureController.refreshStatusHandler = { completion in completion?() }
-        
+
         dataController.removePreviousExposureDateIfNeededHandler = { .empty() }
     }
 
@@ -65,16 +65,16 @@ final class BackgroundControllerTests: TestCase {
 
     func test_handleRefresh() {
         let exp = expectation(description: "asyncTask")
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
-        task.completion = {
-            exp.fulfill()
+        let task = BackgroundTaskMock(isBackgroundProcessingTask: true,
+                                      identifier: BackgroundTaskIdentifiers.refresh.rawValue)
+        task.setTaskCompletedHandler = { success in
+            if success { exp.fulfill() }
         }
 
         controller.handle(task: task)
 
         wait(for: [exp], timeout: 1)
 
-        XCTAssertNotNil(task.completed)
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 1)
         XCTAssertEqual(exposureController.exposureNotificationStatusCheckCallCount, 1)
 
@@ -115,10 +115,10 @@ final class BackgroundControllerTests: TestCase {
 
         XCTAssertEqual(exposureController.refreshStatusCallCount, 1)
     }
-    
+
     func test_refresh_shouldRemovePreviousExposureDates() {
         XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 0)
-        
+
         controller.refresh(task: nil)
 
         XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 1)
@@ -138,12 +138,12 @@ final class BackgroundControllerTests: TestCase {
         controller.refresh(task: nil)
         waitForExpectations(timeout: 1, handler: nil)
     }
-    
+
     func test_refresh_shouldNotFetchAndProcessKeySetsIfRefreshStatusStreamDoesNotFinish() {
         let completableCreationExpectation = expectation(description: "completable created")
         let completableSubscriptionExpectation = expectation(description: "subscribed to completable")
         completableSubscriptionExpectation.isInverted = true
-        
+
         exposureController.refreshStatusHandler = { completion in /* intentionally not calling completion handler */ }
 
         exposureController.updateWhenRequiredHandler = {
@@ -154,7 +154,7 @@ final class BackgroundControllerTests: TestCase {
         }
 
         controller.refresh(task: nil)
-        
+
         waitForExpectations()
     }
 
@@ -266,9 +266,10 @@ final class BackgroundControllerTests: TestCase {
         let exp = expectation(description: "asyncTask")
         let notificationExpectation = expectation(description: "notification")
 
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
-        task.completion = {
-            exp.fulfill()
+        let task = BackgroundTaskMock(isBackgroundProcessingTask: true,
+                                      identifier: BackgroundTaskIdentifiers.refresh.rawValue)
+        task.setTaskCompletedHandler = { success in
+            if success { exp.fulfill() }
         }
 
         userNotificationController.displayPauseExpirationReminderHandler = { completion in
@@ -283,8 +284,6 @@ final class BackgroundControllerTests: TestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
 
-        XCTAssertNotNil(task.completed)
-
         XCTAssertEqual(userNotificationController.displayPauseExpirationReminderCallCount, 1)
 
         XCTAssertEqual(exposureController.updateAndProcessPendingUploadsCallCount, 0)
@@ -296,9 +295,10 @@ final class BackgroundControllerTests: TestCase {
     func test_handleRefresh_duringPauseState_withinHourOfExpirationTime_shouldNOTSendPauseExpirationReminder() {
         let exp = expectation(description: "asyncTask")
 
-        let task = MockBGProcessingTask(identifier: BackgroundTaskIdentifiers.refresh)
-        task.completion = {
-            exp.fulfill()
+        let task = BackgroundTaskMock(isBackgroundProcessingTask: true,
+                                      identifier: BackgroundTaskIdentifiers.refresh.rawValue)
+        task.setTaskCompletedHandler = { success in
+            if success { exp.fulfill() }
         }
 
         userNotificationController.displayPauseExpirationReminderHandler = { completion in
@@ -312,8 +312,6 @@ final class BackgroundControllerTests: TestCase {
 
         waitForExpectations(timeout: 1, handler: nil)
 
-        XCTAssertNotNil(task.completed)
-
         XCTAssertEqual(userNotificationController.displayPauseExpirationReminderCallCount, 0)
     }
 
@@ -324,9 +322,10 @@ final class BackgroundControllerTests: TestCase {
             return .inactive(.disabled)
         }
 
-        let task = MockBGProcessingTask(identifier: .refresh)
-        task.completion = {
-            exp.fulfill()
+        let task = BackgroundTaskMock(isBackgroundProcessingTask: true,
+                                      identifier: BackgroundTaskIdentifiers.refresh.rawValue)
+        task.setTaskCompletedHandler = { success in
+            if success { exp.fulfill() }
         }
 
         controller.handle(task: task)
@@ -334,9 +333,6 @@ final class BackgroundControllerTests: TestCase {
         wait(for: [exp], timeout: 2)
 
         XCTAssertEqual(exposureController.requestLabConfirmationKeyCallCount, 0)
-
-        XCTAssertNotNil(task.completed)
-        XCTAssert(task.completed!)
     }
 
     func test_notHandleBackgroundDecoyStopKeysENinactive() {
@@ -430,7 +426,7 @@ final class BackgroundControllerTests: TestCase {
         XCTAssertEqual(taskScheduler.cancelCallCount, 0)
         XCTAssertEqual(taskScheduler.submitCallCount, 0)
     }
-    
+
     func test_scheduleTasks_shouldCancelAllTaskRequestsAppIsDeactivated() {
 
         let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
@@ -441,17 +437,17 @@ final class BackgroundControllerTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
-    
+
     func test_scheduleTasks_shouldRemovePreviousExposureDateAppIsDeactivated() {
         let cancelAllTaskExpectation = expectation(description: "cancelAllTask")
         taskScheduler.cancelAllTaskRequestsHandler = { cancelAllTaskExpectation.fulfill() }
-        
+
         exposureController.isAppDeactivatedHandler = { .just(true) }
-        
+
         XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 0)
-        
+
         controller.scheduleTasks()
-        
+
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(dataController.removePreviousExposureDateIfNeededCallCount, 1)
@@ -594,27 +590,5 @@ final class BackgroundControllerTests: TestCase {
 
     private var labConfirmationKey: LabConfirmationKey {
         LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: currentDate())
-    }
-}
-
-private final class MockBGProcessingTask: BGProcessingTask {
-
-    private(set) var completed: Bool?
-    var completion: (() -> ())?
-
-    override var identifier: String {
-        return _identifier
-    }
-
-    private let _identifier: String
-
-    init(identifier: BackgroundTaskIdentifiers) {
-        self._identifier = identifier.rawValue
-    }
-
-    override func setTaskCompleted(success: Bool) {
-        completed = success
-
-        completion?()
     }
 }

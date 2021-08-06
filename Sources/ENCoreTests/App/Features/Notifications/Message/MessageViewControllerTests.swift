@@ -33,7 +33,7 @@ final class MessageViewControllerTests: TestCase {
 
         LocalizationOverrides.overriddenIsRTL = nil
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         exposureDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
 

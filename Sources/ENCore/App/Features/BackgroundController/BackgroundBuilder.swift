@@ -52,13 +52,16 @@ class DummyTaskScheduling: TaskScheduling {
 
 /// @mockable
 @objc public protocol BackgroundTask {
+    var isBackgroundProcessingTask: Bool { get }
     var identifier: String { get }
     var expirationHandler: (() -> ())? { get set }
     func setTaskCompleted(success: Bool)
 }
 
 @available(iOS 13, *)
-extension BGTask: BackgroundTask {}
+extension BGTask: BackgroundTask {
+    public var isBackgroundProcessingTask: Bool { true }
+}
 
 protocol BackgroundProcessingTask {}
 @available(iOS 13, *)

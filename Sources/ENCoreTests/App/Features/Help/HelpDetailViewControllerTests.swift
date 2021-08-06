@@ -21,7 +21,7 @@ final class HelpDetailViewControllerTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         WebViewTestingOverrides.webViewLoadingEnabled = false
 

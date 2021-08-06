@@ -25,7 +25,7 @@ final class ShareKeyViaPhoneViewControllerSnapshotTests: TestCase {
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         mockCardListener = CardListeningMock()
         mockExposureDataController = ExposureDataControllingMock()
@@ -38,10 +38,10 @@ final class ShareKeyViaPhoneViewControllerSnapshotTests: TestCase {
         ))
 
         viewController = ShareKeyViaPhoneViewController(theme: theme,
-                                                exposureController: exposureController,
-                                                exposureStateStream: exposureStateStream,
-                                                interfaceOrientationStream: interfaceOrientationStream,
-                                                withBackButton: false)
+                                                        exposureController: exposureController,
+                                                        exposureStateStream: exposureStateStream,
+                                                        interfaceOrientationStream: interfaceOrientationStream,
+                                                        withBackButton: false)
         viewController.router = router
     }
 

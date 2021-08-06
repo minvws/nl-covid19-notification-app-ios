@@ -21,11 +21,11 @@ final class OnboardingConsentViewControllerTests: TestCase {
     private var interfaceOrientationStream = InterfaceOrientationStreamingMock()
     private var mockUserNotificationController = UserNotificationControllingMock()
     private var mockApplicationController = ApplicationControllingMock()
-    
+
     override func setUp() {
         super.setUp()
 
-        recordSnapshots = false
+        recordSnapshots = false || forceRecordAllSnapshots
 
         interfaceOrientationStream.isLandscape = BehaviorSubject(value: false)
         interfaceOrientationStream.currentOrientationIsLandscape = false
@@ -56,13 +56,13 @@ final class OnboardingConsentViewControllerTests: TestCase {
     func test_didCompleteConsent() {
 
         let completionExpectation = expectation(description: "completion")
-        
+
         manager.didCompleteConsent()
 
         DispatchQueue.global(qos: .userInitiated).async {
             completionExpectation.fulfill()
         }
-        
+
         waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(exposureController.didCompleteOnboarding)
     }

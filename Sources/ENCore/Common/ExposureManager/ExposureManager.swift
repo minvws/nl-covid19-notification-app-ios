@@ -203,7 +203,7 @@ final class ExposureManager: ExposureManaging, Logging {
         return result
     }
 
-    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivitiesHandler) {
         manager.setLaunchActivityHandler { activityFlags in
             activityHandler(activityFlags)
         }
@@ -259,13 +259,13 @@ struct ENActivityFlags: OptionSet {
 }
 
 /// Invoked after the app is launched to report activities that occurred while the app wasn't running.
-typealias ENActivityHandler = (ENActivityFlags) -> ()
+typealias ENActivitiesHandler = (ENActivityFlags) -> ()
 
 extension ENManager: Logging {
     /// On iOS 12.5 only, this will ensure the app receives 3.5 minutes of background processing
     /// every 4 hours. This function is needed on iOS 12.5 because the BackgroundTask framework, used
     /// for Exposure Notifications background processing in iOS 13.5+ does not exist in iOS 12.
-    func setLaunchActivityHandler(activityHandler: @escaping ENActivityHandler) {
+    func setLaunchActivityHandler(activityHandler: @escaping ENActivitiesHandler) {
         logDebug("ENManager.setLaunchActivityHandler() called")
 
         let proxyActivityHandler: @convention(block) (UInt32) -> () = { integerFlag in
