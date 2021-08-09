@@ -240,6 +240,7 @@ final class CardView: View {
         headerTitleLabel.numberOfLines = 0
         headerTitleLabel.preferredMaxLayoutWidth = 200
         headerTitleLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        headerTitleLabel.accessibilityTraits = [.header]
         header.addArrangedSubview(headerTitleLabel)
         container.addArrangedSubview(header)
 
@@ -286,6 +287,10 @@ final class CardView: View {
         headerIconView.image = card.icon.image
         headerTitleLabel.attributedText = card.title
         descriptionLabel.attributedText = card.message
+
+        if let titleAccessibilityPrefix = card.titleAccessibilityPrefix {
+            headerTitleLabel.accessibilityLabel = "\(titleAccessibilityPrefix)\(card.title.string)"
+        }
 
         primaryButton.setTitle(card.actionTitle, for: .normal)
         primaryButton.style = .primary
