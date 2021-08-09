@@ -293,6 +293,7 @@
 "help.what_does_report_look_like.title" = "Hoe ziet een melding eruit?";
 "help.what_does_report_look_like.description" = "De melding lijkt op wat je ziet als je een sms-bericht ontvangt. In de melding staat op welke dag je in de buurt was van iemand met het coronavirus.<br><br>Klik op de melding om CoronaMelder te openen. Daar lees je wat je verder kunt doen.";
 "help.notification.example" = "Voorbeeld: Zo ziet de app eruit als je een melding hebt ontvangen.";
+"help.notification.example.imagedescription" = "Rood scherm met een bel icoon dat een waarschuwing aangeeft.";
 "help.what_to_do_with_notification.title" = "Wat kun je doen als je in de buurt was van iemand met corona?";
 "help.what_to_do_with_notification.description" = "Volg het advies in de app. Het advies hangt af van je situatie. Of je klachten hebt die bij corona passen. En op welke dag je in de buurt was van de besmette persoon.<br><br>Blijf in ieder geval thuis tot je zeker weet dat je geen corona hebt. Zo voorkom je dat je onbewust anderen besmet.<br><br>Geeft de GGD je aan de telefoon andere adviezen dan de app? Volg dan het advies van de GGD.";
 "help.other_reports.title" = "Andere meldingen";

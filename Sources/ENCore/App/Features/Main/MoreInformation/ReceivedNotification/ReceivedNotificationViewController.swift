@@ -247,6 +247,8 @@ private final class ReceivedNotificationView: View {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = .clear
         imageView.contentMode = .scaleAspectFit
+        imageView.isAccessibilityElement = true
+        imageView.accessibilityLabel = .helpReceivedNotificationExampleImageDescription
         return imageView
     }()
 
