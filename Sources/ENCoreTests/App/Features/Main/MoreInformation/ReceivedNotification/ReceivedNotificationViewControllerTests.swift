@@ -38,7 +38,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotReceivedNotificationViewController() {
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func testPresentationControllerDidDismissCallsListener() {
