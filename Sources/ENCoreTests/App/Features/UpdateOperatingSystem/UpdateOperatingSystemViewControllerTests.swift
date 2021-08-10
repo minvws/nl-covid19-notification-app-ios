@@ -38,7 +38,7 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotUpdateOperatingSystemViewController() {
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 
     func testSnapshotUpdateOperatingSystemViewControllerArabic() {
@@ -46,7 +46,7 @@ final class UpdateOperatingSystemViewControllerTests: TestCase {
         LocalizationOverrides.overriddenIsRTL = true
         LocalizationOverrides.overriddenCurrentLanguageIdentifier = "ar"
 
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
 
         LocalizationOverrides.overriddenLocalization = nil
         LocalizationOverrides.overriddenIsRTL = nil
