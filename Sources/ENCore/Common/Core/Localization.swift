@@ -240,7 +240,7 @@ extension String {
     static var helpFaqUploadKeysTitle: String { return Localization.string(for: "help.faq.upload_keys.title") }
     static var helpFaqUploadKeysDescription: String { return Localization.string(for: "help.faq.upload_keys.description") }
     static var helpFaqUploadKeysViaWebsiteTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.faq.title") }
-    static var helpFaqUploadKeysViaWebsiteDescription: String { return Localization.string(for: "moreInformation.keysharing.coronatest.faq.content") }    
+    static var helpFaqUploadKeysViaWebsiteDescription: String { return Localization.string(for: "moreInformation.keysharing.coronatest.faq.content") }
     static var helpFaqBluetoothTitle: String { return Localization.string(for: "help.faq.bluetooth.title") }
     static var helpFaqBluetoothDescription: String { return Localization.string(for: "help.faq.bluetooth.description") }
     static var helpFaqPowerUsageTitle: String { return Localization.string(for: "help.faq.power_usage.title") }
@@ -297,6 +297,7 @@ extension String {
     static var helpReceivedNotificationReportTitle: String { return Localization.string(for: "help.what_does_report_look_like.title") }
     static var helpReceivedNotificationReportDescription: String { return Localization.string(for: "help.what_does_report_look_like.description") }
     static var helpReceivedNotificationExample: String { return Localization.string(for: "help.notification.example") }
+    static var helpReceivedNotificationExampleImageDescription: String { return Localization.string(for: "help.notification.example.imagedescription") }
     static var helpReceivedNotificationWhatToDoTitle: String { return Localization.string(for: "help.what_to_do_with_notification.title") }
     static var helpReceivedNotificationWhatToDoDescription: String { return Localization.string(for: "help.what_to_do_with_notification.description") }
     static var helpReceivedNotificationOtherReportsTitle: String { return Localization.string(for: "help.other_reports.title") }
@@ -359,7 +360,7 @@ extension String {
 
     static func statusNotifiedDaysAgo(days: Int, withLocaleIdentifier localeIdentifier: String? = .currentLanguageIdentifier) -> String {
         var daysString = "\(days)"
-        
+
         // Translate "days" number
         if let localeIdentifier = localeIdentifier {
             let formatter = NumberFormatter()
@@ -368,7 +369,7 @@ extension String {
                 daysString = translatedDays
             }
         }
-        
+
         switch days {
         case 0: return Localization.string(for: "status.notified.today", forceLocale: localeIdentifier)
         case 1: return Localization.string(for: "status.notified.days_ago_one", [daysString], forceLocale: localeIdentifier)
@@ -481,12 +482,12 @@ extension String {
 
     static var moreInformationKeySharingCoronaTestHeaderTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.header.title") }
     static var moreInformationKeySharingCoronaTestHeaderContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.header.content") }
-    
+
     static var moreInformationKeySharingCoronaTestOption1Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option1.title") }
     static var moreInformationKeySharingCoronaTestOption1Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option1.content") }
     static var moreInformationKeySharingCoronaTestOption2Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option2.title") }
     static var moreInformationKeySharingCoronaTestOption2Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.option2.content") }
-    
+
     static var moreInformationInfectedTitle: String { return Localization.string(for: "moreInformation.infected.title") }
     static var moreInformationInfectedLoading: String { return Localization.string(for: "moreInformation.infected.loading") }
     static var moreInformationInfectedUpload: String { return Localization.string(for: "moreInformation.infected.upload") }
@@ -518,6 +519,7 @@ extension String {
     static var moreInformationThankYouInfo: String { return Localization.string(for: "moreInformation.thankyou.info.title") }
 
     // MARK: - MoreInformation | Key Sharing | Via Website
+
     static var moreInformationKeySharingCoronaTestTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.steps.header.title") }
     static var moreInformationKeySharingCoronaTestHowDoesItWork: String { return Localization.string(for: "moreInformation.keysharing.coronatest.steps.header.button") }
     static var moreInformationKeySharingCoronaTestStep1Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step1.title") }
@@ -529,20 +531,19 @@ extension String {
     static var moreInformationKeySharingCoronaTestStep3Button: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step3.button") }
     static var moreInformationKeySharingCoronaTestStep4Title: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step4.title") }
     static var moreInformationKeySharingCoronaTestStep4Content: String { return Localization.string(for: "moreInformation.keysharing.coronatest.step4.content") }
-    
+
     static var moreInformationKeySharingCoronaTestComplete: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete") }
     static var moreInformationKeySharingCoronaTestCompleteTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.title") }
     static var moreInformationKeySharingCoronaTestCompleteContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.content") }
     static var moreInformationKeySharingCoronaTestCompleteOK: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.ok") }
     static var moreInformationKeySharingCoronaTestCompleteCancel: String { return Localization.string(for: "moreInformation.keysharing.coronatest.complete.notification.cancel") }
-        
-    
+
     // MARK: - MoreInformation | KeySharing | Thank You
-    
+
     static var moreInformationKeySharingThankYouTitle: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.title") }
     static var moreInformationKeySharingThankYouContent: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.content") }
     static var moreInformationKeySharingThankYouConfirmation: String { return Localization.string(for: "moreInformation.keysharing.coronatest.thankyou.confirmation") }
-    
+
     // MARK: - MoreInformation | Received Notification
 
     static var moreInformationReceivedNotificationTitle: String { return Localization.string(for: "moreInformation.receivedNotification.title") }
@@ -633,7 +634,7 @@ extension String {
     static var enableSettingsBluetoothStep1: String { return Localization.string(for: "enableSettings.bluetooth.step1") }
     static var enableSettingsBluetoothStep2: String { return Localization.string(for: "enableSettings.bluetooth.step2") }
     static var enableSettingsBluetoothStep2ActionTitle: String { return Localization.string(for: "enableSettings.bluetooth.step2.action.title") }
-    
+
     // MARK: - Enable Settings | Internet
 
     static var enableSettingsInternetTitle: String { return Localization.string(for: "enableInternetTitle") }
@@ -646,7 +647,7 @@ extension String {
     static var enableInternetSettingTitleSettingRow2: String { return Localization.string(for: "enableInternetSettingTitleSettingRow2") }
     static var enableInternetFooter: String { return Localization.string(for: "enableInternetFooter") }
     static var enableInternetOpenSettingsButton: String { return Localization.string(for: "enableInternetOpenSettingsButton") }
-    
+
     // MARK: - Enable Settings | Local Notifications
 
     static var enableSettingsLocalNotificationsTitle: String { return Localization.string(for: "enableSettings.localNotifications.title") }
@@ -722,25 +723,25 @@ extension String {
 
     static var treatmentPerspectiveLanguage: String {
         #if DEBUG
-                if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
-                    return overriddenCurrentLanguageIdentifier
-                }
+            if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
+                return overriddenCurrentLanguageIdentifier
+            }
         #endif
-        
+
         let defaultLanguageIdentifier = "en"
-        
+
         guard let languageCode = Locale.current.languageCode?.lowercased() else {
             return defaultLanguageIdentifier
         }
-        
-        let supportedLanguageCodes: [String] = Bundle.main.localizations.compactMap { (code) in
+
+        let supportedLanguageCodes: [String] = Bundle.main.localizations.compactMap { code in
             let loc = Locale(identifier: code)
             return loc.languageCode?.lowercased()
         }
-        
+
         return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
     }
-    
+
     static var currentLanguageIdentifier: String {
         #if DEBUG
             if let overriddenCurrentLanguageIdentifier = LocalizationOverrides.overriddenCurrentLanguageIdentifier {
@@ -754,7 +755,7 @@ extension String {
         guard let languageCode = Locale.current.languageCode else {
             return defaultLanguageIdentifier
         }
-        
+
         return supportedLanguageCodes.contains(languageCode) ? languageCode : defaultLanguageIdentifier
     }
 }

@@ -36,6 +36,6 @@ final class UpdateAppViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotUpdateAppViewController() {
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 }
