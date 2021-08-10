@@ -12,8 +12,9 @@ public protocol Colors: AnyObject {
     var primary: UIColor { get }
     var secondaryLight: UIColor { get }
     var tertiary: UIColor { get }
-    var warning: UIColor { get }
-    
+    var warningText: UIColor { get }
+
+    var warningButton: UIColor { get }
 
     var textPrimary: UIColor { get }
     var textSecondary: UIColor { get }
@@ -24,16 +25,16 @@ public protocol Colors: AnyObject {
     var textDark: UIColor { get }
     var settingsStepBackground: UIColor { get }
     var stickyButtonBackground: UIColor { get }
-    
+
     var stickyButtonDropShadowTop: UIColor { get }
     var stickyButtonDropShadowBottom: UIColor { get }
-    
+
     var bulletText: UIColor { get }
     var bulletTextDisabled: UIColor { get }
     var bulletBackground: UIColor { get }
     var bulletBackgroundDisabled: UIColor { get }
     var additionalInfoLinks: UIColor { get }
-    
+
     var ok: UIColor { get }
     var notified: UIColor { get }
     var inactive: UIColor { get }
@@ -70,7 +71,6 @@ final class ENColors: Colors, Logging {
     var primary: UIColor {
         return color(for: "PrimaryColor")
     }
-    
 
     var secondaryLight: UIColor {
         return color(for: "SecondaryLight")
@@ -80,70 +80,74 @@ final class ENColors: Colors, Logging {
         return color(for: "TertiaryColor")
     }
 
-    var warning: UIColor {
-        return color(for: "WarningColor")
+    var warningText: UIColor {
+        return color(for: "WarningTextColor")
+    }
+
+    var warningButton: UIColor {
+        return color(for: "WarningButtonColor")
     }
 
     var textSecondary: UIColor {
         return color(for: "TextSecondary")
     }
-    
+
     var textPrimary: UIColor {
         return color(for: "TextPrimary")
     }
-    
+
     var primaryButton: UIColor {
         return color(for: "PrimaryButton")
     }
-    
+
     var textButtonPrimary: UIColor {
         return color(for: "TextButtonPrimary")
     }
-    
+
     var textButtonTertiary: UIColor {
         return color(for: "TextButtonTertiary")
     }
-    
+
     var textDark: UIColor {
         return color(for: "TextDark")
     }
-    
+
     var settingsStepBackground: UIColor {
         return color(for: "SettingsStepBackground")
     }
-    
+
     var stickyButtonBackground: UIColor {
         return color(for: "StickyButtonBackground")
     }
-    
+
     var bulletText: UIColor {
         return color(for: "BulletText")
     }
-    
+
     var bulletTextDisabled: UIColor {
         return color(for: "BulletTextDisabled")
     }
-    
+
     var bulletBackground: UIColor {
         return color(for: "BulletBackground")
     }
-    
+
     var bulletBackgroundDisabled: UIColor {
         return color(for: "BulletBackgroundDisabled")
     }
-    
+
     var stickyButtonDropShadowTop: UIColor {
         return color(for: "StickyButtonDropShadowTop")
     }
-    
+
     var stickyButtonDropShadowBottom: UIColor {
         return color(for: "StickyButtonDropShadowBottom")
     }
-        
+
     var additionalInfoLinks: UIColor {
         return color(for: "AdditionalInfoLinks")
-    }    
-    
+    }
+
     var divider: UIColor {
         return color(for: "Divider")
     }
@@ -159,7 +163,7 @@ final class ENColors: Colors, Logging {
     var inactive: UIColor {
         return color(for: "InactiveOrange")
     }
-    
+
     var disabled: UIColor {
         return color(for: "Disabled")
     }
@@ -171,7 +175,7 @@ final class ENColors: Colors, Logging {
     var statusGradientActiveTop: UIColor {
         return color(for: "StatusGradientActiveTop")
     }
-    
+
     var statusGradientActiveBottom: UIColor {
         return color(for: "StatusGradientActiveBottom")
     }
@@ -179,7 +183,7 @@ final class ENColors: Colors, Logging {
     var statusGradientPausedTop: UIColor {
         return color(for: "StatusGradientPausedTop")
     }
-    
+
     var statusGradientPausedBottom: UIColor {
         return color(for: "StatusGradientPausedBottom")
     }
@@ -187,15 +191,15 @@ final class ENColors: Colors, Logging {
     var statusGradientNotifiedTop: UIColor {
         return color(for: "StatusGradientNotifiedTop")
     }
-    
+
     var statusGradientNotifiedBottom: UIColor {
         return color(for: "StatusGradientNotifiedBottom")
     }
-    
+
     var statusGradientInactiveTop: UIColor {
         return color(for: "StatusGradientInactiveTop")
     }
-    
+
     var statusGradientInactiveBottom: UIColor {
         return color(for: "StatusGradientInactiveBottom")
     }
@@ -227,23 +231,23 @@ final class ENColors: Colors, Logging {
     var cardBackground: UIColor {
         return color(for: "CardBackground")
     }
-    
+
     var cardBackgroundBlue: UIColor {
         return color(for: "CardBackgroundBlue")
     }
-    
+
     var cardBackgroundOrange: UIColor {
         return color(for: "CardBackgroundOrange")
     }
-    
+
     var cardBluePrimary: UIColor {
         return color(for: "CardBluePrimary")
     }
-    
+
     var cardBlueSecondary: UIColor {
         return color(for: "CardBlueSecondary")
     }
-    
+
     var cardBodyText: UIColor {
         return color(for: "CardBodyText")
     }
