@@ -29,6 +29,6 @@ final class AboutOverviewViewControllerTests: TestCase {
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
-        snapshots(matching: viewController)
+        snapshots(matching: viewController, waitForMainThread: true)
     }
 }
