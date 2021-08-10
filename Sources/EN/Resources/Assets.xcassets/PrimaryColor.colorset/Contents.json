@@ -29,6 +29,27 @@
         }
       },
       "idiom" : "universal"
+<<<<<<< Updated upstream
+=======
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "color" : {
+        "color-space" : "srgb",
+        "components" : {
+          "alpha" : "1.000",
+          "blue" : "0xF6",
+          "green" : "0x78",
+          "red" : "0x34"
+        }
+      },
+      "idiom" : "universal"
+>>>>>>> Stashed changes
     }
   ],
   "info" : {
