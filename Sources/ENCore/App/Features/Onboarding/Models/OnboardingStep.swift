@@ -38,7 +38,7 @@ final class OnboardingStep: NSObject {
         if isExample {
             attributedTitleString.append(.make(text: .example + "\n\n",
                                                font: theme.fonts.subheadBold,
-                                               textColor: theme.colors.warning,
+                                               textColor: theme.colors.warningText,
                                                textAlignment: Localization.isRTL ? .right : .left))
         }
 
