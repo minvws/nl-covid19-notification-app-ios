@@ -77,7 +77,7 @@ final class InfoView: View {
         headerBackgroundView = UIView(frame: .zero)
         actionButton = Button(title: config.actionButtonTitle ?? "", theme: theme)
         stickyButtonBackground = View(theme: theme)
-        
+
         buttonSeparator = GradientView(startColor: theme.colors.stickyButtonDropShadowTop, endColor: theme.colors.stickyButtonDropShadowBottom)
         if let title = config.secondaryButtonTitle {
             secondaryButton = Button(title: title, theme: theme)
@@ -105,9 +105,9 @@ final class InfoView: View {
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 20
         buttonStackView.distribution = .fillEqually
-        
+
         stickyButtonBackground.backgroundColor = theme.colors.stickyButtonBackground
-        
+
         addSubview(scrollView)
         scrollView.addSubview(headerBackgroundView)
         scrollView.addSubview(contentView)
@@ -206,7 +206,7 @@ final class InfoView: View {
                 maker.leading.trailing.equalToSuperview()
                 maker.height.equalTo(16)
             }
-            
+
             stickyButtonBackground.snp.remakeConstraints { maker in
                 maker.top.equalTo(buttonStackView.snp.top).offset(-16)
                 maker.leading.trailing.bottom.equalToSuperview()
@@ -221,9 +221,9 @@ final class InfoView: View {
             stackView.addArrangedSubview(view)
         }
     }
-    
+
     func removeAllSections() {
-        stackView.arrangedSubviews.forEach({ $0.removeFromSuperview()})
+        stackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
 
     // MARK: - Private
@@ -283,50 +283,50 @@ final class InfoSectionContentView: View, UITextViewDelegate {
 }
 
 final class InfoSectionStepView: View {
-        
+
     private let titleLabel: Label
     private let descriptionLabel: Label
     private let progressLine: View
     private let isLastStep: Bool
-    
+
     private var buttonActionHandler: (() -> ())?
     private var buttonTitle: String?
     private var disabledButtonTitle: String?
-    
+
     private let stepCountView: StepCountView
     private let loadingIndicatorTitle: String?
-    
+
     var buttonEnabled: Bool = true {
         didSet {
             actionButton?.isEnabled = buttonEnabled
         }
     }
-    
+
     var isDisabled: Bool {
         didSet {
             updateEnabledState()
         }
     }
-    
+
     private func updateEnabledState() {
         stepCountView.disabled = isDisabled
         actionButton?.isEnabled = !isDisabled
         titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textPrimary
         descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
     }
-    
+
     private lazy var actionButton: Button? = {
         guard let buttonActionHandler = buttonActionHandler, let buttonTitle = buttonTitle else {
             return nil
         }
-        
+
         let button = Button(title: buttonTitle, theme: theme)
         button.setTitle(disabledButtonTitle, for: .disabled)
         button.isEnabled = !isDisabled
         button.action = buttonActionHandler
         return button
     }()
-    
+
     private lazy var contentStackView: UIStackView = {
         let stack = UIStackView(frame: .zero)
         stack.axis = .vertical
@@ -343,7 +343,7 @@ final class InfoSectionStepView: View {
         }
         return stack
     }()
-    
+
     private lazy var loadingIndicator: UIView? = {
         if let loadingIndicatorTitle = loadingIndicatorTitle {
             return InfoSectionDynamicLoadingView(theme: theme, title: loadingIndicatorTitle)
@@ -364,25 +364,26 @@ final class InfoSectionStepView: View {
          buttonActionHandler: (() -> ())? = nil,
          isDisabled: Bool = false,
          loadingIndicatorTitle: String? = nil) {
-        
+
         stepCountView = StepCountView(theme: theme, stepNumber: stepCount)
         stepCountView.disabled = isDisabled
         titleLabel = Label(frame: .zero)
         descriptionLabel = Label(frame: .zero)
         progressLine = View(theme: theme)
-        
+
         self.isDisabled = isDisabled
         self.isLastStep = isLastStep
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
         self.disabledButtonTitle = disabledButtonTitle
         self.loadingIndicatorTitle = loadingIndicatorTitle
-        
+
         titleLabel.text = title
+        titleLabel.accessibilityLabel = "\(stepCount). \(title)"
         descriptionLabel.text = description
-        
+
         super.init(theme: theme)
-        
+
         updateEnabledState()
     }
 
@@ -394,14 +395,14 @@ final class InfoSectionStepView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title3
         titleLabel.accessibilityTraits = .header
-        
+
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = theme.fonts.body
         descriptionLabel.accessibilityTraits = .staticText
 
         progressLine.backgroundColor = theme.colors.tertiary
         progressLine.isHidden = isLastStep
-        
+
         addSubview(stepCountView)
         addSubview(progressLine)
         addSubview(contentStackView)
@@ -416,14 +417,14 @@ final class InfoSectionStepView: View {
             maker.leading.equalToSuperview().inset(16)
             maker.top.equalToSuperview()
         }
-        
+
         progressLine.snp.makeConstraints { maker in
             maker.centerX.equalTo(stepCountView)
             maker.top.equalTo(stepCountView.snp.bottom)
             maker.bottom.equalToSuperview()
             maker.width.equalTo(4)
         }
-        
+
         var bottomSpacing: CGFloat = 40
         if isLastStep {
             bottomSpacing = 0
@@ -431,14 +432,14 @@ final class InfoSectionStepView: View {
         if loadingIndicatorTitle != nil {
             bottomSpacing = 20
         }
-        
+
         contentStackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(stepCountView.snp.trailing).offset(16)
             maker.bottom.equalToSuperview().inset(bottomSpacing)
         }
-        
+
         if let button = actionButton {
             button.snp.makeConstraints { maker in
                 maker.height.equalTo(48)
@@ -491,7 +492,7 @@ final class InfoSectionTextView: View {
             label.lineBreakMode = .byWordWrapping
             label.font = theme.fonts.body
             label.textColor = theme.colors.textSecondary
-            label.attributedText = text            
+            label.attributedText = text
             if let traits = contentAccessibilityTraits {
                 label.accessibilityTraits = traits
             }
@@ -519,8 +520,8 @@ final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
     private let titleLabel: Label
     private let contentStack: UIStackView
     private let content: [NSAttributedString]
-    private let linkHandler: ((String) -> ())
-    
+    private let linkHandler: (String) -> ()
+
     // MARK: - Init
 
     init(theme: Theme, title: String, content: [NSAttributedString], linkHandler: @escaping ((String) -> ())) {
@@ -580,8 +581,8 @@ final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
             maker.bottom.equalToSuperview()
         }
     }
-    
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {        
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
         linkHandler(URL.absoluteString)
         return false
     }
@@ -690,30 +691,32 @@ final class InfoSectionCalloutView: View {
 final class StepCountView: View {
     private let label: Label
     private let borderView: View
-    
+
     var disabled: Bool = false {
         didSet {
             label.backgroundColor = disabled ? theme.colors.bulletBackgroundDisabled : theme.colors.bulletBackground
             label.textColor = disabled ? theme.colors.bulletTextDisabled : theme.colors.bulletText
         }
     }
-    
+
     init(theme: Theme, stepNumber: Int) {
         self.label = Label(frame: .zero)
         self.label.text = String(stepNumber)
         self.borderView = View(theme: theme)
-        
+
         super.init(theme: theme)
-        
+
         disabled = false
     }
-    
+
     override func build() {
         super.build()
 
+        isAccessibilityElement = false
+
         // Make sure the bullet has height so it's border can overlap other views
         layer.zPosition = 10
-        
+
         label.numberOfLines = 1
         label.backgroundColor = theme.colors.primary
         label.textColor = .white
@@ -721,7 +724,8 @@ final class StepCountView: View {
         label.layer.cornerRadius = 14
         label.clipsToBounds = true
         label.textAlignment = .center
-        
+        label.isAccessibilityElement = false
+
         borderView.backgroundColor = theme.colors.viewControllerBackground
         borderView.layer.cornerRadius = 16
         addSubview(borderView)
@@ -735,7 +739,7 @@ final class StepCountView: View {
             maker.width.height.equalTo(32)
             maker.center.equalTo(label)
         }
-        
+
         label.snp.makeConstraints { maker in
             maker.edges.equalToSuperview()
             maker.width.height.equalTo(28)
@@ -752,11 +756,11 @@ final class InfoSectionDynamicCalloutView: View {
     }
 
     private let stepCountView: StepCountView
-    
+
     private let titleLabel: Label
     private let contentView: View
     private let progressLine: View
-            
+
     // MARK: - Init
 
     init(theme: Theme, title: String, stepCount: Int, initialState: State = .disabled) {
@@ -764,11 +768,12 @@ final class InfoSectionDynamicCalloutView: View {
         contentView = View(theme: theme)
         progressLine = View(theme: theme)
         stepCountView = StepCountView(theme: theme, stepNumber: stepCount)
-        
+
         super.init(theme: theme)
 
         titleLabel.text = title
-        
+        titleLabel.accessibilityLabel = "\(stepCount). \(title)"
+
         set(state: initialState)
     }
 
@@ -782,6 +787,7 @@ final class InfoSectionDynamicCalloutView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title3
+        titleLabel.accessibilityTraits = .header
 
         progressLine.backgroundColor = theme.colors.tertiary
 
@@ -793,12 +799,12 @@ final class InfoSectionDynamicCalloutView: View {
 
     override func setupConstraints() {
         super.setupConstraints()
-        
+
         stepCountView.snp.makeConstraints { maker in
             maker.leading.equalToSuperview().inset(16)
             maker.top.equalToSuperview()
         }
-        
+
         progressLine.snp.makeConstraints { maker in
             maker.centerX.equalTo(stepCountView)
             maker.top.equalTo(stepCountView.snp.bottom)
@@ -840,25 +846,25 @@ final class InfoSectionDynamicCalloutView: View {
         case .disabled:
             stepCountView.disabled = true
             titleLabel.textColor = theme.colors.disabled
-            
+
             let view = InfoSectionDynamicDisabledView(theme: theme)
             add(view)
         case let .loading(title):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
-            
+
             let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
             add(view)
         case let .success(code):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
-            
+
             let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
             add(view)
         case let .error(error, actionHandler):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
-            
+
             let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
             add(view)
         }
@@ -921,12 +927,12 @@ private final class InfoSectionDynamicLoadingView: View {
 
 private final class InfoSectionDynamicDisabledView: View {
     private let stackView: UIStackView
-    
+
     // MARK: - Init
 
     override init(theme: Theme) {
         stackView = UIStackView(frame: .zero)
-        
+
         super.init(theme: theme)
     }
 
@@ -938,12 +944,12 @@ private final class InfoSectionDynamicDisabledView: View {
         stackView.axis = .horizontal
         stackView.alignment = .center
         stackView.spacing = 8
-        
-        (0..<3).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+
+        (0 ..< 3).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
         stackView.addArrangedSubview(UIImageView(image: .dash))
-        (0..<2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+        (0 ..< 2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
         stackView.addArrangedSubview(UIImageView(image: .dash))
-        (0..<2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
+        (0 ..< 2).forEach { _ in stackView.addArrangedSubview(UIImageView(image: .star)) }
         addSubview(stackView)
     }
 
