@@ -104,4 +104,21 @@ class TestCase: XCTestCase {
     func waitForExpectations() {
         waitForExpectations(timeout: 5, handler: nil)
     }
+
+    func snapshotWrapper(_ wrappedView: UIView, width: CGFloat = 320, height: CGFloat? = nil) -> UIView {
+        let view = UIView(frame: .zero)
+        view.snp.makeConstraints { maker in
+            maker.width.equalTo(width)
+            if let height = height {
+                maker.height.equalTo(height)
+            }
+        }
+
+        view.addSubview(wrappedView)
+        wrappedView.snp.makeConstraints { maker in
+            maker.leading.trailing.bottom.top.equalToSuperview()
+        }
+
+        return view
+    }
 }

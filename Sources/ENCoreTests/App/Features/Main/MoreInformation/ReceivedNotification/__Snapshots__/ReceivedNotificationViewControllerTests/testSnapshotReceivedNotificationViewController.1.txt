@@ -1,0 +1,43 @@
+<UIView; frame = (0 0; 320 480); layer = <CALayer>>
+   | <_TtC6ENCoreP33_4935042668AEC98F7E07467933B5895C24ReceivedNotificationView; frame = (0 0; 320 480); layer = <CALayer>>
+   |    | <ENCore.InfoView; frame = (0 0; 320 480); layer = <CALayer>>
+   |    |    | <UIScrollView; frame = (0 0; 320 480); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {0, 2462.6666666666665}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    | <UIView; frame = (0 0; 320 0); layer = <CALayer>>
+   |    |    |    | <UIView; frame = (0 0; 320 2462.67); layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 320 176); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIStackView; frame = (0 200; 320 2242.67); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 0; 320 160.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 54.3333); text = 'How do I recognize a noti...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    | <UIStackView; frame = (16 74.3333; 288 86.3333); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (0 0; 287 86.3333); text = 'The app sends you a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 200.667; 320 165); layer = <CALayer>>
+   |    |    |    |    |    |    | <UIImageView; frame = (16 0; 288 165); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionContentTextView; frame = (0 405.667; 320 196.333); layer = <CALayer>>
+   |    |    |    |    |    |    | <UIStackView; frame = (16 0; 288 196.333); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (0 0; 288 196.333); text = 'The notification looks li...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 642; 320 385.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 42.3333); text = 'Example: This is how the ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    | <UIImageView; frame = (16 57.3333; 288 328.333); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1067.67; 320 474.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 82.3333); text = 'What can you do after you...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    | <UIStackView; frame = (16 102.333; 288 372.333); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (0 0; 288 372.333); text = 'Follow the advice from th...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1582.33; 320 462.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 26.3333); text = 'Other notifications'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    | <UIStackView; frame = (16 46.3333; 288 416.333); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (0 0; 288 416.333); text = 'The app can also send you...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 2085; 320 157.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.LinkedContentTableView; baseClass = UITableView; frame = (0 0; 320 157.667); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {320, 157.66666666666666}; adjustedContentInset: {0, 0, 0, 0}; dataSource: <ENCore.LinkedContentTableViewManager>>
+   |    |    |    |    |    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 50; 320 70.3333); text = 'Can I send others a notif...'; autoresize = W; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <UIView; frame = (14 69.3333; 306 1); layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <UITableViewCellContentView; frame = (0 0; 320 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UITableViewLabel; frame = (16 14; 288 42.3333); text = 'Can I send others a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    |    | <UIView; frame = (0 137.667; 320 0); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.HelpTableViewSectionHeaderView; frame = (0 0; 320 50); autoresize = W; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 18); text = 'Also read'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (314 -39; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 36); layer = <CALayer>>
+   |    |    |    | <_UIScrollViewScrollIndicator; frame = (377 474; 7 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    | <UIView; frame = (0 0; 7 3); layer = <CALayer>>
+   |    |    |    | <_UIScrollViewScrollIndicator; frame = (314 3; 3 310); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    | <UIView; frame = (0 0; 3 310); layer = <CALayer>>

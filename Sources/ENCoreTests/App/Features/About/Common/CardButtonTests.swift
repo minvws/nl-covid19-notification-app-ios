@@ -34,7 +34,7 @@ final class CardButtonTests: TestCase {
                                     type: .long,
                                     theme: theme)
         longButton.backgroundColor = theme.colors.cardBackgroundBlue
-        assertSnapshot(matching: wrapped(cardButton: longButton), as: .image())
+        assertSnapshot(matching: wrapped(cardButton: longButton), as: .recursiveDescription)
     }
 
     private func wrapped(cardButton: CardButton) -> UIView {
