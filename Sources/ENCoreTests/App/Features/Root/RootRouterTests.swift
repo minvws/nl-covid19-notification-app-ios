@@ -121,12 +121,12 @@ final class RootRouterTests: TestCase {
     func test_start_buildsAndPresentsOnboarding() {
         let viewcontrollerPresentExpectation = expectation(description: "viewControllerPresented")
         viewcontrollerPresentExpectation.expectedFulfillmentCount = 2
-        
+
         viewController.presentHandler = { _, _, completion in
             viewcontrollerPresentExpectation.fulfill()
             completion?()
         }
-        
+
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
@@ -151,15 +151,15 @@ final class RootRouterTests: TestCase {
     }
 
     func test_callStartTwice_doesNotPresentTwice() {
-        
+
         let viewcontrollerPresentExpectation = expectation(description: "viewControllerPresented")
         viewcontrollerPresentExpectation.expectedFulfillmentCount = 2
-        
+
         viewController.presentHandler = { _, _, completion in
             viewcontrollerPresentExpectation.fulfill()
             completion?()
         }
-        
+
         XCTAssertEqual(onboardingBuilder.buildCallCount, 0)
         XCTAssertEqual(mainBuilder.buildCallCount, 0)
         XCTAssertEqual(viewController.presentCallCount, 0)
@@ -194,7 +194,7 @@ final class RootRouterTests: TestCase {
     }
 
     func test_detachOnboardingAndRouteToMain_callsEmbedAndDismiss() {
-        router.start()
+        waitForRouterStart()
 
         XCTAssertEqual(viewController.embedCallCount, 0)
         XCTAssertEqual(viewController.dismissCallCount, 1)
@@ -211,7 +211,7 @@ final class RootRouterTests: TestCase {
     }
 
     func test_detachOnboardingAndRouteToMain_marksOnboardingAsComplete() {
-        router.start()
+        waitForRouterStart()
 
         XCTAssertEqual(exposureController.didCompleteOnboardingSetCallCount, 0)
         XCTAssertEqual(backgroundController.scheduleTasksCallCount, 0)
@@ -220,7 +220,7 @@ final class RootRouterTests: TestCase {
     }
 
     func test_detachOnboardingAndRouteToMain_marksInteropAnnouncementAsSeen() {
-        router.start()
+        waitForRouterStart()
 
         XCTAssertEqual(exposureController.seenAnnouncements, [])
 
@@ -228,19 +228,19 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_activatesExposureController() {
-        
+
         let postExposureManagerActivationExpectation = expectation(description: "postExposureManagerActivation")
         let decoySequenceExpectation = expectation(description: "decoySequence")
-        
+
         XCTAssertEqual(exposureController.activateCallCount, 0)
         XCTAssertEqual(exposureController.postExposureManagerActivationCallCount, 0)
         XCTAssertEqual(backgroundController.performDecoySequenceIfNeededCallCount, 0)
 
         exposureController.postExposureManagerActivationHandler = { postExposureManagerActivationExpectation.fulfill() }
         backgroundController.performDecoySequenceIfNeededHandler = { decoySequenceExpectation.fulfill() }
-        
-        router.start()
-        
+
+        waitForRouterStart()
+
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(exposureController.activateCallCount, 1)
@@ -312,16 +312,16 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
-        
+
         let viewcontrollerPresentExpectation = expectation(description: "viewControllerPresented")
-        
+
         viewController.presentInNavigationControllerHandler = { _, _, _ in
             viewcontrollerPresentExpectation.fulfill()
         }
-        
-        // Initial call to setup normal routing. didBecomeActive only checks End Of Life if
-        // there is already a router installed (the app startup routine was already executed)
-        router.start()
+
+        exposureController.updateWhenRequiredHandler = { .empty() }
+
+        waitForRouterStart()
 
         exposureController.isAppDeactivatedHandler = {
             .just(true)
@@ -333,17 +333,18 @@ final class RootRouterTests: TestCase {
 
         router.didBecomeActive()
 
-        waitForExpectations(timeout: 2, handler: nil)
+        wait(for: [viewcontrollerPresentExpectation], timeout: 2)
+
         XCTAssertEqual(exposureController.deactivateCallCount, 1)
         XCTAssertEqual(endOfLifeBuilder.buildCallCount, 1)
         XCTAssertEqual(viewController.presentInNavigationControllerCallCount, 1)
     }
 
     func test_didBecomeActive_shouldAlsoPerformForegroundActionsOniOS12() {
-        
+
         let completionExpectation = expectation(description: "completion")
         let updateWhenRequiredExpectation = expectation(description: "updateWhenRequired")
-        
+
         mockEnvironmentController.isiOS12 = true
         exposureController.updateWhenRequiredHandler = {
             updateWhenRequiredExpectation.fulfill()
@@ -353,20 +354,20 @@ final class RootRouterTests: TestCase {
         XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
 
-        router.start()
-        
+        waitForRouterStart()
+
         XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
-        
+
         router.didBecomeActive()
-        
+
         wait(for: [updateWhenRequiredExpectation], timeout: 2)
         DispatchQueue.global(qos: .userInitiated).async {
             XCTAssertEqual(self.exposureController.refreshStatusCallCount, 2)
             XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
             completionExpectation.fulfill()
         }
-        
+
         waitForExpectations(timeout: 2, handler: nil)
     }
 
@@ -391,10 +392,10 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didEnterForeground_callsRefreshStatus() {
+
         exposureController.updateWhenRequiredHandler = { .empty() }
 
-        // Required to attach main router
-        router.start()
+        waitForRouterStart()
 
         XCTAssertEqual(exposureController.refreshStatusCallCount, 0)
 
@@ -404,27 +405,26 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didEnterForeground_callsUpdateWhenRequired() {
-        
+
         let completionExpectation = expectation(description: "completion")
-        
+
         exposureController.updateWhenRequiredHandler = {
             XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             return .empty()
         }
 
-        // Required to attach main router
-        router.start()
+        waitForRouterStart()
 
         XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 0)
 
         router.didEnterForeground()
-        
+
         DispatchQueue.global(qos: .userInitiated).async {
             completionExpectation.fulfill()
         }
-        
+
         waitForExpectations()
-        
+
         XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
     }
 
@@ -435,7 +435,7 @@ final class RootRouterTests: TestCase {
         viewController.presentInNavigationControllerHandler = { _, _, _ in
             viewcontrollerPresentExpectation.fulfill()
         }
-        
+
         exposureController.didCompleteOnboarding = true
 
         let mockCallGGDViewController = ViewControllableMock()
@@ -472,11 +472,36 @@ final class RootRouterTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
         XCTAssertTrue(lastPresenterViewController === mockMessageViewController)
     }
-    
+
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState) {
         exposureStateStream.exposureState = .just(ExposureState(notifiedState: .notNotified,
                                                                 activeState: activeState))
+    }
+
+    private func waitForRouterStart() {
+        let routerStartExpectation = expectation(description: "routerStartExpectation")
+
+        let onboardingViewControllableMock = ViewControllableMock()
+        onboardingBuilder.buildHandler = { _ in
+            OnboardingRoutingMock(viewControllable: onboardingViewControllableMock)
+        }
+
+        // Wait for viewcontroller to be presented so we're sure that there is a router set
+        viewController.presentHandler = { presentedViewController, _, completion in
+
+            if presentedViewController === onboardingViewControllableMock {
+                routerStartExpectation.fulfill()
+            }
+
+            completion?()
+        }
+
+        // Initial call to setup normal routing. didBecomeActive only checks End Of Life if
+        // there is already a router installed (the app startup routine was already executed)
+        router.start()
+
+        wait(for: [routerStartExpectation], timeout: 10)
     }
 }
