@@ -77,7 +77,6 @@ targets:
       testTargets:
         - name: ENCoreTests
           randomExecutionOrder: true
-          skippedTests: ["AboutOverviewViewControllerTests", "CardButtonTests"]
         - name: ENFoundationTests
           randomExecutionOrder: true
     settings:
@@ -119,7 +118,6 @@ targets:
       testTargets:
         - name: ENCoreTests
           randomExecutionOrder: true
-          skippedTests: ["AboutOverviewViewControllerTests", "CardButtonTests"]
     settings:
       base:
         OTHER_LDFLAGS: '-weak_framework ExposureNotification'

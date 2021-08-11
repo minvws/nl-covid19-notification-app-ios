@@ -48,7 +48,7 @@ final class MoreInformationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func test_snapshot_moreInformationViewController() {
-        assertSnapshot(matching: wrapped(viewController.view), as: .recursiveDescription)
+        assertSnapshot(matching: snapshotWrapper(viewController.view), as: .recursiveDescription)
     }
 
     func test_didSelectItem_settings() {
@@ -85,19 +85,5 @@ final class MoreInformationViewControllerTests: TestCase {
         viewController.didSelect(identifier: .requestTest)
 
         XCTAssertEqual(listener.moreInformationRequestsRequestTestCallCount, 1)
-    }
-
-    private func wrapped(_ wrappedView: UIView) -> UIView {
-        let view = UIView(frame: .zero)
-        view.snp.makeConstraints { maker in
-            maker.width.equalTo(320)
-        }
-
-        view.addSubview(wrappedView)
-        wrappedView.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.top.equalToSuperview()
-        }
-
-        return view
     }
 }

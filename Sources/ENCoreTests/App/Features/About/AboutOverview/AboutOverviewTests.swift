@@ -29,6 +29,6 @@ final class AboutOverviewViewControllerTests: TestCase {
         let viewController = AboutOverviewViewController(listener: listener,
                                                          aboutManager: aboutManager,
                                                          theme: theme)
-        snapshots(matching: viewController, waitForMainThread: true)
+        assertSnapshot(matching: snapshotWrapper(viewController.view, width: 320, height: 480), as: .recursiveDescription)
     }
 }

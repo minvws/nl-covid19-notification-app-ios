@@ -1,0 +1,7 @@
+<UIView; frame = (0 0; 320 420); layer = <CALayer>>
+   | <ENCore.CardButton; baseClass = UIButton; frame = (0 78; 320 264); clipsToBounds = YES; opaque = NO; tintColor = UIExtendedGrayColorSpace 1 1; layer = <CALayer>>
+   |    | <UIButtonLabel; frame = (125.667 121.667; 69 21); text = 'Test title
+And this is a ...'; alpha = 0; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 24); text = 'Test title'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <ENCore.Label; baseClass = UILabel; frame = (16 46; 288 42.3333); text = 'And this is a long test s...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <UIImageView; frame = (16 108.333; 288 155.667); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
