@@ -84,7 +84,7 @@ private final class ThankYouView: View {
     fileprivate let infoView: InfoView
     private let exposureConfirmationKey: ExposureConfirmationKey
     private let featureFlagController: FeatureFlagControlling
-    
+
     var showVisual: Bool = true {
         didSet {
             infoView.showHeader = showVisual
@@ -153,7 +153,7 @@ private final class ThankYouView: View {
             text: featureFlagController.isFeatureFlagEnabled(feature: .independentKeySharing)
                 ? .moreInformationKeySharingThankYouConfirmation
                 : .moreInformationThankYouInfo,
-            font: theme.fonts.subhead,
+            font: theme.fonts.subhead(limitMaximumSize: false),
             textColor: theme.colors.textPrimary,
             textAlignment: Localization.isRTL ? .right : .left)
         return InfoSectionCalloutView(theme: theme, content: string)

@@ -153,7 +153,7 @@ private final class PrivacyAgreementView: View {
 
         stackView.snp.makeConstraints { maker in
             maker.leading.trailing.bottom.width.equalToSuperview().inset(16)
-            maker.top.equalTo(readPrivacyAgreementLabel.snp.bottom).offset(40)
+            maker.top.equalTo(stepsTitleLabel.snp.bottom).offset(15)
         }
 
         bottomStackView.snp.makeConstraints { maker in

@@ -902,7 +902,7 @@ private final class InfoSectionDynamicLoadingView: View {
         backgroundColor = .clear
 
         activityIndicator.startAnimating()
-        loadingLabel.font = theme.fonts.subhead
+        loadingLabel.font = theme.fonts.subhead(limitMaximumSize: false)
         loadingLabel.textAlignment = .center
 
         addSubview(activityIndicator)
@@ -1029,7 +1029,7 @@ private final class InfoSectionDynamicErrorView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
-        titleLabel.font = theme.fonts.subhead
+        titleLabel.font = theme.fonts.subhead(limitMaximumSize: false)
 
         actionButton.style = .secondary
         actionButton.setTitle(.retry, for: .normal)

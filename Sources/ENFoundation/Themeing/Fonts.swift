@@ -18,10 +18,11 @@ public protocol Fonts {
     var body: UIFont { get }
     var bodyBold: UIFont { get }
     var callout: UIFont { get }
-    var subhead: UIFont { get }
     var subheadBold: UIFont { get }
     var footnote: UIFont { get }
     var caption1: UIFont { get }
+
+    func subhead(limitMaximumSize: Bool) -> UIFont
 }
 
 final class ENFonts: Fonts {
@@ -65,8 +66,15 @@ final class ENFonts: Fonts {
         font(textStyle: .callout) // Size 16 points
     }
 
-    var subhead: UIFont {
-        font(textStyle: .subheadline) // Size 15 points
+    func subhead(limitMaximumSize: Bool) -> UIFont {
+        let defaultFont = font(textStyle: .subheadline) // Size 15 points
+
+        let maxFontSize: CGFloat = 30
+        if defaultFont.pointSize > maxFontSize, limitMaximumSize {
+            return defaultFont.withSize(maxFontSize)
+        } else {
+            return defaultFont
+        }
     }
 
     var subheadBold: UIFont {

@@ -17,7 +17,7 @@ protocol MoreInformationCellListner: AnyObject {
 final class MoreInformationCell: UIControl, Themeable {
 
     override var isHighlighted: Bool {
-        didSet {            
+        didSet {
             UIView.animate(withDuration: 0.25) {
                 self.alpha = self.isHighlighted ? 0.6 : 1.0
             }
@@ -81,8 +81,8 @@ final class MoreInformationCell: UIControl, Themeable {
 
         titleLabel.font = theme.fonts.headline
         titleLabel.textColor = theme.colors.textPrimary
-        
-        subtitleLabel.font = theme.fonts.subhead
+
+        subtitleLabel.font = theme.fonts.subhead(limitMaximumSize: false)
         subtitleLabel.textColor = theme.colors.textSecondary
 
         titleLabel.numberOfLines = 0
