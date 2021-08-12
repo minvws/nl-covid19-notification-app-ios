@@ -71,7 +71,7 @@ final class CheckmarkButton: Button {
         let label = Label(frame: .zero)
         label.numberOfLines = 0
         label.textColor = theme.colors.textSecondary
-        label.font = theme.fonts.subhead
+        label.font = theme.fonts.subhead(limitMaximumSize: true)
         return label
     }()
 }
