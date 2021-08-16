@@ -292,6 +292,7 @@
 "help.what_does_report_look_like.title" = "Jak wygląda powiadomienie?";
 "help.what_does_report_look_like.description" = "Powiadomienie przypomina wyglądem wiadomość SMS. Powiadomienie zawiera informację o tym, kiedy miałeś kontakt z osobą zarażoną koronawirusem.<br><br>Kliknij na powiadomienie, aby otworzyć CoronaMelder. Tam przeczytasz, jakie są zalecenia.";
 "help.notification.example" = "Przykład: Tak wygląda aplikacja, gdy otrzymasz powiadomienie.";
+"help.notification.example.imagedescription" = "Czerwony ekran z ikoną dzwonka oznacza ostrzeżenie.";
 "help.what_to_do_with_notification.title" = "Co możesz zrobić, jeśli znajdowałeś się w pobliżu osoby z koronawirusem?";
 "help.what_to_do_with_notification.description" = "Stosuj się do zaleceń, które podaje aplikacja. Są one uzależnione od Twojej sytuacji. Od tego, czy masz dolegliwości, które są typowe dla koronawirusa oraz kiedy znajdowałeś się w pobliżu osoby z koronawirusem.<br><br>W każdym razie pozostań w domu do momentu, aż będziesz pewien, że nie masz koronawirusa. W ten sposób unikasz nieświadomego zarażenia innych.<br><br>GGD w rozmowie telefonicznej podaje inne zalecenia niż aplikacja? Postępuj zgodnie z zaleceniami GGD.";
 "help.other_reports.title" = "Inne powiadomienia";
@@ -522,6 +523,13 @@
 "cards.notificationsOff.title" = "Powiadomienia są <u>wyłączone</u>";
 "cards.notificationsOff.content" = "Włącz powiadomienia ogólne, aby w razie potrzeby aplikacja mogła natychmiastowo udostępnić informacje.";
 "cards.notificationsOff.action" = "Włącz powiadomienia";
+
+/* MARK: - Cards - Still Useful */
+"cards.stilluseful.title" = "Czy aplikacja wciąż jest potrzebna?";
+"cards.stilluseful.content" = "Nawet jeśli się zaszczepiłeś lub przeszedłeś koronawirusa, aplikacja to nadal ważne narzędzie walki z koronawirusem.";
+"cards.stilluseful.action" = "Czytaj więcej";
+"cards.stilluseful.page.title" = "Jestem zaszczepiony lub przeszedłem koronawirusa. Czy aplikacja wciąż jest potrzebna?";
+"cards.stilluseful.page.content" = "Tak, nadal warto mieć aplikację na swoim telefonie. Nawet jeśli jesteś zaszczepiony lub przeszedłeś koronawirusa. Wirus wciąż jest wśród nas, a dzięki CoronaMelder zakażenia są szybciej wykrywane i zwalczane.\n\n\nNadal musisz stosować dobrze znane środki: zachowuj 1,5 metra odległości i często myj ręce. Noś maseczkę tam, gdzie to obowiązkowe. Na przykład w publicznych środkach transportu lub samolocie.\n\n\nNa niektórych wydarzaniach lub miejscach nie trzeba zachowywać 1,5 metra odległości. Dotyczy to na przykład wydarzenia, którego wszyscy uczestnicy wykażą w aplikacji CoronaCheck, że wykonali test na obecność koronawirusa i otrzymali wynik negatywny lub zostali zaszczepieni dwoma dawkami szczepionki.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Włącz powiadomienia o kontaktach";

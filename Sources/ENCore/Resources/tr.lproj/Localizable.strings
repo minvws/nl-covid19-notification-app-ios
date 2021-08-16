@@ -293,6 +293,7 @@
 "help.what_does_report_look_like.title" = "Bildirim nasıl gözükür?";
 "help.what_does_report_look_like.description" = "Bildirim, kısa mesaj aldığınızda gördüklerinize benzer. Bildirim,Korona virüslü birinin yakınında olduğunuz günü belirtir.<br><br>CoronaMelder'ı açmak için bildirime tıklayın. Orada daha sonra ne yapabileceğinizi okuyabilirsiniz.";
 "help.notification.example" = "Örnek: Bildirim aldığınızda uygulama bu şekilde görünür";
+"help.notification.example.imagedescription" = "Bir uyarı gösteren zil simgesi olan kırmızı ekran.";
 "help.what_to_do_with_notification.title" = "Korona olan birisinin yakınında bulunduktan sonra neler yapabilirsiniz?";
 "help.what_to_do_with_notification.description" = "Uygulamadaki tavsiyelere uyun. Tavsiye, durumunuza bağlıdır. Koronaya uyan şikayetlerinizin olup olmadığına bağlıdır. Ve enfekte olan kişinin yakınında hangi gün bulunduğunuza bağlıdır.<br><br>Her durumda, sizde Korona olmadığından emin olana kadar evde kalın. Böylelikle, bilinçsizce başkalarına bulaştırmayı önlersiniz.<br><br> GGD size telefonda uygulamadan farklı tavsiyeler mi verdi? O zaman GGD'nin tavsiyelerine uyun.";
 "help.other_reports.title" = "Diğer bildirimler";
@@ -523,6 +524,13 @@
 "cards.notificationsOff.title" = "Bildirimler <u>kapalı</u>";
 "cards.notificationsOff.content" = "Uygulamanın gerektiğinde bilgileri anında paylaşabilmesi için genel bildirimleri açın.";
 "cards.notificationsOff.action" = "Bildirimleri açmak";
+
+/* MARK: - Cards - Still Useful */
+"cards.stilluseful.title" = "Uygulama hala faydalı mı?";
+"cards.stilluseful.content" = "Aşı olmuş veya daha önce Korona geçirmiş olsanız bile uygulama hala Korona ile mücadelede önemli bir araçtır.";
+"cards.stilluseful.action" = "Daha fazlasını oku";
+"cards.stilluseful.page.title" = "Aşı oldum veya Korona geçirdim, uygulama hala faydalı mı?";
+"cards.stilluseful.page.content" = "Evet, uygulamanın telefonunuzda olması hala yararlıdır. Aşı olmuş veya Korona geçirmiş olsanız bile virüs hala aramızda ve CoronaMelder uygulaması ile enfeksiyonlar daha hızlı tespit edilip durdurulur.\n\nYine de iyi bilinen önlemlere bağlı kalmalısınız: 1,5 metre mesafede durun ve ellerinizi sık sık yıkayın. Ve zorunlu olan yerlerde maske takın. Örneğin toplu taşımada veya uçakta.\n\nBazı etkinliklerde veya mekanlarda 1,5 metrelik mesafeyi koruma tedbiri kaldırılacaktır. Örneğin, CoronaCheck uygulamasındaki tüm ziyaretçilerin test edildiklerini ve Korona olmadıklarını veya iki kez aşı olduklarını kanıtladıkları etkinliklerde.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Temas bildirimlerini açmak";

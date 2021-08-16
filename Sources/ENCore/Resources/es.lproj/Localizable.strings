@@ -293,6 +293,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "help.what_does_report_look_like.title" = "¿Qué aspecto tiene una notificación?";
 "help.what_does_report_look_like.description" = "Una notificación se parece a lo que ves cuando recibes un mensaje de texto. En la notificación pone qué día estuviste cerca de alguien con coronavirus.<br><br>Pulsa la notificación para abrir CoronaMelder y consultar qué puedes hacer.";
 "help.notification.example" = "Ejemplo: La app cuando recibes una notificación";
+"help.notification.example.imagedescription" = "Pantalla roja con un icono de campana que indica un aviso.";
 "help.what_to_do_with_notification.title" = "Qué hacer si has estado cerca de alguien con coronavirus";
 "help.what_to_do_with_notification.description" = "Sigue las recomendaciones de la app. Las recomendaciones dependen de la situación, como, por ejemplo, si tienes síntomas relacionados con el coronavirus y en qué día estuviste cerca de la persona contagiada.<br><br>En cualquier caso, quédate en casa hasta que estés seguro de que no tienes coronavirus. Así evitarás contagiar a otros sin querer.<br><br>¿El GGD (servicio municipal de salud) te ha dado recomendaciones que difieren con las de la app? En ese caso, sigue las recomendaciones del GGD.";
 "help.other_reports.title" = "Otras notificaciones";
@@ -523,6 +524,13 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "cards.notificationsOff.title" = "Las notificaciones están <u>desactivadas</u>";
 "cards.notificationsOff.content" = "Activa las notificaciones generales para que la app pueda compartir información cuando sea necesario.";
 "cards.notificationsOff.action" = "Activar notificaciones";
+
+/* MARK: - Cards - Still Useful */
+"cards.stilluseful.title" = "¿Sigue siendo útil la app?";
+"cards.stilluseful.content" = "Incluso aunque estés vacunado/a o te hayas recuperado del coronavirus, la app sigue siendo un medio importante en la lucha contra el coronavirus.";
+"cards.stilluseful.action" = "Más información";
+"cards.stilluseful.page.title" = "Estoy vacunado/a o me he recuperado del coronavirus. ¿Sigue siendo útil la app?";
+"cards.stilluseful.page.content" = "Sí, sigue siendo útil tener la app instalada en tu móvil, incluso si ya estás vacunado/a o te has recuperado del coronavirus. El virus sigue entre nosotros y, con la app de CoronaMelder, se pueden rastrear y detener contagios.\n\nTambién tienes que seguir cumpliendo con las medidas vigentes: mantener una distancia de 1,5 metros, lavarse las manos a menudo y llevar puesta la mascarilla en lugares donde sea obligatorio, como en el transporte público o en el avión.\n\nEn algunos eventos o lugares, la medida de 1,5 metros de distancia no se aplica. Por ejemplo, en un evento donde todos los visitantes muestran mediante la app CoronaCheck que se han hecho un test y ha salido negativo o que ya se han vacunado dos veces.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activar notificaciones de contacto";
