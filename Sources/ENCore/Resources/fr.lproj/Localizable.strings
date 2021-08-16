@@ -295,6 +295,7 @@
 "help.what_does_report_look_like.title" = "À quoi ressemble une notification ?";
 "help.what_does_report_look_like.description" = "La notification ressemble à un SMS. Le message indique le jour où vous avez été en contact avec quelqu’un qui a le Covid-19.<br><br>Cliquez sur la notification pour ouvrir CoronaMelder. Vous y lirez ce que vous pouvez faire.";
 "help.notification.example" = "Exemple : Voilà à quoi ressemble l’application lorsque vous recevez une notification";
+"help.notification.example.imagedescription" = "Écran rouge avec icone de sonnette qui indique un avertissement.";
 "help.what_to_do_with_notification.title" = "Que pouvez-vous faire si vous avez été en contact avec quelqu'un qui a le Covid-19 ?";
 "help.what_to_do_with_notification.description" = "Suivez les conseils de l'application. Ce conseil dépend de votre situation. Ou si vous avez des symptômes qui correspondent à ceux du Covid-19. Et du jour où vous avez été en contact avec la personne contaminée.<br><br>Restez en tous cas chez vous jusqu'à ce que vous soyez certain(e) de ne pas avoir le Covid-19. Vous évitez ainsi de contaminer sans le savoir les personnes qui vous entourent.<br><br>Si le GGD vous donne par téléphone d'autres conseils que ceux de l'application, suivez les conseils du GGD.";
 "help.other_reports.title" = "Autres notifications";
@@ -525,6 +526,13 @@
 "cards.notificationsOff.title" = "Les notifications sont <u>désactivées</u>";
 "cards.notificationsOff.content" = "Activez les notifications de manière à ce que l'application puisse partager directement les informations lorsque c'est nécessaire.";
 "cards.notificationsOff.action" = "Activer les notifications";
+
+/* MARK: - Cards - Still Useful */
+"cards.stilluseful.title" = "L'application est-elle encore utile ?";
+"cards.stilluseful.content" = "Même si vous êtes vacciné(e) ou si vous avez eu la Covid-19, l'application demeure un moyen important de lutter contre la Covid-19.";
+"cards.stilluseful.action" = "En savoir plus";
+"cards.stilluseful.page.title" = "Je suis vacciné(e) ou guéri(e) de la Covid-19, l'application est-elle encore vraiment utile ?";
+"cards.stilluseful.page.content" = "Oui, il est encore utile d'avoir l'application sur votre téléphone. Même si vous avez déjà été vacciné(e) ou que vous êtes guéri(e) de la Covid-19,  le virus est encore toujours parmi nous et, avec l'application CoronaMelder, les contaminations sont détectées et arrêtées plus rapidement.\nVous devez aussi toujours vous en tenir aux règles connues : garder une distance d'1,5 mètre et vous laver souvent les mains ainsi que porter le masque dans les endroits où cela est obligatoire. Par exemple dans les transports publics ou dans l'avion.\n\nPour certains événements ou sites, la mesure de la distance d'1,5 mètre ne s'applique plus. Par exemple à un événement où tous les visiteurs prouvent dans l'application CoronaCheck qu'ils ont été testés et qu'ils n'ont pas la Covid-19 ou qu'ils ont reçu leurs deux doses de vaccin.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activer les notifications des contacts";

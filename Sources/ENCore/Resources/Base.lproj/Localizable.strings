@@ -295,6 +295,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "help.what_does_report_look_like.title" = "What does a notification look like?";
 "help.what_does_report_look_like.description" = "The notification looks like what you see when you receive a text message. The notification tells you which day you were near someone who has coronavirus.<br><br>Click on the notification to open CoronaMelder. There you'll read what you can do next.";
 "help.notification.example" = "Example: This is how the app looks if you get a notification";
+"help.notification.example.imagedescription" = "Red screen with a bell icon that indicates a warning";
 "help.what_to_do_with_notification.title" = "What can you do after you've been near someone who has coronavirus?";
 "help.what_to_do_with_notification.description" = "Follow the advice from the app. This advice is different based on your situation. It depends on whether you have symptoms related to coronavirus. And on which day you were possibly exposed.<br><br>In any case, stay home until you know for sure you don't have the coronavirus. So you’ll prevent unknowingly infecting others.<br><br>Were you near someone who has your contact details, and were you called by the GGD? Follow the advice given by the GGD, not the advice given by the app.";
 "help.other_reports.title" = "Other notifications";
@@ -526,6 +527,13 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "cards.notificationsOff.title" = "Notifications are turned <u>off</u>";
 "cards.notificationsOff.content" = "Turn on general notifications so the app can instantly share information when necessary.";
 "cards.notificationsOff.action" = "Turn on notification";
+
+/* MARK: - Cards - Still Useful */
+"cards.stilluseful.title" = "Is the app still useful?";
+"cards.stilluseful.content" = "Even if you've already been vaccinated or have had coronavirus, the app is still an important instrument in the battle against coronavirus.";
+"cards.stilluseful.action" = "Read more";
+"cards.stilluseful.page.title" = "I have been vaccinated or have recovered from coronavirus, is the app still useful?";
+"cards.stilluseful.page.content" = "Yes, it certainly makes sense to download CoronaMelder and have it on your phone. Even though you've already been vaccinated or recovered from coronavirus. The coronavirus is still among us, and infections are detected and stopped faster with the CoronaMelder app.\n\nYou still have to stick to the well-known measures: keeping a 1,5 metre distance and washing your hands often. And wearing a face mask in places where it is mandatory. In public transport or on airplanes, for example.\n\nAt some events or locations the measure of keeping a 1,5 metre distance expires. For example at events where all visitors use the CoronaCheck app to show that they have been tested negative, don't have coronavirus or have already been vaccinated twice.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Enable contact notifications";
