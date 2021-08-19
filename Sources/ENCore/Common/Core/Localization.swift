@@ -230,6 +230,8 @@ extension String {
 
     static var helpFaqReasonTitle: String { return Localization.string(for: "help.faq.reason.title") }
     static var helpFaqReasonDescription: String { return Localization.string(for: "help.faq.reason.description") }
+    static var helpFaqStillUsefulTitle: String { return Localization.string(for: "cards.stilluseful.page.title") }
+    static var helpFaqStillUsefulDescription: String { return Localization.string(for: "cards.stilluseful.page.content") }
     static var helpFaqLocationTitle: String { return Localization.string(for: "help.faq.location.title") }
     static var helpFaqLocationDescription: String { return Localization.string(for: "help.faq.location.description") }
     static var helpFaqAnonymousTitle: String { return Localization.string(for: "help.faq.anonymous.title") }
