@@ -530,7 +530,7 @@
 "cards.stilluseful.content" = "Aşı olmuş veya daha önce Korona geçirmiş olsanız bile uygulama hala Korona ile mücadelede önemli bir araçtır.";
 "cards.stilluseful.action" = "Daha fazlasını oku";
 "cards.stilluseful.page.title" = "Aşı oldum veya Korona geçirdim, uygulama hala faydalı mı?";
-"cards.stilluseful.page.content" = "Evet, uygulamanın telefonunuzda olması hala yararlıdır. Aşı olmuş veya Korona geçirmiş olsanız bile virüs hala aramızda ve CoronaMelder uygulaması ile enfeksiyonlar daha hızlı tespit edilip durdurulur.\n\nYine de iyi bilinen önlemlere bağlı kalmalısınız: 1,5 metre mesafede durun ve ellerinizi sık sık yıkayın. Ve zorunlu olan yerlerde maske takın. Örneğin toplu taşımada veya uçakta.\n\nBazı etkinliklerde veya mekanlarda 1,5 metrelik mesafeyi koruma tedbiri kaldırılacaktır. Örneğin, CoronaCheck uygulamasındaki tüm ziyaretçilerin test edildiklerini ve Korona olmadıklarını veya iki kez aşı olduklarını kanıtladıkları etkinliklerde.";
+"cards.stilluseful.page.content" = "Evet, uygulamanın telefonunuzda olması hala yararlıdır. Aşı olmuş veya Korona geçirmiş olsanız bile virüs hala aramızda ve CoronaMelder uygulaması ile enfeksiyonlar daha hızlı tespit edilip durdurulur.<br><br>Yine de iyi bilinen önlemlere bağlı kalmalısınız: 1,5 metre mesafede durun ve ellerinizi sık sık yıkayın. Ve zorunlu olan yerlerde maske takın. Örneğin toplu taşımada veya uçakta.<br><br>Bazı etkinliklerde veya mekanlarda 1,5 metrelik mesafeyi koruma tedbiri kaldırılacaktır. Örneğin, CoronaCheck uygulamasındaki tüm ziyaretçilerin test edildiklerini ve Korona olmadıklarını veya iki kez aşı olduklarını kanıtladıkları etkinliklerde.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Temas bildirimlerini açmak";
