@@ -10,17 +10,19 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 * The designs that are used as a basis to develop the apps can be found here: https://github.com/minvws/nl-covid19-notification-app-design
 * The architecture that underpins the development can be found here: https://github.com/minvws/nl-covid19-notification-app-coordination
 
+
 ## Table of Contents
 1. [About the app](#about)
 1.1 [App Requirements](#requirements)
 1.2 [Feature overview](#featureoverview)
 2. [Development & Contribution process](#development)
-2.1 [Getting started](#gettingstarted)
-2.2 [Continuous Integration & reproducible builds](#ci)
-2.3 [OpenSSL](#openssl)
-2.4 [Validate GAEN signature](#gaensignature)
-2.5 [SSL Hash Generation](#hashgeneration)
-2.6 [GAEN API Disclaimer](#gaendisclaimer)
+2.1 [Build Requirements](#developmentrequirements)
+2.2 [Getting started](#gettingstarted)
+2.3 [Continuous Integration & reproducible builds](#ci)
+2.4 [OpenSSL](#openssl)
+2.5 [Validate GAEN signature](#gaensignature)
+2.6 [SSL Hash Generation](#hashgeneration)
+2.7 [GAEN API Disclaimer](#gaendisclaimer)
 3. [Architecture (external link)](ARCHITECTURE.md)
 
 <a name="about"></a>
@@ -56,30 +58,46 @@ Other functions of the app that are automatically performed and are not availabl
 
 <a name="development"></a>
 ## 2. Development & Contribution process
-
 The development team works on the repository in a private fork (for reasons of compliance with existing processes) and shares its work as often as possible.
 If you plan to make non-trivial changes, we recommend to open an issue beforehand where we can discuss your planned changes.
 This increases the chance that we might be able to use your contribution (or it avoids doing work if there are reasons why we wouldn't be able to use it).
 
-<a name="gettingstarted"></a>
-### 2.1 Getting Started
+<a name="buildrequirements"></a>
+### 2.1 Build Requirements
 
-Run `make dev` && `make project` to get started. Homebrew (https://brew.sh) is a requirement to install dependencies.
+To build and develop the app you need:
+
+- [Xcode 12.4](https://download.developer.apple.com/Developer_Tools/Xcode_12.4/Xcode_12.4.xip)
+- Xcode Command Line tools (Specifically "Make").
+- [Homebrew](https://brew.sh/)
+
+<a name="gettingstarted"></a>
+### 2.2 Getting Started
+
+The project uses a Makefile in the root folder of the repository to perform basic actions needed for the development of the app.
+
+- `make dev` to install all required libraries and components to develop the app
+- `make project` to generate the .xcodeproj file for the app. This uses `xcodegen` and the project.yml file in the root folder of the repository.
+
+Other commands that are available and might  be useful during the development process:
+
+- `make clean_snapshots` to delete all recorded snapshot test reference file in the repository. This is handy if you want to re-record all snapshots after a big change or after changing the Simulator / OS version you want the snapshots to be recorded on.
+- `make push_notification` send a mock push notification to the app running in the simulator. The payload for this notification can be found in `tools/push/payload.apns`
 
 <a name="ci"></a>
-### 2.2 Continuous Integration & reproducible builds
+### 2.3 Continuous Integration & reproducible builds
 
 In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-covid19-notification-app-coordination/issues/6) this codebase can be build using Github Actions.
 
 <a name="openssl"></a>
-### 2.3 OpenSSL
+### 2.4 OpenSSL
 
 This project relies on OpenSSL to validate the KeySet signatures. OpenSSL binaries (v1.1.1d) are included and can be built using `make build_openssl`. By default the compiled binaries are part of the repo to reduce CI build times. Feel free to compile the binaries yourself.
 
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
 
 <a name="gaensignature"></a>
-### 2.4 Validate GAEN signature
+### 2.5 Validate GAEN signature
 
 Both Apple and Google validate signatures when processing exposure keysets. These so-called GAEN signatures are generated using a private key on our backend. The public key is sent to Google and Apple and for every bundle-identifier, region-identifier, key-version combination they store a public key. 
 
@@ -103,7 +121,7 @@ To validate the generated GAEN signatures on mobile please execute the following
 This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit (http://www.openssl.org/)
 
 <a name="hashgeneration"></a>
-#### 2.5 SSL Hash Generation
+#### 2.6 SSL Hash Generation
 
 ```
 let certificate = """
@@ -125,6 +143,7 @@ print(Certificate(certificate: secCert).signature!)
 ```
 
 <a name="gaendisclaimer"></a>
-### 2.6. GAEN API Disclaimer
+### 2.7 GAEN API Disclaimer
+
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
