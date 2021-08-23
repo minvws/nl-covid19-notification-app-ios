@@ -21,6 +21,7 @@ public protocol Colors: AnyObject {
     var divider: UIColor { get }
     var primaryButton: UIColor { get }
     var textButtonPrimary: UIColor { get }
+    var textButtonSecondaryLight: UIColor { get }
     var textButtonTertiary: UIColor { get }
     var textDark: UIColor { get }
     var settingsStepBackground: UIColor { get }
@@ -102,6 +103,10 @@ final class ENColors: Colors, Logging {
 
     var textButtonPrimary: UIColor {
         return color(for: "TextButtonPrimary")
+    }
+
+    var textButtonSecondaryLight: UIColor {
+        return color(for: "TextButtonSecondaryLight")
     }
 
     var textButtonTertiary: UIColor {

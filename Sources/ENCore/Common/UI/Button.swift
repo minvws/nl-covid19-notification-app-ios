@@ -96,7 +96,7 @@ class Button: UIButton, Themeable {
             setTitleColor(theme.colors.textButtonPrimary, for: .normal)
         case .secondaryLight:
             backgroundColor = theme.colors.secondaryLight
-            setTitleColor(theme.colors.textButtonPrimary, for: .normal)
+            setTitleColor(theme.colors.textButtonSecondaryLight, for: .normal)
         case .tertiary:
             backgroundColor = theme.colors.tertiary
             setTitleColor(theme.colors.textPrimary, for: .normal)
