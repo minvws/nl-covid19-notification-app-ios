@@ -137,7 +137,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         guard let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
             return
         }
-        self.update(exposureState: currentState, isLandscape: isLandscape)
+        update(exposureState: currentState, isLandscape: isLandscape)
     }
 
     private func updatePauseTimer() {
@@ -156,7 +156,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     }
 
     private func update(exposureState status: ExposureState, isLandscape: Bool) {
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.updatePauseTimer()
         }
 
