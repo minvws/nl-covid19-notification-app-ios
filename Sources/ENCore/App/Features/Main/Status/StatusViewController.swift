@@ -21,6 +21,7 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
     private let exposureStateStream: ExposureStateStreaming
     private let dataController: ExposureDataControlling
     private let pushNotificationStream: PushNotificationStreaming
+    private let applicationController: ApplicationControlling
 
     private weak var listener: StatusListener?
     private weak var topAnchor: NSLayoutYAxisAnchor?
@@ -42,13 +43,15 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
          theme: Theme,
          topAnchor: NSLayoutYAxisAnchor?,
          dataController: ExposureDataControlling,
-         pushNotificationStream: PushNotificationStreaming) {
+         pushNotificationStream: PushNotificationStreaming,
+         applicationController: ApplicationControlling) {
         self.exposureStateStream = exposureStateStream
         self.interfaceOrientationStream = interfaceOrientationStream
         self.dataController = dataController
         self.pushNotificationStream = pushNotificationStream
         self.listener = listener
         self.topAnchor = topAnchor
+        self.applicationController = applicationController
 
         self.cardBuilder = cardBuilder
 
@@ -99,11 +102,11 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
-        
+
         // Listen for dark mode change to load dark or light animation
         refreshCurrentState()
     }
-    
+
     // MARK: - Private
 
     @objc private func updateExposureStateView() {
@@ -123,13 +126,14 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
                 self?.refreshCurrentState()
             }
         }).disposed(by: disposeBag)
-        
+
         refreshCurrentState()
     }
 
     private func refreshCurrentState() {
+        guard applicationController.isActive() else { return }
         let currentState = exposureStateStream.currentExposureState
-        
+
         guard let isLandscape = interfaceOrientationStream.currentOrientationIsLandscape else {
             return
         }
@@ -161,19 +165,18 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         var cardTypes = [CardType]()
 
         var notifiedState = status.notifiedState
-        
+
         // Override notified state if the notification date was more than `notifiedShouldShowCardDaysThreshold` days ago
         if case let .notified(date) = notifiedState,
-           currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
-            
+            currentDate().days(sinceDate: date) ?? 0 > notifiedShouldShowCardDaysThreshold {
+
             notifiedState = .notNotified
-            
+
             cardTypes.append(.notifiedMoreThanThresholdDaysAgo(date: date,
                                                                explainRiskHandler: explainRisk,
                                                                removeNotificationHandler: removeNotification))
-            
         }
-        
+
         switch (status.activeState, notifiedState) {
         case (.active, .notNotified):
             statusViewModel = .activeWithNotNotified(theme: theme, showScene: !isLandscape && announcementCardTypes.isEmpty)
@@ -186,10 +189,10 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
             cardTypes.append(reason.cardType(listener: listener))
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdates:
             statusViewModel = .inactiveTryAgainWithNotNotified
-            
+
         case let (.inactive(reason), .notNotified) where reason == .noRecentNotificationUpdatesInternetOff:
             statusViewModel = .internetInactiveWithNotNotified(theme: theme)
-            
+
         case let (.inactive(reason), .notNotified) where reason == .bluetoothOff:
             statusViewModel = .bluetoothInactiveWithNotNotified(theme: theme)
 
@@ -331,9 +334,9 @@ private final class StatusView: View {
         contentContainer.addArrangedSubview(iconView)
         contentContainer.addArrangedSubview(textContainer)
         contentContainer.addArrangedSubview(buttonContainer)
-        
+
         sceneImageViewContainer.addSubview(sceneImageView)
-                
+
         bottomCardContainer.addArrangedSubview(cardView)
 
         addSubview(cloudsView)
@@ -407,7 +410,7 @@ private final class StatusView: View {
             maker.bottom.equalTo(stretchGuide)
         }
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -449,17 +452,17 @@ private final class StatusView: View {
 
         gradientLayer.colors = [
             theme.colors[keyPath: viewModel.gradientTopColor].cgColor,
-            theme.colors[keyPath: viewModel.gradientBottomColor].cgColor,
+            theme.colors[keyPath: viewModel.gradientBottomColor].cgColor
         ]
 
         sceneImageView.isHidden = !viewModel.showScene
         cloudsView.isHidden = !(viewModel.showSky && !theme.darkModeEnabled)
         starsView.isHidden = !(viewModel.showSky && theme.darkModeEnabled && viewModel.showScene)
         gradientLayer.isHidden = theme.darkModeEnabled && starsView.isHidden
-        
+
         evaluateHeight()
         evaluateImageSize()
-        
+
         showStatus(true)
     }
 
@@ -526,7 +529,7 @@ private final class StatusAnimationView: View {
     override func build() {
         super.build()
         backgroundColor = .clear
-        
+
         loadAnimation()
         playAnimation()
 
@@ -540,12 +543,12 @@ private final class StatusAnimationView: View {
             make.edges.equalToSuperview()
         }
     }
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         loadAnimation()
     }
-    
+
     private func loadAnimation() {
         animationView.animation = LottieAnimation.named(theme.appearanceAdjustedAnimationName("statusactive"))
         animationView.loopMode = .playOnce

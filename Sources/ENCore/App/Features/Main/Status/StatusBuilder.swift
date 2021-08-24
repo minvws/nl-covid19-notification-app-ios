@@ -62,9 +62,13 @@ private final class StatusDependencyProvider: DependencyProvider<StatusDependenc
     var pauseController: PauseControlling {
         dependency.pauseController
     }
-    
+
     var exposureController: ExposureControlling {
         dependency.exposureController
+    }
+
+    var applicationController: ApplicationControlling {
+        return ApplicationController()
     }
 }
 
@@ -80,7 +84,8 @@ final class StatusBuilder: Builder<StatusDependency>, StatusBuildable {
             theme: dependencyProvider.dependency.theme,
             topAnchor: topAnchor,
             dataController: dependencyProvider.dataController,
-            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream
+            pushNotificationStream: dependencyProvider.dependency.pushNotificationStream,
+            applicationController: dependencyProvider.applicationController
         )
 
         return viewController
