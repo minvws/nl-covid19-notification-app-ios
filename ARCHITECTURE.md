@@ -166,7 +166,6 @@ final class MainViewController: ViewController, MainViewControllable {
 
 ## Conventions
 
-More conventions could be added later (e.g. once decisions have been made about for example UI tests):
 
 - All concrete classes are defined by protocols
 - Follow the [Swift API design](https://swift.org/documentation/api-design-guidelines/) guidelines to name your entities 
@@ -187,7 +186,7 @@ More conventions could be added later (e.g. once decisions have been made about 
 
 ## Snapshot tests
 
-[Snapshot Tests](https://github.com/pointfreeco/swift-snapshot-testing) are used to protect against unwanted UI changes. Ensure you commit Snapshot tests for any UI related implementations/changes. These should be run on the iPhone 11 simulator.
+[Snapshot Tests](https://github.com/pointfreeco/swift-snapshot-testing) are used to protect against unwanted UI changes. Ensure you commit Snapshot tests for any UI related implementations/changes. These should be run on the iPhone 12 simulator with iOS 14.4.
 
 ## Questions / Feedback / Remarks
 

@@ -5,11 +5,11 @@
 This repository contains the native iOS implementation of the Dutch COVID-19 Notification App CoronaMelder. 
 
 * The iOS app is located in the repository you are currently viewing.
-* The Android app can be found here: https://github.com/minvws/nl-covid19-notification-app-android
-* The backend can be found here: https://github.com/minvws/nl-covid19-notification-app-backend
-* The designs that are used as a basis to develop the apps can be found here: https://github.com/minvws/nl-covid19-notification-app-design
-* The architecture that underpins the development can be found here: https://github.com/minvws/nl-covid19-notification-app-coordination
-
+* The Android app can be found here: [https://github.com/minvws/nl-covid19-notification-app-android]()
+* The backend can be found here: [https://github.com/minvws/nl-covid19-notification-app-backend]()
+* The designs that are used as a basis to develop the apps can be found here: [https://github.com/minvws/nl-covid19-notification-app-design]()
+* The architecture that underpins the development can be found here: [https://github.com/minvws/nl-covid19-notification-app-coordination]()
+* the architecture of the app itself is described here: [Architecture](ARCHITECTURE.md)
 
 ## Table of Contents
 1. [About the app](#about)
@@ -23,7 +23,10 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 2.4 [Validate GAEN signature](#gaensignature)
 2.5 [SSL Hash Generation](#hashgeneration)
 2.6 [GAEN API Disclaimer](#gaendisclaimer)
-3. [Architecture (external link)](ARCHITECTURE.md)
+3. [Translations](#translations)
+3.1 [Uploading iOS translations to OneSky](#uploadtranslations)
+3.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
+
 
 <a name="about"></a>
 ## 1. About the app
@@ -177,3 +180,31 @@ print(Certificate(certificate: secCert).signature!)
 
 
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
+
+<a name="translations"></a>
+## 3 Managing Translations
+The content of the app is translated into 10 different languages. These translations are done via [OneSky](https://www.oneskyapp.com/). 
+
+<a name="uploadtranslations"></a>
+### 3.1 Uploading iOS translations to OneSky
+- The App contains 2 Resource folders:
+    - Sources/EN/Resources
+    - Sources/ENCore/Resources
+- Open OneSky and go to the iOS Project
+- Click the + icon next to “Files” on the left side of the screen
+- Drag Sources/ENCore/Resources/nl.lproj/Localizable.strings to OneSky
+- Rename Sources/EN/Resources/nl.lproj/Localizable.strings to Main.strings
+- Drag Sources/EN/Resources/nl.lproj/Main.strings to OneSky
+- Always select the “deprecate” option in OneSky
+
+When updating existing translations by uploading files, make sure the Dutch language is not finalised, otherwise updates won't "overwrite" existing translations. Translations are set to crowdsource mode which means that everyone with access to the url can sign up and add translations for non-finalised strings, so for that reason finalising the translations is advisable too.
+
+<a name="download"></a>
+### 3.2 Downloading and importing iOS translations from OneSky
+- Check out the master branch in git
+- Go to OneSky -> Translation Overview and click “Download Translation” on the top right
+- Select all languages and all files
+- Click “Export”
+- Unzip the downloaded file
+- Open a terminal and go to <Source Root>/tools/scripts
+- Type "sh import-onesky.sh /absolute/path/of/extracted/onesky/folder". This will import the files and copy them to the correct location in the project
