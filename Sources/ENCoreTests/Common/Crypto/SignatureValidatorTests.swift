@@ -17,7 +17,7 @@ final class SignatureValidatorTests: TestCase {
 
         let result = signatureValidator.validate(signature: validSignature, content: content, validateRootCertificate: true)
 
-        XCTAssertEqual(result, .SIGNATUREVALIDATIONRESULT_SUCCESS)
+        XCTAssertEqual(result.rawValue, SignatureValidationResult.SIGNATUREVALIDATIONRESULT_SUCCESS.rawValue)
     }
 
     func test_validateSignature_incorrectCommonName() {

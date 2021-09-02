@@ -2,21 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser",
-        "state": {
-          "branch": null,
-          "revision": "223d62adc52d51669ae2ee19bdb8b7d9fd6fcd9c",
-          "version": "0.0.6"
-        }
-      },
-      {
         "package": "SwiftSyntax",
         "repositoryURL": "https://github.com/apple/swift-syntax.git",
         "state": {
-          "branch": "swift-5.3-DEVELOPMENT-SNAPSHOT-2020-09-07-a",
-          "revision": "e39d380a1877da137d45cc5dcd23676a3fd00476",
-          "version": null
+          "branch": null,
+          "revision": "2fff9fc25cdc059379b6bd309377cfab45d8520c",
+          "version": "0.50400.0"
         }
       },
       {

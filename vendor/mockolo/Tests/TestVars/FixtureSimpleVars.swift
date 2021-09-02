@@ -1,6 +1,6 @@
 import MockoloFramework
 
-let testableImports = """
+let simpleVars = """
 \(String.headerDoc)
 import Foundation
 
@@ -10,13 +10,9 @@ protocol SimpleVar {
 }
 """
 
-let testableImportsMock =
-"""
+let simpleVarsMock = """
 
 import Foundation
-@testable import SomeImport1
-@testable import SomeImport2
-
 
 class SimpleVarMock: SimpleVar {
     
@@ -33,25 +29,29 @@ class SimpleVarMock: SimpleVar {
 
 """
 
-let testableImportsWithOverlap = """
-\(String.headerDoc)
-import Foundation
-import SomeImport1
 
-/// \(String.mockAnnotation)
-protocol SimpleVar {
-    var name: Int { get set }
-}
-"""
-
-let testableImportsWithOverlapMock =
-"""
+let simpleVarsAllowCallCountMock = """
 
 import Foundation
-@testable import SomeImport1
-
 
 class SimpleVarMock: SimpleVar {
+    
+    init() {  }
+    init(name: Int = 0) {
+        self.name = name
+        
+    }
+    var nameSetCallCount = 0
+    var name: Int = 0 { didSet { nameSetCallCount += 1 } }
+}
+
+"""
+
+let simpleVarsFinalMock = """
+
+import Foundation
+
+final class SimpleVarMock: SimpleVar {
     
     
     
