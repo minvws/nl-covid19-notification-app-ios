@@ -8,11 +8,11 @@ EN_CORE_MOCKS_PATH="Sources/ENCoreTests/Mocks.swift"
 
 # Creates xcodeproj
 project: touch_mock_files_if_needed
-	vendor/XcodeGen/.build/release/xcodegen
+	vendor/XcodeGen/.build/apple/Products/Release/xcodegen
 	open EN.xcodeproj
 
 generate_project: touch_mock_files_if_needed
-	vendor/XcodeGen/.build/release/xcodegen
+	vendor/XcodeGen/.build/apple/Products/Release/xcodegen
 
 # Initializes dev environment
 dev: install_xcode_templates install_dev_deps
@@ -37,7 +37,7 @@ build_mockolo:
 	cd vendor/mockolo && swift build -c release
 
 build_xcodegen:
-	cd vendor/XcodeGen && swift build -c release -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.13"
+	cd vendor/XcodeGen && make build
 
 build_swiftformat:
 	cd vendor/SwiftFormat && swift build -c release
