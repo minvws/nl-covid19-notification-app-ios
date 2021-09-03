@@ -9,4 +9,4 @@ echo ${MOCKOLO_PATH}
 
 SRC="${REPO_ROOT}/Sources/ENCore"
 DEST="${REPO_ROOT}/Sources/ENCoreTests/Mocks.swift"
-${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i ENCore -l 1
+${MOCKOLO_PATH} -s ${SRC} -d ${DEST} -x ${EXCLUDES} -i ENCore

@@ -39,11 +39,8 @@ class Executor {
     private var useTemplateFunc: OptionArgument<Bool>!
     private var useMockObservable: OptionArgument<Bool>!
     private var mockAll: OptionArgument<Bool>!
-    private var mockFinal: OptionArgument<Bool>!
     private var concurrencyLimit: OptionArgument<Int>!
     private var enableArgsHistory: OptionArgument<Bool>!
-    private var allowSetCallCount: OptionArgument<Bool>!
-    
 
     /// Initializer.
     ///
@@ -116,7 +113,7 @@ class Executor {
                                         usage: "If set, custom module imports will be added to the final import statement list.")
         excludeImports = parser.add(option: "--exclude-imports",
                                         kind: [String].self,
-                                        usage: "If set, listed modules will be excluded from the import statements in the mock output.")
+                                        usage: "If set, listed modules will be exluded from the import statements in the mock output.")
         header = parser.add(option: "--header",
                                 kind: String.self,
                                 usage: "A custom header documentation to be added to the beginning of a generated mock file.")
@@ -129,16 +126,10 @@ class Executor {
         mockAll = parser.add(option: "--mock-all",
                                  kind: Bool.self,
                                  usage: "If set, it will mock all types (protocols and classes) with a mock annotation (default is set to false and only mocks protocols with a mock annotation).")
-        mockFinal = parser.add(option: "--mock-final",
-                                 kind: Bool.self,
-                                 usage: "If set, generated mock classes will have the 'final' attributes (default is set to false).")
         concurrencyLimit = parser.add(option: "--concurrency-limit",
                                       shortName: "-j",
                                       kind: Int.self,
                                       usage: "Maximum number of threads to execute concurrently (default = number of cores on the running machine).")
-        allowSetCallCount = parser.add(option: "--allow-set-callcount",
-                                       kind: Bool.self,
-                                       usage: "If set, generated *CallCount vars will be allowed to set manually. ")
         enableArgsHistory = parser.add(option: "--enable-args-history",
                                        kind: Bool.self,
                                        usage: "Whether to enable args history for all functions (default = false). To enable history per function, use the 'history' keyword in the annotation argument. ")
@@ -200,13 +191,11 @@ class Executor {
         let shouldUseMockObservable = arguments.get(useMockObservable) ?? false
         let shouldMockAll = arguments.get(mockAll) ?? false
         let shouldCaptureAllFuncArgsHistory = arguments.get(enableArgsHistory) ?? false
-        let shouldMockFinal = arguments.get(mockFinal) ?? false
-        let allowSet = arguments.get(allowSetCallCount) ?? false
 
         do {
             try generate(sourceDirs: srcDirs,
                          sourceFiles: srcs,
-                         parser: SourceParser(),
+                         parser: ParserViaSwiftSyntax(),
                          exclusionSuffixes: exclusionSuffixes,
                          mockFilePaths: mockFilePaths,
                          annotation: annotation,
@@ -215,9 +204,7 @@ class Executor {
                          declType: shouldMockAll ? .all : .protocolType,
                          useTemplateFunc: shouldUseTemplateFunc,
                          useMockObservable: shouldUseMockObservable,
-                         allowSetCallCount: allowSet,
                          enableFuncArgsHistory: shouldCaptureAllFuncArgsHistory,
-                         mockFinal: shouldMockFinal,
                          testableImports: testableImports,
                          customImports: customImports,
                          excludeImports: excludeImports,
@@ -233,3 +220,12 @@ class Executor {
         }
     }
 }
+
+public struct Version {
+    /// The string value for this version.
+    public let value: String
+
+    /// The current Mockolo version.
+    public static let current = Version(value: "1.2.7")
+}
+

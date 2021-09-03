@@ -17,17 +17,9 @@
 import Foundation
 import SwiftSyntax
 
-
-public enum DeclType {
-    case protocolType, classType, other, all
-}
-
-public class SourceParser {
+public class ParserViaSwiftSyntax: SourceParsing {
     public init() {}
-    /// Parses processed decls (mock classes) and calls a completion block
-    /// @param paths File paths containing processed mocks
-    /// @param fileMacro: File level macro
-    /// @param completion:The block to be executed on completion
+    
     public func parseProcessedDecls(_ paths: [String],
                                     fileMacro: String?,
                                     completion: @escaping ([Entity], ImportMap?) -> ()) {
@@ -35,14 +27,7 @@ public class SourceParser {
             self.generateASTs(path, annotation: "", fileMacro: fileMacro, declType: .classType, lock: lock, completion: completion)
         }
     }
-    /// Parses decls (protocol, class) with annotations (/// @mockable) and calls a completion block
-    /// @param paths File/dir paths containing types with mock annotation
-    /// @param isDirs:True if paths are dir paths
-    /// @param exclusionSuffixess List of file suffixes to exclude when processing
-    /// @param annotation The mock annotation
-    /// @param fileMacro: File level macro
-    /// @param declType: The declaration type, e.g. protocol, class.
-    /// @param completion:The block to be executed on completion
+    
     public func parseDecls(_ paths: [String]?,
                            isDirs: Bool,
                            exclusionSuffixes: [String]? = nil,

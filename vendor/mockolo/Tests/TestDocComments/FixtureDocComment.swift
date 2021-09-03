@@ -57,32 +57,27 @@ class DocMock: Doc {
 
 let docCommentMock =
 """
+    import Foundation
 
-import Foundation
+    public class DocProtocolMock: DocProtocol {
+        public init() { }
 
-
-public class DocProtocolMock: DocProtocol {
-    public init() { }
-
-
-    public private(set) var fooCallCount = 0
-    public var fooHandler: ((Bool, Int) -> ())?
-    public func foo(arg: Bool, tag: Int)  {
-        fooCallCount += 1
-        if let fooHandler = fooHandler {
-            fooHandler(arg, tag)
+        public var fooCallCount = 0
+        public var fooHandler: ((Bool, Int) -> ())?
+        public func foo(arg: Bool, tag: Int)  {
+            fooCallCount += 1
+            if let fooHandler = fooHandler {
+                fooHandler(arg, tag)
+            }
         }
         
-    }
-
-    public private(set) var barCallCount = 0
-    public var barHandler: ((String, Float) -> ())?
-    public func bar(name: String, more: Float)  {
-        barCallCount += 1
-        if let barHandler = barHandler {
-            barHandler(name, more)
+        public var barCallCount = 0
+        public var barHandler: ((String, Float) -> ())?
+        public func bar(name: String, more: Float)  {
+            barCallCount += 1
+            if let barHandler = barHandler {
+                barHandler(name, more)
+            }
         }
-        
     }
-}
 """

@@ -9,31 +9,27 @@ public protocol Foo {
 """
 
 let inoutParamsMock = """
-
-
-
 public class FooMock: Foo {
     public init() { }
 
-
-    public private(set) var hashCallCount = 0
+    public var hashCallCount = 0
     public var hashHandler: ((inout Hasher) -> ())?
     public func hash(into hasher: inout Hasher)  {
         hashCallCount += 1
         if let hashHandler = hashHandler {
             hashHandler(&hasher)
         }
-        
+
     }
 
-    public private(set) var barCallCount = 0
+    public var barCallCount = 0
     public var barHandler: ((inout String, inout Int) -> ())?
     public func bar(lhs: inout String, rhs: inout Int)  {
         barCallCount += 1
         if let barHandler = barHandler {
             barHandler(&lhs, &rhs)
         }
-        
+
     }
 }
 
@@ -80,255 +76,259 @@ public protocol KeyValueSubscripting {
 
 let subscriptsMocks = """
 
-
 class SubscriptProtocolMock: SubscriptProtocol {
-    init() { }
+    init() {
+    }
 
     typealias T = Any
     typealias Value = Any
-
-    static private(set) var subscriptCallCount = 0
+    static var subscriptCallCount = 0
     static var subscriptHandler: ((Int) -> (AnyObject?))?
     static subscript(key: Int) -> AnyObject? {
         get {
-        subscriptCallCount += 1
-        if let subscriptHandler = subscriptHandler {
-            return subscriptHandler(key)
-        }
-        return nil
+            subscriptCallCount += 1
+
+            if let subscriptHandler = subscriptHandler {
+                return subscriptHandler(key)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptKeyCallCount = 0
+    var subscriptKeyCallCount = 0
     var subscriptKeyHandler: ((Int) -> (AnyObject))?
     subscript(_ key: Int) -> AnyObject {
         get {
-        subscriptKeyCallCount += 1
-        if let subscriptKeyHandler = subscriptKeyHandler {
-            return subscriptKeyHandler(key)
-        }
-        fatalError("subscriptKeyHandler returns can't have a default value thus its handler must be set")
+            subscriptKeyCallCount += 1
+
+            if let subscriptKeyHandler = subscriptKeyHandler {
+                return subscriptKeyHandler(key)
+            }
+            fatalError("subscriptKeyHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptKeyIntCallCount = 0
+    var subscriptKeyIntCallCount = 0
     var subscriptKeyIntHandler: ((Int) -> (AnyObject?))?
     subscript(key: Int) -> AnyObject? {
         get {
-        subscriptKeyIntCallCount += 1
-        if let subscriptKeyIntHandler = subscriptKeyIntHandler {
-            return subscriptKeyIntHandler(key)
-        }
-        return nil
+            subscriptKeyIntCallCount += 1
+
+            if let subscriptKeyIntHandler = subscriptKeyIntHandler {
+                return subscriptKeyIntHandler(key)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptIndexCallCount = 0
+    var subscriptIndexCallCount = 0
     var subscriptIndexHandler: ((String) -> (CGImage?))?
     subscript(index: String) -> CGImage? {
         get {
-        subscriptIndexCallCount += 1
-        if let subscriptIndexHandler = subscriptIndexHandler {
-            return subscriptIndexHandler(index)
-        }
-        return nil
+            subscriptIndexCallCount += 1
+
+            if let subscriptIndexHandler = subscriptIndexHandler {
+                return subscriptIndexHandler(index)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptMemoizeKeyCallCount = 0
+    var subscriptMemoizeKeyCallCount = 0
     var subscriptMemoizeKeyHandler: ((Int) -> (CGRect?))?
     subscript(memoizeKey: Int) -> CGRect? {
         get {
-        subscriptMemoizeKeyCallCount += 1
-        if let subscriptMemoizeKeyHandler = subscriptMemoizeKeyHandler {
-            return subscriptMemoizeKeyHandler(memoizeKey)
-        }
-        return nil
+            subscriptMemoizeKeyCallCount += 1
+
+            if let subscriptMemoizeKeyHandler = subscriptMemoizeKeyHandler {
+                return subscriptMemoizeKeyHandler(memoizeKey)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptPositionCallCount = 0
+    var subscriptPositionCallCount = 0
     var subscriptPositionHandler: ((Int) -> (Any))?
     subscript(position: Int) -> Any {
         get {
-        subscriptPositionCallCount += 1
-        if let subscriptPositionHandler = subscriptPositionHandler {
-            return subscriptPositionHandler(position)
-        }
-        fatalError("subscriptPositionHandler returns can't have a default value thus its handler must be set")
+            subscriptPositionCallCount += 1
+
+            if let subscriptPositionHandler = subscriptPositionHandler {
+                return subscriptPositionHandler(position)
+            }
+            fatalError("subscriptPositionHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptIndexStringIndexCallCount = 0
+    var subscriptIndexStringIndexCallCount = 0
     var subscriptIndexStringIndexHandler: ((String.Index) -> (Double))?
     subscript(index: String.Index) -> Double {
         get {
-        subscriptIndexStringIndexCallCount += 1
-        if let subscriptIndexStringIndexHandler = subscriptIndexStringIndexHandler {
-            return subscriptIndexStringIndexHandler(index)
-        }
-        return 0.0
+            subscriptIndexStringIndexCallCount += 1
+
+            if let subscriptIndexStringIndexHandler = subscriptIndexStringIndexHandler {
+                return subscriptIndexStringIndexHandler(index)
+            }
+            return 0.0
         }
         set { }
     }
-
-    private(set) var subscriptSafeCallCount = 0
+    var subscriptSafeCallCount = 0
     var subscriptSafeHandler: ((String.Index) -> (Double?))?
     subscript(safe index: String.Index) -> Double? {
         get {
-        subscriptSafeCallCount += 1
-        if let subscriptSafeHandler = subscriptSafeHandler {
-            return subscriptSafeHandler(index)
-        }
-        return nil
+            subscriptSafeCallCount += 1
+
+            if let subscriptSafeHandler = subscriptSafeHandler {
+                return subscriptSafeHandler(index)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptRangeCallCount = 0
+    var subscriptRangeCallCount = 0
     var subscriptRangeHandler: ((Range<Int>) -> (String))?
     subscript(range: Range<Int>) -> String {
         get {
-        subscriptRangeCallCount += 1
-        if let subscriptRangeHandler = subscriptRangeHandler {
-            return subscriptRangeHandler(range)
-        }
-        return ""
+            subscriptRangeCallCount += 1
+
+            if let subscriptRangeHandler = subscriptRangeHandler {
+                return subscriptRangeHandler(range)
+            }
+            return ""
         }
         set { }
     }
-
-    private(set) var subscriptPathCallCount = 0
+    var subscriptPathCallCount = 0
     var subscriptPathHandler: ((String) -> (((Double) -> Float)?))?
     subscript(path: String) -> ((Double) -> Float)? {
         get {
-        subscriptPathCallCount += 1
-        if let subscriptPathHandler = subscriptPathHandler {
-            return subscriptPathHandler(path)
-        }
-        return nil
+            subscriptPathCallCount += 1
+
+            if let subscriptPathHandler = subscriptPathHandler {
+                return subscriptPathHandler(path)
+            }
+            return nil
         }
         set { }
     }
-
-    private(set) var subscriptDynamicMemberCallCount = 0
+    var subscriptDynamicMemberCallCount = 0
     var subscriptDynamicMemberHandler: ((Any) -> (Any))?
     subscript<T>(dynamicMember keyPath: ReferenceWritableKeyPath<Double, T>) -> T {
         get {
-        subscriptDynamicMemberCallCount += 1
-        if let subscriptDynamicMemberHandler = subscriptDynamicMemberHandler {
-            return subscriptDynamicMemberHandler(keyPath) as! T
-        }
-        fatalError("subscriptDynamicMemberHandler returns can't have a default value thus its handler must be set")
+            subscriptDynamicMemberCallCount += 1
+
+            if let subscriptDynamicMemberHandler = subscriptDynamicMemberHandler {
+                return subscriptDynamicMemberHandler(keyPath) as! T
+            }
+            fatalError("subscriptDynamicMemberHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptDynamicMemberTCallCount = 0
+    var subscriptDynamicMemberTCallCount = 0
     var subscriptDynamicMemberTHandler: ((Any) -> (Any))?
     subscript<T>(dynamicMember keyPath: ReferenceWritableKeyPath<String, T>) -> T {
         get {
-        subscriptDynamicMemberTCallCount += 1
-        if let subscriptDynamicMemberTHandler = subscriptDynamicMemberTHandler {
-            return subscriptDynamicMemberTHandler(keyPath) as! T
-        }
-        fatalError("subscriptDynamicMemberTHandler returns can't have a default value thus its handler must be set")
+            subscriptDynamicMemberTCallCount += 1
+
+            if let subscriptDynamicMemberTHandler = subscriptDynamicMemberTHandler {
+                return subscriptDynamicMemberTHandler(keyPath) as! T
+            }
+            fatalError("subscriptDynamicMemberTHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptDynamicMemberTWritableKeyPathTValueCallCount = 0
+    var subscriptDynamicMemberTWritableKeyPathTValueCallCount = 0
     var subscriptDynamicMemberTWritableKeyPathTValueHandler: ((Any) -> (Value))?
     subscript<T>(dynamicMember keyPath: WritableKeyPath<T, Value>) -> Value {
         get {
-        subscriptDynamicMemberTWritableKeyPathTValueCallCount += 1
-        if let subscriptDynamicMemberTWritableKeyPathTValueHandler = subscriptDynamicMemberTWritableKeyPathTValueHandler {
-            return subscriptDynamicMemberTWritableKeyPathTValueHandler(keyPath)
-        }
-        fatalError("subscriptDynamicMemberTWritableKeyPathTValueHandler returns can't have a default value thus its handler must be set")
+            subscriptDynamicMemberTWritableKeyPathTValueCallCount += 1
+
+            if let subscriptDynamicMemberTWritableKeyPathTValueHandler = subscriptDynamicMemberTWritableKeyPathTValueHandler {
+                return subscriptDynamicMemberTWritableKeyPathTValueHandler(keyPath)
+            }
+            fatalError("subscriptDynamicMemberTWritableKeyPathTValueHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptParameterCallCount = 0
+    var subscriptParameterCallCount = 0
     var subscriptParameterHandler: ((Any) -> (Any))?
     subscript<T: ExpressibleByIntegerLiteral>(_ parameter: T) -> T {
         get {
-        subscriptParameterCallCount += 1
-        if let subscriptParameterHandler = subscriptParameterHandler {
-            return subscriptParameterHandler(parameter) as! T
-        }
-        fatalError("subscriptParameterHandler returns can't have a default value thus its handler must be set")
+            subscriptParameterCallCount += 1
+
+            if let subscriptParameterHandler = subscriptParameterHandler {
+                return subscriptParameterHandler(parameter) as! T
+            }
+            fatalError("subscriptParameterHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
-
-    private(set) var subscriptKeyPathCallCount = 0
+    var subscriptKeyPathCallCount = 0
     var subscriptKeyPathHandler: ((Any) -> (Any))?
     subscript<Value>(keyPath: ReferenceWritableKeyPath<T, Value>) -> Array<Value> {
         get {
-        subscriptKeyPathCallCount += 1
-        if let subscriptKeyPathHandler = subscriptKeyPathHandler {
-            return subscriptKeyPathHandler(keyPath) as! Array<Value>
-        }
-        return Array<Value>()
+            subscriptKeyPathCallCount += 1
+
+            if let subscriptKeyPathHandler = subscriptKeyPathHandler {
+                return subscriptKeyPathHandler(keyPath) as! Array<Value>
+            }
+            return Array<Value>()
         }
         set { }
     }
-
-    private(set) var subscriptKeyPathOnCallCount = 0
+    var subscriptKeyPathOnCallCount = 0
     var subscriptKeyPathOnHandler: ((Any, T) -> (Any))?
     subscript<Value>(keyPath: ReferenceWritableKeyPath<T, Value>, on schedulerType: T) -> Array<Value> {
         get {
-        subscriptKeyPathOnCallCount += 1
-        if let subscriptKeyPathOnHandler = subscriptKeyPathOnHandler {
-            return subscriptKeyPathOnHandler(keyPath, schedulerType) as! Array<Value>
-        }
-        return Array<Value>()
+            subscriptKeyPathOnCallCount += 1
+
+            if let subscriptKeyPathOnHandler = subscriptKeyPathOnHandler {
+                return subscriptKeyPathOnHandler(keyPath, schedulerType) as! Array<Value>
+            }
+            return Array<Value>()
         }
         set { }
     }
 }
 
 public class KeyValueSubscriptingMock: KeyValueSubscripting {
-    public init() { }
 
-    public typealias Key = Any
+
+
+    public init() {
+
+
+    }
+        public typealias Key = Any
     public typealias Value = Any
-
-    public private(set) var subscriptCallCount = 0
+    public var subscriptCallCount = 0
     public var subscriptHandler: ((Key) -> (Value?))?
     public subscript(key: Key) -> Value? {
         get {
-        subscriptCallCount += 1
-        if let subscriptHandler = subscriptHandler {
-            return subscriptHandler(key)
-        }
-        return nil
+            subscriptCallCount += 1
+
+            if let subscriptHandler = subscriptHandler {
+                return subscriptHandler(key)
+            }
+            return nil
         }
         set { }
     }
-
-    public private(set) var subscriptKeyCallCount = 0
+    public var subscriptKeyCallCount = 0
     public var subscriptKeyHandler: ((Key, @autoclosure () -> Value) -> (Value))?
     public subscript(key: Key, default defaultValue: @autoclosure () -> Value) -> Value {
         get {
-        subscriptKeyCallCount += 1
-        if let subscriptKeyHandler = subscriptKeyHandler {
-            return subscriptKeyHandler(key, defaultValue())
-        }
-        fatalError("subscriptKeyHandler returns can't have a default value thus its handler must be set")
+            subscriptKeyCallCount += 1
+
+            if let subscriptKeyHandler = subscriptKeyHandler {
+                return subscriptKeyHandler(key, defaultValue())
+            }
+            fatalError("subscriptKeyHandler returns can't have a default value thus its handler must be set")
         }
         set { }
     }
 }
-
 """
 
 
@@ -343,18 +343,19 @@ protocol NonSimpleFuncs {
 
 let variadicFuncMock =
 """
-
 import Foundation
 
-
 class NonSimpleFuncsMock: NonSimpleFuncs {
-    init() { }
 
+    init() {
 
-    private(set) var barCallCount = 0
+    }
+
+    var barCallCount = 0
     var barHandler: ((String, Int..., [Double]) -> (Float?))?
     func bar(_ arg: String, x: Int..., y: [Double]) -> Float? {
         barCallCount += 1
+
         if let barHandler = barHandler {
             return barHandler(arg, x, y)
         }
@@ -375,18 +376,23 @@ func pass<T>(handler: @autoclosure () -> Int) rethrows -> T
 """
 
 let autoclosureArgFuncMock = """
-
 import Foundation
 
 
 class NonSimpleFuncsMock: NonSimpleFuncs {
-    init() { }
 
 
-    private(set) var passCallCount = 0
+
+    init() {
+
+
+    }
+
+    var passCallCount = 0
     var passHandler: ((@autoclosure () -> Int) throws -> (Any))?
     func pass<T>(handler: @autoclosure () -> Int) rethrows -> T {
         passCallCount += 1
+
         if let passHandler = passHandler {
             return try passHandler(handler()) as! T
         }
@@ -411,33 +417,34 @@ func more<T>(named arg: String, tags: [String: String]?, closure: (T) throws -> 
 let closureArgFuncMock = """
 
 import Foundation
-
-
 class NonSimpleFuncsMock: NonSimpleFuncs {
-    init() { }
 
+    init() {
 
-    private(set) var catCallCount = 0
+    }
+
+    var catCallCount = 0
     var catHandler: ((String, [String: String]?, () throws -> Any) throws -> (Any))?
     func cat<T>(named arg: String, tags: [String: String]?, closure: () throws -> T) rethrows -> T {
         catCallCount += 1
+
         if let catHandler = catHandler {
             return try catHandler(arg, tags, closure) as! T
         }
         fatalError("catHandler returns can't have a default value thus its handler must be set")
     }
 
-    private(set) var moreCallCount = 0
+    var moreCallCount = 0
     var moreHandler: ((String, [String: String]?, (Any) throws -> ()) throws -> (Any))?
     func more<T>(named arg: String, tags: [String: String]?, closure: (T) throws -> ()) rethrows -> T {
         moreCallCount += 1
+
         if let moreHandler = moreHandler {
             return try moreHandler(arg, tags, closure) as! T
         }
         fatalError("moreHandler returns can't have a default value thus its handler must be set")
     }
 }
-
 """
 
 let forArgClosureFunc = """
@@ -458,43 +465,48 @@ import Foundation
 
 
 class NonSimpleFuncsMock: NonSimpleFuncs {
-    init() { }
 
 
-    private(set) var maxCallCount = 0
+
+    init() {
+
+
+    }
+        var maxCallCount = 0
     var maxHandler: ((Int) -> ((() -> Void)?))?
     func max(for: Int) -> (() -> Void)? {
         maxCallCount += 1
+
         if let maxHandler = maxHandler {
             return maxHandler(`for`)
         }
         return nil
     }
-
-    private(set) var maxDoCallCount = 0
+    var maxDoCallCount = 0
     var maxDoHandler: ((Int) -> ((() -> Void)?))?
     func maxDo(do: Int) -> (() -> Void)? {
         maxDoCallCount += 1
+
         if let maxDoHandler = maxDoHandler {
             return maxDoHandler(`do`)
         }
         return nil
     }
-
-    private(set) var maxInCallCount = 0
+    var maxInCallCount = 0
     var maxInHandler: ((Int) -> ((() -> Void)?))?
     func maxIn(in: Int) -> (() -> Void)? {
         maxInCallCount += 1
+
         if let maxInHandler = maxInHandler {
             return maxInHandler(`in`)
         }
         return nil
     }
-
-    private(set) var maxSwitchCallCount = 0
+    var maxSwitchCallCount = 0
     var maxSwitchHandler: ((Int) -> ((() -> Void)?))?
     func maxSwitch(for switch: Int) -> (() -> Void)? {
         maxSwitchCallCount += 1
+
         if let maxSwitchHandler = maxSwitchHandler {
             return maxSwitchHandler(`switch`)
         }
@@ -521,8 +533,7 @@ import Foundation
 class NonSimpleFuncsMock: NonSimpleFuncs {
     init() { }
 
-
-    private(set) var returnSelfCallCount = 0
+    var returnSelfCallCount = 0
     var returnSelfHandler: (() -> (NonSimpleFuncsMock))?
     func returnSelf() -> Self {
         returnSelfCallCount += 1
@@ -532,5 +543,4 @@ class NonSimpleFuncsMock: NonSimpleFuncs {
         fatalError("returnSelfHandler returns can't have a default value thus its handler must be set")
     }
 }
-
 """

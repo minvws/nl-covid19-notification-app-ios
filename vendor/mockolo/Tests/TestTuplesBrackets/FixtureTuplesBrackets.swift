@@ -35,22 +35,19 @@ func update() -> (Dictionary<A, (Array<(T, U)>, B)>, Int)
 
 let tuplesBracketsMock = """
 
-
 class NonSimpleTypesMock: NonSimpleTypes {
     init() { }
 
-
-    private(set) var variadicFuncCallCount = 0
+    var variadicFuncCallCount = 0
     var variadicFuncHandler: ((Int, String) -> ())?
     func variadicFunc(_ arg: Int, for key: String)  {
         variadicFuncCallCount += 1
         if let variadicFuncHandler = variadicFuncHandler {
             variadicFuncHandler(arg, key)
         }
-        
-    }
 
-    private(set) var updateCallCount = 0
+    }
+    var updateCallCount = 0
     var updateHandler: (() -> (state: State?, other: SomeEnum))?
     func update() -> (state: State?, other: SomeEnum) {
         updateCallCount += 1
@@ -59,8 +56,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         fatalError("updateHandler returns can't have a default value thus its handler must be set")
     }
-
-    private(set) var updateObservableItemTypeCallCount = 0
+    var updateObservableItemTypeCallCount = 0
     var updateObservableItemTypeHandler: (() -> (Observable<(ItemType, ())>))?
     func update() -> Observable<(ItemType, ())> {
         updateObservableItemTypeCallCount += 1
@@ -69,8 +65,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Observable<(ItemType, ())>.empty()
     }
-
-    private(set) var updateObservableItemTypeOptionalCallCount = 0
+    var updateObservableItemTypeOptionalCallCount = 0
     var updateObservableItemTypeOptionalHandler: (() -> (Observable<(ItemType, ())>?))?
     func update() -> Observable<(ItemType, ())>? {
         updateObservableItemTypeOptionalCallCount += 1
@@ -79,8 +74,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Observable<(ItemType, ())>.empty()
     }
-
-    private(set) var updateObservableSomeKeySomeTypeCallCount = 0
+    var updateObservableSomeKeySomeTypeCallCount = 0
     var updateObservableSomeKeySomeTypeHandler: (() -> (Observable<[SomeKey: SomeType]>))?
     func update() -> Observable<[SomeKey: SomeType]> {
         updateObservableSomeKeySomeTypeCallCount += 1
@@ -89,8 +83,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Observable<[SomeKey: SomeType]>.empty()
     }
-
-    private(set) var updateStringIntCallCount = 0
+    var updateStringIntCallCount = 0
     var updateStringIntHandler: (() -> ([String: Int]))?
     func update() -> [String: Int] {
         updateStringIntCallCount += 1
@@ -99,8 +92,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return [String: Int]()
     }
-
-    private(set) var updateDictionaryStringIntCallCount = 0
+    var updateDictionaryStringIntCallCount = 0
     var updateDictionaryStringIntHandler: (() -> (Dictionary<String, Int>))?
     func update() -> Dictionary<String, Int> {
         updateDictionaryStringIntCallCount += 1
@@ -109,8 +101,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Dictionary<String, Int>()
     }
-
-    private(set) var updateObservableDoubleFloatCallCount = 0
+    var updateObservableDoubleFloatCallCount = 0
     var updateObservableDoubleFloatHandler: (() -> (Observable<Double, Float>))?
     func update() -> Observable<Double, Float> {
         updateObservableDoubleFloatCallCount += 1
@@ -119,8 +110,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Observable<Double, Float>.empty()
     }
-
-    private(set) var updateStringCallCount = 0
+    var updateStringCallCount = 0
     var updateStringHandler: (() -> ([String]))?
     func update() -> [String] {
         updateStringCallCount += 1
@@ -129,8 +119,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return [String]()
     }
-
-    private(set) var updateStringArrayIntCallCount = 0
+    var updateStringArrayIntCallCount = 0
     var updateStringArrayIntHandler: (() -> ([String: Array<Int>]))?
     func update() -> [String: Array<Int>] {
         updateStringArrayIntCallCount += 1
@@ -139,8 +128,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         fatalError("updateStringArrayIntHandler returns can't have a default value thus its handler must be set")
     }
-
-    private(set) var updateStringDictionaryIntDoubleCallCount = 0
+    var updateStringDictionaryIntDoubleCallCount = 0
     var updateStringDictionaryIntDoubleHandler: (() -> ([String: Dictionary<Int, Double>]))?
     func update() -> [String: Dictionary<Int, Double>] {
         updateStringDictionaryIntDoubleCallCount += 1
@@ -149,8 +137,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         fatalError("updateStringDictionaryIntDoubleHandler returns can't have a default value thus its handler must be set")
     }
-
-    private(set) var updateStringIntArrayStringCallCount = 0
+    var updateStringIntArrayStringCallCount = 0
     var updateStringIntArrayStringHandler: (() -> ([[String]], [Int], Array<[String]>))?
     func update() -> ([[String]], [Int], Array<[String]>) {
         updateStringIntArrayStringCallCount += 1
@@ -159,8 +146,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return ([[String]](), [Int](), Array<[String]>())
     }
-
-    private(set) var updateArrayStringIntCallCount = 0
+    var updateArrayStringIntCallCount = 0
     var updateArrayStringIntHandler: (() -> (Array<[String: Int]>))?
     func update() -> Array<[String: Int]> {
         updateArrayStringIntCallCount += 1
@@ -169,8 +155,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Array<[String: Int]>()
     }
-
-    private(set) var updateArrayDictionaryStringIntCallCount = 0
+    var updateArrayDictionaryStringIntCallCount = 0
     var updateArrayDictionaryStringIntHandler: (() -> (Array<Dictionary<String, Int>>))?
     func update() -> Array<Dictionary<String, Int>> {
         updateArrayDictionaryStringIntCallCount += 1
@@ -179,8 +164,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Array<Dictionary<String, Int>>()
     }
-
-    private(set) var updateArrayStringArrayIntCallCount = 0
+    var updateArrayStringArrayIntCallCount = 0
     var updateArrayStringArrayIntHandler: (() -> (Array<String>, Array<Int>))?
     func update() -> (Array<String>, Array<Int>) {
         updateArrayStringArrayIntCallCount += 1
@@ -189,8 +173,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return (Array<String>(), Array<Int>())
     }
-
-    private(set) var updateArrayStringCallCount = 0
+    var updateArrayStringCallCount = 0
     var updateArrayStringHandler: (() -> (Array<String>))?
     func update() -> Array<String> {
         updateArrayStringCallCount += 1
@@ -199,8 +182,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Array<String>()
     }
-
-    private(set) var updateResultDoubleOptionalStatusBoolCallCount = 0
+    var updateResultDoubleOptionalStatusBoolCallCount = 0
     var updateResultDoubleOptionalStatusBoolHandler: (() -> (result: Double?, status: Bool))?
     func update() -> (result: Double?, status: Bool) {
         updateResultDoubleOptionalStatusBoolCallCount += 1
@@ -209,18 +191,16 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return (nil, false)
     }
-
-    private(set) var updateIntDictionaryIntStringCallCount = 0
+    var updateIntDictionaryIntStringCallCount = 0
     var updateIntDictionaryIntStringHandler: (() -> (Int, Dictionary<Int, String>))?
     func update() -> (Int, Dictionary<Int, String>) {
         updateIntDictionaryIntStringCallCount += 1
         if let updateIntDictionaryIntStringHandler = updateIntDictionaryIntStringHandler {
             return updateIntDictionaryIntStringHandler()
         }
-        return (0, Dictionary<Int, String>())
+        return (0, Dictionary<Int,  String>())
     }
-
-    private(set) var updateDoubleIntFloatStringIntDoubleIntCallCount = 0
+    var updateDoubleIntFloatStringIntDoubleIntCallCount = 0
     var updateDoubleIntFloatStringIntDoubleIntHandler: (() -> ((Double, Int, (Float, (String, Int, Double), Int), Float, (Int, String), Array<String>)))?
     func update() -> (Double, Int, (Float, (String, Int, Double), Int), Float, (Int, String), Array<String>) {
         updateDoubleIntFloatStringIntDoubleIntCallCount += 1
@@ -229,8 +209,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return (0.0, 0, (0.0, ("", 0, 0.0), 0), 0.0, (0, ""), Array<String>())
     }
-
-    private(set) var updateArgCallCount = 0
+    var updateArgCallCount = 0
     var updateArgHandler: ((Int, Float) -> (Dictionary<String, Float>))?
     func update(arg: Int, some: Float) -> Dictionary<String, Float> {
         updateArgCallCount += 1
@@ -239,8 +218,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Dictionary<String, Float>()
     }
-
-    private(set) var updateArgSomeCallCount = 0
+    var updateArgSomeCallCount = 0
     var updateArgSomeHandler: ((Int, Float) -> (Observable<Int>))?
     func update(arg: Int, some: Float) -> Observable<Int> {
         updateArgSomeCallCount += 1
@@ -249,8 +227,7 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         return Observable<Int>.empty()
     }
-
-    private(set) var updateArgSomeIntCallCount = 0
+    var updateArgSomeIntCallCount = 0
     var updateArgSomeIntHandler: ((Int, Float) -> ((String) -> Observable<Double>))?
     func update(arg: Int, some: Float) -> (String) -> Observable<Double> {
         updateArgSomeIntCallCount += 1
@@ -259,17 +236,15 @@ class NonSimpleTypesMock: NonSimpleTypes {
         }
         fatalError("updateArgSomeIntHandler returns can't have a default value thus its handler must be set")
     }
-
-    private(set) var updateDictionaryAArrayTUBIntCallCount = 0
+    var updateDictionaryAArrayTUBIntCallCount = 0
     var updateDictionaryAArrayTUBIntHandler: (() -> ((Dictionary<A, (Array<(T, U)>, B)>, Int)))?
     func update() -> (Dictionary<A, (Array<(T, U)>, B)>, Int) {
         updateDictionaryAArrayTUBIntCallCount += 1
         if let updateDictionaryAArrayTUBIntHandler = updateDictionaryAArrayTUBIntHandler {
             return updateDictionaryAArrayTUBIntHandler()
         }
-        return (Dictionary<A, (Array<(T, U)>, B)>(), 0)
+        return (Dictionary<A,  (Array<(T,  U)>,  B)>(), 0)
     }
 }
-
 
 """
