@@ -126,7 +126,7 @@ struct NetworkConfiguration {
     }
 
     func exposureKeySetFallbackUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.exposureKeySet(version: "v4", identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.exposureKeySet(version: api.signatureFallbackPath, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
