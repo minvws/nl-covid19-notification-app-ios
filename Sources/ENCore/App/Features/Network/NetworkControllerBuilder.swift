@@ -17,8 +17,8 @@ protocol NetworkControlling {
     func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration>
 
     func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration>
-    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)>
-        
+    func fetchExposureKeySet(identifier: String, useSignatureFallback: Bool) -> Single<(String, URL)>
+
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable
     func stopKeys(padding: Padding) -> Completable
@@ -50,7 +50,7 @@ private final class NetworkControllerDependencyProvider: DependencyProvider<Netw
     var storageController: StorageControlling {
         return dependency.storageController
     }
-    
+
     var localPathProvider: LocalPathProviding {
         LocalPathProvider()
     }

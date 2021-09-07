@@ -12,7 +12,8 @@ struct NetworkConfiguration {
         let scheme: String
         let host: String
         let port: Int?
-        let path: [String]
+        let path: String
+        let signatureFallbackPath: String?
         let sslFingerprints: [Certificate.Fingerprint]? // SSL pinning certificate, nil = no pinning
         let tokenParams: [String: String]
     }
@@ -34,7 +35,8 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v01"],
+            path: "v01",
+            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         ),
@@ -42,7 +44,8 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v01"],
+            path: "v01",
+            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         )
@@ -54,7 +57,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -62,7 +66,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v4",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -74,7 +79,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -82,7 +88,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v4",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -94,7 +101,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -102,7 +110,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v4",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -114,6 +123,10 @@ struct NetworkConfiguration {
 
     func exposureKeySetUrl(identifier: String) -> URL? {
         return self.combine(endpoint: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    }
+
+    func exposureKeySetFallbackUrl(identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.exposureKeySet(version: "v4", identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {
@@ -150,7 +163,7 @@ struct NetworkConfiguration {
         if let endpointVersion = endpoint.version {
             urlComponents.path = "/" + ([endpointVersion] + endpoint.pathComponents).joined(separator: "/")
         } else {
-            urlComponents.path = "/" + (config.path + endpoint.pathComponents).joined(separator: "/")
+            urlComponents.path = "/" + ([config.path] + endpoint.pathComponents).joined(separator: "/")
         }
 
         if !params.isEmpty {
