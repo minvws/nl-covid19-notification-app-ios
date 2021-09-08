@@ -66,7 +66,7 @@ final class ExposureController: ExposureControlling, Logging {
         }
 
         let completable = Completable.create { (observer) -> Disposable in
-            
+
             guard self.isActivated == false else {
                 self.logDebug("Already activated")
                 // already activated, return success
@@ -79,7 +79,7 @@ final class ExposureController: ExposureControlling, Logging {
                 observer(.completed)
                 return Disposables.create()
             }
-            
+
             self.updatePushNotificationState {
                 self.logDebug("EN framework activating")
                 self.exposureManager.activate { error in
@@ -184,16 +184,16 @@ final class ExposureController: ExposureControlling, Logging {
         return dataController
             .getPadding()
     }
-    
+
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]? {
         dataController.getStoredAppConfigFeatureFlags()
     }
-    
+
     func getStoredShareKeyURL() -> String? {
         dataController.getStoredShareKeyURL()
     }
 
-    func refreshStatus(completion: (() -> Void)?) {
+    func refreshStatus(completion: (() -> ())?) {
         updatePushNotificationState { [weak self] in
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 self?.updateStatusStream()
@@ -296,7 +296,7 @@ final class ExposureController: ExposureControlling, Logging {
         return completable
     }
 
-    func confirmExposureNotification() {        
+    func confirmExposureNotification() {
         dataController
             .removeLastExposure()
             .andThen(dataController.removeFirstNotificationReceivedDate())
@@ -353,7 +353,7 @@ final class ExposureController: ExposureControlling, Logging {
     func clearUnseenExposureNotificationDate() {
         dataController.clearLastUnseenExposureNotificationDate()
     }
-    
+
     func updateExposureFirstNotificationReceivedDate(_ date: Date) {
         dataController.updateExposureFirstNotificationReceivedDate(date)
     }
@@ -425,7 +425,7 @@ final class ExposureController: ExposureControlling, Logging {
             self.userNotificationController.displayNotActiveNotification { _ in
                 observer(.completed)
             }
-            
+
             return Disposables.create()
         }
     }
@@ -517,7 +517,7 @@ final class ExposureController: ExposureControlling, Logging {
             self.userNotificationController.displayExposureReminderNotification(daysSinceLastExposure: days) { _ in
                 observer(.completed)
             }
-            
+
             return Disposables.create()
         }
     }
@@ -551,7 +551,7 @@ final class ExposureController: ExposureControlling, Logging {
     func lastTEKProcessingDate() -> Observable<Date?> {
         return dataController.lastSuccessfulExposureProcessingDateObservable
     }
-    
+
     func updateLastExposureProcessingDateSubject() {
         dataController.updateLastExposureProcessingDateSubject()
     }
@@ -574,10 +574,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     func postExposureManagerActivation() {
         logDebug("`postExposureManagerActivation`")
-        
+
         mutableStateStream
             .exposureState
-            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .flatMap { [weak self] (exposureState) -> Single<Bool> in
                 let stateActive = [.active, .inactive(.noRecentNotificationUpdates), .inactive(.noRecentNotificationUpdatesInternetOff), .inactive(.bluetoothOff)].contains(exposureState.activeState)
                     && (self?.networkStatusStream.networkReachable == true)
@@ -599,7 +599,7 @@ final class ExposureController: ExposureControlling, Logging {
 
         networkStatusStream
             .networkReachableStream
-            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .do(onNext: { [weak self] _ in
                 self?.updateStatusStream()
             }, onError: { [weak self] _ in
@@ -639,7 +639,7 @@ final class ExposureController: ExposureControlling, Logging {
         let activeState: ExposureActiveState
         let exposureManagerStatus = exposureManager.getExposureNotificationStatus()
         let cellularState = (try? cellularDataStream.restrictedState.value()) ?? .restrictedStateUnknown
-        
+
         switch exposureManagerStatus {
         case .active where hasBeenTooLongSinceLastUpdate:
             if cellularState == .restricted {
@@ -678,6 +678,8 @@ final class ExposureController: ExposureControlling, Logging {
             activeState = .notAuthorized
         case .authorizationDenied:
             activeState = .authorizationDenied
+        case .restricted:
+            activeState = .restricted
         }
 
         mutableStateStream.update(state: .init(notifiedState: notifiedState, activeState: activeState))

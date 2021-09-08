@@ -5,12 +5,12 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import UIKit
-import ENFoundation
 
 /// @mockable(history:push=true;present=true;presentInNavigationController=true)
-protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener {
+protocol OnboardingViewControllable: ViewControllable, OnboardingStepListener, OnboardingConsentListener, HelpListener, BluetoothSettingsListener, PrivacyAgreementListener, WebviewListener, EnableSettingListener {
     var router: OnboardingRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
@@ -29,7 +29,8 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
          shareSheetBuilder: ShareSheetBuildable,
          privacyAgreementBuilder: PrivacyAgreementBuildable,
          helpBuilder: HelpBuildable,
-         webviewBuilder: WebviewBuildable) {
+         webviewBuilder: WebviewBuildable,
+         enableSettingBuilder: EnableSettingBuildable) {
         self.stepBuilder = stepBuilder
         self.consentBuilder = consentBuilder
         self.bluetoothSettingsBuilder = bluetoothSettingsBuilder
@@ -37,13 +38,14 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
         self.privacyAgreementBuilder = privacyAgreementBuilder
         self.helpBuilder = helpBuilder
         self.webviewBuilder = webviewBuilder
+        self.enableSettingBuilder = enableSettingBuilder
 
         // These viewcontrollers take some time to build. We build them before starting the onboarding flow to speed up the UI once the use hits these screens
         self.privacyAgreementViewController = privacyAgreementBuilder.build(withListener: viewController)
         self.consentViewController = consentBuilder.build(withListener: viewController)
-        
+
         super.init(viewController: viewController)
-        
+
         viewController.router = self
     }
 
@@ -113,13 +115,36 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
                                animated: true,
                                completion: nil)
     }
-    
+
     func routeToShareApp() {
         if let storeLink = URL(string: .shareAppUrl) {
             let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
             viewController.present(activityViewController: activityVC, animated: true, completion: nil)
         } else {
             self.logError("Couldn't retreive a valid url")
+        }
+    }
+
+    func routeToExposureNotificationSettings() {
+        guard enableSettingViewController == nil else {
+            return
+        }
+
+        let enableSettingViewController = enableSettingBuilder.build(withListener: viewController, setting: .enableExposureNotifications)
+        self.enableSettingViewController = enableSettingViewController
+
+        viewController.present(viewController: enableSettingViewController,
+                               animated: true,
+                               completion: nil)
+    }
+
+    func dismissExposureNotificationSettings(_ shouldDismissViewController: Bool) {
+        guard let enableSettingViewController = enableSettingViewController else { return }
+
+        self.enableSettingViewController = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: enableSettingViewController, animated: true)
         }
     }
 
@@ -144,4 +169,7 @@ final class OnboardingRouter: Router<OnboardingViewControllable>, OnboardingRout
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
+
+    private let enableSettingBuilder: EnableSettingBuildable
+    private var enableSettingViewController: ViewControllable?
 }

@@ -44,7 +44,7 @@ protocol MainRouting: Routing {
 }
 
 final class MainViewController: ViewController, MainViewControllable, StatusListener, Logging {
-    
+
     weak var router: MainRouting?
 
     // MARK: - Init
@@ -227,8 +227,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func requestTestWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachRequestTest(shouldDismissViewController: shouldDismissViewController)
     }
-        
+
     // MARK: - KeySharingListener
+
     func keySharingWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachKeySharing(shouldDismissViewController: shouldDismissViewController)
     }
@@ -276,7 +277,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     private let pauseController: PauseControlling
     private let userNotificationController: UserNotificationControlling
     private let alertControllerBuilder: AlertControllerBuildable
-    
+
     private var disposeBag = DisposeBag()
 
     @objc private func didQuadrupleTap(sender: UITapGestureRecognizer) {
@@ -299,14 +300,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private func handleUpdateAppSettings() {
         let exposureState = exposureStateStream.currentExposureState
-        
+
         switch exposureState.activeState {
-        case .authorizationDenied:
+        case .authorizationDenied, .restricted:
             router?.routeToEnableSetting(.enableExposureNotifications)
         case .notAuthorized:
             requestExposureNotificationPermission { [weak self] success in
                 guard success else { return }
-                    
+
                 // Double check that we also got push notification authorisation (or ask if we don't have it yet)
                 self?.getPushNotificationAuthorization()
             }
@@ -328,9 +329,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
             logError("Active state = noting nothing to do")
         }
     }
-    
+
     private func getPushNotificationAuthorization() {
-        userNotificationController.getAuthorizationStatus { (authorizationStatus) in
+        userNotificationController.getAuthorizationStatus { authorizationStatus in
             DispatchQueue.main.async {
                 self.handlePushNotificationSettings(authorizationStatus: authorizationStatus)
             }

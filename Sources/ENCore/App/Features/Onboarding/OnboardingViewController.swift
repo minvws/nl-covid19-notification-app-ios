@@ -21,6 +21,8 @@ protocol OnboardingRouting: Routing {
     func routeToWebview(url: URL)
     func routeToShareApp()
     func dismissWebview(shouldHideViewController: Bool)
+    func routeToExposureNotificationSettings()
+    func dismissExposureNotificationSettings(_ shouldDismissViewController: Bool)
 }
 
 final class OnboardingViewController: NavigationController, OnboardingViewControllable, Logging {
@@ -44,7 +46,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
         present(viewController.uiviewController, animated: animated, completion: completion)
     }
-    
+
     func present(activityViewController: UIActivityViewController, animated: Bool, completion: (() -> ())?) {
         present(activityViewController, animated: animated, completion: completion)
     }
@@ -84,6 +86,16 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     // MARK: - OnboardingConsentListener
+
+    func displayExposureNotificationSettings() {
+        router?.routeToExposureNotificationSettings()
+    }
+
+    func enableSettingRequestsDismiss(shouldDismissViewController: Bool) {
+        router?.dismissExposureNotificationSettings(shouldDismissViewController)
+    }
+
+    func enableSettingDidTriggerAction() {}
 
     func consentClose() {
         listener?.didCompleteOnboarding()
@@ -167,7 +179,7 @@ final class OnboardingViewController: NavigationController, OnboardingViewContro
     }
 
     func displayShareApp() {
-        router?.routeToShareApp()        
+        router?.routeToShareApp()
     }
 
     // MARK: - ViewController Lifecycle

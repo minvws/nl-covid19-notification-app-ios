@@ -21,6 +21,7 @@ protocol OnboardingConsentBuildable {
 protocol OnboardingConsentListener: AnyObject {
     func consentClose()
     func consentRequest(step: OnboardingConsentStep.Index)
+    func displayExposureNotificationSettings()
     func displayHelp()
     func displayBluetoothSettings()
     func displayShareApp()
