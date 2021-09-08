@@ -153,7 +153,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
     }
-    
+
     func didBecomeActive() {
         exposureController.refreshStatus(completion: nil)
 
@@ -167,7 +167,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             if !self.pauseController.isAppPaused {
                 self.updateTreatmentPerspective()
             }
-            
+
             self.exposureController.updateLastLaunch()
 
             self.exposureController.clearUnseenExposureNotificationDate()
@@ -429,8 +429,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 strongSelf.exposureController
                     .activate()
-                    .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
-                    .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+                    .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+                    .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
                         strongSelf.backgroundController.performDecoySequenceIfNeeded()
@@ -553,7 +553,7 @@ private extension ExposureActiveState {
         switch self {
         case .active, .inactive, .authorizationDenied:
             return true
-        case .notAuthorized:
+        case .notAuthorized, .restricted:
             return false
         }
     }

@@ -14,6 +14,9 @@ enum ExposureManagerStatus: Equatable {
     /// Exposure Notification is active
     case active
 
+    /// Exposure Notification is restricted
+    case restricted
+
     /// Exposure Notification is inactive
     case inactive(ExposureManagerError)
 

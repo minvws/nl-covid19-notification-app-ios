@@ -206,6 +206,13 @@ final class StatusViewController: ViewController, StatusViewControllable, CardLi
         case (.authorizationDenied, .notNotified):
             statusViewModel = .inactiveWithNotNotified
 
+        case let (.restricted, .notified(date)):
+            statusViewModel = .inactiveWithNotified(date: date)
+            cardTypes.append(.exposureOff)
+
+        case (.restricted, .notNotified):
+            statusViewModel = .inactiveWithNotNotified
+
         case let (.notAuthorized, .notified(date)):
             statusViewModel = .inactiveWithNotified(date: date)
             cardTypes.append(.exposureOff)
