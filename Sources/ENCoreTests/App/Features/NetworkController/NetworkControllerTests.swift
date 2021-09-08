@@ -173,6 +173,25 @@ final class NetworkControllerTests: TestCase {
         XCTAssertEqual(mockNetworkManager.getExposureKeySetCallCount, 1)
     }
 
+    func test_fetchExposureKeySet_usingSignatureFallback() {
+        let identifier = "SomeIdentifier"
+        let completionExpectation = expectation(description: "completion")
+
+        mockNetworkManager.getExposureKeySetHandler = { _, _, completion in
+            completion(.success(URL(string: "http://www.example.com")!))
+        }
+
+        sut.fetchExposureKeySet(identifier: identifier, useSignatureFallback: true)
+            .subscribe(onSuccess: { _ in
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+
+        XCTAssertEqual(mockNetworkManager.getExposureKeySetArgValues.first?.1, true)
+    }
+
     // MARK: - Private
 
     private let padding = Padding(minimumRequestSize: 1800, maximumRequestSize: 1800)

@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-/// @mockable
+/// @mockable(history:fetchExposureKeySet=true)
 protocol NetworkControlling {
     var applicationManifest: Single<ApplicationManifest> { get }
 

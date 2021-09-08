@@ -66,7 +66,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-dist.nl",
             port: nil,
-            path: "v4",
+            path: "v5",
             signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
@@ -126,7 +126,7 @@ struct NetworkConfiguration {
     }
 
     func exposureKeySetFallbackUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.exposureKeySet(version: api.signatureFallbackPath, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+        return self.combine(endpoint: Endpoint.exposureKeySet(version: cdn.signatureFallbackPath, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     func riskCalculationParametersUrl(identifier: String) -> URL? {

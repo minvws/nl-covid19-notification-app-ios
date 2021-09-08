@@ -21,10 +21,10 @@ protocol URLSessionTaskProtocol {
 
 extension URLSessionTask: URLSessionTaskProtocol {}
 
-/// @mockable
+/// @mockable(history:resumableDataTask=true)
 protocol URLSessionProtocol {
     func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
-    func getAllURLSessionTasks(completionHandler: @escaping ([URLSessionTaskProtocol]) -> Void)
+    func getAllURLSessionTasks(completionHandler: @escaping ([URLSessionTaskProtocol]) -> ())
     func urlSessionDownloadTask(with request: URLRequest) -> URLSessionDownloadTaskProtocol
 }
 
@@ -36,12 +36,12 @@ extension URLSession: URLSessionProtocol {
                            completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol {
         return dataTask(with: request, completionHandler: completionHandler)
     }
-    
+
     func urlSessionDownloadTask(with request: URLRequest) -> URLSessionDownloadTaskProtocol {
         return downloadTask(with: request)
     }
-    
-    func getAllURLSessionTasks(completionHandler: @escaping ([URLSessionTaskProtocol]) -> Void) {
+
+    func getAllURLSessionTasks(completionHandler: @escaping ([URLSessionTaskProtocol]) -> ()) {
         getAllTasks(completionHandler: completionHandler)
     }
 }
@@ -54,7 +54,7 @@ protocol URLSessionDownloadTaskProtocol {
     func resume()
 }
 
-extension URLSessionDownloadTask: URLSessionDownloadTaskProtocol { }
+extension URLSessionDownloadTask: URLSessionDownloadTaskProtocol {}
 
 /// @mockable
 protocol URLResponseProtocol {}

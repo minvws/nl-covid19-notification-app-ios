@@ -535,6 +535,17 @@ final class NetworkManagerTests: TestCase {
 
     // MARK: - getExposureKeySet
 
+    func test_getExposureKeySet_shouldUseSignatureFallbackURL() {
+        // Arrange
+        mockUrlSession(mockData: nil)
+
+        // Act
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: true, completion: { _ in })
+
+        // Assert
+        XCTAssertEqual(mockUrlSession.resumableDataTaskArgValues.first?.url?.absoluteString, "https://test.coronamelder-dist.nl/\(mockNetworkConfigurationProvider.configuration.cdn.signatureFallbackPath!)/exposurekeyset/someIdentifier")
+    }
+
     func test_getExposureKeySet_requestFailedShouldReturnError() {
         mockUrlSession(mockData: nil)
 

@@ -106,6 +106,33 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
     }
 
+    func test_shouldDownloadKeySets_fromFallbackEKSEndpoint() {
+
+        let exp = expectation(description: "expectation")
+
+        // `identifier` matches stored keysetidentifier
+        mockStorage(
+            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
+            initialKeySetsIgnored: true, // Act as if the initial keyset was already ignored
+            useFallbackEKSEndpoint: true
+        )
+
+        mockNetworkController.fetchExposureKeySetHandler = { identifier, _ in
+            return .just((identifier, URL(string: "http://someurl.com")!))
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetArgValues.first?.1, true)
+    }
+
     func test_execute_fetchExposureKeySet_withError_shouldMapExposureDataError() {
 
         mockStorage(
@@ -206,7 +233,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],
-                             initialKeySetsIgnored: Bool? = nil) {
+                             initialKeySetsIgnored: Bool? = nil,
+                             useFallbackEKSEndpoint: Bool? = nil) {
 
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -214,6 +242,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
             } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.initialKeySetsIgnored.asString {
                 return try! JSONEncoder().encode(initialKeySetsIgnored)
+            } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEKSEndpoint.asString {
+                return try! JSONEncoder().encode(useFallbackEKSEndpoint)
             }
             return nil
         }
