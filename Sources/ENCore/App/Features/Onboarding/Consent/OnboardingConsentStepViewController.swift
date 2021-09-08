@@ -149,9 +149,7 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
 
     @objc private func skipStepButtonPressed() {
         if let consentStep = consentStep, consentStep.step == .en {
-            if onboardingConsentManager.isNotificationAuthorizationRestricted() {
-
-            } else if !onboardingConsentManager.isNotificationAuthorizationAsked() {
+            if !onboardingConsentManager.isNotificationAuthorizationAsked() {
                 let alertController = UIAlertController(title: .consentSkipEnTitle,
                                                         message: .consentSkipEnMessage,
                                                         preferredStyle: .alert)
