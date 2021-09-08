@@ -48,7 +48,7 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let url = configuration.treatmentPerspectiveUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)

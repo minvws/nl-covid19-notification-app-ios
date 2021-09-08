@@ -1,0 +1,58 @@
+/*
+ * Copyright (c) 2020 De Staat der Nederlanden, Ministerie van Volksgezondheid, Welzijn en Sport.
+ *  Licensed under the EUROPEAN UNION PUBLIC LICENCE v. 1.2
+ *
+ *  SPDX-License-Identifier: EUPL-1.2
+ */
+
+@testable import ENCore
+import XCTest
+
+class NetworkConfigurationTests: TestCase {
+
+    var sut: NetworkConfiguration!
+
+    override func setUpWithError() throws {
+        sut = getConfig()
+    }
+
+    func test_manifestUrl() {
+        XCTAssertEqual(sut.manifestUrl?.absoluteString, "https://test.coronamelder-dist.nl/v4/manifest")
+    }
+
+    func test_exposureKeySetUrl() {
+        XCTAssertEqual(sut.exposureKeySetUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")
+    }
+
+    func test_exposureKeySetFallbackUrl() {
+        XCTAssertEqual(sut.exposureKeySetFallbackUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/v4/exposurekeyset/identifier")
+    }
+
+    func test_riskCalculationParametersUrl() {
+        XCTAssertEqual(sut.riskCalculationParametersUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/v4/riskcalculationparameters/identifier")
+    }
+
+    func test_appConfigUrl() {
+        XCTAssertEqual(sut.appConfigUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/v4/appconfig/identifier")
+    }
+
+    func test_registerUrl() {
+        XCTAssertEqual(sut.registerUrl?.absoluteString, "https://test.coronamelder-api.nl/v2/register")
+    }
+
+    func test_postKeysUrl() {
+        XCTAssertEqual(sut.postKeysUrl(signature: "signature")?.absoluteString, "https://test.coronamelder-api.nl/v1/postkeys?sig=signature")
+    }
+
+    func test_stopKeysUrl() {
+        XCTAssertEqual(sut.stopKeysUrl(signature: "signature")?.absoluteString, "https://test.coronamelder-api.nl/v1/stopkeys?sig=signature")
+    }
+
+    func test_treatmentPerspectiveUrl() {
+        XCTAssertEqual(sut.treatmentPerspectiveUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/v4/resourcebundle/identifier")
+    }
+
+    private func getConfig() -> NetworkConfiguration {
+        NetworkConfiguration.test
+    }
+}
