@@ -185,7 +185,7 @@ final class ExposureManager: ExposureManaging, Logging {
             case .disabled:
                 result = .inactive(.disabled)
             case .restricted:
-                result = .restricted
+                result = .inactive(.restricted)
             default:
                 result = .inactive(.unknown)
             }
@@ -194,7 +194,7 @@ final class ExposureManager: ExposureManaging, Logging {
         case .notAuthorized:
             result = .authorizationDenied
         case .restricted:
-            result = .restricted
+            result = .inactive(.restricted)
         default:
             result = .inactive(.unknown)
         }
