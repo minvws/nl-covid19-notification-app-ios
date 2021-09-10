@@ -18,11 +18,11 @@ private struct DeveloperItem {
     let title: String
     let subtitle: String
     let action: () -> ()
-    let deleteAction: (() -> Void)?
+    let deleteAction: (() -> ())?
     let deleteActionTitle: String?
     let enabled: Bool
 
-    init(title: String, subtitle: String, action: @escaping () -> (), deleteAction: (() -> Void)? = nil, deleteActionTitle: String? = nil, enabled: Bool = true) {
+    init(title: String, subtitle: String, action: @escaping () -> (), deleteAction: (() -> ())? = nil, deleteActionTitle: String? = nil, enabled: Bool = true) {
         self.title = title
         self.subtitle = subtitle
         self.action = action
@@ -47,7 +47,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         self.exposureController = exposureController
         self.storageController = storageController
         self.featureFlagController = featureFlagController
-        
+
         super.init(theme: theme)
 
         attach()
@@ -142,22 +142,23 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         item.action()
         reloadData()
     }
-    
+
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         let item = sections[indexPath.section].items[indexPath.row]
         return item.deleteAction != nil
     }
-    
+
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
         let item = sections[indexPath.section].items[indexPath.row]
-        return item.deleteAction != nil ? [.init(style: .destructive, title: item.deleteActionTitle, handler: {_, _ in item.deleteAction?() })] : nil
+        return item.deleteAction != nil ? [.init(style: .destructive, title: item.deleteActionTitle, handler: { _, _ in item.deleteAction?() })] : nil
     }
 
     // MARK: - Sections
+
     private var sections: [(title: String, items: [DeveloperItem])] = []
-    
+
     private func reloadData() {
-        
+
         let featureFlagOptions = Feature
             .allCases
             .map { feature in
@@ -167,9 +168,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               deleteAction: { [weak self] in self?.resetFeatureFlag(forFeature: feature) },
                               deleteActionTitle: "Reset"
                 )
-                
             }
-        
+
         sections = [
             ("Feature Flags (swipe to reset)", featureFlagOptions),
             ("Show Screens", [
@@ -190,7 +190,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 DeveloperItem(title: "Trigger Exposure",
                               subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposure() }),
-                
+
                 DeveloperItem(title: "Trigger Exposure and Schedule Message Flow",
                               subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposureAndScheduleMessage() }),
@@ -205,7 +205,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               action: { [weak self] in self?.removeLastExposure() }),
                 DeveloperItem(title: "Previously Known Exposure Date",
                               subtitle: "Last: \(getPreviousExposureDate())",
-                              action: { }),
+                              action: {}),
                 DeveloperItem(title: "Remove Processed KeySets",
                               subtitle: "Will redownload them next time",
                               action: { [weak self] in self?.removeAllExposureKeySets() }),
@@ -251,7 +251,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
                               action: { [weak self] in self?.changeNetworkConfiguration() })
             ]),
-            ("Push Notifications", [                
+            ("Push Notifications", [
                 DeveloperItem(title: "Schedule Message Flow",
                               subtitle: "Schedules a push notification to be sent in 5 seconds.",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue) }),
@@ -265,24 +265,24 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               action: { [weak self] in self?.emailLogFiles() })
             ])
         ]
-        
+
         DispatchQueue.main.async {
             self.internalView.tableView.reloadData()
         }
     }
 
     // MARK: - Actions
-    
+
     private func toggleFeatureFlag(forFeature feature: Feature) {
         featureFlagController.toggleFeatureFlag(forFeature: feature)
         internalView.tableView.reloadData()
     }
-    
+
     private func resetFeatureFlag(forFeature feature: Feature) {
         featureFlagController.resetFeatureFlag(forFeature: feature)
         internalView.tableView.reloadData()
     }
-    
+
     private func launchOnboarding() {
         hide()
 
@@ -321,13 +321,13 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     private func triggerExposure() {
-        
+
         let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
         let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
                 let exposureDate = Date().addingTimeInterval(.days(Double(day))).startOfDay!
                 let exposureReport = ExposureReport(date: exposureDate)
-                
+
                 self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
                     self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
                     self?.storageController.store(object: exposureDate, identifiedBy: ExposureDataStorageKey.previousExposureDate) { _ in
@@ -342,7 +342,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             } else if day == 0 {
                 title = "Today"
             }
-            
+
             return UIAlertAction(title: title,
                                  style: .default,
                                  handler: actionHandler)
@@ -350,15 +350,15 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
         present(actionItems: actionItems, title: "Select exposure date")
     }
-    
+
     private func triggerExposureAndScheduleMessage() {
-        
+
         let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
         let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
                 let exposureDate = Date().addingTimeInterval(.days(Double(day))).startOfDay!
                 let exposureReport = ExposureReport(date: exposureDate)
-                
+
                 self?.storageController.store(object: exposureReport, identifiedBy: ExposureDataStorageKey.lastExposureReport) { _ in
                     self?.exposureController.updateExposureFirstNotificationReceivedDate(Date())
                     self?.storageController.store(object: exposureDate, identifiedBy: ExposureDataStorageKey.previousExposureDate) { _ in
@@ -374,7 +374,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             } else if day == 0 {
                 title = "Today"
             }
-            
+
             return UIAlertAction(title: title,
                                  style: .default,
                                  handler: actionHandler)
@@ -382,8 +382,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
         present(actionItems: actionItems, title: "Select exposure date")
     }
-    
-    
 
     private func changeNetworkConfiguration() {
         let configurations: [NetworkConfiguration] = [.development, .test, .acceptance, .production]
@@ -396,7 +394,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self?.exposureController.refreshStatus(completion: {
                     self?.reloadData()
                 })
-                
             }
 
             return UIAlertAction(title: configuration.name,
@@ -449,7 +446,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.hidePauseInformation, completion: { _ in })
     }
-    
+
     private func eraseAppManifest() {
         storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
     }
@@ -494,7 +491,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
     private func removeLastExposure() {
         storageController.removeData(for: ExposureDataStorageKey.lastExposureReport, completion: { _ in })
-        
+
         exposureController.refreshStatus {
             self.reloadData()
         }
@@ -536,7 +533,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self.fetchAndProcessDisposable?.dispose()
                 self.fetchAndProcessDisposable = nil
 
-                assert(Thread.isMainThread)
                 self.reloadData()
             }
     }
@@ -680,7 +676,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.labConfirmationKey)?.identifier ?? "None"
     }
 
-    
     private func getLastExposureString() -> String {
         guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.lastExposureReport) else {
             return "None"
@@ -701,7 +696,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         dateFormatter.timeStyle = .short
         return "\(dateFormatter.string(from: last))"
     }
-    
+
     private func getPreviousExposureDate() -> String {
         guard let last = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.previousExposureDate) else {
             return "None"
