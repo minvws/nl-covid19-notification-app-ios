@@ -102,6 +102,8 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
 
         let useFallbackEKSEndpoint = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
 
+        logDebug("GAEN: Creating EKS Request streams. Using fallback endpoint: \(useFallbackEKSEndpoint)")
+
         // download remaining keysets
         let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
             return self.networkController.fetchExposureKeySet(identifier: identifier, useSignatureFallback: useFallbackEKSEndpoint)

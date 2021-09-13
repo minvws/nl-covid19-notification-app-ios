@@ -259,7 +259,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                                                  diagnosisKeyURLs: diagnosisKeyUrls) { result in
                 switch result {
                 case let .success(summary):
-                    self.logDebug("Successfully called detectExposures function of framework: \(String(describing: summary))")
+                    self.logDebug("GAEN: Successfully called detectExposures function of framework: \(String(describing: summary))")
 
                     let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
                         return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
@@ -279,7 +279,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     observer(.success(result))
 
                 case let .failure(error):
-                    self.logDebug("Failure when detecting exposures: \(error)")
+                    self.logDebug("GAEN: Failure when detecting exposures: \(error)")
 
                     switch error {
                     case .bluetoothOff, .disabled, .notAuthorized, .restricted:
@@ -293,6 +293,9 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                         // if we were already using the old fallback API, set the flag to 'false' to indicate we want to use the fallback. This will force the app to use the normal / new API in the next EKS run.
                         // if we were NOT on the fallback API yet, set the flag to 'true' to indicate that the next EKS run needs to use the fallback API
                         let currentlyusingFallbackEKSEndpoint = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
+
+                        self.logDebug("GAEN: framework returned signatureValidationFailed. Using V4 endpoint: \(currentlyusingFallbackEKSEndpoint)")
+
                         self.storageController.store(object: !currentlyusingFallbackEKSEndpoint, identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint, completion: { _ in })
 
                         // mark all keysets as invalid so they will be redownloaded again
