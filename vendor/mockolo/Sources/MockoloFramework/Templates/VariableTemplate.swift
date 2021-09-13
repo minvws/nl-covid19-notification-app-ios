@@ -16,44 +16,56 @@
 
 import Foundation
 
-
 extension VariableModel {
 
     func applyVariableTemplate(name: String,
                                type: Type,
                                encloser: String,
                                isStatic: Bool,
+                               customModifiers: [String: Modifier]?,
+                               allowSetCallCount: Bool,
                                shouldOverride: Bool,
                                accessLevel: String) -> String {
-        
+
         let underlyingSetCallCount = "\(name)\(String.setCallCountSuffix)"
         let underlyingVarDefaultVal = type.defaultVal()
         var underlyingType = type.typeName
         if underlyingVarDefaultVal == nil {
             underlyingType = type.underlyingType
         }
-        
+
+        let propertyWrapper = propertyWrapper != nil ? "\(propertyWrapper!) " : ""
+
         let overrideStr = shouldOverride ? "\(String.override) " : ""
         var acl = accessLevel
         if !acl.isEmpty {
             acl = acl + " "
         }
-        
+
         var assignVal = ""
-        if let val = underlyingVarDefaultVal {
+        if !shouldOverride, let val = underlyingVarDefaultVal {
             assignVal = "= \(val)"
         }
-        
+
+        let privateSetSpace = allowSetCallCount ? "" :  "\(String.privateSet) "
         let setCallCountStmt = "\(underlyingSetCallCount) += 1"
-        
+
+        let modifierTypeStr: String
+        if let customModifiers = self.customModifiers,
+           let customModifier: Modifier = customModifiers[name] {
+            modifierTypeStr = customModifier.rawValue + " "
+        } else {
+            modifierTypeStr = ""
+        }
+
         var template = ""
         if isStatic || underlyingVarDefaultVal == nil {
             let staticSpace = isStatic ? "\(String.static) " : ""
             template = """
 
-            \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
-            \(1.tab)\(staticSpace)private var \(underlyingName): \(underlyingType) \(assignVal) { didSet { \(setCallCountStmt) } }
-            \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(type.typeName) {
+            \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
+            \(1.tab)\(propertyWrapper)\(staticSpace)private var \(underlyingName): \(underlyingType) \(assignVal) { didSet { \(setCallCountStmt) } }
+            \(1.tab)\(acl)\(staticSpace)\(overrideStr)\(modifierTypeStr)var \(name): \(type.typeName) {
             \(2.tab)get { return \(underlyingName) }
             \(2.tab)set { \(underlyingName) = newValue }
             \(1.tab)}
@@ -61,44 +73,131 @@ extension VariableModel {
         } else {
             template = """
 
-            \(1.tab)\(acl)var \(underlyingSetCallCount) = 0
-            \(1.tab)\(acl)\(overrideStr)var \(name): \(type.typeName) \(assignVal) { didSet { \(setCallCountStmt) } }
+            \(1.tab)\(acl)\(privateSetSpace)var \(underlyingSetCallCount) = 0
+            \(1.tab)\(propertyWrapper)\(acl)\(overrideStr)\(modifierTypeStr)var \(name): \(type.typeName) \(assignVal) { didSet { \(setCallCountStmt) } }
             """
         }
-        
+
         return template
     }
-    
+
+    func applyCombineVariableTemplate(name: String,
+                                      type: Type,
+                                      encloser: String,
+                                      shouldOverride: Bool,
+                                      isStatic: Bool,
+                                      accessLevel: String) -> String? {
+        let typeName = type.typeName
+
+        guard
+            typeName.starts(with: String.anyPublisherLeftAngleBracket),
+            let range = typeName.range(of: String.anyPublisherLeftAngleBracket),
+            let lastIdx = typeName.lastIndex(of: ">")
+        else {
+            return nil
+        }
+
+        let typeParamStr = typeName[range.upperBound..<lastIdx]
+        var subjectTypeStr = ""
+        var errorTypeStr = ""
+        if let lastCommaIndex = typeParamStr.lastIndex(of: ",") {
+            subjectTypeStr = String(typeParamStr[..<lastCommaIndex])
+            let nextIndex = typeParamStr.index(after: lastCommaIndex)
+            errorTypeStr = String(typeParamStr[nextIndex..<typeParamStr.endIndex]).trimmingCharacters(in: .whitespaces)
+        }
+        let subjectType = Type(subjectTypeStr)
+        let subjectDefaultValue = subjectType.defaultVal()
+        let staticSpace = isStatic ? "\(String.static) " : ""
+        let acl = accessLevel.isEmpty ? "" : accessLevel + " "
+        let thisStr = isStatic ? encloser : "self"
+        let overrideStr = shouldOverride ? "\(String.override) " : ""
+
+        switch combineType {
+        case .property(_, var wrapperPropertyName):
+            // Using a property wrapper to back this publisher, such as @Published
+
+            var template = "\n"
+            var isWrapperPropertyOptionalOrForceUnwrapped = false
+            if let publishedAliasModel = wrapperAliasModel {
+                // If the property required by the protocol/class cannot be optional, the wrapper property will be the underlyingProperty
+                // i.e. @Published var _myType: MyType!
+                let wrapperPropertyDefaultValue = publishedAliasModel.type.defaultVal()
+                if wrapperPropertyDefaultValue == nil {
+                    wrapperPropertyName = "_\(wrapperPropertyName)"
+                }
+                isWrapperPropertyOptionalOrForceUnwrapped = wrapperPropertyDefaultValue == nil || publishedAliasModel.type.isOptional
+            }
+
+            var mapping = ""
+            if !subjectType.isOptional, isWrapperPropertyOptionalOrForceUnwrapped {
+                // If the wrapper property is of type: MyType?/MyType!, but the publisher is of type MyType
+                mapping = ".map { $0! }"
+            } else if subjectType.isOptional, !isWrapperPropertyOptionalOrForceUnwrapped {
+                // If the wrapper property is of type: MyType, but the publisher is of type MyType?
+                mapping = ".map { $0 }"
+            }
+
+            let setErrorType = ".setFailureType(to: \(errorTypeStr).self)"
+            template += """
+            \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(typeName) { return \(thisStr).$\(wrapperPropertyName)\(mapping)\(setErrorType).\(String.eraseToAnyPublisher)() }
+            """
+            return template
+        default:
+            // Using a combine subject to back this publisher
+            var combineSubjectType = combineType ?? .passthroughSubject
+
+            var defaultValue: String? = ""
+            if case .currentValueSubject = combineSubjectType {
+                defaultValue = subjectDefaultValue
+            }
+
+            // Unable to generate default value for this CurrentValueSubject. Default back to PassthroughSubject.
+            //
+            if defaultValue == nil {
+                combineSubjectType = .passthroughSubject
+            }
+            let underlyingSubjectName = "\(name)\(String.subjectSuffix)"
+
+            let template = """
+
+            \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(typeName) { return \(thisStr).\(underlyingSubjectName).\(String.eraseToAnyPublisher)() }
+            \(1.tab)\(acl)\(staticSpace)\(String.privateSet) var \(underlyingSubjectName) = \(combineSubjectType.typeName)<\(typeParamStr)>(\(defaultValue ?? ""))
+            """
+            return template
+        }
+    }
+
     func applyRxVariableTemplate(name: String,
                                  type: Type,
                                  encloser: String,
-                                 overrideTypes: [String: String]?,
+                                 rxTypes: [String: String]?,
                                  shouldOverride: Bool,
                                  useMockObservable: Bool,
+                                 allowSetCallCount: Bool,
                                  isStatic: Bool,
                                  accessLevel: String) -> String? {
-        
-        
+
         let staticSpace = isStatic ? "\(String.static) " : ""
-        
-        if let overrideTypes = overrideTypes, !overrideTypes.isEmpty {
-            let (subjectType, _, subjectVal) = type.parseRxVar(overrides: overrideTypes, overrideKey: name, isInitParam: true)
+        let privateSetSpace = allowSetCallCount ? "" : "\(String.privateSet) "
+
+        if let rxTypes = rxTypes, !rxTypes.isEmpty {
+            let (subjectType, _, subjectVal) = type.parseRxVar(overrides: rxTypes, overrideKey: name, isInitParam: true)
             if let underlyingSubjectType = subjectType {
-                
+
                 let underlyingSubjectName = "\(name)\(String.subjectSuffix)"
                 let underlyingSetCallCount = "\(underlyingSubjectName)\(String.setCallCountSuffix)"
-                
+
                 var defaultValAssignStr = ""
                 if let underlyingSubjectTypeDefaultVal = subjectVal {
                     defaultValAssignStr = " = \(underlyingSubjectTypeDefaultVal)"
                 } else {
                     defaultValAssignStr = ": \(underlyingSubjectType)!"
                 }
-                
+
                 let acl = accessLevel.isEmpty ? "" : accessLevel + " "
                 let overrideStr = shouldOverride ? "\(String.override) " : ""
-                
-                
+
+
                 let setCallCountStmt = "\(underlyingSetCallCount) += 1"
                 let fallbackName =  "\(String.underlyingVarPrefix)\(name)"
                 var fallbackType = type.typeName
@@ -108,7 +207,7 @@ extension VariableModel {
 
                 let template = """
 
-                \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
+                \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
                 \(1.tab)\(staticSpace)var \(fallbackName): \(fallbackType)? { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(underlyingSubjectName)\(defaultValAssignStr) { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)\(overrideStr)var \(name): \(type.typeName) {
@@ -116,15 +215,15 @@ extension VariableModel {
                 \(2.tab)set { if let val = newValue as? \(underlyingSubjectType) { \(underlyingSubjectName) = val } else { \(fallbackName) = newValue } }
                 \(1.tab)}
                 """
-                
+
                 return template
             }
         }
-        
+
         let typeName = type.typeName
         if let range = typeName.range(of: String.observableLeftAngleBracket), let lastIdx = typeName.lastIndex(of: ">") {
             let typeParamStr = typeName[range.upperBound..<lastIdx]
-            
+
             let underlyingSubjectName = "\(name)\(String.subjectSuffix)"
             let underlyingSetCallCount = "\(underlyingSubjectName)\(String.setCallCountSuffix)"
             let publishSubjectName = underlyingSubjectName
@@ -164,7 +263,7 @@ extension VariableModel {
 
                 let template = """
                 \(1.tab)\(staticSpace)private var \(whichSubject) = 0
-                \(1.tab)\(acl)\(staticSpace)var \(underlyingSetCallCount) = 0
+                \(1.tab)\(acl)\(staticSpace)\(privateSetSpace)var \(underlyingSetCallCount) = 0
                 \(1.tab)\(acl)\(staticSpace)var \(publishSubjectName) = \(publishSubjectType)() { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(replaySubjectName) = \(replaySubjectType).create(bufferSize: 1) { didSet { \(setCallCountStmt) } }
                 \(1.tab)\(acl)\(staticSpace)var \(behaviorSubjectName): \(behaviorSubjectType)! { didSet { \(setCallCountStmt) } }
