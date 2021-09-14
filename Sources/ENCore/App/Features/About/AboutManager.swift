@@ -38,6 +38,7 @@ final class AboutManager: AboutManaging, Logging {
 
     init() {
         let reason = HelpQuestion(question: .helpFaqReasonTitle, answer: .helpFaqReasonDescription)
+        let stillUseful = HelpQuestion(question: .helpFaqStillUsefulTitle, answer: .helpFaqStillUsefulDescription)
         let anonymous = HelpQuestion(question: .helpFaqAnonymousTitle, answer: .helpFaqAnonymousDescription1 + "<br><br>" + .helpFaqAnonymousDescription2)
         let location = HelpQuestion(question: .helpFaqLocationTitle, answer: .helpFaqLocationDescription)
         let notification = HelpQuestion(question: .helpFaqNotificationTitle, answer: .helpFaqNotificationDescription)
@@ -68,6 +69,11 @@ final class AboutManager: AboutManaging, Logging {
         ])
 
         questionsSection = AboutSection(title: .helpSubtitle, entries: [
+            .question(stillUseful.appending(linkedContent: [
+                AboutEntry.question(reason),
+                technicalInformationEntry
+            ])),
+
             .question(reason.appending(linkedContent: [
                 technicalInformationEntry,
                 notificationExplanation

@@ -47,6 +47,7 @@ extension String {
     static public let `class` = "class"
     static public let `final` = "final"
     static let override = "override"
+    static let privateSet = "private(set)"
     static let mockType = "protocol"
     static let unknownVal = "Unknown"
     static let prefix = "prefix"
@@ -63,6 +64,11 @@ extension String {
     static let rxObservable = "RxSwift.Observable"
     static let observableLeftAngleBracket = observable + "<"
     static let rxObservableLeftAngleBracket = rxObservable + "<"
+    static let anyPublisher = "AnyPublisher"
+    static let anyPublisherLeftAngleBracket = anyPublisher + "<"
+    static let eraseToAnyPublisher = "eraseToAnyPublisher"
+    static let passthroughSubject = "PassthroughSubject"
+    static let currentValueSubject = "CurrentValueSubject"
     static let publishSubject = "PublishSubject"
     static let behaviorSubject = "BehaviorSubject"
     static let replaySubject = "ReplaySubject"
@@ -77,9 +83,11 @@ extension String {
     static let closureArrow = "->"
     static let moduleColon = "module:"
     static let typealiasColon = "typealias:"
+    static let combineColon = "combine:"
     static let rxColon = "rx:"
     static let varColon = "var:"
     static let historyColon = "history:"
+    static let modifiersColon = "modifiers:"
     static let `typealias` = "typealias"
     static let annotationArgDelimiter = ";"
     static let subjectSuffix = "Subject"
@@ -119,11 +127,11 @@ extension String {
     var withLeftAngleBracket: String {
         return "\(self)<"
     }
-    
+
     var withRightAngleBracket: String {
         return "\(self)>"
     }
-    
+
     var withColon: String {
         return "\(self):"
     }
@@ -147,9 +155,9 @@ extension String {
 
 
     func canBeInitParam(type: String, isStatic: Bool) -> Bool {
-        return !(isStatic || type == .unknownVal || (type.hasSuffix("?") && type.contains(String.closureArrow)) ||  isGenerated(type: Type(type)))
+        return !(isStatic || type == .unknownVal || type.hasPrefix(.anyPublisher) || (type.hasSuffix("?") && type.contains(String.closureArrow)) ||  isGenerated(type: Type(type)))
     }
-    
+
     func isGenerated(type: Type) -> Bool {
           return self.hasPrefix(.underlyingVarPrefix) ||
               self.hasSuffix(.setCallCountSuffix) ||
@@ -157,19 +165,19 @@ extension String {
               self.hasSuffix(.subjectSuffix) ||
               (self.hasSuffix(.handlerSuffix) && type.isOptional)
     }
-    
+
     func arguments(with delimiter: String) -> [String: String]? {
         let argstr = self
         let args = argstr.components(separatedBy: delimiter)
         var argsMap = [String: String]()
         for item in args {
             let keyVal = item.components(separatedBy: "=").map{$0.trimmingCharacters(in: .whitespaces)}
-            
+
             if let k = keyVal.first {
                 if k.contains(":") {
                     break
                 }
-                
+
                 if let v = keyVal.last {
                     argsMap[k] = v
                 }
@@ -186,24 +194,24 @@ extension StringProtocol {
     var isNotEmpty: Bool {
         return !isEmpty
     }
-    
+
     var capitlizeFirstLetter: String {
         return prefix(1).capitalized + dropFirst()
     }
-    
-    func shouldParse(with exclusionList: [String]? = nil) -> Bool {
+
+    func shouldParse(with exclusionList: [String]) -> Bool {
         guard hasSuffix(".swift") else { return false }
-        guard let exlist = exclusionList else { return true }
-        
+        guard !exclusionList.isEmpty else { return true }
+
         if let name = components(separatedBy: ".swift").first {
-            for ex in exlist {
+            for ex in exclusionList {
                 if name.hasSuffix(ex) {
                     return false
                 }
             }
             return true
         }
-        
+
         return false
     }
 
@@ -227,7 +235,7 @@ extension StringProtocol {
     var asImport: String {
         return "import \(self)"
     }
-    
+
     var moduleNameInImport: String {
         guard self.hasPrefix(String.importSpace) else { return "" }
         return self.dropFirst(String.importSpace.count).trimmingCharacters(in: .whitespaces)

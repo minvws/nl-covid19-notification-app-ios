@@ -21,10 +21,13 @@ extension MethodModel {
                              identifier: String,
                              kind: MethodKind,
                              useTemplateFunc: Bool,
+                             allowSetCallCount: Bool,
                              enableFuncArgsHistory: Bool,
                              isStatic: Bool,
+                             customModifiers: [String: Modifier]?,
                              isOverride: Bool,
                              genericTypeParams: [ParamModel],
+                             genericWhereClause: String?,
                              params: [ParamModel],
                              returnType: Type,
                              accessLevel: String,
@@ -32,26 +35,30 @@ extension MethodModel {
                              argsHistory: ArgumentsHistoryModel?,
                              handler: ClosureModel?) -> String {
         var template = ""
-        
+
         let returnTypeName = returnType.isUnknown ? "" : returnType.typeName
 
         let acl = accessLevel.isEmpty ? "" : accessLevel+" "
         let genericTypeDeclsStr = genericTypeParams.compactMap {$0.render(with: "", encloser: "")}.joined(separator: ", ")
         let genericTypesStr = genericTypeDeclsStr.isEmpty ? "" : "<\(genericTypeDeclsStr)>"
+        var genericWhereStr = ""
+        if let clause = genericWhereClause {
+            genericWhereStr = " \(clause)"
+        }
         let paramDeclsStr = params.compactMap{$0.render(with: "", encloser: "")}.joined(separator: ", ")
-        
+
         switch kind {
         case .initKind(_, _):  // ClassTemplate needs to handle this as it needs a context of all the vars
             return ""
         default:
-            
+
             guard let handler = handler else { return "" }
-            
+
             let callCount = "\(identifier)\(String.callCountSuffix)"
             let handlerVarName = "\(identifier)\(String.handlerSuffix)"
             let handlerVarType = handler.type.typeName // ?? "Any"
             let handlerReturn = handler.render(with: identifier, encloser: "") ?? ""
-            
+
             let suffixStr = suffix.isEmpty ? "" : "\(suffix) "
             let returnStr = returnTypeName.isEmpty ? "" : "-> \(returnTypeName)"
             let staticStr = isStatic ? String.static + " " : ""
@@ -87,10 +94,10 @@ extension MethodModel {
                 body = """
                 \(2.tab)\(callCount) += 1
                 """
-                
+
                 if let argsHistory = argsHistory, argsHistory.enable(force: enableFuncArgsHistory) {
                     let argsHistoryCapture = argsHistory.render(with: identifier, encloser: "", enableFuncArgsHistory: enableFuncArgsHistory) ?? ""
-                    
+
                     body = """
                     \(body)
                     \(2.tab)\(argsHistoryCapture)
@@ -112,33 +119,41 @@ extension MethodModel {
                 \(2.tab)set { }
                 """
             }
-            
+
             let overrideStr = isOverride ? "\(String.override) " : ""
+            let modifierTypeStr: String
+            if let customModifiers = customModifiers,
+            let customModifier: Modifier = customModifiers[name] {
+                modifierTypeStr = customModifier.rawValue + " "
+            } else {
+                modifierTypeStr = ""
+            }
+            let privateSetSpace = allowSetCallCount ? "" : "\(String.privateSet) "
 
             template = """
 
-            \(1.tab)\(acl)\(staticStr)var \(callCount) = 0
+            \(1.tab)\(acl)\(staticStr)\(privateSetSpace)var \(callCount) = 0
             """
-            
+
             if let argsHistory = argsHistory, argsHistory.enable(force: enableFuncArgsHistory) {
                 let argsHistoryVarName = "\(identifier)\(String.argsHistorySuffix)"
                 let argsHistoryVarType = argsHistory.type.typeName
-                
+
                 template = """
                 \(template)
                 \(1.tab)\(acl)\(staticStr)var \(argsHistoryVarName) = \(argsHistoryVarType)()
                 """
             }
-            
+
             template = """
             \(template)
             \(1.tab)\(acl)\(staticStr)var \(handlerVarName): \(handlerVarType)
-            \(1.tab)\(acl)\(staticStr)\(overrideStr)\(keyword)\(name)\(genericTypesStr)(\(paramDeclsStr)) \(suffixStr)\(returnStr) {
+            \(1.tab)\(acl)\(staticStr)\(overrideStr)\(modifierTypeStr)\(keyword)\(name)\(genericTypesStr)(\(paramDeclsStr)) \(suffixStr)\(returnStr)\(genericWhereStr) {
             \(wrapped)
             \(1.tab)}
             """
         }
-        
+
         return template
     }
 }

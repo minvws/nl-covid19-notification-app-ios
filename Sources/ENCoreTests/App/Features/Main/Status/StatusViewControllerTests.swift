@@ -25,6 +25,7 @@ final class StatusViewControllerTests: TestCase {
     private var mockPushNotificationStream: PushNotificationStreamingMock!
     private var mockExposureController: ExposureControllingMock!
     private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
+    private var applicationControllingMock: ApplicationControllingMock!
 
     override func setUp() {
         super.setUp()
@@ -37,6 +38,8 @@ final class StatusViewControllerTests: TestCase {
         mockPauseController = PauseControllingMock()
         mockPushNotificationStream = PushNotificationStreamingMock()
         mockExposureController = ExposureControllingMock()
+        applicationControllingMock = ApplicationControllingMock()
+        applicationControllingMock.isActiveHandler = { return true }
 
         AnimationTestingOverrides.animationsEnabled = false
         DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593290000) // 27/06/20 20:33
@@ -67,7 +70,8 @@ final class StatusViewControllerTests: TestCase {
                                               theme: theme,
                                               topAnchor: nil,
                                               dataController: mockExposureDataController,
-                                              pushNotificationStream: mockPushNotificationStream)
+                                              pushNotificationStream: mockPushNotificationStream,
+                                              applicationController: applicationControllingMock)
     }
 
     func test_snapshot_active_not_notified() {

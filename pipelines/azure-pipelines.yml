@@ -6,7 +6,7 @@ trigger:
 #variables:
 
 pool:
-  vmImage: macos-latest
+  vmImage: macos-11
 
 stages:
   - stage: build
