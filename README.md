@@ -1,5 +1,5 @@
-# COVID-19 Notification App - iOS
-
+# CoronaMelder - COVID-19 Notification App for iOS
+ 
 ![CI](https://github.com/minvws/nl-covid19-notification-app-ios/workflows/CI/badge.svg)
 
 This repository contains the native iOS implementation of the Dutch COVID-19 Notification App CoronaMelder. 
@@ -23,9 +23,12 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 2.4 [Validate GAEN signature](#gaensignature)
 2.5 [SSL Hash Generation](#hashgeneration)
 2.6 [GAEN API Disclaimer](#gaendisclaimer)
-3. [Translations](#translations)
-3.1 [Uploading iOS translations to OneSky](#uploadtranslations)
-3.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
+2.7 [Developer Menu](#developermenu)
+3. [Background Task](#backgroundtask)
+4. [Theming, Strings, Fonts and Images](#theming)
+4.1 [Translations](#translations)
+4.1.1 [Uploading iOS translations to OneSky](#uploadtranslations)
+4.1.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
 
 
 <a name="about"></a>
@@ -126,7 +129,7 @@ Other commands that are available and might  be useful during the development pr
 <a name="ci"></a>
 ### 2.3 Continuous Integration & reproducible builds
 
-In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-covid19-notification-app-coordination/issues/6) this codebase can be build using Github Actions.
+In order to facilitate CI and reproducible builds (https://github.com/minvws/nl-covid19-notification-app-coordination/issues/6) this codebase can be built using Github Actions.
 
 
 <a name="gaensignature"></a>
@@ -177,16 +180,53 @@ print(Certificate(certificate: secCert).signature!)
 
 <a name="gaendisclaimer"></a>
 ### 2.6 GAEN API Disclaimer
-
-
 Keep in mind that the Apple Exposure Notification API is only accessible by verified health authorities. Other devices trying to access the API using the code in this repository will fail to do so.
 
+<a name="developermenu"></a>
+### 2.7 Developer menu
+To aid in development of the app, a special hidden side menu was built that can be used to check or change the state of the app. This developer menu is only included in debug or test builds of the app and can be accessed on any screen bij swiping to the left with 2 fingers. Some of the features that can be found in this menu are:
+
+- Showing screens of the app that can normally only be accessed in specific situations. Like the onboarding screens, the OS update screen or the App Update screen.
+- Changing the state of the GAEN framework. Enabling / disabling it, mimicking a disabled bluetooth connection.
+- Simulating a possible exposure on a specific date.
+- Removing / fetching exposure key sets.
+- Erasing all locally stored data.
+- Sharing the log files of the app.
+
+
+<a name="backgroundtask"></a>
+## 3. Background Task
+One of the most important aspects of the app is a regularly scheduled background task that wakes up the app. Since the scheduling of background tasks is normally not guaranteed by iOS, CoronaMelder (like any other GAEN app) is given a __special entitlement__ by Apple (based on the Bundle ID) that allows this scheduling to be more reliable. The task is currently scheduled to run every hour. However, not all work in this task will be performed during each run since they might depend on content from the backend that is updated in other intervals.
+
+This is an overview of the work that is performed by the background task. The scheduling and execution of this work can all be found in the `BackgroundController` class:
+
+- `removePreviousExposureDateIfNeeded`. This cleans up any stored exposure date after 14 days. The exposure date is stored during this period to make it possible for the app to determine if an exposure was detected before. 
+- `activateExposureController`. This prepares the GAEN framework for some of the work following work.
+- `updateStatusStream`. This makes sure the app is aware of the status of the GAEN framework, including things like the state of Bluetooth or Internet connection on the device.
+- `fetchAndProcessKeysets`. This downloads the latest keyset batches from the API, submits them to the GAEN framework and checks if the keysets lead to a possible exposure.
+- `processPendingUploads`. This uploads the users GGD key if a previous attempt by the user failed to do so (for instance due to network issues)
+- `sendInactiveFrameworkNotificationIfNeeded`. If the app is unable to download or process keysets for 24 hours, the app sends a local notification to the user that indicates that CoronaMelder is not functioning correctly.
+- `sendNotificationIfAppShouldUpdate`. In some situations, the development team might want to force users to update to the latest version of the app. For instance if there is a bug that prevents the app from functioning correctly. In that case, the __appconfig__ file coming from the API will contain a "iOSMinimumVersion" field. This task checks that minimum version and sends a local notification to the user indicating that they should update the app.
+- `updateTreatmentPerspective`. This updates the content we show to users if a possible exposure was detected. The content is retrieved from the API and should always be in line with the latest government guidelines.
+- `sendExposureReminderNotificationIfNeeded`. If we previously detected an exposure, this task periodically reminds the user of this exposure using a local notification.
+- `processDecoyRegisterAndStopKeys`. This triggers decoy calls to the API that are intended to obfuscate the network traffic. This obfuscation makes sure that it is not possible to determine if somebody has shared a GGD-key (and was infected) based on the network traffic of the app.
+
+<a name="theming"></a>
+## 4. Theming, Strings, Fonts and Images
+To ensure a clean look & feel of the app, we have standardised the use of UI components such as text, fonts and images.
+
+- __Strings__ are all stored in (translated) .strings files and are only accessed through static properties and functions in `Localization.swift`. This makes sure we don't make errors in the string's name and allows us to also fallback to a specific base language if the user's system language is not available. See more about the translation of these strings in [Managing Translations](#translations).
+- Colors and Fonts can be accessed through a __Theme__ object that is propagated throughout the app.
+- __Fonts__ are standardised in ENFoundation/Fonts.swift. The name of the fonts we use follows iOS's semantic font naming conventions.
+- __Colors__ are stored in ENFoundation/Resources/Colors.xcassets and can be accessed through the __Theme__ object. The color assets file contains both Light and Dark appearances because we support Dark mode within the application.
+- __Images__ are stored in ENCore/Resources/Assets.xcassets. These can be accessed by static properties on UIImage itself (like `UIImage.chevron`). Most images have Light and Dark appearances set to support Dark mode within the app.
+
 <a name="translations"></a>
-## 3 Managing Translations
+### 4.1 Managing Translations
 The content of the app is translated into 10 different languages. These translations are done via [OneSky](https://www.oneskyapp.com/). 
 
 <a name="uploadtranslations"></a>
-### 3.1 Uploading iOS translations to OneSky
+#### 4.1.1 Uploading iOS translations to OneSky
 - The App contains 2 Resource folders:
     - Sources/EN/Resources
     - Sources/ENCore/Resources
@@ -200,7 +240,7 @@ The content of the app is translated into 10 different languages. These translat
 When updating existing translations by uploading files, make sure the Dutch language is not finalised, otherwise updates won't "overwrite" existing translations. Translations are set to crowdsource mode which means that everyone with access to the url can sign up and add translations for non-finalised strings, so for that reason finalising the translations is advisable too.
 
 <a name="download"></a>
-### 3.2 Downloading and importing iOS translations from OneSky
+#### 4.1.2 Downloading and importing iOS translations from OneSky
 - Check out the master branch in git
 - Go to OneSky -> Translation Overview and click “Download Translation” on the top right
 - Select all languages and all files
@@ -208,3 +248,10 @@ When updating existing translations by uploading files, make sure the Dutch lang
 - Unzip the downloaded file
 - Open a terminal and go to <Source Root>/tools/scripts
 - Type "sh import-onesky.sh /absolute/path/of/extracted/onesky/folder". This will import the files and copy them to the correct location in the project
+
+
+## Storage (secure/insecure)
+// TODO
+
+## API / Unzipping / Content validation / crypto
+// TODO
