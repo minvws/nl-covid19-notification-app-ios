@@ -93,19 +93,23 @@ final class OnboardingConsentStepViewController: ViewController, OnboardingConse
         guard let consentStep = consentStep else {
             return
         }
-        
+
         switch consentStep.step {
         case .en:
-            onboardingConsentManager.askNotificationsAuthorization {
-                self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
-                self.onboardingConsentManager.askEnableExposureNotifications { activeState in
-                    self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`. activeState: \(activeState)")
-                    
-                    switch activeState {
-                    case .notAuthorized:
-                        self.closeConsent()
-                    default:
-                        self.goToNextStepOrCloseConsent()
+            if onboardingConsentManager.isNotificationAuthorizationRestricted() {
+                self.listener?.displayExposureNotificationSettings()
+            } else {
+                onboardingConsentManager.askNotificationsAuthorization {
+                    self.logDebug("after `onboardingConsentManager.askNotificationsAuthorization`")
+                    self.onboardingConsentManager.askEnableExposureNotifications { activeState in
+                        self.logDebug("after `onboardingConsentManager.askEnableExposureNotifications`. activeState: \(activeState)")
+
+                        switch activeState {
+                        case .notAuthorized:
+                            self.closeConsent()
+                        default:
+                            self.goToNextStepOrCloseConsent()
+                        }
                     }
                 }
             }
@@ -194,7 +198,7 @@ final class OnboardingConsentView: View {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.accessibilityTraits = .header        
+        label.accessibilityTraits = .header
         return label
     }()
 

@@ -202,6 +202,17 @@ final class StatusViewControllerTests: TestCase {
         snapshots(matching: viewController)
     }
 
+    func test_snapshot_restricted_not_notified() {
+        set(activeState: .restricted, notified: false)
+        snapshots(matching: viewController)
+    }
+
+    func test_snapshot_restricted_notified_days_ago() {
+        DateTimeTestingOverrides.overriddenCurrentDate = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
+        set(activeState: .restricted, notified: true)
+        snapshots(matching: viewController)
+    }
+
     // MARK: - Private
 
     private func set(activeState: ExposureActiveState, notified: Bool) {

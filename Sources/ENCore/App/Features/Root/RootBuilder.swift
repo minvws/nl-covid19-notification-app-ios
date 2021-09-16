@@ -37,7 +37,7 @@ public protocol AppEntryPoint {
 
     // Should handle the background task
     @available(iOS 13, *)
-    func handle(backgroundTask: BackgroundTask)    
+    func handle(backgroundTask: BackgroundTask)
 }
 
 /// Provides all dependencies to build the RootRouter
@@ -102,6 +102,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return builder.build()
     }()
 
+    var environmentController: EnvironmentControlling = {
+        return EnvironmentController()
+    }()
+
     lazy var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming = {
         let networkConfiguration: NetworkConfiguration
 
@@ -123,7 +127,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return NetworkConfigurationStream(configuration: networkConfiguration)
     }()
 
-    var networkConfigurationProvider: NetworkConfigurationProvider {        
+    var networkConfigurationProvider: NetworkConfigurationProvider {
         return DynamicNetworkConfigurationProvider(configurationStream: mutableNetworkConfigurationStream)
     }
 
@@ -165,10 +169,6 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
         return InterfaceOrientationStream()
     }
 
-    var environmentController: EnvironmentControlling {
-        return EnvironmentController()
-    }
-
     var pauseController: PauseControlling {
         PauseController(exposureDataController: dataController,
                         exposureController: exposureController,
@@ -186,7 +186,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     /// Mutable stream for publishing the NetworkStatus reachability to
     lazy var mutableNetworkStatusStream: MutableNetworkStatusStreaming = NetworkStatusStream(reachabilityProvider: reachabilityProvider)
-    
+
     private lazy var reachabilityProvider: ReachabilityProviding = ReachabilityProvider()
 
     var messageManager: MessageManaging {

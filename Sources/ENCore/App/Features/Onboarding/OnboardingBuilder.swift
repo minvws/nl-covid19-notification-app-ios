@@ -23,6 +23,7 @@ protocol OnboardingDependency {
     var theme: Theme { get }
     var exposureController: ExposureControlling { get }
     var exposureStateStream: ExposureStateStreaming { get }
+    var environmentController: EnvironmentControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
     var userNotificationController: UserNotificationControlling { get }
 }
@@ -30,7 +31,7 @@ protocol OnboardingDependency {
 ///
 /// - Tag: OnboardingDependencyProvider
 
-private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, BluetoothSettingsDependency, ShareSheetDependency, HelpDependency, PrivacyAgreementDependency, WebviewDependency {
+private final class OnboardingDependencyProvider: DependencyProvider<OnboardingDependency>, OnboardingStepDependency, OnboardingConsentDependency, BluetoothSettingsDependency, ShareSheetDependency, HelpDependency, PrivacyAgreementDependency, WebviewDependency, EnableSettingDependency {
 
     // MARK: - OnboardingStepDependency
 
@@ -55,7 +56,7 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     var theme: Theme {
         return dependency.theme
     }
-    
+
     lazy var applicationController: ApplicationControlling = {
         return ApplicationController()
     }()
@@ -93,6 +94,18 @@ private final class OnboardingDependencyProvider: DependencyProvider<OnboardingD
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return dependency.interfaceOrientationStream
     }
+
+    var exposureStateStream: ExposureStateStreaming {
+        return dependency.exposureStateStream
+    }
+
+    var enableSettingBuilder: EnableSettingBuildable {
+        return EnableSettingBuilder(dependency: self)
+    }
+
+    var environmentController: EnvironmentControlling {
+        return dependency.environmentController
+    }
 }
 
 final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildable {
@@ -109,6 +122,7 @@ final class OnboardingBuilder: Builder<OnboardingDependency>, OnboardingBuildabl
                                 shareSheetBuilder: dependencyProvider.shareSheetBuilder,
                                 privacyAgreementBuilder: dependencyProvider.privacyAgreementBuilder,
                                 helpBuilder: dependencyProvider.helpBuilder,
-                                webviewBuilder: dependencyProvider.webviewBuilder)
+                                webviewBuilder: dependencyProvider.webviewBuilder,
+                                enableSettingBuilder: dependencyProvider.enableSettingBuilder)
     }
 }
