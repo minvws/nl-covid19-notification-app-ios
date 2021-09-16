@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NetworkResponseHandleError: Error {
+enum NetworkResponseHandleError: Error, Equatable {
     case cannotUnzip
     case invalidSignature
     case cannotDeserialize
