@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NetworkResponseHandleError: Error {
+enum NetworkResponseHandleError: Error, Equatable {
     case cannotUnzip
     case invalidSignature
     case cannotDeserialize
@@ -37,7 +37,7 @@ final class NetworkResponseHandlerProviderImpl: NetworkResponseHandlerProvider {
     }
 
     var unzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol {
-        return UnzipNetworkResponseHandler(fileManager: FileManager.default)
+        return UnzipNetworkResponseHandler(fileManager: FileManager.default, localPathProvider: LocalPathProvider(fileManager: FileManager.default))
     }
 
     var verifySignatureResponseHandler: VerifySignatureResponseHandlerProtocol {

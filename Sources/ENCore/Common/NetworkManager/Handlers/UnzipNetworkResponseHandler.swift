@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import RxSwift
 import ZIPFoundation
-import ENFoundation
 
 /// @mockable(history:isApplicable=true;process = true)
 protocol UnzipNetworkResponseHandlerProtocol {
@@ -17,54 +17,43 @@ protocol UnzipNetworkResponseHandlerProtocol {
 }
 
 final class UnzipNetworkResponseHandler: UnzipNetworkResponseHandlerProtocol, Logging {
-   
-    init(fileManager: FileManaging) {
+
+    init(fileManager: FileManaging,
+         localPathProvider: LocalPathProviding) {
         self.fileManager = fileManager
+        self.localPathProvider = localPathProvider
     }
 
-    // MARK: - RxUnzipNetworkResponseHandlerProtocol
+    // MARK: - UnzipNetworkResponseHandlerProtocol
 
     func isApplicable(for response: URLResponseProtocol, input: URL) -> Bool {
-        guard let response = response as? HTTPURLResponse,
-            let contentTypeHeader = response.allHeaderFields[HTTPHeaderKey.contentType.rawValue] as? String else {
-            return false
-        }
-
-        return contentTypeHeader.lowercased() == HTTPContentType.zip.rawValue.lowercased()
+        return response.contentType?.lowercased() == HTTPContentType.zip.rawValue.lowercased()
     }
-    
-    func process(response: URLResponseProtocol, input: URL) -> Single<URL> {
-        
-        logDebug("unzipping file from \(input)")
-        
-        guard let destinationURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString) else {
-            return .error(NetworkResponseHandleError.cannotUnzip)
-        }
 
-        let start = CFAbsoluteTimeGetCurrent()
-        
+    func process(response: URLResponseProtocol, input: URL) -> Single<URL> {
+
+        logDebug("unzipping file from \(input)")
+
+        let destinationURL = localPathProvider.temporaryDirectoryUrl.appendingPathComponent(fileManager.generateRandomUUIDFileName())
+
         var skipCRC32 = false
         #if DEBUG
             skipCRC32 = true
         #endif
-        
+
         do {
-            
             try fileManager.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
             try fileManager.unzipItem(at: input, to: destinationURL, skipCRC32: skipCRC32, progress: nil, preferredEncoding: nil)
-            
-            let diff = CFAbsoluteTimeGetCurrent() - start
-            logDebug("KSSPEED Unzipping file Took \(diff) seconds")
-        }
-        catch {
+        } catch {
             logError("unzip error: \(error) for file \(input)")
             return .error(NetworkResponseHandleError.cannotUnzip)
         }
-        
+
         return .just(destinationURL)
     }
 
     // MARK: - Private
 
     private let fileManager: FileManaging
+    private let localPathProvider: LocalPathProviding
 }

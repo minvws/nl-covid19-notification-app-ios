@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// @mockable(history: removeItem = true;createDirectory=true;fileExists = true;moveItem = true)
+/// @mockable(history: removeItem = true;createDirectory=true;fileExists = true;moveItem = true;unzipItem=true)
 protocol FileManaging {
     func fileExists(atPath path: String, isDirectory: UnsafeMutablePointer<ObjCBool>?) -> Bool
     func fileExists(atPath path: String) -> Bool
@@ -19,6 +19,11 @@ protocol FileManaging {
     func attributesOfItem(atPath path: String) throws -> [FileAttributeKey: Any]
     func urls(for directory: FileManager.SearchPathDirectory, in domainMask: FileManager.SearchPathDomainMask) -> [URL]
     func contentsOfDirectory(at url: URL, includingPropertiesForKeys keys: [URLResourceKey]?, options mask: FileManager.DirectoryEnumerationOptions) throws -> [URL]
+    func generateRandomUUIDFileName() -> String
 }
 
-extension FileManager: FileManaging {}
+extension FileManager: FileManaging {
+    func generateRandomUUIDFileName() -> String {
+        UUID().uuidString
+    }
+}
