@@ -77,6 +77,10 @@ final class ExposureManager: ExposureManaging, Logging {
 
         manager.detectExposures(configuration: configuration.asExposureConfiguration,
                                 diagnosisKeyURLs: diagnosisKeyURLs) { summary, error in
+            if let error = error {
+                self.logDebug("detectExposures error: \(error.localizedDescription) \(error)")
+            }
+
             if let error = error.map({ $0.asExposureManagerError }) {
                 completion(.failure(error))
                 return
