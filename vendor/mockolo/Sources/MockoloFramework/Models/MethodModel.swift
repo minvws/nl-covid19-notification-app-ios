@@ -32,6 +32,7 @@ final class MethodModel: Model {
     let accessLevel: String
     var attributes: [String]? = nil
     let genericTypeParams: [ParamModel]
+    var genericWhereClause: String? = nil
     let params: [ParamModel]
     let processed: Bool
     var modelDescription: String? = nil
@@ -40,28 +41,29 @@ final class MethodModel: Model {
     let suffix: String
     let kind: MethodKind
     let funcsWithArgsHistory: [String]
+    let customModifiers: [String : Modifier]
     var modelType: ModelType {
         return .method
     }
-    
+
     private var staticKind: String {
         return isStatic ? .static : ""
     }
-    
+
     var isInitializer: Bool {
         if case .initKind(_, _) = kind {
             return true
         }
         return false
     }
-    
+
     var isSubscript: Bool {
         if case .subscriptKind = kind {
             return true
         }
         return false
     }
-    
+
     lazy var signatureComponents: [String] = {
         let paramLabels = self.params.map {$0.label != "_" ? $0.label : ""}
         let paramNames = self.params.map(path: \.name)
@@ -74,10 +76,10 @@ final class MethodModel: Model {
             }
             return nil
         }
-        
+
         let genericTypeNames = self.genericTypeParams.map { $0.name.capitlizeFirstLetter + $0.type.displayName }
         args.append(contentsOf: genericTypeNames)
-        
+
         args.append(contentsOf: paramTypes.map(path: \.displayName))
         var displayType = self.type.displayName
         let capped = min(displayType.count, 32)
@@ -87,7 +89,7 @@ final class MethodModel: Model {
         let ret = args.filter{ arg in !arg.isEmpty }
         return ret
     }()
-    
+
     lazy var argsHistory: ArgumentsHistoryModel? = {
         if isInitializer || isSubscript {
             return nil
@@ -98,7 +100,7 @@ final class MethodModel: Model {
                                         params: params,
                                         isHistoryAnnotated: funcsWithArgsHistory.contains(name),
                                         suffix: suffix)
-        
+
         return ret
     }()
 
@@ -106,7 +108,7 @@ final class MethodModel: Model {
         if isInitializer {
             return nil
         }
-        
+
         let paramNames = self.params.map(path: \.name)
         let paramTypes = self.params.map(path: \.type)
         let ret = ClosureModel(name: name,
@@ -116,23 +118,25 @@ final class MethodModel: Model {
                                suffix: suffix,
                                returnType: type,
                                encloser: encloser)
-        
+
         return ret
     }
-    
-    
+
+
     init(name: String,
          typeName: String,
          kind: MethodKind,
          encloserType: DeclType,
          acl: String,
          genericTypeParams: [ParamModel],
+         genericWhereClause: String?,
          params: [ParamModel],
          throwsOrRethrows: String,
          isStatic: Bool,
          offset: Int64,
          length: Int64,
          funcsWithArgsHistory: [String],
+         customModifiers: [String: Modifier],
          modelDescription: String?,
          processed: Bool) {
         self.name = name.trimmingCharacters(in: .whitespaces)
@@ -145,16 +149,18 @@ final class MethodModel: Model {
         self.shouldOverride = encloserType == .classType
         self.params = params
         self.genericTypeParams = genericTypeParams
+        self.genericWhereClause = genericWhereClause
         self.processed = processed
         self.funcsWithArgsHistory = funcsWithArgsHistory
+        self.customModifiers = customModifiers
         self.modelDescription = modelDescription
         self.accessLevel = acl
     }
-    
+
     var fullName: String {
         return self.name + self.signatureComponents.joined() + staticKind
     }
-    
+
     func name(by level: Int) -> String {
         if level <= 0 {
             return name
@@ -163,8 +169,8 @@ final class MethodModel: Model {
         let postfix = diff > 0 ? String(diff) : self.signatureComponents[level - 1]
         return name(by: level - 1) + postfix
     }
-    
-    func render(with identifier: String, encloser: String, useTemplateFunc: Bool, useMockObservable: Bool, enableFuncArgsHistory: Bool) -> String? {
+
+    func render(with identifier: String, encloser: String, useTemplateFunc: Bool, useMockObservable: Bool, allowSetCallCount: Bool = false, mockFinal: Bool = false, enableFuncArgsHistory: Bool) -> String? {
         if processed {
             var prefix = shouldOverride  ? "\(String.override) " : ""
 
@@ -173,21 +179,24 @@ final class MethodModel: Model {
                     prefix = ""
                 }
             }
-            
+
             if let ret = modelDescription?.trimmingCharacters(in: .newlines) ?? self.data?.toString(offset: offset, length: length) {
                 return prefix + ret
             }
             return nil
         }
-        
+
         let result = applyMethodTemplate(name: name,
                                          identifier: identifier,
                                          kind: kind,
                                          useTemplateFunc: useTemplateFunc,
+                                         allowSetCallCount: allowSetCallCount,
                                          enableFuncArgsHistory: enableFuncArgsHistory,
                                          isStatic: isStatic,
+                                         customModifiers: customModifiers,
                                          isOverride: shouldOverride,
                                          genericTypeParams: genericTypeParams,
+                                         genericWhereClause: genericWhereClause,
                                          params: params,
                                          returnType: type,
                                          accessLevel: accessLevel,

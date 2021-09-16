@@ -15,7 +15,7 @@ final class ArgumentsHistoryModel: Model {
 
     init?(name: String, genericTypeParams: [ParamModel], params: [ParamModel], isHistoryAnnotated: Bool, suffix: String) {
         // Value contains closure is not supported.
-        let capturables = params.filter { !$0.type.hasClosure && !$0.type.isAutoclosure }
+        let capturables = params.filter { !$0.type.hasClosure && !$0.type.isEscaping && !$0.type.isAutoclosure }
         guard !capturables.isEmpty else {
             return nil
         }
@@ -35,7 +35,7 @@ final class ArgumentsHistoryModel: Model {
         return force || isHistoryAnnotated
     }
     
-    func render(with identifier: String, encloser: String, useTemplateFunc: Bool = false, useMockObservable: Bool = false, enableFuncArgsHistory: Bool) -> String? {
+    func render(with identifier: String, encloser: String, useTemplateFunc: Bool = false, useMockObservable: Bool = false, allowSetCallCount: Bool = false, mockFinal: Bool = false, enableFuncArgsHistory: Bool) -> String? {
         guard enable(force: enableFuncArgsHistory) else {
             return nil
         }

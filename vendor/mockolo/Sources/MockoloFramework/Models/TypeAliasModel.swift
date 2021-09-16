@@ -44,7 +44,7 @@ final class TypeAliasModel: Model {
         self.modelDescription = modelDescription
         self.overrideTypes = overrideTypes
         self.useDescription = useDescription
-        self.addAcl = encloserType == .protocolType
+        self.addAcl = encloserType == .protocolType && !processed
         // If there's an override typealias value, set it to type
         if let val = overrideTypes?[self.name] {
             self.type  = Type(val)
@@ -61,7 +61,7 @@ final class TypeAliasModel: Model {
         return fullName
     }
     
-    func render(with identifier: String, encloser: String, useTemplateFunc: Bool = false, useMockObservable: Bool = false, enableFuncArgsHistory: Bool = false) -> String? {
+    func render(with identifier: String, encloser: String, useTemplateFunc: Bool = false, useMockObservable: Bool = false, allowSetCallCount: Bool = false, mockFinal: Bool = false, enableFuncArgsHistory: Bool = false) -> String? {
         if processed || useDescription, let modelDescription = modelDescription?.trimmingCharacters(in: .whitespacesAndNewlines) {
             if addAcl {
                 return "\(1.tab)\(accessLevel) \(modelDescription)"
