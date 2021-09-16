@@ -98,19 +98,19 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     func test_shouldDetermineDetectionInput() {
         let keySetExpectation = expectation(description: "keySetHoldersRequested")
-        
+
         // Stored keysets are requested 2 times, once at the start of the operation and once when the result of the operation is stored
         keySetExpectation.expectedFulfillmentCount = 2
-        
+
         let completionExpectation = expectation(description: "subscriptionEnded")
         let backgroundCheckExpectation = expectation(description: "backgroundCheck")
-        
+
         mockApplication.isInBackgroundHandler = {
             XCTAssertTrue(Thread.current.isMainThread)
             backgroundCheckExpectation.fulfill()
             return true
         }
-        
+
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
                 XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
@@ -136,7 +136,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         let exp = expectation(description: "detectExposuresExpectation")
 
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
@@ -149,16 +149,16 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 0)
     }
-    
+
     func test_shouldUpdateProcessingDateIfNoStoredKeySets() {
 
         let currentDate = Date()
         DateTimeTestingOverrides.overriddenCurrentDate = currentDate
-        
+
         let exp = expectation(description: "detectExposuresExpectation")
 
         let exposureApiBackgroundCallDates = Array(repeating: Date(), count: 5)
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         mockStorage(storedKeySetHolders: [], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
 
         sut.execute()
@@ -176,7 +176,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of background calls has not reached the limit, a detection call should be made
     func test_shouldDetectExposuresIfBackgroundCallsAvailable() {
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -198,7 +198,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of background calls has reached the limit, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfBackgroundCallLimitReached() {
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 6)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -218,7 +218,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of foreground calls has not reached the limit, a detection call should be made
     func test_shouldDetectExposuresIfForegroundCallsAvailable() {
-        mockApplication.isInBackgroundHandler = {false}
+        mockApplication.isInBackgroundHandler = { false }
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 8)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -240,7 +240,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the number of foreground calls has reached the limit, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfForegroundCallLimitReached() {
-        mockApplication.isInBackgroundHandler = {false}
+        mockApplication.isInBackgroundHandler = { false }
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 9)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -260,7 +260,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
     // If the combined call count for foreground and background detection is over the maximum, no calls should be allowed anymore
     func test_shouldNotDetectExposuresIfCombinedCallLimitReached() {
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         let exposureApiForegroundCallDates = Array(repeating: currentDate(), count: 20)
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 2)
 
@@ -495,7 +495,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
 
         XCTAssertEqual(today.days(sinceDate: previousExposureDate), 1)
         XCTAssertEqual(mockRiskCalculationController.getLastExposureDateCallCount, 1)
-        XCTAssertEqual(mockUserNotificationController.displayExposureNotificationCallCount, 1)        
+        XCTAssertEqual(mockUserNotificationController.displayExposureNotificationCallCount, 1)
         XCTAssertEqual(mockExposureDataController.updateExposureFirstNotificationReceivedDateCallCount, 1)
     }
 
@@ -574,7 +574,7 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
     }
 
     func test_shouldUpdateLastProcessingDate() {
-        mockApplication.isInBackgroundHandler = {true}
+        mockApplication.isInBackgroundHandler = { true }
         let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
 
         let exp = expectation(description: "detectExposuresExpectation")
@@ -611,6 +611,80 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
             .disposed(by: disposeBag)
 
         waitForExpectations(timeout: 2, handler: nil)
+        XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
+        XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
+        XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
+    }
+
+    func test_onSignatureValidationFailure_shouldUpdateLastProcessingDate() {
+
+        // Arrange
+        let exp = expectation(description: "detectExposuresExpectation")
+
+        mockApplication.isInBackgroundHandler = { true }
+
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.failure(.signatureValidationFailed))
+        }
+
+        // Act
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
+        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate())
+    }
+
+    func test_onSignatureValidationFailure_shouldNotPersistKeySetHolders_andDeleteBinaries() {
+
+        // Arrange
+        let exp = expectation(description: "detectExposuresExpectation")
+        let keySetHolderExpectation = expectation(description: "keySetHolderExpectation")
+
+        mockApplication.isInBackgroundHandler = { true }
+
+        let exposureApiBackgroundCallDates = Array(repeating: currentDate(), count: 5)
+        mockStorage(storedKeySetHolders: [dummyKeySetHolder], exposureApiBackgroundCallDates: exposureApiBackgroundCallDates)
+
+        var storedKeySetHolders = [ExposureKeySetHolder]()
+
+        mockStorageController.storeHandler = { data, key, completion in
+
+            if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
+
+                let jsonDecoder = JSONDecoder()
+                storedKeySetHolders = try! jsonDecoder.decode([ExposureKeySetHolder].self, from: data)
+                keySetHolderExpectation.fulfill()
+            }
+
+            completion(nil)
+        }
+
+        mockExposureManager.detectExposuresHandler = { _, _, completion in
+            completion(.failure(.signatureValidationFailed))
+        }
+
+        // Act
+        sut.execute()
+            .subscribe(onCompleted: {
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        // Assert
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertTrue(storedKeySetHolders.isEmpty)
         XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
         XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
         XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")

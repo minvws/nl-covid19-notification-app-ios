@@ -11,7 +11,7 @@ import RxSwift
 import UIKit
 
 final class NetworkManager: NetworkManaging, Logging {
-    
+
     init(configurationProvider: NetworkConfigurationProvider,
          responseHandlerProvider: NetworkResponseHandlerProvider,
          storageController: StorageControlling,
@@ -48,7 +48,7 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let url = configuration.treatmentPerspectiveUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
@@ -80,10 +80,10 @@ final class NetworkManager: NetworkManaging, Logging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
+    func getExposureKeySet(identifier: String, useSignatureFallback: Bool, completion: @escaping (Result<URL, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.exposureKeySetUrl(identifier: identifier)
+        let url = useSignatureFallback ? configuration.exposureKeySetFallbackUrl(identifier: identifier) : configuration.exposureKeySetUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         download(request: urlRequest) { result in
@@ -108,7 +108,7 @@ final class NetworkManager: NetworkManaging, Logging {
             }
         }
     }
-    
+
     /// Upload diagnosis keys (TEKs) to the server
     /// - Parameters:
     ///   - request: PostKeysRequest
@@ -231,7 +231,7 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Download Files
-    
+
     private func downloadAndDecodeURL<T: Decodable>(withURLRequest urlRequest: Result<URLRequest, NetworkError>,
                                                     decodeAsType modelType: T.Type,
                                                     backgroundThreadIfPossible: Bool = false,

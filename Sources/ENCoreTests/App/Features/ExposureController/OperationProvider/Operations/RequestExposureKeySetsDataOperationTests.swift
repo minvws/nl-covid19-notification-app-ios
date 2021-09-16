@@ -17,37 +17,36 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     private var mockNetworkController: NetworkControllingMock!
     private var mockStorageController: StorageControllingMock!
     private var mockKeySetDownloadProcessor: KeySetDownloadProcessingMock!
-    
+
     private var exposureKeySetIdentifiers: [String]!
-    
+
     override func setUp() {
         super.setUp()
 
         mockNetworkController = NetworkControllingMock()
         mockStorageController = StorageControllingMock()
         mockKeySetDownloadProcessor = KeySetDownloadProcessingMock()
-        
+
         exposureKeySetIdentifiers = ["identifier"]
 
         // Default handlers
         mockKeySetDownloadProcessor.processHandler = { _, _ in
             .empty()
         }
-        
+
         mockKeySetDownloadProcessor.createIgnoredKeySetHolderHandler = { identifier in
             .just(.init(identifier: identifier, signatureFilename: "signatureFilename", binaryFilename: "binaryFilename", processDate: currentDate(), creationDate: currentDate()))
         }
-        
-        
+
         mockKeySetDownloadProcessor.storeDownloadedKeySetsHolderHandler = { _ in
             .empty()
         }
-        
+
         mockKeySetDownloadProcessor.storeIgnoredKeySetsHoldersHandler = { _ in
             .empty()
         }
-        
-        mockNetworkController.fetchExposureKeySetHandler = { identifier in
+
+        mockNetworkController.fetchExposureKeySetHandler = { identifier, _ in
             return .just((identifier, URL(string: "http://someurl.com")!))
         }
         mockStorageController.requestExclusiveAccessHandler = { $0(self.mockStorageController) }
@@ -90,8 +89,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
             initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
         )
-        
-        mockNetworkController.fetchExposureKeySetHandler = { identifier in
+
+        mockNetworkController.fetchExposureKeySetHandler = { identifier, _ in
             return .just((identifier, URL(string: "http://someurl.com")!))
         }
 
@@ -107,6 +106,33 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 1)
     }
 
+    func test_shouldDownloadKeySets_fromFallbackEKSEndpoint() {
+
+        let exp = expectation(description: "expectation")
+
+        // `identifier` matches stored keysetidentifier
+        mockStorage(
+            storedKeySetHolders: [dummyKeySetHolder(withIdentifier: "SomeOldIdentifier")],
+            initialKeySetsIgnored: true, // Act as if the initial keyset was already ignored
+            useFallbackEKSEndpoint: true
+        )
+
+        mockNetworkController.fetchExposureKeySetHandler = { identifier, _ in
+            return .just((identifier, URL(string: "http://someurl.com")!))
+        }
+
+        sut.execute()
+            .subscribe(onCompleted: {
+                XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
+                exp.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2, handler: nil)
+
+        XCTAssertEqual(mockNetworkController.fetchExposureKeySetArgValues.first?.1, true)
+    }
+
     func test_execute_fetchExposureKeySet_withError_shouldMapExposureDataError() {
 
         mockStorage(
@@ -114,7 +140,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             initialKeySetsIgnored: true // Act as if the initial keyset was already ignored
         )
 
-        mockNetworkController.fetchExposureKeySetHandler = { _ in
+        mockNetworkController.fetchExposureKeySetHandler = { _, _ in
             return .error(ExposureDataError.internalError)
         }
 
@@ -195,11 +221,11 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
             .forEach { processDate in
                 XCTAssertTrue(currentDate().timeIntervalSince(processDate) >= oneDay)
             }
-        
+
         XCTAssertEqual(mockKeySetDownloadProcessor.storeIgnoredKeySetsHoldersCallCount, 1)
         XCTAssertEqual(mockNetworkController.fetchExposureKeySetCallCount, 0)
     }
-        
+
     // MARK: - Private helper functions
 
     private func dummyKeySetHolder(withIdentifier identifier: String = "identifier") -> ExposureKeySetHolder {
@@ -207,7 +233,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],
-                             initialKeySetsIgnored: Bool? = nil) {
+                             initialKeySetsIgnored: Bool? = nil,
+                             useFallbackEKSEndpoint: Bool? = nil) {
 
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -215,6 +242,8 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
             } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.initialKeySetsIgnored.asString {
                 return try! JSONEncoder().encode(initialKeySetsIgnored)
+            } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEKSEndpoint.asString {
+                return try! JSONEncoder().encode(useFallbackEKSEndpoint)
             }
             return nil
         }

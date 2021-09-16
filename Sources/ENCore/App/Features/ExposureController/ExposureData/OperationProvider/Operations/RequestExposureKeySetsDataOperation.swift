@@ -73,20 +73,14 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         if !ignoredInitialKeySets {
             return ignoreFirstKeySetBatch(keySetIdentifiers: identifiers)
         }
-        
-        logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
-        
-        // download remaining keysets
-        let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
-            self.networkController
-                .fetchExposureKeySet(identifier: identifier)
-            
-        }
 
-        let start = CFAbsoluteTimeGetCurrent()
+        logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
+
+        // download remaining keysets
+        let exposureKeySetStreams = getExposureKeySetStreams(from: identifiers)
 
         return Observable.from(exposureKeySetStreams)
-            .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))            
+            .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
             .flatMap { $0 }
             .catch { error in
                 throw (error as? NetworkError)?.asExposureDataError ?? ExposureDataError.internalError
@@ -96,8 +90,6 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             }
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .do { [weak self] _ in
-                let diff = CFAbsoluteTimeGetCurrent() - start
-                self?.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
                 self?.logDebug("KeySet: Requesting KeySets Completed")
 
             } onError: { [weak self] _ in
@@ -106,13 +98,27 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             .asCompletable()
     }
 
+    private func getExposureKeySetStreams(from identifiers: [String]) -> [Single<(String, URL)>] {
+
+        let useFallbackEKSEndpoint = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
+
+        logDebug("GAEN: Creating EKS Request streams. Using fallback endpoint: \(useFallbackEKSEndpoint)")
+
+        // download remaining keysets
+        let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
+            return self.networkController.fetchExposureKeySet(identifier: identifier, useSignatureFallback: useFallbackEKSEndpoint)
+        }
+
+        return exposureKeySetStreams
+    }
+
     // MARK: - Private
 
     private func ignoreFirstKeySetBatch(keySetIdentifiers: [String]) -> Completable {
         logDebug("KeySet: Ignoring KeySets because it is the first batch after first install: \(keySetIdentifiers.joined(separator: "\n"))")
 
         return Observable.from(keySetIdentifiers)
-            .flatMap (keySetDownloadProcessor.createIgnoredKeySetHolder)
+            .flatMap(keySetDownloadProcessor.createIgnoredKeySetHolder)
             .toArray()
             .flatMapCompletable(keySetDownloadProcessor.storeIgnoredKeySetsHolders)
             .do(onError: { _ in
@@ -144,7 +150,7 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
                                           processDate: Date().addingTimeInterval(-60 * 60 * 24),
                                           creationDate: Date()))
     }
-    
+
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let exposureKeySetIdentifiers: [String]
