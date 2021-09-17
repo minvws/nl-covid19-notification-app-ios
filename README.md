@@ -231,27 +231,20 @@ The content of the app is translated into 10 different languages. These translat
     - Sources/EN/Resources
     - Sources/ENCore/Resources
 - Open OneSky and go to the iOS Project
-- Click the + icon next to “Files” on the left side of the screen
+- Click the + icon next to **Files** on the left side of the screen
 - Drag Sources/ENCore/Resources/nl.lproj/Localizable.strings to OneSky
 - Rename Sources/EN/Resources/nl.lproj/Localizable.strings to Main.strings
 - Drag Sources/EN/Resources/nl.lproj/Main.strings to OneSky
-- Always select the “deprecate” option in OneSky
+- Always select the **deprecate** option in OneSky
 
 When updating existing translations by uploading files, make sure the Dutch language is not finalised, otherwise updates won't "overwrite" existing translations. Translations are set to crowdsource mode which means that everyone with access to the url can sign up and add translations for non-finalised strings, so for that reason finalising the translations is advisable too.
 
 <a name="download"></a>
 #### 4.1.2 Downloading and importing iOS translations from OneSky
 - Check out the master branch in git
-- Go to OneSky -> Translation Overview and click “Download Translation” on the top right
+- Go to OneSky -> Translation Overview and click **Download Translation** on the top right
 - Select all languages and all files
-- Click “Export”
+- Click **Export**
 - Unzip the downloaded file
 - Open a terminal and go to <Source Root>/tools/scripts
 - Type "sh import-onesky.sh /absolute/path/of/extracted/onesky/folder". This will import the files and copy them to the correct location in the project
-
-
-## Storage (secure/insecure)
-// TODO
-
-## API / Unzipping / Content validation / crypto
-// TODO
