@@ -24,11 +24,12 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 2.5 [SSL Hash Generation](#hashgeneration)
 2.6 [GAEN API Disclaimer](#gaendisclaimer)
 2.7 [Developer Menu](#developermenu)
-3. [Background Task](#backgroundtask)
-4. [Theming, Strings, Fonts and Images](#theming)
-4.1 [Translations](#translations)
-4.1.1 [Uploading iOS translations to OneSky](#uploadtranslations)
-4.1.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
+3. [Where to begin development](#wheretobegin)
+4. [Background Task](#backgroundtask)
+5. [Theming, Strings, Fonts and Images](#theming)
+5.1 [Translations](#translations)
+5.1.1 [Uploading iOS translations to OneSky](#uploadtranslations)
+5.1.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
 
 
 <a name="about"></a>
@@ -193,9 +194,16 @@ To aid in development of the app, a special hidden side menu was built that can 
 - Erasing all locally stored data.
 - Sharing the log files of the app.
 
+<a name="wheretobegin"></a>
+## 3. Where to begin development
+Even though the architecture of the app is quite straight forward, it can still be hard to grasp the complexity as a new developer. Here are some helpful points in the codebase to start from.
+
+- **MainViewController** is a container that contains 2 other viewcontrollers (**StatusViewController** and **MoreInformationViewController**) that together represent the main screen of the app. It shows the status of the user / framework (exposed or not exposed) and a menu that gives access to all other features of the app.
+- **RootRouter** is the location of the startup sequence of the app. It determines which screen is shown when the app starts (onboarding screens, the main screen or something else) 
+- **BackgroundController** handles the scheduling and execution of the background task that is the "heartbeat" of the app. It keeps the app up-to-date and performs exposure checks.
 
 <a name="backgroundtask"></a>
-## 3. Background Task
+## 4. Background Task
 One of the most important aspects of the app is a regularly scheduled background task that wakes up the app. Since the scheduling of background tasks is normally not guaranteed by iOS, CoronaMelder (like any other GAEN app) is given a __special entitlement__ by Apple (based on the Bundle ID) that allows this scheduling to be more reliable. The task is currently scheduled to run every hour. However, not all work in this task will be performed during each run since they might depend on content from the backend that is updated in other intervals.
 
 This is an overview of the work that is performed by the background task. The scheduling and execution of this work can all be found in the `BackgroundController` class:
@@ -212,7 +220,7 @@ This is an overview of the work that is performed by the background task. The sc
 - `processDecoyRegisterAndStopKeys`. This triggers decoy calls to the API that are intended to obfuscate the network traffic. This obfuscation makes sure that it is not possible to determine if somebody has shared a GGD-key (and was infected) based on the network traffic of the app.
 
 <a name="theming"></a>
-## 4. Theming, Strings, Fonts and Images
+## 5. Theming, Strings, Fonts and Images
 To ensure a clean look & feel of the app, we have standardised the use of UI components such as text, fonts and images.
 
 - __Strings__ are all stored in (translated) .strings files and are only accessed through static properties and functions in `Localization.swift`. This makes sure we don't make errors in the string's name and allows us to also fallback to a specific base language if the user's system language is not available. See more about the translation of these strings in [Managing Translations](#translations).
@@ -222,11 +230,11 @@ To ensure a clean look & feel of the app, we have standardised the use of UI com
 - __Images__ are stored in ENCore/Resources/Assets.xcassets. These can be accessed by static properties on UIImage itself (like `UIImage.chevron`). Most images have Light and Dark appearances set to support Dark mode within the app.
 
 <a name="translations"></a>
-### 4.1 Managing Translations
+### 5.1 Managing Translations
 The content of the app is translated into 10 different languages. These translations are done via [OneSky](https://www.oneskyapp.com/). 
 
 <a name="uploadtranslations"></a>
-#### 4.1.1 Uploading iOS translations to OneSky
+#### 5.1.1 Uploading iOS translations to OneSky
 - The App contains 2 Resource folders:
     - Sources/EN/Resources
     - Sources/ENCore/Resources
@@ -240,7 +248,7 @@ The content of the app is translated into 10 different languages. These translat
 When updating existing translations by uploading files, make sure the Dutch language is not finalised, otherwise updates won't "overwrite" existing translations. Translations are set to crowdsource mode which means that everyone with access to the url can sign up and add translations for non-finalised strings, so for that reason finalising the translations is advisable too.
 
 <a name="download"></a>
-#### 4.1.2 Downloading and importing iOS translations from OneSky
+#### 5.1.2 Downloading and importing iOS translations from OneSky
 - Check out the master branch in git
 - Go to OneSky -> Translation Overview and click **Download Translation** on the top right
 - Select all languages and all files

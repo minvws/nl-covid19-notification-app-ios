@@ -17,6 +17,7 @@ import UIKit
 import UserNotifications
 
 enum BackgroundTaskIdentifiers: String {
+    // Background tasks with this identifier get higher priority from iOS. Don't change the string without knowing what you're doing!
     case refresh = "exposure-notification"
 }
 
@@ -28,9 +29,13 @@ struct BackgroundTaskConfiguration {
     let decoyDelayRangeUpperBound: ClosedRange<Int>
 }
 
-/// BackgroundController
-///
-/// Note: To tests this implementaion, run the application on device. Put a breakpoint at the `logDebug("Background: Scheduled `\(identifier)` ✅")` statement and background the application.
+/// This class manages the scheduling and execution of the background task. This task performs work that is essential for the proper functioning of the app.
+/// Such as downloading and processing keysets, triggering decoy traffic and updating configuration files coming from the API.
+/// Some things to note:
+/// - On iOS 12.5.x, we don't use the regular background task framework because it doesn't exist. Instead we use a handler in the EN Framework that we register in `func registerActivityHandle()`
+/// - The app has a special entitlement that gives any scheduled background tasks extra priority. This entitlement is coupled to the `BackgroundTaskIdentifiers.refresh` identifier. Do not change this accidentally.
+/// - See `func refresh(..)` for the main work that is executed during the background run
+/// - To tests this background task implementation, run the application on device. Put a breakpoint at the `logDebug("Background: Scheduled `\(identifier)` ✅")` statement and background the application.
 /// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.exposure-notification"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {

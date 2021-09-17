@@ -94,6 +94,11 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     let mutablePushNotificationStream: MutablePushNotificationStreaming
 
+    /// Executes the first routing actions when the app starts. Based on the state of the app, the device and backend configuration there can be a few possible outcomes:
+    /// - The app shows the `onboarding` screens if they haven't been completed before
+    /// - The app shows an `operating system upgrade` indication screen because the iOS version is not supported
+    /// - The app shows a `deactivated` screen, indicating that CoronaMelder has been shut down and the app can no longer be user
+    /// - The app shows an `app update` screen, indicating that the backend configuration file returns a minimum app version and the user should update the app
     func start() {
         logDebug("RootRouter - start() called")
 
@@ -153,7 +158,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             }
         }
     }
-    
+
     func didBecomeActive() {
         exposureController.refreshStatus(completion: nil)
 
@@ -167,7 +172,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             if !self.pauseController.isAppPaused {
                 self.updateTreatmentPerspective()
             }
-            
+
             self.exposureController.updateLastLaunch()
 
             self.exposureController.clearUnseenExposureNotificationDate()
@@ -429,8 +434,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 strongSelf.exposureController
                     .activate()
-                    .subscribe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
-                    .observe(on: ConcurrentDispatchQueueScheduler.init(qos: .userInitiated))
+                    .subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
+                    .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
                     .subscribe(onCompleted: {
                         strongSelf.exposureController.postExposureManagerActivation()
                         strongSelf.backgroundController.performDecoySequenceIfNeeded()
