@@ -40,10 +40,12 @@ public extension NSAttributedString {
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, underlineColor: UIColor? = nil) -> NSAttributedString {
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
+        paragraphStyle.minimumLineHeight = font.pointSize
+
         var attributes: [Key: Any] = [
             .foregroundColor: textColor,
             .paragraphStyle: paragraphStyle
