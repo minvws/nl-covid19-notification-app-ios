@@ -40,7 +40,7 @@ public extension NSAttributedString {
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment, underlineColor: UIColor? = nil) -> NSAttributedString {
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
@@ -135,7 +135,7 @@ public extension NSAttributedString {
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
-                           textAlignment: NSTextAlignment = .left) -> NSMutableAttributedString {
+                           textAlignment: NSTextAlignment) -> NSMutableAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.textSecondary]
 
@@ -155,6 +155,7 @@ public extension NSAttributedString {
         paragraphStyle.paragraphSpacing = paragraphSpacing
         paragraphStyle.headIndent = indentation
         paragraphStyle.alignment = textAlignment
+        paragraphStyle.minimumLineHeight = font.lineHeight
 
         let formattedString = "\(bullet)\t\(string)"
 
@@ -181,10 +182,10 @@ public extension NSAttributedString {
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
-                           textAlignment: NSTextAlignment = .left) -> [NSAttributedString] {
+                           textAlignment: NSTextAlignment) -> NSAttributedString {
 
         let bullets = stringList.map {
-            makeBullet($0,
+            makeBullet($0.appending("\n"),
                        theme: theme,
                        font: font,
                        bullet: bullet,
@@ -194,13 +195,18 @@ public extension NSAttributedString {
             )
         }
 
-        return bullets.enumerated().map { index, bullet in
+        let list = NSMutableAttributedString()
+
+        bullets.enumerated().forEach { index, bullet in
             bullet.addAttribute(.accessibilityTextCustom, value: [
                 AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
                 AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
             ], range: NSRange(location: 0, length: bullet.string.count))
-            return bullet
+
+            list.append(bullet)
         }
+
+        return list
     }
 
     private static func containsHtml(_ value: String) -> Bool {

@@ -125,7 +125,7 @@ class SplitTextView: UIStackView {
     /// Sets the content to the supplied html string.
     @discardableResult
     func html(_ htmlText: String, font: UIFont, textColor: UIColor, boldTextColor: UIColor) -> Self {
-        attributedText = .makeFromHtml(text: htmlText, font: font, textColor: textColor)
+        attributedText = .makeFromHtml(text: htmlText, font: font, textColor: textColor, textAlignment: Localization.textAlignment)
         return self
     }
 
@@ -160,7 +160,7 @@ class SplitTextView: UIStackView {
     }
 }
 
-private extension NSAttributedString {
+extension NSAttributedString {
 
     /// Helper method to split an attributed string by using the given separator
     func split(_ separator: String) -> [NSAttributedString] {
@@ -196,12 +196,6 @@ private extension NSAttributedString {
     /// Determines whether the attributed string is a header
     var isHeader: Bool {
         return attributes { key, value, range in
-            // Check if header level is h1 or higher
-            if key == NSAttributedString.Key.paragraphStyle,
-                let paragraphStyle = value as? NSParagraphStyle,
-                paragraphStyle.headerLevel >= 1 {
-                return true
-            }
 
             // Check if full range uses a bold font
             if key == NSAttributedString.Key.font,
@@ -220,7 +214,7 @@ private extension NSAttributedString {
     /// Determines whether the attributed string is a list item
     var isListItem: Bool {
         // Check if strings starts with tabbed bullet character
-        if string.starts(with: "\t●") || string.starts(with: "\t•") {
+        if string.starts(with: "\t●") || string.starts(with: "\t•") || string.starts(with: "●\t") {
             return true
         }
 

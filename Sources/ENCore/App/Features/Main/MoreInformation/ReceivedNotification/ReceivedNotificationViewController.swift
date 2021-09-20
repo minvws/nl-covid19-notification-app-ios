@@ -203,27 +203,27 @@ private final class ReceivedNotificationView: View {
     private func notificationExplanation() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpOtherWhatDoesReportSayTitle,
-                            content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription1)])
+                            content: attributedContentText(for: .helpReceivedNotificationMeaningDescription1))
     }
 
     private func content() -> View {
-        InfoSectionContentTextView(theme: theme, content: [attributedContentText(for: .helpReceivedNotificationMeaningDescription2)])
+        InfoSectionTextView(theme: theme, content: attributedContentText(for: .helpReceivedNotificationMeaningDescription2))
     }
 
     private func whatToDo() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationWhatToDoTitle,
-                            content: [attributedContentText(for: .helpReceivedNotificationWhatToDoDescription)])
+                            content: attributedContentText(for: .helpReceivedNotificationWhatToDoDescription))
     }
 
     private func otherReports() -> View {
         InfoSectionTextView(theme: theme,
                             title: .helpReceivedNotificationOtherReportsTitle,
-                            content: [attributedContentText(for: .helpReceivedNotificationOtherReportsDescription)])
+                            content: attributedContentText(for: .helpReceivedNotificationOtherReportsDescription))
     }
 
     private func attributedContentText(for string: String) -> NSAttributedString {
-        NSAttributedString.makeFromHtml(text: string, font: theme.fonts.body, textColor: theme.colors.textSecondary)
+        NSAttributedString.makeFromHtml(text: string, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment)
     }
 
     private let infoView: InfoView

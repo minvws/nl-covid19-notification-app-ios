@@ -75,6 +75,10 @@ public final class Localization {
         return UIApplication.shared.userInterfaceLayoutDirection == UIUserInterfaceLayoutDirection.rightToLeft
     }
 
+    public static var textAlignment: NSTextAlignment {
+        isRTL ? .right : .left
+    }
+
     static var isUsingDutchLanguage: Bool {
         Locale.current.languageCode?.lowercased() == "nl"
     }

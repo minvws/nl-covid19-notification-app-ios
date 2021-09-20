@@ -58,7 +58,7 @@ enum EnableSetting {
 }
 
 struct EnableSettingModel {
-    
+
     let title: String
     let introduction: NSAttributedString?
     let stepTitle: NSAttributedString?
@@ -74,8 +74,9 @@ struct EnableSettingModel {
         footer: NSAttributedString? = nil,
         steps: [EnableSettingStep],
         action: EnableSettingAction?,
-        actionTitle: String?) {
-        
+        actionTitle: String?
+    ) {
+
         self.title = title
         self.introduction = introduction
         self.stepTitle = stepTitle
@@ -84,7 +85,7 @@ struct EnableSettingModel {
         self.action = action
         self.actionTitle = actionTitle
     }
-    
+
     static var enableExposureNotifications: (Theme) -> EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,
@@ -149,27 +150,27 @@ struct EnableSettingModel {
                          actionTitle: .enableSettingsBluetoothAction)
         }
     }
-    
+
     static var connectToInternet: (Theme) -> EnableSettingModel {
         return { theme in
             let fromHtml: (String, UIColor) -> NSAttributedString = { .makeFromHtml(text: $0,
-                                                                           font: theme.fonts.body,
-                                                                           textColor: $1,
-                                                                           textAlignment: Localization.isRTL ? .right : .left) }
+                                                                                    font: theme.fonts.body,
+                                                                                    textColor: $1,
+                                                                                    textAlignment: Localization.isRTL ? .right : .left) }
 
             let step1 = EnableSettingStep(description: fromHtml(.enableInternetTitleRow1, theme.colors.textPrimary), action: nil)
             let step2 = EnableSettingStep(description: fromHtml(.enableInternetSettingTitleRow2, theme.colors.textPrimary), action: .custom(image: .mobileData, description: .enableInternetSettingTitleSettingRow2, showChevron: false, showSwitch: true))
 
             return .init(title: .enableSettingsInternetTitle,
                          introduction: fromHtml(.enableSettingsInternetIntroduction, theme.colors.textSecondary),
-                         stepTitle: .makeFromHtml(text: .enableSettingsInternetStepTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
+                         stepTitle: .makeFromHtml(text: .enableSettingsInternetStepTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
                          footer: fromHtml(.enableInternetFooter, theme.colors.textSecondary),
                          steps: [step1, step2],
                          action: .openSettings,
                          actionTitle: .enableInternetOpenSettingsButton)
         }
     }
-    
+
     static var enableLocalNotifications: (Theme) -> EnableSettingModel {
         return { theme in
             let fromHtml: (String) -> NSAttributedString = { .makeFromHtml(text: $0,

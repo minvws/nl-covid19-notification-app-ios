@@ -91,12 +91,12 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
                 self?.internalView.infoView.showHeader = !isLandscape
             }.disposed(by: disposeBag)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
     }
-    
+
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -197,7 +197,7 @@ final class ShareKeyViaPhoneViewController: ViewController, ShareKeyViaPhoneView
     private var cardViewController: ViewControllable?
 
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
-        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)        
+        router?.shareKeyViaPhoneWantsDismissal(shouldDismissViewController: true)
     }
 
     private func updateState() {
@@ -256,14 +256,14 @@ private final class ShareKeyViaPhoneView: View {
         return content
     }
 
-    fileprivate lazy var contentView: InfoSectionContentView = {
-        return InfoSectionContentView(theme: theme, content: content)
+    fileprivate lazy var contentView: InfoSectionTextView = {
+        return InfoSectionTextView(theme: theme, content: content)
     }()
 
     private lazy var stepStackView: UIView = {
         let stackView = UIStackView()
         stackView.axis = .vertical
-        
+
         stackView.addArrangedSubview(controlCode)
         stackView.addArrangedSubview(waitForTheGGD)
         stackView.addArrangedSubview(shareYourCodes)
@@ -307,7 +307,7 @@ private final class ShareKeyViaPhoneView: View {
         super.build()
 
         backgroundColor = theme.colors.viewControllerBackground
-        
+
         infoView.addSections([
             contentView,
             stepStackView,

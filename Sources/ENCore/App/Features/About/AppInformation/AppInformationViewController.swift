@@ -129,30 +129,30 @@ private final class AppInformationView: View {
 
     private lazy var protectView = InformationCardView(theme: theme,
                                                        image: UIImage.illustrationSitWalkCycle,
-                                                       title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                                                       message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
+                                                       title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
+                                                       message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesProtectDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
     private lazy var notifyView = InformationCardView(theme: theme,
                                                       image: UIImage.illustrationNotification,
-                                                      title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                                                      message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
+                                                      title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
+                                                      message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesNotifyDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
     private lazy var bluetoothView = InformationCardView(theme: theme,
                                                          image: UIImage.illustrationBluetooth,
-                                                         title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                                                         message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
+                                                         title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
+                                                         message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesBluetoothDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
     private lazy var cycleExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.illustrationCycle,
                                                             pretitle: String.example.attributed(),
-                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
+                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
+                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleCycleDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
     private lazy var trainExampleView = InformationCardView(theme: theme,
                                                             image: UIImage.illustrationTrain,
                                                             pretitle: String.example.attributed(),
-                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary),
-                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary))
+                                                            title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
+                                                            message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
     private lazy var buttonWrapperView = View(theme: theme)
     private lazy var tableViewWrapperView = View(theme: theme)
