@@ -19,7 +19,7 @@ protocol MessageManaging: AnyObject {
     func getLocalizedTreatmentPerspective() -> LocalizedTreatmentPerspective
 }
 
-fileprivate enum TreatmentPerspectiveError: Error {
+private enum TreatmentPerspectiveError: Error {
     case unfillablePlaceHolderError
 }
 
@@ -59,11 +59,11 @@ final class MessageManager: MessageManaging, Logging {
         guard let exposureDate = exposureDataController.lastExposure?.date else {
             return .emptyMessage
         }
-        
+
         guard resource != nil || fallbackResource != nil else {
             return .emptyMessage
         }
-        
+
         guard let layout = getLayout(exposureDate: exposureDate, notificationDate: exposureDataController.exposureFirstNotificationReceivedDate, treatmentPerspective: treatmentPerspective) else {
             return .emptyMessage
         }
@@ -75,16 +75,16 @@ final class MessageManager: MessageManaging, Logging {
                 withLanguageResource: resource,
                 languageResourceFallback: fallbackResource
             )
-            
+
             return LocalizedTreatmentPerspective(paragraphs: paragraphs)
-            
+
         } catch {
             return .emptyMessage
         }
     }
 
     // MARK: - Private
-    
+
     /// Gets a treatment perspective layout from the TreatmentPerspective model that is relevant for the given exposure date.
     /// - Parameters:
     ///   - exposureDate: The day on which the exposure occured
@@ -94,24 +94,24 @@ final class MessageManager: MessageManaging, Logging {
     private func getLayout(exposureDate: Date,
                            notificationDate: Date?,
                            treatmentPerspective: TreatmentPerspective) -> [TreatmentPerspective.LayoutElement]? {
-        
+
         // Fall back to a non-date-relative layout if we can't determine the number of days since exposure or we don't know the date of the first notification
         guard let daysSinceExposure = currentDate().days(sinceDate: exposureDate), notificationDate != nil else {
             return treatmentPerspective.guidance.layout
         }
-        
+
         let dayRelativeLayout = treatmentPerspective.guidance.layoutByRelativeExposureDay?.first(where: { (relativeExposureDayLayout) -> Bool in
             guard relativeExposureDayLayout.exposureDaysLowerBoundary <= daysSinceExposure else {
                 return false
             }
-            
+
             if let upperBoundary = relativeExposureDayLayout.exposureDaysUpperBoundary {
                 return upperBoundary >= daysSinceExposure
             }
-            
+
             return true
         })
-        
+
         return dayRelativeLayout?.layout ?? treatmentPerspective.guidance.layout
     }
 
@@ -131,16 +131,16 @@ final class MessageManager: MessageManaging, Logging {
             }
 
             let paragraphTitle = try replacePlaceholders(inString: NSAttributedString(string: resourceTitle),
-                                                     withExposureDate: exposureDate)
+                                                         withExposureDate: exposureDate)
 
             let htmlBody = try replacePlaceholders(inString: NSAttributedString(string: resourceBody),
-                                               withExposureDate: exposureDate)
+                                                   withExposureDate: exposureDate)
 
             let paragraphBody = NSAttributedString.htmlWithBulletList(text: htmlBody.string,
                                                                       font: theme.fonts.body,
                                                                       textColor: theme.colors.textSecondary,
                                                                       theme: theme,
-                                                                      textAlignment: Localization.isRTL ? .right : .left)
+                                                                      textAlignment: Localization.textAlignment)
 
             return LocalizedTreatmentPerspective.Paragraph(
                 title: paragraphTitle.string,

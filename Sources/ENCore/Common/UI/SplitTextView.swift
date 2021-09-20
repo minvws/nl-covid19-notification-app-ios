@@ -15,9 +15,9 @@ import UIKit
 class SplitTextView: UIStackView {
 
     private let theme: Theme
-    private let paragraphMarginMultiplier: CGFloat = 1
-    private let headerMarginMultiplier: CGFloat = 0.25
-    private let listItemMarginMultiplier: CGFloat = 0.25
+    private let paragraphMargin: CGFloat = 16
+    private let headerMargin: CGFloat = 24
+    private let listItemMargin: CGFloat = 8
 
     /// Helper variable to display the given text by using a TextElement
     var text: String? {
@@ -42,14 +42,14 @@ class SplitTextView: UIStackView {
             for part in parts {
                 // 1. Determine spacing of previous element
                 if let previousElement = arrangedSubviews.last {
-                    var spacing = part.lineHeight
+                    let spacing: CGFloat
 
                     if part.isHeader {
-                        spacing *= headerMarginMultiplier
+                        spacing = headerMargin
                     } else if part.isListItem {
-                        spacing *= listItemMarginMultiplier
+                        spacing = listItemMargin
                     } else {
-                        spacing *= paragraphMarginMultiplier
+                        spacing = paragraphMargin
                     }
 
                     setCustomSpacing(spacing, after: previousElement)

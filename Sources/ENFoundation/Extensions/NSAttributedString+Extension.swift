@@ -294,6 +294,7 @@ extension NSMutableAttributedString {
         paragraphStyle.headIndent = 16
         paragraphStyle.alignment = textAlignment
         paragraphStyle.paragraphSpacing = 5
+        paragraphStyle.minimumLineHeight = font.lineHeight
 
         self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: NSMakeRange(0, self.length))
     }

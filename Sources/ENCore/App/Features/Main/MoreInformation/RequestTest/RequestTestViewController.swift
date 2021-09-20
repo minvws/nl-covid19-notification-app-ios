@@ -166,7 +166,7 @@ private final class RequestTestView: View {
                                     secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
 
