@@ -7,6 +7,7 @@
 
 @testable import ENCore
 import Foundation
+import SnapshotTesting
 import XCTest
 
 final class MainViewControllerTests: TestCase {
@@ -19,9 +20,11 @@ final class MainViewControllerTests: TestCase {
     private var mockPauseController = PauseControllingMock()
     private var mockUserNotificationController = UserNotificationControllingMock()
     private let alertControllerBuilder = AlertControllerBuildableMock()
-    
+
     override func setUp() {
         super.setUp()
+
+        recordSnapshots = false || forceRecordAllSnapshots
 
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
@@ -40,6 +43,22 @@ final class MainViewControllerTests: TestCase {
         viewController.moreInformationRequestsAbout()
 
         XCTAssertEqual(router.routeToAboutAppCallCount, 1)
+    }
+
+    func test_moreInformationRequestsSettings_callsRouter() {
+        XCTAssertEqual(router.routeToSettingsCallCount, 0)
+
+        viewController.moreInformationRequestsSettings()
+
+        XCTAssertEqual(router.routeToSettingsCallCount, 1)
+    }
+
+    func test_moreInformationRequestsSharing_callsRouter() {
+        XCTAssertEqual(router.routeToSharingCallCount, 0)
+
+        viewController.moreInformationRequestsSharing()
+
+        XCTAssertEqual(router.routeToSharingCallCount, 1)
     }
 
     func test_moreInformationRequestsReceivedNotification_callsRouter() {
@@ -64,6 +83,76 @@ final class MainViewControllerTests: TestCase {
         viewController.moreInformationRequestsRequestTest()
 
         XCTAssertEqual(router.routeToRequestTestCallCount, 1)
+    }
+
+    func test_webviewRequestsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachWebviewCallCount, 0)
+
+        viewController.webviewRequestsDismissal(shouldHideViewController: true)
+
+        XCTAssertEqual(router.detachWebviewCallCount, 1)
+    }
+
+    func test_aboutRequestsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachAboutAppCallCount, 0)
+
+        viewController.aboutRequestsDismissal(shouldHideViewController: true)
+
+        XCTAssertEqual(router.detachAboutAppCallCount, 1)
+    }
+
+    func test_settingsWantsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachSettingsCallCount, 0)
+
+        viewController.settingsWantsDismissal(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachSettingsCallCount, 1)
+    }
+
+    func test_shareSheetDidComplete_callsRouter() {
+        XCTAssertEqual(router.detachSharingCallCount, 0)
+
+        viewController.shareSheetDidComplete(shouldHideViewController: true)
+
+        XCTAssertEqual(router.detachSharingCallCount, 1)
+    }
+
+    func test_displayShareSheet_callsRouter() {
+        viewController.displayShareSheet(usingViewController: viewController) { completed in
+            XCTAssertTrue(completed)
+        }
+    }
+
+    func test_receivedNotificationWantsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachReceivedNotificationCallCount, 0)
+
+        viewController.receivedNotificationWantsDismissal(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachReceivedNotificationCallCount, 1)
+    }
+
+    func test_requestTestWantsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachRequestTestCallCount, 0)
+
+        viewController.requestTestWantsDismissal(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachRequestTestCallCount, 1)
+    }
+
+    func test_keySharingWantsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachKeySharingCallCount, 0)
+
+        viewController.keySharingWantsDismissal(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachKeySharingCallCount, 1)
+    }
+
+    func test_messageWantsDismissal_callsRouter() {
+        XCTAssertEqual(router.detachMessageCallCount, 0)
+
+        viewController.messageWantsDismissal(shouldDismissViewController: true)
+
+        XCTAssertEqual(router.detachMessageCallCount, 1)
     }
 
     func test_viewDidLoad_callsRouterInRightOrder() {
@@ -100,15 +189,15 @@ final class MainViewControllerTests: TestCase {
             completion?(nil)
             completionExpectation.fulfill()
         }
-        
+
         // Act
         viewController.handleButtonAction(.updateAppSettings)
-        
+
         // Assert
         waitForExpectations()
         XCTAssertEqual(mockUserNotificationController.getAuthorizationStatusCallCount, 1)
     }
-    
+
     func test_handleButtonAction_updateAppSettings_shouldNotRequestPushNotificationPermission_ifFailed() {
         // Arrange
         let completionExpectation = expectation(description: "completionExpectation")
@@ -117,15 +206,15 @@ final class MainViewControllerTests: TestCase {
             completion?(.disabled)
             completionExpectation.fulfill()
         }
-        
+
         // Act
         viewController.handleButtonAction(.updateAppSettings)
-        
+
         // Assert
         waitForExpectations()
         XCTAssertEqual(mockUserNotificationController.getAuthorizationStatusCallCount, 0)
     }
-    
+
     func test_handleButtonAction_explainRisk() {
         XCTAssertEqual(router.routeToMessageCallCount, 0)
         viewController.handleButtonAction(.explainRisk)
@@ -134,27 +223,27 @@ final class MainViewControllerTests: TestCase {
 
     func test_handleButtonAction_removeNotification_confirmShouldCallExposureController() {
         var createdAlertController: UIAlertController?
-        var actionHandlers = [((UIAlertAction) -> Void)]()
-        
+        var actionHandlers = [(UIAlertAction) -> ()]()
+
         alertControllerBuilder.buildAlertControllerHandler = { title, message, prefferedStyle in
             let alertController = UIAlertController(title: title, message: message, preferredStyle: prefferedStyle)
             createdAlertController = alertController
             return alertController
         }
-        
+
         alertControllerBuilder.buildAlertActionHandler = { title, style, handler in
             actionHandlers.append(handler!)
             return UIAlertAction(title: title, style: style, handler: handler)
         }
-        
+
         XCTAssertEqual(alertControllerBuilder.buildAlertControllerCallCount, 0)
         XCTAssertEqual(exposureController.confirmExposureNotificationCallCount, 0)
-        
+
         viewController.handleButtonAction(.removeNotification("SomeTitle"))
-        
+
         // Execute the last action in the alert, this should call exposureController.confirmExposureNotification()
         actionHandlers.last?(UIAlertAction())
-        
+
         XCTAssertEqual(alertControllerBuilder.buildAlertControllerCallCount, 1)
         XCTAssertEqual(exposureController.confirmExposureNotificationCallCount, 1)
         XCTAssertEqual(createdAlertController?.title, "SomeTitle")
@@ -184,5 +273,71 @@ final class MainViewControllerTests: TestCase {
 
         XCTAssertEqual(router.detachEnableSettingCallCount, 1)
         XCTAssertTrue(shouldDismissViewController)
+    }
+
+    func test_embed() {
+
+        snapshots(matching: viewController)
+
+        let stackedViewController = ViewController(theme: theme)
+        stackedViewController.uiviewController.view.backgroundColor = .red
+        viewController.embed(stackedViewController: stackedViewController)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_present() {
+
+        snapshots(matching: viewController)
+
+        let vc = ViewController(theme: theme)
+        vc.uiviewController.view.backgroundColor = .red
+        viewController.present(viewController: vc,
+                               animated: false)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_present_inNavigationController_True() {
+
+        snapshots(matching: viewController)
+
+        let vc = ViewController(theme: theme)
+        vc.uiviewController.view.backgroundColor = .red
+        viewController.present(viewController: vc,
+                               animated: false,
+                               inNavigationController: true)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_present_inNavigationController_False() {
+
+        snapshots(matching: viewController)
+
+        let stackedViewController = ViewController(theme: theme)
+        stackedViewController.uiviewController.view.backgroundColor = .red
+        viewController.present(viewController: stackedViewController,
+                               animated: false,
+                               inNavigationController: false)
+
+        snapshots(matching: viewController)
+    }
+
+    func test_dismiss() {
+
+        snapshots(matching: viewController)
+
+        let vc = ViewController(theme: theme)
+        vc.uiviewController.view.backgroundColor = .red
+        viewController.present(viewController: vc,
+                               animated: false)
+
+        snapshots(matching: viewController)
+
+        viewController.dismiss(viewController: vc,
+                               animated: false)
+
+        snapshots(matching: viewController)
     }
 }
