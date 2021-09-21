@@ -121,6 +121,16 @@ class SplitTextElement: UITextView, UITextViewDelegate {
         textView.selectedTextRange = nil
     }
 
+    /// Updates accessibilityAttributedValue with the given NSattributedString, stripped of any list bullets
+    /// - Parameter updatedText: The attributed value of the element
+    private func updateAccessibilityValue(withText updatedText: NSAttributedString) {
+        var accessibilityString = NSMutableAttributedString(attributedString: updatedText)
+        for bullet in NSAttributedString.listBullets {
+            accessibilityString = accessibilityString.removingSubstring(substring: bullet)
+        }
+        self.accessibilityAttributedValue = accessibilityString
+    }
+
     override var attributedText: NSAttributedString? {
         get {
             return super.attributedText
@@ -132,16 +142,22 @@ class SplitTextElement: UITextView, UITextViewDelegate {
                 return
             }
 
+            updateAccessibilityValue(withText: newText)
+
             let attributes = newText.attributes(at: 0, effectiveRange: nil)
+
+            if newText.isHeader {
+                accessibilityTraits.formUnion(.header)
+            }
+
+            if newText.hasLink {
+                accessibilityTraits.formUnion(.link)
+            }
 
             guard let accessibilityTextCustom = attributes.filter({ (attribute) -> Bool in
                 attribute.key == .accessibilityTextCustom
             }).first else {
                 return
-            }
-
-            if newText.isHeader {
-                accessibilityTraits = .header
             }
 
             guard let data = accessibilityTextCustom.value as? [String: Int] else {
