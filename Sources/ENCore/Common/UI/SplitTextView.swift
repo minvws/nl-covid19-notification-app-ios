@@ -15,9 +15,9 @@ import UIKit
 class SplitTextView: UIStackView {
 
     private let theme: Theme
-    private let paragraphMargin: CGFloat = 16
+    private let paragraphMargin: CGFloat = 14
     private let headerMargin: CGFloat = 24
-    private let listItemMargin: CGFloat = 8
+    private let listItemMargin: CGFloat = 6
 
     /// Helper variable to display the given text by using a TextElement
     var text: String? {

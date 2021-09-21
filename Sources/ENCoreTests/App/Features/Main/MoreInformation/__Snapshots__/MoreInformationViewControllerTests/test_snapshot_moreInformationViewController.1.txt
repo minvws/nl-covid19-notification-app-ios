@@ -1,41 +1,41 @@
-<UIView; frame = (0 0; 320 905.333); layer = <CALayer>>
-   | <_TtC6ENCoreP33_8AD9A425AE8CDA8CDE04E570012C3AD819MoreInformationView; frame = (0 0; 320 905.333); layer = <CALayer>>
-   |    | <UIStackView; frame = (0 16; 320 716); layer = <CALayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 0; 320 102.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 102.333; 256 1); layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 22.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+<UIView; frame = (0 0; 320 974.667); layer = <CALayer>>
+   | <_TtC6ENCoreP33_8AD9A425AE8CDA8CDE04E570012C3AD819MoreInformationView; frame = (0 0; 320 974.667); layer = <CALayer>>
+   |    | <UIStackView; frame = (0 16; 320 772); layer = <CALayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 0; 320 109.667); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 109.667; 256 1); layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 23.6667; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 20.3333); text = 'Questions about the app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 44.3333; 216 38); text = 'See how the app works. An...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 102.333; 320 102.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 102.333; 256 1); layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 22.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 23.3333); text = 'Questions about the app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 47.3333; 216 42.3333); text = 'See how the app works. An...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 109.667; 320 109.667); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 109.667; 256 1); layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 23.6667; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 20.3333); text = 'Settings'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 44.3333; 216 38); text = 'Pause app and manage mobi...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 204.667; 320 164.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 164.333; 256 1); layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 33.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 23.3333); text = 'Settings'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 47.3333; 216 42.3333); text = 'Pause app and manage mobi...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 219.333; 320 179); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 179; 256 1); layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 36; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 42.3333); text = 'How do I recognize a noti...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 66.3333; 216 78); text = 'Find out what notificatio...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 369; 320 102.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 102.333; 256 1); layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 22.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 48); text = 'How do I recognize a noti...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 72; 216 87); text = 'Find out what notificatio...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 398.333; 320 109.667); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 109.667; 256 1); layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 23.6667; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 20.3333); text = 'Get tested for coronaviru...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 44.3333; 216 38); text = 'Find out as soon as possi...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 471.333; 320 122.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 122.333; 256 1); layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 22.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 23.3333); text = 'Get tested for coronaviru...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 47.3333; 216 42.3333); text = 'Find out as soon as possi...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 508; 320 132); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 132; 256 1); layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 23.6667; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 20.3333); text = 'Invite others to the app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 44.3333; 216 58); text = 'Share the app with others...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 593.667; 320 122.333); layer = <CALayer>>
-   |    |    |    | <ENCore.View; frame = (64 122.333; 256 1); hidden = YES; layer = <CALayer>>
-   |    |    |    | <UIImageView; frame = (296 22.3333; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 23.3333); text = 'Invite others to the app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 47.3333; 216 64.6667); text = 'Share the app with others...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    | <ENCore.MoreInformationCell; baseClass = UIControl; frame = (0 640; 320 132); layer = <CALayer>>
+   |    |    |    | <ENCore.View; frame = (64 132; 256 1); hidden = YES; layer = <CALayer>>
+   |    |    |    | <UIImageView; frame = (296 23.6667; 8 16); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    | <UIImageView; frame = (16 23; 32 32); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 20.3333); text = 'Share the GGD key'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 44.3333; 216 58); text = 'Go here if the GGD calls ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    | <ENCore.Label; baseClass = UILabel; frame = (16 748; 288 105.667); text = 'CoronaMelder continuously...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    | <ENCore.Label; baseClass = UILabel; frame = (0 869.667; 320 15.6667); text = '1.0 (12345-5ec9b)'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 20; 216 23.3333); text = 'Share the GGD key'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (64 47.3333; 216 64.6667); text = 'Go here if the GGD calls ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <ENCore.Label; baseClass = UILabel; frame = (16 804; 288 117); text = 'CoronaMelder continuously...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    | <ENCore.Label; baseClass = UILabel; frame = (0 937; 320 17.6667); text = '1.0 (12345-5ec9b)'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
