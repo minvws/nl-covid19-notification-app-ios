@@ -1,132 +1,132 @@
 <UIView; frame = (0 0; 320 480); layer = <CALayer>>
    | <_TtC6ENCoreP33_4935042668AEC98F7E07467933B5895C24ReceivedNotificationView; frame = (0 0; 320 480); layer = <CALayer>>
    |    | <ENCore.InfoView; frame = (0 0; 320 480); layer = <CALayer>>
-   |    |    | <UIScrollView; frame = (0 0; 320 480); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {0, 2562.3333333333335}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    | <UIScrollView; frame = (0 0; 320 480); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {0, 2416.3333333333335}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    | <UIView; frame = (0 0; 320 0); layer = <CALayer>>
-   |    |    |    | <UIView; frame = (0 0; 320 2562.33); layer = <CALayer>>
+   |    |    |    | <UIView; frame = (0 0; 320 2416.33); layer = <CALayer>>
    |    |    |    |    | <UIImageView; frame = (0 0; 320 176); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIStackView; frame = (0 200; 320 2342.33); layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 0; 320 175.333); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 175.333); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 63.3333); text = 'How do I recognize a noti...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 63.333333333333336}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    | <UIStackView; frame = (0 200; 320 2196.33); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 0; 320 158); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 158); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 56); text = 'How do I recognize a noti...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 56}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 63.3333); layer = <CALayer>> minSize = {0, 63.333333333333336}, maxSize = {288, 63.333333333333336}, textContainer = <NSTextContainer size = (288.000000,63.333332); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 63.3333); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 57.3333; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 56); layer = <CALayer>> minSize = {0, 56}, maxSize = {288, 56}, textContainer = <NSTextContainer size = (288.000000,56.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 56); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 50; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 -7.33333; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 -11; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 36); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 77.3333; 288 98); text = 'The app sends you a notif...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 98}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 70; 288 88); text = 'The app sends you a notif...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 88}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 98); layer = <CALayer>> minSize = {0, 98}, maxSize = {288, 98}, textContainer = <NSTextContainer size = (288.000000,98.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 98); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 92; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 88); layer = <CALayer>> minSize = {0, 88}, maxSize = {288, 88}, textContainer = <NSTextContainer size = (288.000000,88.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 88); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 82; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 92); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 92); layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.View; frame = (0 215.333; 320 165); layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 82); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 82); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 198; 320 165); layer = <CALayer>>
    |    |    |    |    |    |    | <UIImageView; frame = (16 0; 288 165); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 420.333; 320 210.333); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 210.333); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 122.667); text = 'The notification looks li...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 122.66666666666667}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 403; 320 190); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 190); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 110); text = 'The notification looks li...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 110}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 122.667); layer = <CALayer>> minSize = {0, 122.66666666666667}, maxSize = {288, 122.66666666666667}, textContainer = <NSTextContainer size = (288.000000,122.666664); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 122.667); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 116.667; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 110); layer = <CALayer>> minSize = {0, 110}, maxSize = {288, 110}, textContainer = <NSTextContainer size = (288.000000,110.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 110); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 104; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 92); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 92); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 136.667; 288 73.6667); text = 'Did you receive a notific...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 73.666666666666671}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 82); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 82); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 124; 288 66); text = 'Did you receive a notific...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 66}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 73.6667); layer = <CALayer>> minSize = {0, 73.666666666666671}, maxSize = {288, 73.666666666666671}, textContainer = <NSTextContainer size = (288.000000,73.666664); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 73.6667); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 67.6667; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 66); layer = <CALayer>> minSize = {0, 66}, maxSize = {288, 66}, textContainer = <NSTextContainer size = (288.000000,66.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 66); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 60; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 67.6667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 67.6667); layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.View; frame = (0 670.667; 320 391.333); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 48); text = 'Example: This is how the ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    |    |    |    | <UIImageView; frame = (16 63; 288 328.333); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1102; 320 504.667); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 504.667); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 95); text = 'What can you do after you...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 95}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 60); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 60); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 633; 320 385.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 0; 288 42.3333); text = 'Example: This is how the ...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    | <UIImageView; frame = (16 57.3333; 288 328.333); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1058.67; 320 456); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 456); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 84); text = 'What can you do after you...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 84}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 95); layer = <CALayer>> minSize = {0, 95}, maxSize = {288, 95}, textContainer = <NSTextContainer size = (288.000000,95.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 95); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 89; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 84); layer = <CALayer>> minSize = {0, 84}, maxSize = {288, 84}, textContainer = <NSTextContainer size = (288.000000,84.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 84); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 78; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 89); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 89); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 109; 288 147); text = 'Follow the advice from th...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 147}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 78); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 78); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 98; 288 132); text = 'Follow the advice from th...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 132}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 147); layer = <CALayer>> minSize = {0, 147}, maxSize = {288, 147}, textContainer = <NSTextContainer size = (288.000000,147.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 147); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 141; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 132); layer = <CALayer>> minSize = {0, 132}, maxSize = {288, 132}, textContainer = <NSTextContainer size = (288.000000,132.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 132); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 126; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 116.667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 116.667); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 270; 288 98); text = 'In any case, stay home un...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 98}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 104); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 104); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 244; 288 88); text = 'In any case, stay home un...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 88}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 98); layer = <CALayer>> minSize = {0, 98}, maxSize = {288, 98}, textContainer = <NSTextContainer size = (288.000000,98.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 98); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 92; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 88); layer = <CALayer>> minSize = {0, 88}, maxSize = {288, 88}, textContainer = <NSTextContainer size = (288.000000,88.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 88); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 82; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 67.6667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 67.6667); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 382; 288 122.667); text = 'Were you near someone who...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 122.66666666666667}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 60); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 60); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 346; 288 110); text = 'Were you near someone who...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 110}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 122.667); layer = <CALayer>> minSize = {0, 122.66666666666667}, maxSize = {288, 122.66666666666667}, textContainer = <NSTextContainer size = (288.000000,122.666664); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 122.667); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 116.667; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 110); layer = <CALayer>> minSize = {0, 110}, maxSize = {288, 110}, textContainer = <NSTextContainer size = (288.000000,110.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 110); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 104; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 92); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 92); layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1646.67; 320 490.333); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 490.333); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 31.6667); text = 'Other notifications'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 31.666666666666668}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 82); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 82); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.InfoSectionTextView; frame = (0 1554.67; 320 444); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.SplitTextView; baseClass = UIStackView; frame = (16 0; 288 444); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 0; 288 28); text = 'Other notifications'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 28}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 31.6667); layer = <CALayer>> minSize = {0, 31.666666666666668}, maxSize = {288, 31.666666666666668}, textContainer = <NSTextContainer size = (288.000000,31.666666); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 31.6667); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 25.6667; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 28); layer = <CALayer>> minSize = {0, 28}, maxSize = {288, 28}, textContainer = <NSTextContainer size = (288.000000,28.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 28); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 22; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 -7.33333; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 -11; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 36); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 45.6667; 288 171.667); text = 'The app can also send you...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 171.66666666666666}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 42; 288 154); text = 'The app can also send you...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 154}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 171.667); layer = <CALayer>> minSize = {0, 171.66666666666666}, maxSize = {288, 171.66666666666666}, textContainer = <NSTextContainer size = (288.000000,171.666672); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 171.667); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 165.667; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 154); layer = <CALayer>> minSize = {0, 154}, maxSize = {288, 154}, textContainer = <NSTextContainer size = (288.000000,154.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 154); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 148; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 141); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 141); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 231.333; 288 98); text = 'Did you get such a notifi...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 98}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 126); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 126); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 210; 288 88); text = 'Did you get such a notifi...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 88}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 98); layer = <CALayer>> minSize = {0, 98}, maxSize = {288, 98}, textContainer = <NSTextContainer size = (288.000000,98.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 98); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 92; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 88); layer = <CALayer>> minSize = {0, 88}, maxSize = {288, 88}, textContainer = <NSTextContainer size = (288.000000,88.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 88); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 82; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 67.6667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 67.6667); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 343.333; 288 147); text = 'Sometimes you'll get noti...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 147}; adjustedContentInset: {0, 0, 0, 0}>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 60); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 60); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.SplitTextElement; baseClass = UITextView; frame = (0 312; 288 132); text = 'Sometimes you'll get noti...'; clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {288, 132}; adjustedContentInset: {0, 0, 0, 0}>
    |    |    |    |    |    |    |    |    | <_UITextLayoutView; frame = (0 0; 0 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 147); layer = <CALayer>> minSize = {0, 147}, maxSize = {288, 147}, textContainer = <NSTextContainer size = (288.000000,147.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
-   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 147); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 141; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <<_UITextContainerView; frame = (0 0; 288 132); layer = <CALayer>> minSize = {0, 132}, maxSize = {288, 132}, textContainer = <NSTextContainer size = (288.000000,132.000000); widthTracksTextView = YES; heightTracksTextView = YES>; exclusionPaths =; lineBreakMode = 0>
+   |    |    |    |    |    |    |    |    |    | <_UITextViewCanvasView; frame = (0 0; 288 132); userInteractionEnabled = NO; layer = <_UITextTiledLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (3 126; 352 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 352 3); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 116.667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 116.667); layer = <CALayer>>
-   |    |    |    |    |    | <ENCore.View; frame = (0 2177; 320 165.333); layer = <CALayer>>
-   |    |    |    |    |    |    | <ENCore.LinkedContentTableView; baseClass = UITableView; frame = (0 0; 320 165.333); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {320, 165.33333460489908}; adjustedContentInset: {0, 0, 0, 0}; dataSource: <ENCore.LinkedContentTableViewManager>>
-   |    |    |    |    |    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 52.6667; 320 75.3333); text = 'Can I send others a notif...'; autoresize = W; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <UIView; frame = (14 74.3333; 306 1); layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <UITableViewCellContentView; frame = (0 0; 320 75.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    |    | <UITableViewLabel; frame = (16 14; 288 47.3333); text = 'Can I send others a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    |    |    |    |    | <UIView; frame = (0 145.333; 320 0); layer = <CALayer>>
-   |    |    |    |    |    |    |    | <ENCore.HelpTableViewSectionHeaderView; frame = (0 0; 320 52.6667); autoresize = W; layer = <CALayer>>
-   |    |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 20.6667); text = 'Also read'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (282 3; 3 104); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 104); layer = <CALayer>>
+   |    |    |    |    |    | <ENCore.View; frame = (0 2038.67; 320 157.667); layer = <CALayer>>
+   |    |    |    |    |    |    | <ENCore.LinkedContentTableView; baseClass = UITableView; frame = (0 0; 320 157.667); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {320, 157.66666666666666}; adjustedContentInset: {0, 0, 0, 0}; dataSource: <ENCore.LinkedContentTableViewManager>>
+   |    |    |    |    |    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 50; 320 70.3333); text = 'Can I send others a notif...'; autoresize = W; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <UIView; frame = (14 69.3333; 306 1); layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <UITableViewCellContentView; frame = (0 0; 320 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    |    | <UITableViewLabel; frame = (16 14; 288 42.3333); text = 'Can I send others a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    |    |    | <UIView; frame = (0 137.667; 320 0); layer = <CALayer>>
+   |    |    |    |    |    |    |    | <ENCore.HelpTableViewSectionHeaderView; frame = (0 0; 320 50); autoresize = W; layer = <CALayer>>
+   |    |    |    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 18); text = 'Also read'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    |    |    | <_UIScrollViewScrollIndicator; frame = (314 -39; 3 36); alpha = 0; autoresize = LM; layer = <CALayer>>
    |    |    |    |    |    |    |    |    | <UIView; frame = (0 0; 3 36); layer = <CALayer>>
    |    |    |    | <_UIScrollViewScrollIndicator; frame = (377 474; 7 3); alpha = 0; autoresize = TM; layer = <CALayer>>
    |    |    |    |    | <UIView; frame = (0 0; 7 3); layer = <CALayer>>
-   |    |    |    | <_UIScrollViewScrollIndicator; frame = (314 3; 3 300.667); alpha = 0; autoresize = LM; layer = <CALayer>>
-   |    |    |    |    | <UIView; frame = (0 0; 3 300.667); layer = <CALayer>>
+   |    |    |    | <_UIScrollViewScrollIndicator; frame = (314 3; 3 316.333); alpha = 0; autoresize = LM; layer = <CALayer>>
+   |    |    |    |    | <UIView; frame = (0 0; 3 316.333); layer = <CALayer>>
