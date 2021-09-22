@@ -20,7 +20,7 @@ final class ReadFromDiskResponseHandler: ReadFromDiskResponseHandlerProtocol {
         self.fileManager = fileManager
     }
 
-    // MARK: - RxReadFromDiskResponseHandlerProtocol
+    // MARK: - ReadFromDiskResponseHandlerProtocol
 
     func isApplicable(for response: URLResponse, input: URL) -> Bool {
         return contentFileUrl(from: input) != nil
