@@ -57,6 +57,16 @@ protocol URLSessionDownloadTaskProtocol {
 extension URLSessionDownloadTask: URLSessionDownloadTaskProtocol {}
 
 /// @mockable
-protocol URLResponseProtocol {}
+protocol URLResponseProtocol {
+    var contentType: String? { get }
+}
 
-extension URLResponse: URLResponseProtocol {}
+extension URLResponse: URLResponseProtocol {
+    var contentType: String? {
+        if let response = self as? HTTPURLResponse {
+            return response.allHeaderFields[HTTPHeaderKey.contentType.rawValue] as? String
+        }
+
+        return nil
+    }
+}
