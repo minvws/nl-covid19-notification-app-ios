@@ -91,8 +91,12 @@ private final class CallGGDView: View {
         super.build()
 
         infoView.addSections([
-            InfoSectionTextView(theme: theme, title: .notificationUploadFailedTitle,
-                                content: [NSAttributedString(string: .notificationUploadFailedContent)])
+            InfoSectionTextView(theme: theme,
+                                title: .notificationUploadFailedTitle,
+                                content: .makeFromHtml(text: .notificationUploadFailedContent,
+                                                       font: theme.fonts.body,
+                                                       textColor: theme.colors.textSecondary,
+                                                       textAlignment: Localization.textAlignment))
         ])
 
         addSubview(infoView)

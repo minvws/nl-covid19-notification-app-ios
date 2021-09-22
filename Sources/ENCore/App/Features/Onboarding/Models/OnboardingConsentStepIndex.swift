@@ -68,12 +68,9 @@ final class OnboardingConsentStep: NSObject {
         let attributedContent = NSMutableAttributedString(attributedString: .makeFromHtml(text: content + "<br>",
                                                                                           font: theme.fonts.body,
                                                                                           textColor: theme.colors.textSecondary,
-                                                                                          textAlignment: Localization.isRTL ? .right : .left))
+                                                                                          textAlignment: Localization.textAlignment))
 
-        for bullet in NSAttributedString.bulletList(bulletItems, theme: theme, font: theme.fonts.body) {
-            attributedContent.append("\n".attributed())
-            attributedContent.append(bullet)
-        }
+        attributedContent.append(.bulletList(bulletItems, theme: theme, font: theme.fonts.body, textAlignment: Localization.textAlignment))
 
         self.init(step: step,
                   theme: theme,

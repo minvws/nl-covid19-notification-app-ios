@@ -93,12 +93,9 @@ private final class PauseConfirmationView: View {
         return label
     }()
 
-    lazy var descriptionLabel: Label = {
-        let label = Label(frame: .zero)
-        label.font = theme.fonts.body
-        label.text = .moreInformationSettingsPauseDescription
-        label.textColor = theme.colors.textSecondary
-        label.numberOfLines = 0
+    lazy var descriptionLabel: SplitTextView = {
+        let label = SplitTextView(theme: theme)
+        label.attributedText = .make(text: .moreInformationSettingsPauseDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary)
         return label
     }()
 
@@ -133,7 +130,7 @@ private final class PauseConfirmationView: View {
         super.build()
 
         backgroundColor = theme.colors.viewControllerBackground
-        
+
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
         scrollableStackView.addSections([

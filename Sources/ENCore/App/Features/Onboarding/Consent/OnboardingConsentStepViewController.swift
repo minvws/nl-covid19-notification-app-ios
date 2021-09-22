@@ -202,11 +202,8 @@ final class OnboardingConsentView: View {
         return label
     }()
 
-    private lazy var contentLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        return label
+    private lazy var contentLabel: SplitTextView = {
+        return SplitTextView(theme: theme)
     }()
 
     lazy var primaryButton: Button = {

@@ -10,6 +10,8 @@ import UIKit
 
 public extension NSAttributedString {
 
+    static var listBullets = ["\t●", "\t•", "●\t"]
+
     enum AccessibilityTextCustomValue: String {
         case accessibilityListIndex = "index"
         case accessibilityListSize = "count"
@@ -40,10 +42,12 @@ public extension NSAttributedString {
         return NSAttributedString(string: text, attributes: attributes)
     }
 
-    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment = .left, lineHeight: CGFloat? = nil, underlineColor: UIColor? = nil) -> NSAttributedString {
+    static func makeFromHtml(text: String, font: UIFont, textColor: UIColor, textAlignment: NSTextAlignment, underlineColor: UIColor? = nil) -> NSAttributedString {
 
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = textAlignment
+        paragraphStyle.minimumLineHeight = font.pointSize
+
         var attributes: [Key: Any] = [
             .foregroundColor: textColor,
             .paragraphStyle: paragraphStyle
@@ -133,7 +137,7 @@ public extension NSAttributedString {
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
-                           textAlignment: NSTextAlignment = .left) -> NSMutableAttributedString {
+                           textAlignment: NSTextAlignment) -> NSMutableAttributedString {
 
         let textAttributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: theme.colors.textSecondary]
 
@@ -153,6 +157,7 @@ public extension NSAttributedString {
         paragraphStyle.paragraphSpacing = paragraphSpacing
         paragraphStyle.headIndent = indentation
         paragraphStyle.alignment = textAlignment
+        paragraphStyle.minimumLineHeight = font.lineHeight
 
         let formattedString = "\(bullet)\t\(string)"
 
@@ -179,10 +184,10 @@ public extension NSAttributedString {
                            bullet: String = "\u{25CF}",
                            indentation: CGFloat = 16,
                            paragraphSpacing: CGFloat = 12,
-                           textAlignment: NSTextAlignment = .left) -> [NSAttributedString] {
+                           textAlignment: NSTextAlignment) -> NSAttributedString {
 
         let bullets = stringList.map {
-            makeBullet($0,
+            makeBullet($0.appending("\n"),
                        theme: theme,
                        font: font,
                        bullet: bullet,
@@ -192,13 +197,18 @@ public extension NSAttributedString {
             )
         }
 
-        return bullets.enumerated().map { index, bullet in
+        let list = NSMutableAttributedString()
+
+        bullets.enumerated().forEach { index, bullet in
             bullet.addAttribute(.accessibilityTextCustom, value: [
                 AccessibilityTextCustomValue.accessibilityListIndex.rawValue: index,
                 AccessibilityTextCustomValue.accessibilityListSize.rawValue: bullets.count
             ], range: NSRange(location: 0, length: bullet.string.count))
-            return bullet
+
+            list.append(bullet)
         }
+
+        return list
     }
 
     private static func containsHtml(_ value: String) -> Bool {
@@ -211,6 +221,87 @@ public extension NSAttributedString {
         let modifiedString = NSMutableAttributedString(attributedString: self)
         modifiedString.trimCharactersInSet(charSet: charSet)
         return NSAttributedString(attributedString: modifiedString)
+    }
+
+    /// Helper method to find certain attributes of an attributed string
+    func findAttributes(find: (_ key: Key, _ value: Any, _ range: NSRange) -> (Bool)) -> Bool {
+        var result = false
+        enumerateAttributes(in: NSRange(location: 0, length: self.length)) { attributes, range, stop in
+            for (key, value) in attributes {
+                if find(key, value, range) {
+                    result = true
+                    break
+                }
+            }
+        }
+        return result
+    }
+
+    /// Determines whether the attributed string is a header
+    var isHeader: Bool {
+        return findAttributes { key, value, range in
+
+            // Check if full range uses a bold font
+            if key == NSAttributedString.Key.font,
+                let font = value as? UIFont,
+                font.fontDescriptor.symbolicTraits.contains(.traitBold),
+                range.lowerBound == 0,
+                range.upperBound >= self.length - 1 {
+                return true
+            }
+
+            return false
+        }
+    }
+
+    var hasLink: Bool {
+        return findAttributes { key, value, range in
+            if key == NSAttributedString.Key.link {
+                return true
+            }
+            return false
+        }
+    }
+
+    // swiftlint:disable empty_count
+    /// Determines whether the attributed string is a list item
+    var isListItem: Bool {
+
+        // Check if strings starts with a tabbed bullet character
+        for bullet in NSAttributedString.listBullets {
+            if string.starts(with: bullet) {
+                return true
+            }
+        }
+
+        // Check if textLists attribute contains one or more elements
+        return findAttributes { key, value, _ in
+
+            if key == NSAttributedString.Key.paragraphStyle,
+                let paragraphStyle = value as? NSParagraphStyle,
+                paragraphStyle.textLists.count > 0 {
+                return true
+            }
+            return false
+        }
+    }
+
+    /// Determines the line height used for the attributed string
+    var lineHeight: CGFloat {
+        var height: CGFloat = 0
+
+        // Retrieve the maximum value set for minimumLineHeight in NSParagraphStyle
+        enumerateAttributes(in: NSRange(location: 0, length: self.length)) { attributes, range, stop in
+            for (key, value) in attributes {
+                if key == NSAttributedString.Key.paragraphStyle,
+                    let paragraphStyle = value as? NSParagraphStyle,
+                    paragraphStyle.minimumLineHeight > height {
+                    height = paragraphStyle.minimumLineHeight
+                }
+            }
+        }
+
+        return height
     }
 }
 
@@ -286,6 +377,7 @@ extension NSMutableAttributedString {
         paragraphStyle.headIndent = 16
         paragraphStyle.alignment = textAlignment
         paragraphStyle.paragraphSpacing = 5
+        paragraphStyle.minimumLineHeight = font.lineHeight
 
         self.addAttributes([NSAttributedString.Key.paragraphStyle: paragraphStyle], range: NSMakeRange(0, self.length))
     }
@@ -301,5 +393,26 @@ extension NSMutableAttributedString {
         copiedString.addAttributes([.paragraphStyle: paragraphStyle], range: fullRange)
 
         return copiedString
+    }
+
+    public func removingSubstring(substring: String) -> NSMutableAttributedString {
+        // Create a mutable attributed string, find the range to remove and remove it
+        let mutStr = self.mutableCopy() as! NSMutableAttributedString
+        let range = (mutStr.string as NSString).range(of: substring)
+        if range.location != NSNotFound {
+            mutStr.deleteCharacters(in: range)
+        }
+        return mutStr
+    }
+}
+
+extension NSParagraphStyle {
+
+    var textLists: NSArray {
+        let key = "textLists"
+        if responds(to: NSSelectorFromString(key)) {
+            return value(forKey: key) as? NSArray ?? []
+        }
+        return []
     }
 }

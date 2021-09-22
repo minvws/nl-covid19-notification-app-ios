@@ -104,7 +104,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
             self?.openLinkInExternalBrowser(link)
         })
     }()
-    
+
     private func openLinkInExternalBrowser(_ link: String) {
         var linkToOpen = link
         if !linkToOpen.starts(with: "https://") {
@@ -146,17 +146,25 @@ private final class MessageView: View {
     override func build() {
         super.build()
 
-        let sections = treatmentPerspectiveMessage
-            .paragraphs
-            .map {
-                InfoSectionTextViewWithLinks(theme: theme, title: $0.title, content: $0.body, linkHandler: linkHandler)
-            }
+        let content = NSMutableAttributedString()
 
-        infoView.addSections(sections)
+        treatmentPerspectiveMessage.paragraphs.forEach { paragraph in
+            content.append(.makeFromHtml(text: paragraph.title, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment))
+            content.append(.init(string: "\n"))
+            paragraph.body.forEach { attrString in
+                content.append(attrString)
+                content.append(.init(string: "\n"))
+            }
+        }
+
+        let textView = InfoSectionTextView(theme: theme, content: content)
+        textView.linkHandler = linkHandler
+
+        infoView.addSections([textView])
 
         addSubview(infoView)
     }
-    
+
     override func setupConstraints() {
         super.setupConstraints()
 
@@ -170,5 +178,5 @@ private final class MessageView: View {
 
     private let treatmentPerspectiveMessage: LocalizedTreatmentPerspective
     fileprivate let infoView: InfoView
-    private let linkHandler: ((String) -> ())
+    private let linkHandler: (String) -> ()
 }

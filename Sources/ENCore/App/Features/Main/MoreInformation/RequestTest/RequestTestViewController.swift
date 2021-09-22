@@ -166,7 +166,7 @@ private final class RequestTestView: View {
                                     secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
 
@@ -198,7 +198,7 @@ private final class RequestTestView: View {
     private func receivedNotification() -> View {
         InfoSectionTextView(theme: theme,
                             title: .moreInformationRequestTestReceivedNotificationTitle,
-                            content: [NSAttributedString.makeFromHtml(text: .moreInformationRequestTestReceivedNotificationContent, font: theme.fonts.body, textColor: theme.colors.textSecondary)])
+                            content: NSAttributedString.makeFromHtml(text: .moreInformationRequestTestReceivedNotificationContent, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
     }
 
     private func complaints() -> View {
@@ -209,18 +209,19 @@ private final class RequestTestView: View {
             .moreInformationComplaintsItem4,
             .moreInformationComplaintsItem5
         ]
-        var string = NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body)
-        string.append(NSAttributedString(string: " ")) // Should be a space to ensure the correct line spacing
-        string.append(NSAttributedString(string: .moreInformationRequestTestComplaints))
+
+        let content = NSMutableAttributedString()
+        content.append(NSAttributedString.bulletList(list, theme: theme, font: theme.fonts.body, textAlignment: Localization.textAlignment))
+        content.append(.makeFromHtml(text: .moreInformationRequestTestComplaints, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
 
         return InfoSectionTextView(theme: theme,
                                    title: .moreInformationComplaintsTitle,
-                                   content: string)
+                                   content: content)
     }
 
     private func requestTest() -> View {
         InfoSectionTextView(theme: theme,
                             title: .moreInformationRequestTestTitle,
-                            content: [String.moreInformationInfoTitle.attributed()])
+                            content: .makeFromHtml(text: .moreInformationInfoTitle, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
     }
 }

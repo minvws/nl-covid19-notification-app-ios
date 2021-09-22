@@ -110,29 +110,28 @@ private final class ThankYouView: View {
     override func build() {
         super.build()
 
-        let header = String.moreInformationKeySharingThankYouContent.attributed()
-        let footer = NSMutableAttributedString(string: "\n")
-        footer.append(NSAttributedString.make(
-            text: String(format: .moreInformationThankYouSectionFooter, ""),
-            font: theme.fonts.bodyBold,
-            textColor: theme.colors.textPrimary,
-            textAlignment: Localization.isRTL ? .right : .left,
-            lineHeight: 5))
+        let content = NSMutableAttributedString()
+        content.append(.makeFromHtml(text: .moreInformationKeySharingThankYouContent, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment))
+        content.append(NSMutableAttributedString(string: "\n"))
 
-        footer.append(
+        content.append(
+            NSAttributedString.make(
+                text: String(format: .moreInformationThankYouSectionFooter, ""),
+                font: theme.fonts.bodyBold,
+                textColor: theme.colors.textPrimary,
+                textAlignment: Localization.isRTL ? .right : .left,
+                lineHeight: 5))
+
+        content.append(
             NSAttributedString.make(
                 text: String(exposureConfirmationKey.key.asGGDkey),
                 font: theme.fonts.body,
                 textColor: theme.colors.textPrimary,
                 textAlignment: Localization.isRTL ? .right : .left))
 
-        var string = [NSAttributedString]()
-        string.append(header)
-        string.append(footer)
-
         let view = InfoSectionTextView(theme: theme,
                                        title: .moreInformationKeySharingThankYouTitle,
-                                       content: string)
+                                       content: content)
 
         infoView.addSections([view, info()])
 

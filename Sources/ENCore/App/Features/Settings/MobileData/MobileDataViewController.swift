@@ -94,7 +94,7 @@ private final class MobileDataView: View {
         super.build()
 
         backgroundColor = theme.colors.viewControllerBackground
-        
+
         infoView.addSections([
             titleLabel,
             settingsDescription
@@ -124,20 +124,19 @@ private final class MobileDataView: View {
     // MARK: - Private
 
     lazy var titleLabel: View = {
-        InfoSectionTextView(theme: theme,
-                            title: "",
-                            content: [
-                                .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
-                                              font: theme.fonts.largeTitle,
-                                              textColor: theme.colors.textPrimary,
-                                              textAlignment: Localization.isRTL ? .right : .left)
-                            ],
-                            contentAccessibilityTraits: .header)
+        InfoSectionTextView(
+            theme: theme,
+            title: "",
+            content: .makeFromHtml(text: .moreInformationSettingsMobileDataTitle,
+                                   font: theme.fonts.largeTitle,
+                                   textColor: theme.colors.textPrimary,
+                                   textAlignment: Localization.isRTL ? .right : .left)
+        )
     }()
 
     private lazy var settingsDescription: View = {
         InfoSectionTextView(theme: theme,
                             title: "",
-                            content: [NSAttributedString.makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary)])
+                            content: .makeFromHtml(text: .moreInformationSettingsDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
     }()
 }

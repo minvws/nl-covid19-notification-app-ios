@@ -104,11 +104,9 @@ private final class HelpView: View {
         return label
     }()
 
-    lazy var contentLabel: Label = {
-        let label = Label()
-        label.numberOfLines = 0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    lazy var contentLabel: SplitTextView = {
+        let textView = SplitTextView(theme: theme)
+        return textView
     }()
 
     lazy var acceptButton: Button = {

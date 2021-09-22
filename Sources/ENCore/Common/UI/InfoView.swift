@@ -237,51 +237,6 @@ final class InfoView: View {
     }
 }
 
-final class InfoSectionContentView: View, UITextViewDelegate {
-    private let contentTextView: TextView
-    var linkHandler: ((String) -> ())?
-
-    // MARK: - Init
-
-    init(theme: Theme, content: NSAttributedString) {
-        contentTextView = TextView(frame: .zero)
-
-        super.init(theme: theme)
-
-        contentTextView.attributedText = content
-    }
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        if let linkHandler = linkHandler {
-            linkHandler(URL.absoluteString)
-            return false
-        }
-        return true
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
-
-        contentTextView.delegate = self
-        contentTextView.isEditable = false
-        contentTextView.isScrollEnabled = false
-        contentTextView.backgroundColor = theme.colors.viewControllerBackground
-        addSubview(contentTextView)
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        contentTextView.snp.makeConstraints { maker in
-            maker.top.equalToSuperview().offset(0)
-            maker.bottom.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-    }
-}
-
 final class InfoSectionStepView: View {
 
     private let titleLabel: Label
@@ -449,22 +404,26 @@ final class InfoSectionStepView: View {
 }
 
 final class InfoSectionTextView: View {
-    private let titleLabel: Label
-    private let contentStack: UIStackView
-    private let content: [NSAttributedString]
-    private let contentAccessibilityTraits: UIAccessibilityTraits?
+
+    var linkHandler: ((String) -> ())?
+
+    private let textView: SplitTextView
+    private let title: String?
+    private let content: NSAttributedString
 
     // MARK: - Init
 
-    init(theme: Theme, title: String, content: [NSAttributedString], contentAccessibilityTraits: UIAccessibilityTraits? = nil) {
-        titleLabel = Label(frame: .zero)
-        contentStack = UIStackView()
+    init(theme: Theme, title: String? = nil, content: NSAttributedString) {
+        textView = SplitTextView(theme: theme)
+
+        self.title = title
         self.content = content
-        self.contentAccessibilityTraits = contentAccessibilityTraits
 
         super.init(theme: theme)
 
-        titleLabel.text = title
+        textView.linkTouched { [weak self] url in
+            self?.linkHandler?(url.absoluteString)
+        }
     }
 
     // MARK: - Overrides
@@ -472,162 +431,21 @@ final class InfoSectionTextView: View {
     override func build() {
         super.build()
 
-        titleLabel.numberOfLines = 0
-        titleLabel.font = theme.fonts.title2
-        titleLabel.textColor = theme.colors.textPrimary
-        titleLabel.accessibilityTraits = .header
-        titleLabel.textAlignment = Localization.isRTL ? .right : .left
+        addSubview(textView)
 
-        contentStack.axis = .vertical
-        contentStack.alignment = .top
-        contentStack.distribution = .fill
-        contentStack.spacing = 5
-
-        addSubview(titleLabel)
-        addSubview(contentStack)
-
-        for text in content {
-            let label = Label(frame: .zero)
-            label.numberOfLines = 0
-            label.lineBreakMode = .byWordWrapping
-            label.font = theme.fonts.body
-            label.textColor = theme.colors.textSecondary
-            label.attributedText = text
-            if let traits = contentAccessibilityTraits {
-                label.accessibilityTraits = traits
-            }
-            contentStack.addArrangedSubview(label)
+        let completeContent = NSMutableAttributedString()
+        if let title = title {
+            completeContent.append(.makeFromHtml(text: title, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment))
+            completeContent.append(.init(string: "\n"))
         }
+        completeContent.append(content)
+        textView.attributedText = completeContent
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-        contentStack.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(20)
-            maker.leading.trailing.equalTo(titleLabel)
-            maker.bottom.equalToSuperview()
-        }
-    }
-}
-
-final class InfoSectionTextViewWithLinks: View, UITextViewDelegate {
-
-    private let titleLabel: Label
-    private let contentStack: UIStackView
-    private let content: [NSAttributedString]
-    private let linkHandler: (String) -> ()
-
-    // MARK: - Init
-
-    init(theme: Theme, title: String, content: [NSAttributedString], linkHandler: @escaping ((String) -> ())) {
-        self.titleLabel = Label(frame: .zero)
-        self.contentStack = UIStackView()
-        self.content = content
-        self.linkHandler = linkHandler
-
-        super.init(theme: theme)
-
-        titleLabel.text = title
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
-
-        titleLabel.numberOfLines = 0
-        titleLabel.font = theme.fonts.title2
-        titleLabel.accessibilityTraits = .header
-        titleLabel.textAlignment = Localization.isRTL ? .right : .left
-
-        contentStack.axis = .vertical
-        contentStack.alignment = .top
-        contentStack.distribution = .fill
-        contentStack.spacing = 0
-
-        addSubview(titleLabel)
-        addSubview(contentStack)
-
-        for text in self.content {
-            let textView = TextView(frame: .zero)
-            textView.delegate = self
-            textView.isEditable = false
-            textView.isSelectable = true
-            textView.isScrollEnabled = false
-            textView.isAccessibilityElement = true
-            textView.font = theme.fonts.body
-            textView.textColor = theme.colors.textSecondary
-            textView.attributedText = text
-            textView.backgroundColor = .clear
-            contentStack.addArrangedSubview(textView)
-        }
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.leading.trailing.equalToSuperview().inset(16)
-        }
-        contentStack.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(20)
-            maker.leading.trailing.equalTo(titleLabel)
-            maker.bottom.equalToSuperview()
-        }
-    }
-
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        linkHandler(URL.absoluteString)
-        return false
-    }
-}
-
-final class InfoSectionContentTextView: View {
-    private let contentStack: UIStackView
-    private let content: [NSAttributedString]
-
-    // MARK: - Init
-
-    init(theme: Theme, content: [NSAttributedString]) {
-        contentStack = UIStackView()
-        self.content = content
-
-        super.init(theme: theme)
-    }
-
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
-
-        contentStack.axis = .vertical
-        contentStack.alignment = .top
-        contentStack.distribution = .fill
-        contentStack.spacing = 5
-
-        addSubview(contentStack)
-
-        for text in content {
-            let label = Label(frame: .zero)
-            label.numberOfLines = 0
-            label.lineBreakMode = .byWordWrapping
-            label.font = theme.fonts.body
-            label.textColor = theme.colors.textSecondary
-            label.attributedText = text
-            contentStack.addArrangedSubview(label)
-        }
-    }
-
-    override func setupConstraints() {
-        super.setupConstraints()
-
-        contentStack.snp.makeConstraints { maker in
+        textView.snp.makeConstraints { maker in
             maker.top.equalToSuperview()
             maker.leading.trailing.equalToSuperview().inset(16)
             maker.bottom.equalToSuperview()
