@@ -10,6 +10,11 @@ import Foundation
 import RxSwift
 import UIKit
 
+/// This class is the main entry point for the Exposure Notification framework. It allows us to enable or disable the framework
+/// as well as perform calls against it to check the status and do the actual exposure checks.
+///
+/// Note: During development this class grew too big. It has a lot of functionality in it that is NOT related to exposure checking but was put in here
+/// because we couldn't find a better place at the time. This should be refactored and the functionality and data access should be moved to their related features.
 final class ExposureController: ExposureControlling, Logging {
 
     init(mutableStateStream: MutableExposureStateStreaming,

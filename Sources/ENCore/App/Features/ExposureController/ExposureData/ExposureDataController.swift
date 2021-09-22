@@ -75,6 +75,9 @@ struct ExposureDataStorageKey {
                                                                 storeType: .insecure(volatile: false))
 }
 
+/// This class gives access to stored data that is related to exposure checks and the status of the EN framework. As well as data that is retrieved from the API.
+/// Although it started out with the specific purposes of ONLY accessing data related to this exposure feature, it has grown until it now encompasses a lot of other
+/// data that is unrelated. This broad responsibility is not ideal. Data storage and retrieval should eventually be moved to the feature that it relates to.
 final class ExposureDataController: ExposureDataControlling, Logging {
 
     private(set) var isFirstRun: Bool = false

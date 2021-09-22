@@ -59,6 +59,9 @@ protocol MutableExposureStateStreaming: ExposureStateStreaming {
     func update(state: ExposureState)
 }
 
+/// This stream drives a lot of functionality of the app. It emits a state that encapsulates information about wether or not the user has been notified (exposed)
+/// as well as the state of framework itself (enabled / disabled / bluetooth is off etc.). This state is not only shown to the user on the main screen of the app
+/// but also determines wether we can check for exposures in the background process.
 final class ExposureStateStream: MutableExposureStateStreaming {
 
     // MARK: - ExposureStateStreaming
