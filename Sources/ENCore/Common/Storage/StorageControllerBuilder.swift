@@ -5,8 +5,8 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import Foundation
 import ENFoundation
+import Foundation
 
 protocol StoreKey {
     var asString: String { get }
@@ -84,15 +84,23 @@ private final class StorageDependencyProvider: DependencyProvider<EmptyDependenc
     var fileManager: FileManaging {
         return FileManager()
     }
+
+    var dataAccessor: DataAccessing {
+        DataAccessor()
+    }
 }
 
 final class StorageControllerBuilder: Builder<EmptyDependency>, StorageControllerBuildable {
     func build() -> StorageControlling {
         let dependencyProvider = StorageDependencyProvider()
 
-        let storageController = StorageController(fileManager: dependencyProvider.fileManager,
-                                                  localPathProvider: dependencyProvider.localPathProvider,
-                                                  environmentController: dependencyProvider.environmentController)
+        let storageController = StorageController(
+            fileManager: dependencyProvider.fileManager,
+            localPathProvider: dependencyProvider.localPathProvider,
+            environmentController: dependencyProvider.environmentController,
+            dataAccessor: dependencyProvider.dataAccessor
+        )
+
         storageController.prepareStore()
 
         return storageController

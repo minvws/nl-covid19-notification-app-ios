@@ -18,7 +18,7 @@ extension StorageControlling {
         if Thread.current.isMainThread {
             logWarning("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
         }
-        
+
         var encodedData = try? JSONEncoder().encode(object)
 
         // fallback in case encoding didn't work, wrap the object
@@ -31,7 +31,7 @@ extension StorageControlling {
             completion(StoreError.cannotEncode)
             return
         }
-        
+
         store(data: dataToStore, identifiedBy: key, completion: completion)
     }
 
@@ -39,7 +39,7 @@ extension StorageControlling {
         if Thread.current.isMainThread {
             logWarning("StorageControlling: Accessing storage from main thread. This might be slow on older devices")
         }
-        
+
         guard let data = retrieveData(identifiedBy: key) else {
             logDebug("StorageControlling: No data found when retrieving data for key \(key.asString)")
             return nil
@@ -65,10 +65,14 @@ extension StorageControlling {
 
 final class StorageController: StorageControlling, Logging {
 
-    init(fileManager: FileManaging, localPathProvider: LocalPathProviding, environmentController: EnvironmentControlling) {
+    init(fileManager: FileManaging,
+         localPathProvider: LocalPathProviding,
+         environmentController: EnvironmentControlling,
+         dataAccessor: DataAccessing) {
         self.fileManager = fileManager
         self.localPathProvider = localPathProvider
         self.environmentController = environmentController
+        self.dataAccessor = dataAccessor
     }
 
     // MARK: - StorageControlling
@@ -105,19 +109,6 @@ final class StorageController: StorageControlling, Logging {
         storeAvailable = true
     }
 
-    fileprivate func clearTemporaryDirectory() {
-
-        let tempFolderURL = localPathProvider.temporaryDirectoryUrl
-
-        logDebug("Removing contents of temporary folder: \(tempFolderURL)")
-
-        do {
-            try fileManager.removeItem(at: tempFolderURL)
-        } catch {
-            logError("Error deleting file at url \(tempFolderURL) with error: \(error)")
-        }
-    }
-
     func store<Key>(data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
         return store(guardAccess: true, data: data, identifiedBy: key, completion: completion)
     }
@@ -137,6 +128,19 @@ final class StorageController: StorageControlling, Logging {
     }
 
     // MARK: - Private
+
+    fileprivate func clearTemporaryDirectory() {
+
+        let tempFolderURL = localPathProvider.temporaryDirectoryUrl
+
+        logDebug("Removing contents of temporary folder: \(tempFolderURL)")
+
+        do {
+            try fileManager.removeItem(at: tempFolderURL)
+        } catch {
+            logError("Error deleting file at url \(tempFolderURL) with error: \(error)")
+        }
+    }
 
     fileprivate func store<Key>(guardAccess: Bool, data: Data, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) where Key: StoreKey {
         let operation: () -> () = {
@@ -214,7 +218,7 @@ final class StorageController: StorageControlling, Logging {
         return data
     }
 
-    func removeData<Key: StoreKey>(guardAccess: Bool, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
+    private func removeData<Key: StoreKey>(guardAccess: Bool, identifiedBy key: Key, completion: @escaping (StoreError?) -> ()) {
         let operation = {
             guard self.retrieveData(identifiedBy: key) != nil else {
                 DispatchQueue.main.async {
@@ -258,7 +262,7 @@ final class StorageController: StorageControlling, Logging {
             let attributes = try? fileManager.attributesOfItem(atPath: url.path),
             let dateLastModified = attributes[.modificationDate] as? Date {
 
-            if dateLastModified.addingTimeInterval(maximumAge) < Date() {
+            if dateLastModified.addingTimeInterval(maximumAge) < currentDate() {
                 return nil
             }
         }
@@ -269,14 +273,14 @@ final class StorageController: StorageControlling, Logging {
             return nil
         }
 
-        return try? Data(contentsOf: url)
+        return dataAccessor.read(fromURL: url)
     }
 
     private func store(data: Data, for key: String, storeUrl: URL) -> Bool {
         let url = storeUrl.appendingPathComponent(key)
 
         do {
-            try data.write(to: url, options: .atomicWrite)
+            try dataAccessor.write(data: data, toUrl: url)
         } catch {
             logError("Error storing data for key \(key): \(error)")
             return false
@@ -363,6 +367,7 @@ final class StorageController: StorageControlling, Logging {
     private let secureAccessQueue = DispatchQueue(label: "secureAccessQueue")
     private let storageAccessQueue = DispatchQueue(label: "storageAccessQueue")
     private let accessQueue = DispatchQueue(label: "accessQueue", attributes: .concurrent)
+    private let dataAccessor: DataAccessing
 
     fileprivate func storeUrl(isVolatile: Bool) -> URL? {
         let base = isVolatile ? localPathProvider.path(for: .cache) : localPathProvider.path(for: .documents)
@@ -411,4 +416,20 @@ private final class ExclusiveStorageController: StorageControlling {
     // MARK: - Private
 
     private let storageController: StorageController
+}
+
+/// @mockable(history:write=true;read=true)
+protocol DataAccessing {
+    func write(data: Data, toUrl url: URL) throws
+    func read(fromURL url: URL) -> Data?
+}
+
+class DataAccessor: DataAccessing {
+    func write(data: Data, toUrl url: URL) throws {
+        try data.write(to: url, options: .atomicWrite)
+    }
+
+    func read(fromURL url: URL) -> Data? {
+        try? Data(contentsOf: url)
+    }
 }
