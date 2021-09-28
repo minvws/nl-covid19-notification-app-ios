@@ -71,8 +71,6 @@ struct ExposureDataStorageKey {
                                                       storeType: .insecure(volatile: false))
     static let hidePauseInformation = CodableStorageKey<Bool>(name: "hidePauseInformation",
                                                               storeType: .insecure(volatile: false))
-    static let useFallbackEKSEndpoint = CodableStorageKey<Bool>(name: "useFallbackEKSEndpoint",
-                                                                storeType: .insecure(volatile: false))
 }
 
 /// This class gives access to stored data that is related to exposure checks and the status of the EN framework. As well as data that is retrieved from the API.
