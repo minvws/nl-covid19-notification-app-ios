@@ -88,6 +88,7 @@ private final class PrivacyAgreementView: View {
         label.isUserInteractionEnabled = true
         label.attributedText = attributedSubtitleString
         label.numberOfLines = 0
+        label.accessibilityTraits = .link
         return label
     }()
 

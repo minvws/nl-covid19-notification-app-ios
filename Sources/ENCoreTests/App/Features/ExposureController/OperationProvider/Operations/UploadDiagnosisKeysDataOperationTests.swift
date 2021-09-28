@@ -46,7 +46,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
         XCTAssertEqual(keys, receivedKeys)
     }
 
-    func test_error_schedulesRetryRequest() {
+    func test_error_schedulesRetryRequest() throws {
         let expiryDate = currentDate().addingTimeInterval(60)
         let alreadyPendingRequest = PendingLabConfirmationUploadRequest(labConfirmationKey: createLabConfirmationKey(validUntil: expiryDate),
                                                                         diagnosisKeys: [],
@@ -74,10 +74,10 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
             return nil
         }
 
-        var receivedPendingRequests: [PendingLabConfirmationUploadRequest]!
+        var receivedRequests: [PendingLabConfirmationUploadRequest]?
         storageController.storeHandler = { data, _, _ in
             let decoder = JSONDecoder()
-            receivedPendingRequests = try! decoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
+            receivedRequests = try! decoder.decode([PendingLabConfirmationUploadRequest].self, from: data)
         }
 
         XCTAssertEqual(storageController.retrieveDataCallCount, 0)
@@ -87,6 +87,7 @@ final class UploadDiagnosisKeysDataOperationTests: TestCase {
             .subscribe { _ in }
             .disposed(by: disposeBag)
 
+        let receivedPendingRequests = try XCTUnwrap(receivedRequests)
         XCTAssertEqual(storageController.storeCallCount, 1)
         XCTAssertEqual(storageController.retrieveDataCallCount, 1)
         XCTAssertEqual(receivedPendingRequests.count, 2)
