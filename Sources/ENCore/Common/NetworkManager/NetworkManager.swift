@@ -48,7 +48,7 @@ final class NetworkManager: NetworkManaging, Logging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.treatmentPerspectiveUrl(identifier: identifier)
+        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
@@ -80,10 +80,10 @@ final class NetworkManager: NetworkManaging, Logging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getExposureKeySet(identifier: String, useSignatureFallback: Bool, completion: @escaping (Result<URL, NetworkError>) -> ()) {
+    func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = useSignatureFallback ? configuration.exposureKeySetFallbackUrl(identifier: identifier) : configuration.exposureKeySetUrl(identifier: identifier)
+        let url = configuration.exposureKeySetUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         download(request: urlRequest) { result in

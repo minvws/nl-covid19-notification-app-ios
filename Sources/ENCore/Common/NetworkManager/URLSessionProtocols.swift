@@ -21,7 +21,7 @@ protocol URLSessionTaskProtocol {
 
 extension URLSessionTask: URLSessionTaskProtocol {}
 
-/// @mockable(history:resumableDataTask=true)
+/// @mockable
 protocol URLSessionProtocol {
     func resumableDataTask(with request: URLRequest, completionHandler: @escaping (Data?, URLResponse?, Error?) -> ()) -> URLSessionDataTaskProtocol
     func getAllURLSessionTasks(completionHandler: @escaping ([URLSessionTaskProtocol]) -> ())
