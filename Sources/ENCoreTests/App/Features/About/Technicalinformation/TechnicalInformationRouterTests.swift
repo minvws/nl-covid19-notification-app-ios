@@ -11,15 +11,27 @@ import XCTest
 
 final class TechnicalInformationRouterTests: TestCase {
 
-    private let viewController = TechnicalInformationViewControllableMock()
-    private var router: TechnicalInformationRouter!
+    private let mockApplicationController = ApplicationControllingMock()
+    private let mockViewController = TechnicalInformationViewControllableMock()
+    private var sut: TechnicalInformationRouter!
 
     override func setUp() {
         super.setUp()
-        router = TechnicalInformationRouter(viewController: viewController)
+        sut = TechnicalInformationRouter(viewController: mockViewController, applicationController: mockApplicationController)
     }
 
     func test_init_setsRouterOnViewController() {
-        XCTAssertEqual(viewController.routerSetCallCount, 1)
+        XCTAssertEqual(mockViewController.routerSetCallCount, 1)
+    }
+
+    func test_routeToGithubPage() {
+        // Arrange
+        XCTAssertEqual(mockApplicationController.openCallCount, 0)
+
+        // Act
+        sut.routeToGithubPage()
+
+        // Assert
+        XCTAssertEqual(mockApplicationController.openCallCount, 1)
     }
 }

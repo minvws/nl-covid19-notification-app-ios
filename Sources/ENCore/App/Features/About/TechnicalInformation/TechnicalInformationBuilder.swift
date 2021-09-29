@@ -24,7 +24,11 @@ protocol TechnicalInformationDependency {
     var aboutManager: AboutManaging { get }
 }
 
-private final class TechnicalInformationDependencyProvider: DependencyProvider<TechnicalInformationDependency> {}
+private final class TechnicalInformationDependencyProvider: DependencyProvider<TechnicalInformationDependency> {
+    var applicationController: ApplicationControlling {
+        ApplicationController()
+    }
+}
 
 final class TechnicalInformationBuilder: Builder<TechnicalInformationDependency>, TechnicalInformationBuildable {
 
@@ -33,6 +37,6 @@ final class TechnicalInformationBuilder: Builder<TechnicalInformationDependency>
         let viewController = TechnicalInformationViewController(listener: listener,
                                                                 linkedContent: dependencyProvider.dependency.aboutManager.technicalInformationEntry.linkedEntries,
                                                                 theme: dependencyProvider.dependency.theme)
-        return TechnicalInformationRouter(viewController: viewController)
+        return TechnicalInformationRouter(viewController: viewController, applicationController: dependencyProvider.applicationController)
     }
 }
