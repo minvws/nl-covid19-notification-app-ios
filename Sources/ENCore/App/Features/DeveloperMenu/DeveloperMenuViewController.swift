@@ -502,7 +502,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         storageController.removeData(for: ExposureDataStorageKey.exposureKeySetsHolders, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.lastExposureProcessingDate, completion: { _ in })
 
-        if let folder = LocalPathProvider().path(for: .exposureKeySets) {
+        if let folder = LocalPathProvider(fileManager: FileManager.default).path(for: .exposureKeySets) {
             try? FileManager.default.removeItem(at: folder)
         }
 

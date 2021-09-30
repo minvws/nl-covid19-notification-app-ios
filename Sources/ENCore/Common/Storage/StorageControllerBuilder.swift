@@ -75,7 +75,7 @@ protocol StorageControllerBuildable {
 
 private final class StorageDependencyProvider: DependencyProvider<EmptyDependency> {
     var localPathProvider: LocalPathProviding {
-        return LocalPathProvider()
+        return LocalPathProvider(fileManager: FileManager.default)
     }
     var environmentController: EnvironmentControlling {
         return EnvironmentController()

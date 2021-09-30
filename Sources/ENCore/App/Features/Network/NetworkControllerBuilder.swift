@@ -52,7 +52,7 @@ private final class NetworkControllerDependencyProvider: DependencyProvider<Netw
     }
 
     var localPathProvider: LocalPathProviding {
-        LocalPathProvider()
+        LocalPathProvider(fileManager: FileManager.default)
     }
 }
 
