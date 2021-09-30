@@ -273,4 +273,4 @@ After the app is released to the App Store we perform some actions to tag the re
 - We tag the release in our internal Git repository with a name matching the release version. for example `2.4.2`.
 - We push the code from our internal Git repository to the GitHub repository to make it public.
 - We publish the created tag to GitHub too.
-- We communicate the tag that was pushed to GitHub to an Escrow party that can confirm that the code of the released app matches the code that was tagged. This ensures that no malicious changes were made to the code during the release process.
+- We communicate the tag that was pushed to GitHub to an Escrow party (via the internal Product Owner) that can confirm that the code of the released app matches the code that was tagged. This ensures that no malicious changes were made to the code during the release process.
