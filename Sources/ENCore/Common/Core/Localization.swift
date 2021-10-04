@@ -107,6 +107,7 @@ extension String {
     static var coronaTestWebUrl = "https://coronatest.nl"
     static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
     static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
+    static var githubLink = "https://github.com/minvws"
 
     static func phoneNumberLink(from phoneNumber: String) -> String {
         return "tel://\(phoneNumber.replacingOccurrences(of: "-", with: ""))"

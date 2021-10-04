@@ -15,16 +15,18 @@ protocol TechnicalInformationViewControllable: ViewControllable {
 
 final class TechnicalInformationRouter: Router<TechnicalInformationViewControllable>, TechnicalInformationRouting {
 
-    override init(viewController: TechnicalInformationViewControllable) {
+    init(viewController: TechnicalInformationViewControllable,
+         applicationController: ApplicationControlling) {
+        self.applicationController = applicationController
         super.init(viewController: viewController)
         viewController.router = self
     }
 
     func routeToGithubPage() {
-        if let url = URL(string: githubURLString) {
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        if let url = URL(string: .githubLink) {
+            applicationController.open(url)
         }
     }
 
-    private let githubURLString = "https://github.com/minvws"
+    private let applicationController: ApplicationControlling
 }
