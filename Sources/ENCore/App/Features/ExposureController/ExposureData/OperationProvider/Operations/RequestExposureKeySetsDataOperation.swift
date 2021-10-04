@@ -77,7 +77,12 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
         logDebug("KeySet: Requesting \(identifiers.count) Exposure KeySets: \(identifiers.joined(separator: "\n"))")
 
         // download remaining keysets
-        let exposureKeySetStreams = getExposureKeySetStreams(from: identifiers)
+        let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
+            self.networkController
+                .fetchExposureKeySet(identifier: identifier)
+        }
+
+        let start = CFAbsoluteTimeGetCurrent()
 
         return Observable.from(exposureKeySetStreams)
             .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
@@ -90,26 +95,14 @@ final class RequestExposureKeySetsDataOperation: RequestExposureKeySetsDataOpera
             }
             .toArray() // toArray is called only after the creation and storage of keysetholders. This means that if at any point during this process the app is killed due to high CPU usage, the previous progress will not be lost and the app will only have to download the remaining keysets
             .do { [weak self] _ in
+                let diff = CFAbsoluteTimeGetCurrent() - start
+                self?.logDebug("KeySet: Requesting Keysets Took \(diff) seconds")
                 self?.logDebug("KeySet: Requesting KeySets Completed")
 
             } onError: { [weak self] _ in
                 self?.logDebug("KeySet: Requesting KeySets Failed")
             }
             .asCompletable()
-    }
-
-    private func getExposureKeySetStreams(from identifiers: [String]) -> [Single<(String, URL)>] {
-
-        let useFallbackEKSEndpoint = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
-
-        logDebug("GAEN: Creating EKS Request streams. Using fallback endpoint: \(useFallbackEKSEndpoint)")
-
-        // download remaining keysets
-        let exposureKeySetStreams: [Single<(String, URL)>] = identifiers.map { identifier in
-            return self.networkController.fetchExposureKeySet(identifier: identifier, useSignatureFallback: useFallbackEKSEndpoint)
-        }
-
-        return exposureKeySetStreams
     }
 
     // MARK: - Private

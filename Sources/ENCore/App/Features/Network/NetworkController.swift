@@ -88,12 +88,15 @@ final class NetworkController: NetworkControlling, Logging {
         }).observe(on: MainScheduler.instance)
     }
 
-    func fetchExposureKeySet(identifier: String, useSignatureFallback: Bool) -> Single<(String, URL)> {
+    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)> {
         return Single.create(subscribe: { (observer) -> Disposable in
 
-            self.networkManager.getExposureKeySet(identifier: identifier, useSignatureFallback: useSignatureFallback) { result in
+            let start = CFAbsoluteTimeGetCurrent()
 
-                self.logDebug("Fetching ExposureKeySet Done")
+            self.networkManager.getExposureKeySet(identifier: identifier) { result in
+
+                let diff = CFAbsoluteTimeGetCurrent() - start
+                self.logDebug("Fetching ExposureKeySet Took \(diff) seconds")
 
                 switch result {
                 case let .success(keySetURL):
