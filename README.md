@@ -30,7 +30,7 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 5.1 [Translations](#translations)
 5.1.1 [Uploading iOS translations to OneSky](#uploadtranslations)
 5.1.2 [Downloading and importing iOS translations from OneSky](#downloadtranslations)
-
+6. [Release Procedure](#releaseprocedure)
 
 <a name="about"></a>
 ## 1. About the app
@@ -110,7 +110,7 @@ This increases the chance that we might be able to use your contribution (or it 
 
 To build and develop the app you need:
 
-- [Xcode 12.4](https://download.developer.apple.com/Developer_Tools/Xcode_12.4/Xcode_12.4.xip)
+- Xcode 12.5.1
 - Xcode Command Line tools (Specifically "Make").
 - [Homebrew](https://brew.sh/)
 
@@ -256,3 +256,21 @@ When updating existing translations by uploading files, make sure the Dutch lang
 - Unzip the downloaded file
 - Open a terminal and go to <Source Root>/tools/scripts
 - Type "sh import-onesky.sh /absolute/path/of/extracted/onesky/folder". This will import the files and copy them to the correct location in the project
+
+<a name="releaseprocedure"></a>
+## 6. Release Procedure
+The following steps need to be taken to create a version of CoronaMelder and release it to the iOS App Store:
+
+- Update the version number of the app in the `project.yml`. The version number is set by the `CFBundleShortVersionString` property in that file.
+- When the `master` branch is built, various build versions are automatically sent to Firebase App Distribution to make it easier to test the release.
+- Once the team is satisfied with the quality of the builds on Firebase App Distribution, the build can be sent to TestFlight using the internal release system (Azure DevOps)
+- Once the app hits TestFlight, we perform a manual regression test on the build to make sure the app performs as normal in this production-like environment.
+- If the team determines the app is ready for release, we manually submit the app for App Store Review via [App Store Connect](https://appstoreconnect.apple.com/). We typically choose a manual release action instead of automatically releasing it on App Store approval to make sure we release the app on a day when we have enough personel to monitor the release.
+
+**After release**
+After the app is released to the App Store we perform some actions to tag the release, make it public and verify the integrity of the released code:
+
+- We tag the release in our internal Git repository with a name matching the release version. for example `2.4.2`.
+- We push the code from our internal Git repository to the GitHub repository to make it public.
+- We publish the created tag to GitHub too.
+- We communicate the tag that was pushed to GitHub to an Escrow party (via the internal Product Owner) that can confirm that the code of the released app matches the code that was tagged. This ensures that no malicious changes were made to the code during the release process.
