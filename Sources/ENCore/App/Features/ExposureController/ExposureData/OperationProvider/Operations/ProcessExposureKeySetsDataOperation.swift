@@ -291,7 +291,11 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     case .signatureValidationFailed:
 
                         // mark all keysets as invalid so they will be redownloaded again
-                        let result = self.getInvalidDetectionOutput(applicationIsInBackground: applicationIsInBackground, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess)
+                        let result = self.getInvalidDetectionOutput(
+                            applicationIsInBackground: applicationIsInBackground,
+                            invalidKeySetHolderResults: invalidKeySetHolderResults,
+                            keySetHoldersToProcess: keySetHoldersToProcess
+                        )
 
                         // We still return successful here because validation errors should not be shown to the users but handled silently by the app
                         self.updateLastProcessingDate()
