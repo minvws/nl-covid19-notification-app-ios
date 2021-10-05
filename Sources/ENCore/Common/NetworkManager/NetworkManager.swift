@@ -197,7 +197,7 @@ final class NetworkManager: NetworkManaging, Logging {
     // MARK: - Construct Request
 
     private var useFallbackEndpoint: Bool {
-        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
+        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEndpoint) ?? false
     }
 
     private func constructRequest(url: URL?,

@@ -290,19 +290,14 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                         observer(.failure(ExposureDataError.internalError))
                     case .signatureValidationFailed:
 
-                        // if we were already using the old fallback API, set the flag to 'false' to indicate we want to use the fallback. This will force the app to use the normal / new API in the next EKS run.
-                        // if we were NOT on the fallback API yet, set the flag to 'true' to indicate that the next EKS run needs to use the fallback API
-                        let currentlyusingFallbackEKSEndpoint = self.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
-
-                        self.logDebug("GAEN: framework returned signatureValidationFailed. Using V4 endpoint: \(currentlyusingFallbackEKSEndpoint)")
-
-                        self.storageController.store(object: !currentlyusingFallbackEKSEndpoint, identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint, completion: { _ in })
-
                         // mark all keysets as invalid so they will be redownloaded again
                         let result = self.getInvalidDetectionOutput(applicationIsInBackground: applicationIsInBackground, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess)
 
                         // We still return successful here because validation errors should not be shown to the users but handled silently by the app
                         self.updateLastProcessingDate()
+
+                        // An invalid signature means the app needs to (temporarily) use another endpoint version for all its content to function correctly
+                        self.toggleFallbackEndpointVersion()
 
                         observer(.success(result))
 
@@ -317,6 +312,22 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
 
             return Disposables.create()
         }
+    }
+
+    private func toggleFallbackEndpointVersion() {
+
+        // if we were already using the old fallback API, set the flag to 'false' to indicate we want to use the fallback. This will force the app to use the normal / new API
+        // if we were NOT on the fallback API yet, set the flag to 'true' to indicate that the app needs to use the fallback API for now
+        let currentlyusingFallbackEndpoint = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEndpoint) ?? false
+        logDebug("GAEN: framework returned signatureValidationFailed. Using fallback (V4) endpoint: \(currentlyusingFallbackEndpoint)")
+        storageController.store(object: !currentlyusingFallbackEndpoint, identifiedBy: ExposureDataStorageKey.useFallbackEndpoint, completion: { _ in })
+
+        // Remove all endpoint-specific data since it may not be relevant anymore after the endpoint version switch
+        storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.appConfiguration, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.appConfigurationSignature, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.treatmentPerspective, completion: { _ in })
+        storageController.removeData(for: ExposureDataStorageKey.exposureConfiguration, completion: { _ in })
     }
 
     private func getInvalidDetectionOutput(

@@ -790,7 +790,7 @@ final class NetworkManagerTests: TestCase {
 
     private func mockUseFallbackEndpoint(_ useFallback: Bool) {
         mockStorageControlling.retrieveDataHandler = { key in
-            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEKSEndpoint.asString {
+            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEndpoint.asString {
                 return try! JSONEncoder().encode(useFallback)
             }
             return nil
