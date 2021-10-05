@@ -130,13 +130,13 @@ final class NetworkControllerTests: TestCase {
         let completionExpectation = expectation(description: "completion")
         let networkManagerExpectation = expectation(description: "networkmananger call")
 
-        mockNetworkManager.getExposureKeySetHandler = { identifierParameter, completion in
+        mockNetworkManager.getExposureKeySetHandler = { identifierParameter, _, completion in
             XCTAssertEqual(identifierParameter, identifier)
             networkManagerExpectation.fulfill()
             completion(.success(url))
         }
 
-        sut.fetchExposureKeySet(identifier: identifier)
+        sut.fetchExposureKeySet(identifier: identifier, useSignatureFallback: false)
             .subscribe(onSuccess: { result in
                 XCTAssertEqual(result.0, identifier)
                 XCTAssertEqual(result.1, url)
@@ -156,12 +156,12 @@ final class NetworkControllerTests: TestCase {
         let completionExpectation = expectation(description: "completion")
         let networkManagerExpectation = expectation(description: "networkmananger call")
 
-        mockNetworkManager.getExposureKeySetHandler = { _, completion in
+        mockNetworkManager.getExposureKeySetHandler = { _, _, completion in
             networkManagerExpectation.fulfill()
             completion(.failure(expectedError))
         }
 
-        sut.fetchExposureKeySet(identifier: identifier)
+        sut.fetchExposureKeySet(identifier: identifier, useSignatureFallback: false)
             .subscribe(onFailure: { error in
                 XCTAssertEqual(error as? NetworkError, expectedError)
                 completionExpectation.fulfill()
@@ -171,6 +171,25 @@ final class NetworkControllerTests: TestCase {
         waitForExpectations(timeout: 2.0, handler: nil)
 
         XCTAssertEqual(mockNetworkManager.getExposureKeySetCallCount, 1)
+    }
+
+    func test_fetchExposureKeySet_usingSignatureFallback() {
+        let identifier = "SomeIdentifier"
+        let completionExpectation = expectation(description: "completion")
+
+        mockNetworkManager.getExposureKeySetHandler = { _, _, completion in
+            completion(.success(URL(string: "http://www.example.com")!))
+        }
+
+        sut.fetchExposureKeySet(identifier: identifier, useSignatureFallback: true)
+            .subscribe(onSuccess: { _ in
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
+        waitForExpectations(timeout: 2.0, handler: nil)
+
+        XCTAssertEqual(mockNetworkManager.getExposureKeySetArgValues.first?.1, true)
     }
 
     // MARK: - Private

@@ -535,12 +535,23 @@ final class NetworkManagerTests: TestCase {
 
     // MARK: - getExposureKeySet
 
+    func test_getExposureKeySet_shouldUseSignatureFallbackURL() {
+        // Arrange
+        mockUrlSession(mockData: nil)
+
+        // Act
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: true, completion: { _ in })
+
+        // Assert
+        XCTAssertEqual(mockUrlSession.resumableDataTaskArgValues.first?.url?.absoluteString, "https://test.coronamelder-dist.nl/\(mockNetworkConfigurationProvider.configuration.cdn.signatureFallbackPath!)/exposurekeyset/someIdentifier")
+    }
+
     func test_getExposureKeySet_requestFailedShouldReturnError() {
         mockUrlSession(mockData: nil)
 
         let completionExpectation = expectation(description: "completion")
 
-        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: false) { result in
             guard case let .failure(error) = result else {
                 XCTFail("Expected error but got successful response instead")
                 return
@@ -564,7 +575,7 @@ final class NetworkManagerTests: TestCase {
 
         let completionExpectation = expectation(description: "completion")
 
-        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: false) { result in
             guard case let .success(model) = result else {
                 XCTFail("Expected success but got error response instead")
                 return
@@ -588,7 +599,7 @@ final class NetworkManagerTests: TestCase {
 
         let completionExpectation = expectation(description: "completion")
 
-        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: false) { result in
             guard case let .failure(error) = result else {
                 XCTFail("Expected error but got successful response instead")
                 return
@@ -612,7 +623,7 @@ final class NetworkManagerTests: TestCase {
 
         let completionExpectation = expectation(description: "completion")
 
-        sut.getExposureKeySet(identifier: "someIdentifier") { result in
+        sut.getExposureKeySet(identifier: "someIdentifier", useSignatureFallback: false) { result in
             guard case let .failure(error) = result else {
                 XCTFail("Expected error but got successful response instead")
                 return

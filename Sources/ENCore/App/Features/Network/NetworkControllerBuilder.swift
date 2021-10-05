@@ -8,7 +8,7 @@
 import Foundation
 import RxSwift
 
-/// @mockable
+/// @mockable(history:fetchExposureKeySet=true)
 protocol NetworkControlling {
     var applicationManifest: Single<ApplicationManifest> { get }
 
@@ -17,7 +17,7 @@ protocol NetworkControlling {
     func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration>
 
     func exposureRiskConfigurationParameters(identifier: String) -> Single<ExposureRiskConfiguration>
-    func fetchExposureKeySet(identifier: String) -> Single<(String, URL)>
+    func fetchExposureKeySet(identifier: String, useSignatureFallback: Bool) -> Single<(String, URL)>
 
     func requestLabConfirmationKey(padding: Padding) -> Single<LabConfirmationKey>
     func postKeys(keys: [DiagnosisKey], labConfirmationKey: LabConfirmationKey, padding: Padding) -> Completable

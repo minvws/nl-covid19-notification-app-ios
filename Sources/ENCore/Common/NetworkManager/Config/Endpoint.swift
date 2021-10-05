@@ -26,7 +26,7 @@ struct Endpoint {
     static let manifest = Endpoint(components: "manifest")
 
     static func appConfig(identifier: String) -> Endpoint { Endpoint(components: "appconfig", identifier) }
-    static func exposureKeySet(identifier: String) -> Endpoint { Endpoint(components: "exposurekeyset", identifier) }
+    static func exposureKeySet(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "exposurekeyset", identifier) }
     static func riskCalculationParameters(identifier: String) -> Endpoint { Endpoint(components: "riskcalculationparameters", identifier) }
     static func treatmentPerspective(identifier: String) -> Endpoint { Endpoint(components: "resourcebundle", identifier) }
 
