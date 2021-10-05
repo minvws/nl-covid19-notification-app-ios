@@ -29,7 +29,7 @@ protocol NetworkManaging {
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ())
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ())
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ())
-    func getExposureKeySet(identifier: String, useSignatureFallback: Bool, completion: @escaping (Result<URL, NetworkError>) -> ())
+    func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ())
 
     // MARK: Enrollment
 

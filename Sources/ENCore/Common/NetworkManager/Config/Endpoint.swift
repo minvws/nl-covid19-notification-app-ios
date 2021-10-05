@@ -23,12 +23,12 @@ struct Endpoint {
 
     // MARK: - CDN
 
-    static let manifest = Endpoint(components: "manifest")
+    static func manifest(version: String? = nil) -> Endpoint { Endpoint(version: version, components: "manifest") }
 
-    static func appConfig(identifier: String) -> Endpoint { Endpoint(components: "appconfig", identifier) }
+    static func appConfig(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "appconfig", identifier) }
     static func exposureKeySet(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "exposurekeyset", identifier) }
-    static func riskCalculationParameters(identifier: String) -> Endpoint { Endpoint(components: "riskcalculationparameters", identifier) }
-    static func treatmentPerspective(identifier: String) -> Endpoint { Endpoint(components: "resourcebundle", identifier) }
+    static func riskCalculationParameters(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "riskcalculationparameters", identifier) }
+    static func treatmentPerspective(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "resourcebundle", identifier) }
 
     // MARK: - API
 

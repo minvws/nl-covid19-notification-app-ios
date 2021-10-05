@@ -33,9 +33,10 @@ final class NetworkManager: NetworkManaging, Logging {
     /// Fetches manifest from server with all available parameters
     /// - Parameter completion: return
     func getManifest(completion: @escaping (Result<Manifest, NetworkError>) -> ()) {
+
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.manifestUrl
+        let url = configuration.manifestUrl(useFallback: useFallbackEndpoint)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
@@ -46,9 +47,10 @@ final class NetworkManager: NetworkManaging, Logging {
     ///   - id: id of the resourceBundleId
     ///   - completion: executed on complete or failure
     func getTreatmentPerspective(identifier: String, completion: @escaping (Result<TreatmentPerspective, NetworkError>) -> ()) {
+
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.treatmentPerspectiveUrl(identifier: identifier)
+        let url = configuration.treatmentPerspectiveUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
@@ -57,9 +59,10 @@ final class NetworkManager: NetworkManaging, Logging {
     /// Fetched the global app config which contains version number, manifest polling frequence and decoy probability
     /// - Parameter completion: completion description
     func getAppConfig(appConfig: String, completion: @escaping (Result<AppConfig, NetworkError>) -> ()) {
+
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.appConfigUrl(identifier: appConfig)
+        let url = configuration.appConfigUrl(useFallback: useFallbackEndpoint, identifier: appConfig)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
@@ -70,7 +73,7 @@ final class NetworkManager: NetworkManaging, Logging {
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = configuration.riskCalculationParametersUrl(identifier: identifier)
+        let url = configuration.riskCalculationParametersUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
@@ -80,10 +83,11 @@ final class NetworkManager: NetworkManaging, Logging {
     /// - Parameters:
     ///   - id: id of the exposureKeySet
     ///   - completion: executed on complete or failure
-    func getExposureKeySet(identifier: String, useSignatureFallback: Bool, completion: @escaping (Result<URL, NetworkError>) -> ()) {
+    func getExposureKeySet(identifier: String, completion: @escaping (Result<URL, NetworkError>) -> ()) {
+
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
-        let url = useSignatureFallback ? configuration.exposureKeySetFallbackUrl(identifier: identifier) : configuration.exposureKeySetUrl(identifier: identifier)
+        let url = configuration.exposureKeySetUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         download(request: urlRequest) { result in
@@ -191,6 +195,10 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Construct Request
+
+    private var useFallbackEndpoint: Bool {
+        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEKSEndpoint) ?? false
+    }
 
     private func constructRequest(url: URL?,
                                   method: HTTPMethod = .GET,
