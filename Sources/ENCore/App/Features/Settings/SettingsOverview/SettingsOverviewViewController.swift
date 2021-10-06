@@ -253,7 +253,7 @@ private final class SettingsView: View {
         super.build()
 
         backgroundColor = theme.colors.viewControllerBackground
-        
+
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 21
         scrollableStackView.stackViewBottomMargin = 32
@@ -278,11 +278,11 @@ private final class SettingsView: View {
         }
 
         pauseAppButton.snp.makeConstraints { maker in
-            maker.height.equalTo(48)
+            maker.height.greaterThanOrEqualTo(48)
         }
 
         unpauseAppButton.snp.makeConstraints { maker in
-            maker.height.equalTo(48)
+            maker.height.greaterThanOrEqualTo(48)
         }
 
         separatorView.snp.makeConstraints { maker in
@@ -290,7 +290,7 @@ private final class SettingsView: View {
         }
 
         mobileDataButton.snp.makeConstraints { maker in
-            maker.height.equalTo(48)
+            maker.height.greaterThanOrEqualTo(48)
         }
     }
 }

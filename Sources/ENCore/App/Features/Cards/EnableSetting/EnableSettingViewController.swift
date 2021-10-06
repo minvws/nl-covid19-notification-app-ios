@@ -97,14 +97,14 @@ private final class EnableSettingView: View {
     private lazy var introductionLabel = Label()
     private lazy var stepTitleLabel = Label()
     private lazy var footerLabel = Label()
-    
+
     fileprivate lazy var button = Button(theme: theme)
     fileprivate lazy var navigationBar = UINavigationBar()
-    
+
     private weak var listener: EnableSettingListener?
     private var buttonToBottomConstraint: Constraint?
     private var contentToBottomConstraint: Constraint?
-    
+
     private var stepViews: [EnableSettingStepView] = []
     private lazy var stepContainerView: UIStackView = {
         let stack = UIStackView(frame: .zero)
@@ -112,7 +112,7 @@ private final class EnableSettingView: View {
         stack.spacing = 8
         return stack
     }()
-    
+
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(frame: .zero)
         stack.axis = .vertical
@@ -124,7 +124,7 @@ private final class EnableSettingView: View {
         stack.addArrangedSubview(footerLabel)
         return stack
     }()
-    
+
     init(theme: Theme, listener: EnableSettingListener?) {
         self.listener = listener
         super.init(theme: theme)
@@ -139,14 +139,14 @@ private final class EnableSettingView: View {
         titleLabel.font = theme.fonts.title1
         titleLabel.accessibilityTraits = [.header]
         titleLabel.numberOfLines = 0
-        
+
         introductionLabel.font = theme.fonts.body
         introductionLabel.numberOfLines = 0
-        
+
         stepTitleLabel.font = theme.fonts.title2
         stepTitleLabel.numberOfLines = 0
         stepTitleLabel.accessibilityTraits = [.header]
-        
+
         footerLabel.font = theme.fonts.body
         footerLabel.numberOfLines = 0
 
@@ -183,15 +183,15 @@ private final class EnableSettingView: View {
 
         stackView.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(8)
-            make.leading.equalToSuperview().inset(16)            
+            make.leading.equalToSuperview().inset(16)
             make.bottom.equalToSuperview().inset(32)
             make.width.equalTo(scrollView).inset(16)
         }
-        
+
         button.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
             make.top.equalTo(scrollView.snp.bottom).offset(16)
-            make.height.equalTo(48)
+            make.height.greaterThanOrEqualTo(48)
         }
 
         scrollView.snp.makeConstraints { make in
@@ -207,7 +207,7 @@ private final class EnableSettingView: View {
         introductionLabel.attributedText = model.introduction
         stepTitleLabel.attributedText = model.stepTitle
         footerLabel.attributedText = model.footer
-        
+
         introductionLabel.isHidden = introductionLabel.attributedText == nil
         stepTitleLabel.isHidden = stepTitleLabel.attributedText == nil
         footerLabel.isHidden = footerLabel.attributedText == nil
@@ -244,6 +244,5 @@ private final class EnableSettingView: View {
         stepViews.enumerated().forEach { index, stepView in
             stepContainerView.addListSubview(stepView, index: index, total: stepViews.count)
         }
-
     }
 }

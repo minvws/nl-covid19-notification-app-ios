@@ -67,6 +67,13 @@ class Button: UIButton, Themeable {
         self.addTarget(self, action: #selector(self.touchDownAnimation), for: .touchDown)
         self.addTarget(self, action: #selector(self.touchUpAction), for: .touchUpInside)
 
+        if let label = titleLabel {
+            label.snp.makeConstraints { maker in
+                maker.top.greaterThanOrEqualToSuperview()
+                maker.bottom.lessThanOrEqualToSuperview()
+            }
+        }
+
         updateButtonType()
     }
 
@@ -79,14 +86,6 @@ class Button: UIButton, Themeable {
     override func layoutSubviews() {
         super.layoutSubviews()
         updateRoundedCorners()
-    }
-
-    override open var intrinsicContentSize: CGSize {
-        let intrinsicContentSize = super.intrinsicContentSize
-
-        let adjustedHeight = intrinsicContentSize.height + titleEdgeInsets.top + titleEdgeInsets.bottom
-        let adjustedWidth = intrinsicContentSize.width + titleEdgeInsets.left + titleEdgeInsets.right
-        return CGSize(width: adjustedWidth, height: adjustedHeight)
     }
 
     // MARK: - Private

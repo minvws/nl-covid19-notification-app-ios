@@ -448,7 +448,7 @@ private final class StatusView: View {
         for buttonModel in viewModel.buttons {
             let button = Button(title: buttonModel.title, theme: theme)
             button.contentEdgeInsets = UIEdgeInsets(top: 14, left: 24, bottom: 14, right: 24)
-            button.titleEdgeInsets = UIEdgeInsets(top: 1, left: 0, bottom: 1, right: 0)
+            button.titleEdgeInsets = UIEdgeInsets(top: 3, left: 0, bottom: 3, right: 0)
             button.style = buttonModel.style
             button.rounded = true
             button.action = { [weak self] in

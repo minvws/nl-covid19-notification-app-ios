@@ -50,8 +50,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.settings.step1" = "Open <b>Settings</b> on your phone using the button below";
 "moreInformation.settings.step2" = "Turn your mobile data for CoronaMelder on or off";
 "moreInformation.settings.step2.row.title" = "Mobile data";
-"moreInformation.settings.button" = "Open Settings
-";
+"moreInformation.settings.button" = "Open Settings";
 
 // supports HTML
 "enableSettings.exposureNotifications.137.step2" = "Go to <b>Exposure notifications</b>";

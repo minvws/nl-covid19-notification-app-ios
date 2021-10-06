@@ -182,12 +182,14 @@ final class InfoView: View {
             }
         }
         if showButtons {
-            buttonStackView.snp.remakeConstraints { (maker: ConstraintMaker) in
-                let count = buttonStackView.arrangedSubviews.count
-                if count > 0 {
-                    let height = Float((count * 48) + ((count - 1) * 20))
-                    maker.height.equalTo(height)
+
+            buttonStackView.arrangedSubviews.forEach { button in
+                button.snp.remakeConstraints { maker in
+                    maker.height.greaterThanOrEqualTo(48)
                 }
+            }
+
+            buttonStackView.snp.remakeConstraints { (maker: ConstraintMaker) in
                 maker.leading.trailing.equalToSuperview().inset(16)
 
                 if stickyButtons {

@@ -160,13 +160,13 @@ private final class PauseConfirmationView: View {
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.top.equalTo(checkmarkButton.snp.bottom).offset(16)
             maker.bottom.equalTo(cancelButton.snp.top).inset(-16)
-            maker.height.equalTo(48)
+            maker.height.greaterThanOrEqualTo(48)
         }
 
         cancelButton.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
-            maker.height.equalTo(48)
+            maker.height.greaterThanOrEqualTo(48)
         }
     }
 }
