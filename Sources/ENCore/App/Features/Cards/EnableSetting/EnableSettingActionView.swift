@@ -127,7 +127,7 @@ final class EnableSettingActionView: View {
                 make.trailing.equalToSuperview().inset(16)
                 make.centerY.equalToSuperview()
                 make.width.equalTo(35)
-                make.height.equalTo(24)
+                make.height.equalTo(23)
             }
         }
     }
