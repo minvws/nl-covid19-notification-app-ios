@@ -23,7 +23,7 @@ protocol LocalPathProviding {
 
 final class LocalPathProvider: LocalPathProviding, Logging {
 
-    init(fileManager: FileManager = .default) {
+    init(fileManager: FileManaging) {
         self.fileManager = fileManager
     }
 
@@ -64,5 +64,5 @@ final class LocalPathProvider: LocalPathProviding, Logging {
         }
     }
 
-    private let fileManager: FileManager
+    private let fileManager: FileManaging
 }

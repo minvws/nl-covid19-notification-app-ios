@@ -38,7 +38,7 @@ protocol ExposureDataOperationProviderDependency {
 
 private final class ExposureDataOperationProviderDependencyProvider: DependencyProvider<ExposureDataOperationProviderDependency> {
     var localPathProvider: LocalPathProviding {
-        return LocalPathProvider()
+        return LocalPathProvider(fileManager: FileManager.default)
     }
 
     var userNotificationController: UserNotificationControlling {
@@ -60,7 +60,7 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     var riskCalculationController: RiskCalculationControlling {
         RiskCalculationController()
     }
-        
+
     var keySetDownloadProcessor: KeySetDownloadProcessing {
         return KeySetDownloadProcessor(storageController: dependency.storageController,
                                        localPathProvider: localPathProvider,
