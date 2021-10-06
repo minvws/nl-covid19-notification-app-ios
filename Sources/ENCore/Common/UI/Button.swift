@@ -55,6 +55,8 @@ class Button: UIButton, Themeable {
 
         self.setTitle(title, for: .normal)
         self.titleLabel?.font = theme.fonts.headline
+        self.titleLabel?.lineBreakMode = .byWordWrapping
+        self.titleLabel?.textAlignment = .center
 
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
@@ -77,6 +79,14 @@ class Button: UIButton, Themeable {
     override func layoutSubviews() {
         super.layoutSubviews()
         updateRoundedCorners()
+    }
+
+    override open var intrinsicContentSize: CGSize {
+        let intrinsicContentSize = super.intrinsicContentSize
+
+        let adjustedHeight = intrinsicContentSize.height + titleEdgeInsets.top + titleEdgeInsets.bottom
+        let adjustedWidth = intrinsicContentSize.width + titleEdgeInsets.left + titleEdgeInsets.right
+        return CGSize(width: adjustedWidth, height: adjustedHeight)
     }
 
     // MARK: - Private
