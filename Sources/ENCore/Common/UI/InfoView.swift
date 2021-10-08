@@ -267,7 +267,9 @@ final class InfoSectionStepView: View {
         stepCountView.disabled = isDisabled
         actionButton?.isEnabled = !isDisabled
         titleLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textPrimary
+        titleLabel.accessibilityTraits = isDisabled ? [.header, .notEnabled] : [.header]
         descriptionLabel.textColor = isDisabled ? theme.colors.disabled : theme.colors.textSecondary
+        descriptionLabel.accessibilityTraits = isDisabled ? [.staticText, .notEnabled] : [.header]
     }
 
     private lazy var actionButton: Button? = {
@@ -349,11 +351,11 @@ final class InfoSectionStepView: View {
 
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title3
-        titleLabel.accessibilityTraits = .header
+        titleLabel.accessibilityTraits = isDisabled ? [.header, .notEnabled] : [.header]
 
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = theme.fonts.body
-        descriptionLabel.accessibilityTraits = .staticText
+        descriptionLabel.accessibilityTraits = isDisabled ? [.staticText, .notEnabled] : [.header]
 
         progressLine.backgroundColor = theme.colors.tertiary
         progressLine.isHidden = isLastStep
@@ -664,24 +666,28 @@ final class InfoSectionDynamicCalloutView: View {
         case .disabled:
             stepCountView.disabled = true
             titleLabel.textColor = theme.colors.disabled
+            titleLabel.accessibilityTraits = [.header, .notEnabled]
 
             let view = InfoSectionDynamicDisabledView(theme: theme)
             add(view)
         case let .loading(title):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
+            titleLabel.accessibilityTraits = [.header]
 
             let view = InfoSectionDynamicLoadingView(theme: theme, title: title)
             add(view)
         case let .success(code):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
+            titleLabel.accessibilityTraits = [.header]
 
             let view = InfoSectionDynamicSuccessView(theme: theme, title: code)
             add(view)
         case let .error(error, actionHandler):
             stepCountView.disabled = false
             titleLabel.textColor = theme.colors.textPrimary
+            titleLabel.accessibilityTraits = [.header]
 
             let view = InfoSectionDynamicErrorView(theme: theme, title: error, actionHandler: actionHandler)
             add(view)
