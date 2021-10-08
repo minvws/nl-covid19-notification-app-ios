@@ -195,6 +195,7 @@ private class BluetoothSettingsTableViewCell: UITableViewCell {
         label.numberOfLines = 0
         label.font = theme.fonts.body
         label.accessibilityTraits = .header
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
 
@@ -266,20 +267,20 @@ private class BluetoothSettingsTableViewCell: UITableViewCell {
 
         indexLabel.snp.makeConstraints { maker in
             maker.top.leading.equalToSuperview().inset(16)
-            maker.height.equalTo(30)
-            maker.width.equalTo(20)
+            maker.height.greaterThanOrEqualTo(30)
+            maker.width.greaterThanOrEqualTo(20)
         }
 
         titleLabel.snp.makeConstraints { maker in
             maker.top.trailing.equalToSuperview().inset(16)
             maker.leading.equalTo(indexLabel.snp.trailing)
-            maker.height.equalTo(30)
+            maker.height.greaterThanOrEqualTo(30)
         }
 
         settingsBackgroundView.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
-            maker.height.equalTo(56)
+            maker.height.greaterThanOrEqualTo(56)
             maker.bottom.equalToSuperview()
         }
 

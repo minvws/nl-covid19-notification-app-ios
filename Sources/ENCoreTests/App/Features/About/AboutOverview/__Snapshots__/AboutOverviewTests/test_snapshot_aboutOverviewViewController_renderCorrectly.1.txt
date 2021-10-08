@@ -36,12 +36,12 @@
    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 40.6667); text = 'About this app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    | <UIStackView; frame = (16 72.6667; 288 414); layer = <CALayer>>
    |    |    |    |    | <ENCore.CardButton; baseClass = UIButton; frame = (0 0; 288 293.667); clipsToBounds = YES; opaque = NO; tintColor = UIExtendedGrayColorSpace 1 1; layer = <CALayer>>
-   |    |    |    |    |    | <UIButtonLabel; frame = (26 136.333; 236 21); text = 'What does CoronaMelder do...'; alpha = 0; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    |    |    | <UIButtonLabel; frame = (4.66667 103.667; 279 86.3333); text = 'What does CoronaMelder do...'; alpha = 0; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 256 49); text = 'What does CoronaMelder do...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 71; 256 64.3333); text = 'Read how you can help sto...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    | <UIImageView; frame = (16 155.333; 256 138.333); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    |    |    | <ENCore.CardButton; baseClass = UIButton; frame = (0 309.667; 288 104.333); clipsToBounds = YES; opaque = NO; tintColor = UIExtendedGrayColorSpace 1 1; layer = <CALayer>>
-   |    |    |    |    |    | <UIButtonLabel; frame = (46.6667 41.6667; 195 21); text = 'How does the app work?
+   |    |    |    |    |    | <UIButtonLabel; frame = (17.3333 31; 253.333 42.3333); text = 'How does the app work?
 Ch...'; alpha = 0; opaque = NO; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 233 24); text = 'How does the app work?'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
    |    |    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 46; 233 42.3333); text = 'Check the technical expla...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>

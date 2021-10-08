@@ -55,6 +55,7 @@ final class EnableSettingActionView: View {
         backgroundColor = .clear
 
         contentLabel.numberOfLines = 0
+        contentLabel.font = theme.fonts.body
         contentLabel.text = action.content
         if case .linkCell = action {
             contentLabel.textColor = theme.colors.primary
@@ -93,7 +94,7 @@ final class EnableSettingActionView: View {
         if let actionView = actionView {
             actionView.snp.makeConstraints { make in
                 make.leading.equalToSuperview().inset(16)
-                make.top.equalToSuperview().inset(actionViewRect.origin.y)
+                make.centerY.equalToSuperview()
                 make.height.equalTo(actionViewRect.height)
                 make.width.equalTo(actionViewRect.width)
             }
@@ -104,24 +105,29 @@ final class EnableSettingActionView: View {
         contentLabel.snp.makeConstraints { make in
             make.top.equalToSuperview().inset(16)
             make.leading.equalTo(leftContentAnchor).offset(16)
-            make.trailing.equalToSuperview().inset(16)
+            if showSwitch {
+                make.trailing.equalTo(switchView.snp.leading)
+            } else if showSwitch {
+                make.trailing.equalTo(chevronView.snp.leading)
+            } else {
+                make.trailing.equalToSuperview().inset(16)
+            }
             make.bottom.equalToSuperview().inset(16)
         }
 
         if showChevron {
             chevronView.snp.makeConstraints { make in
                 make.trailing.equalToSuperview().inset(16)
-                make.top.equalToSuperview().inset(21)
-                make.bottom.greaterThanOrEqualToSuperview().inset(21)
+                make.centerY.equalToSuperview()
             }
         }
 
         if showSwitch {
             switchView.snp.makeConstraints { make in
                 make.trailing.equalToSuperview().inset(16)
-                make.top.equalToSuperview().inset(15)
-                make.bottom.greaterThanOrEqualToSuperview().inset(15)
+                make.centerY.equalToSuperview()
                 make.width.equalTo(35)
+                make.height.equalTo(23)
             }
         }
     }

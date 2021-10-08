@@ -55,6 +55,8 @@ class Button: UIButton, Themeable {
 
         self.setTitle(title, for: .normal)
         self.titleLabel?.font = theme.fonts.headline
+        self.titleLabel?.lineBreakMode = .byWordWrapping
+        self.titleLabel?.textAlignment = .center
 
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
@@ -64,6 +66,13 @@ class Button: UIButton, Themeable {
         self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchUpInside)
         self.addTarget(self, action: #selector(self.touchDownAnimation), for: .touchDown)
         self.addTarget(self, action: #selector(self.touchUpAction), for: .touchUpInside)
+
+        if let label = titleLabel {
+            label.snp.makeConstraints { maker in
+                maker.top.greaterThanOrEqualToSuperview()
+                maker.bottom.lessThanOrEqualToSuperview()
+            }
+        }
 
         updateButtonType()
     }
