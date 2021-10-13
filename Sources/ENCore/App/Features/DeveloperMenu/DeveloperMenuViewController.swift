@@ -534,7 +534,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                 self.fetchAndProcessDisposable?.dispose()
                 self.fetchAndProcessDisposable = nil
 
-                assert(Thread.isMainThread)
                 self.reloadData()
             }
     }
