@@ -323,10 +323,17 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
         // if we were already using the old fallback API, set the flag to 'false' to indicate we want to use the fallback. This will force the app to use the normal / new API
         // if we were NOT on the fallback API yet, set the flag to 'true' to indicate that the app needs to use the fallback API for now
         let currentlyusingFallbackEndpoint = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEndpoint) ?? false
-        logDebug("GAEN: framework returned signatureValidationFailed. Using fallback (V4) endpoint: \(currentlyusingFallbackEndpoint)")
+
+        if currentlyusingFallbackEndpoint {
+            logDebug("GAEN: framework returned signatureValidationFailed on the fallback endpoint, switching to default endpoint")
+        } else {
+            logDebug("GAEN: framework returned signatureValidationFailed on the default endpoint, switching to fallback endpoint")
+        }
+
         storageController.store(object: !currentlyusingFallbackEndpoint, identifiedBy: ExposureDataStorageKey.useFallbackEndpoint, completion: { _ in })
 
         // Remove all endpoint-specific data since it may not be relevant anymore after the endpoint version switch
+        logDebug("GAEN: Clearing stored data after endpoint version switch. Manifest, Appconfig, Treatment Perspective and Exposure Configuration will be removed")
         storageController.removeData(for: ExposureDataStorageKey.appManifest, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.appConfiguration, completion: { _ in })
         storageController.removeData(for: ExposureDataStorageKey.appConfigurationSignature, completion: { _ in })

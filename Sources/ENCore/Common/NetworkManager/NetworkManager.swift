@@ -90,6 +90,8 @@ final class NetworkManager: NetworkManaging, Logging {
         let url = configuration.exposureKeySetUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
+        self.logDebug("GAEN: Getting exposureKeySets from fallback endpoint? \(useFallbackEndpoint)")
+
         download(request: urlRequest) { result in
             switch result {
             case let .failure(error):
