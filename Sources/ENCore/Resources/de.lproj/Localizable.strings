@@ -385,7 +385,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.cell.requestTest.subtitle" = "Erfahren Sie schnellstmöglich, ob Sie selbst Corona haben.";
 
 "moreInformation.cell.infected.title" = "GGD-Schlüssel weiterleiten";
-"moreInformation.cell.infected.subtitle" = "Gehen Sie hierhin, wenn der GGD Sie mit dem Corona-Testergebnis anruft.";
+"moreInformation.cell.infected.subtitle" = "Go here if you’ve received your coronavirus test results";
 
 "moreInformation.info.title" = "Sie brauchen dazu Ihre Bürgerservicenummer. Diese steht auf Ihrem Pass oder Ausweis.";
 
