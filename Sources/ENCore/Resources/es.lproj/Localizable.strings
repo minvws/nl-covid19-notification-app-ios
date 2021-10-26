@@ -384,7 +384,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.cell.requestTest.subtitle" = "Descubre lo antes posible si tú estás contagiado";
 
 "moreInformation.cell.infected.title" = "Enviar clave GGD";
-"moreInformation.cell.infected.subtitle" = "Go here if you’ve received your coronavirus test results";
+"moreInformation.cell.infected.subtitle" = "Pulsa aquí si has recibido los resultados de tu test";
 
 "moreInformation.info.title" = "Ten a mano tu número de seguridad social (burgerservicenummer). Este número lo puedes encontrar en tu pasaporte o tarjeta de identidad.";
 
