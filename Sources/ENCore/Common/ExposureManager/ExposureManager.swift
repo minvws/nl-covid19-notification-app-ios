@@ -223,9 +223,9 @@ extension Error {
             return error
         }
 
-        if let error = self as? ENError {
-            let status: ExposureManagerError
+        var status: ExposureManagerError = .unknown
 
+        if let error = self as? ENError {
             switch error.code {
             case .bluetoothOff:
                 status = .bluetoothOff
@@ -244,11 +244,14 @@ extension Error {
                 DDLogDebug("🐞 `asExposureManagerError` raw error \(error.localizedDescription) \(error.errorCode)")
                 status = .unknown
             }
-
-            return status
+        } else {
+            let nsError = (self as NSError)
+            if nsError.domain == "ENExposureDetectionDaemonSessionErrorDomain", nsError.code == 2 {
+                status = .signatureValidationFailed
+            }
         }
 
-        return .unknown
+        return status
     }
 }
 
