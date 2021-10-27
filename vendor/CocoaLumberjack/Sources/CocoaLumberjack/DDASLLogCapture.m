@@ -13,7 +13,7 @@
 //   to endorse or promote products derived from this software without specific
 //   prior written permission of Deusty, LLC.
 
-#if !TARGET_OS_WATCH
+#ifndef TARGET_OS_WATCH
 
 #include <asl.h>
 #include <notify.h>
