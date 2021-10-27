@@ -88,7 +88,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
-            path: "v4",
+            path: "v5",
             signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
@@ -110,7 +110,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: "v4",
+            path: "v5",
             signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
