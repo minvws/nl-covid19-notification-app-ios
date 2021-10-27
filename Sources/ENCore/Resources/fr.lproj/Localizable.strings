@@ -386,7 +386,7 @@
 "moreInformation.cell.requestTest.subtitle" = "Découvrez le plus vite possible si vous êtes contaminé(e)";
 
 "moreInformation.cell.infected.title" = "Transmettre le code GGD";
-"moreInformation.cell.infected.subtitle" = "Rendez-vous là-bas si le GGD vous appelle avec le résultat de votre test.";
+"moreInformation.cell.infected.subtitle" = "Rendez-vous là-bas si vous avez reçu le résultat de votre test de dépistage du Covid-19.";
 
 "moreInformation.info.title" = "Gardez votre numéro national (BSN) à portée de main. Celui-ci figure sur votre passeport ou carte d'identité. ";
 

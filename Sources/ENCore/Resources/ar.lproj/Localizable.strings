@@ -388,7 +388,7 @@
 "moreInformation.cell.requestTest.subtitle" = "اكتشف ما إذا كنت قد أصبت بالفيروس بأسرع وقت ممكن";
 
 "moreInformation.cell.infected.title" = "تمرير مفتاح الـ GGD";
-"moreInformation.cell.infected.subtitle" = "اذهب إلى هنا عندما تتصل بك الـ GGD لإبلاغك بنتيجة اختبار كورونا التي أجريته.";
+"moreInformation.cell.infected.subtitle" = "انتقل إلى هنا عندما تحصل على نتيجة اختبار كورونا";
 
 "moreInformation.info.title" = "تأكد من وجود رقم خدمات المواطن (BSN) في متناول اليد. ستجد هذا الرقم في جواز سفرك أو بطاقة هويتك.";
 
