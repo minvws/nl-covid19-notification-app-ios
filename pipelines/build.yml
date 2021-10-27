@@ -91,5 +91,5 @@ steps:
     xcodeVersion: 'specifyPath'
     xcodeDeveloperDir: '/Applications/Xcode_13.0.app'
     destinationPlatformOption: iOS
-    destinationSimulators: 'iPhone 13,OS=15'
+    destinationSimulators: 'iPhone 13,OS=15.0'
     publishJUnitResults: true
