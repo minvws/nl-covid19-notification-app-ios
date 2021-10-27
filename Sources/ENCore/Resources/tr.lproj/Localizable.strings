@@ -384,7 +384,7 @@
 "moreInformation.cell.requestTest.subtitle" = "Size bulaşmış olup olmadığını en kısa sürede öğrenin";
 
 "moreInformation.cell.infected.title" = "GGD anahtarını paylaşmak";
-"moreInformation.cell.infected.subtitle" = "GGD sizi Korona testinizin sonuçları ile ilgili aradığında buraya gidin";
+"moreInformation.cell.infected.subtitle" = "Korona testinizin sonucunu aldıysanız buraya gidin";
 
 "moreInformation.info.title" = "Sosyal güvenlik numaranızı hazır bulundurun. Bunu pasaportunuzda veya kimlik kartınızda bulabilirsiniz.";
 

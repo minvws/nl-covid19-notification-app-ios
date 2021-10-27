@@ -386,7 +386,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.cell.requestTest.subtitle" = "Find out as soon as possible if you're infected";
 
 "moreInformation.cell.infected.title" = "Share the GGD key";
-"moreInformation.cell.infected.subtitle" = "Go here if the GGD calls you with your coronavirus test results";
+"moreInformation.cell.infected.subtitle" = "Go here if you’ve received your coronavirus test results";
 
 "moreInformation.info.title" = "Have your citizen service number (BSN) ready. You'll find it on your Dutch passport or nationality certificate.";
 

@@ -383,7 +383,7 @@
 "moreInformation.cell.requestTest.subtitle" = "Разбери възможно най-бързо дали самият ти си заразен";
 
 "moreInformation.cell.infected.title" = "Съобщаване на GGD-ключ";
-"moreInformation.cell.infected.subtitle" = "Отиди там, ако Общинската здравна инспекция (GGD) ти се обади с резултата от теста ти за коронавирус";
+"moreInformation.cell.infected.subtitle" = "Отиди там, ако си получил резултата от теста ти за коронавирус";
 
 "moreInformation.info.title" = "Имай под ръка своя BSN номер. Ще го намериш в паспорта или личната си карта.";
 
