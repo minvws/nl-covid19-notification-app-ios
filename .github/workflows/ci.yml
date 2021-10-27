@@ -19,7 +19,7 @@ jobs:
           xcodebuild clean test -version \
           -project EN.xcodeproj \
           -scheme ENCore \
-          -destination "platform=iOS Simulator,OS=15,name=iPhone 12" \
+          -destination "platform=iOS Simulator,OS=15,name=iPhone 13" \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           ONLY_ACTIVE_ARCH=NO
