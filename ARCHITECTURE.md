@@ -186,7 +186,7 @@ final class MainViewController: ViewController, MainViewControllable {
 
 ## Snapshot tests
 
-[Snapshot Tests](https://github.com/pointfreeco/swift-snapshot-testing) are used to protect against unwanted UI changes. Ensure you commit Snapshot tests for any UI related implementations/changes. These should be run on the iPhone 12 simulator with iOS 14.4.
+[Snapshot Tests](https://github.com/pointfreeco/swift-snapshot-testing) are used to protect against unwanted UI changes. Ensure you commit Snapshot tests for any UI related implementations/changes. These should be run on the iPhone 13 simulator with iOS 15.
 
 ## Questions / Feedback / Remarks
 
