@@ -110,7 +110,7 @@ This increases the chance that we might be able to use your contribution (or it 
 
 To build and develop the app you need:
 
-- Xcode 12.5.1
+- Xcode 13
 - Xcode Command Line tools (Specifically "Make").
 - [Homebrew](https://brew.sh/)
 
