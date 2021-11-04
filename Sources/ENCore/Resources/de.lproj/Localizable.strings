@@ -219,6 +219,7 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder ist momentan nicht aktiv. Kontrollieren Sie die Einstellungen.";
+"notification.en.statusNotActive.title" = "Technisches Problem";
 
 "notification.upload.failed.header" = "Rufen Sie den GGD an.";
 "moreInformation.about.helpdesk.title" = "Eine andere Frage über die App?";
@@ -320,6 +321,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "notification.upload.failed.notification" = "Es ist nicht gelungen, anderen eine Nachricht zu schicken. Rufen Sie deshalb den GGD an. Lesen Sie mehr in der App.";
 "notification.upload.failed.title" = "Es ist nicht gelungen, anderen eine Nachricht zu schicken.";
 "notification.upload.failed.content" = "Wir haben versucht, die Nachricht zu schicken. Aber das ist fehlgeschlagen. Rufen Sie den GGD an, um die Nachricht erneut zu schicken. Es ist sehr wichtig, dass Sie das schnell tun. Sonst können sich noch mehr Menschen anstecken.";
+"notification.updateApp.title" = "Die App muss aktualisiert werden.";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Soll diese Nachricht wirklich gelöscht werden?";
@@ -336,6 +338,8 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.appState.inactive.title" = "Die App ist nicht aktiv.";
 "status.appState.inactive.description" = "CoronaMelder funktioniert nur, wenn die erforderlichen Einstellungen aktiviert sind.";
 "status.appState.inactive.notification" = "Die App konnte in den vergangenen 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde.";
+"status.appState.inactive.notification.title" = "Technisches Problem";
+
 "status.appState.inactive.no_recent_updates.description" = "Die App konnte in den letzten 24 Stunden nicht überprüfen, ob Sie Personen begegnet sind, bei denen später Corona festgestellt wurde. Stellen Sie sicher, dass WLAN bzw. mobile Daten aktiviert sind. Versuchen Sie es dann erneut.";
 "status.appState.partlyinactive.title" = "Die App ist teilweise aktiviert.";
 "status.appState.partlyinactive.bluetooth.description" = "Bluetooth ist deaktiviert. Die App registriert deshalb <b>keine</b> neuen Begegnungen. Die App <b>kontrolliert aber noch</b>, ob bei den Personen, denen Sie früher begegnet sind, Corona festgestellt wurde.";
@@ -562,6 +566,8 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "enableSettings.localNotifications.step3" = "Aktivieren Sie <b>Benachrichtigung zulassen</b>.";
 "enableSettings.localNotifications.step3.action.title" = "Benachrichtigung zulassen";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Möglicher Kontakt mit dem Coronavirus";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Sie waren %@ in der Nähe einer Person mit Corona. Lesen Sie mehr in der App.";
 

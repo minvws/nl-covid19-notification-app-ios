@@ -222,6 +222,7 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder est actuellement désactivée. Veuillez contrôler vos paramètres.";
+"notification.en.statusNotActive.title" = "Problème technique";
 
 "notification.upload.failed.header" = "Appelez le GGD";
 "moreInformation.about.helpdesk.title" = "Vous avez d'autres questions sur l'application ?";
@@ -321,6 +322,7 @@
 "notification.upload.failed.notification" = "Impossible d'envoyer une notification aux autres. Veuillez appeler le GGD. En lire plus dans l'application.";
 "notification.upload.failed.title" = "Impossible d'envoyer une notification aux autres";
 "notification.upload.failed.content" = "L'envoi de la notification a échoué. Veuillez appeler le GGD pour réessayer. Il est très important que vous le fassiez rapidement au risque de contaminer d'autres personnes.";
+"notification.updateApp.title" = "L'application a besoin d’être mise à jour";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Êtes-vous sûr(e) de vouloir supprimer cette notification ?";
@@ -337,6 +339,8 @@
 "status.appState.inactive.title" = "L'application n'est pas activée";
 "status.appState.inactive.description" = "CoronaMelder ne fonctionne que si les paramètres nécessaires ont été activés.";
 "status.appState.inactive.notification" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19 par la suite.";
+"status.appState.inactive.notification.title" = "Problème technique";
+
 "status.appState.inactive.no_recent_updates.description" = "L'application n'a pas pu vérifier pendant 24 heures si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19. Contrôlez si votre Wi-Fi ou votre réseau mobile est activé et réessayez.";
 "status.appState.partlyinactive.title" = "L'application est partiellement activée";
 "status.appState.partlyinactive.bluetooth.description" = "Votre Bluetooth est désactivé. L'application n'enregistre donc <b>pas</b> les nouvelles rencontres. L'application contrôle toutefois <b>bien</b> si les personnes que vous avez rencontrées plus tôt s'avèrent avoir le Covid-19.";
@@ -563,6 +567,8 @@
 "enableSettings.localNotifications.step3" = "Activez <b>Autoriser les notifications</b>";
 "enableSettings.localNotifications.step3.action.title" = "Autorisez les notifications";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Exposition possible au Covid-19";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Vous avez été %@ proche de quelqu'un qui a le Covid-19. Lisez la suite dans l'application.";
 

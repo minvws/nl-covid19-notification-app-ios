@@ -219,6 +219,7 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "Aplikacja CoronaMelder nie jest obecnie aktywna. Sprawdź swoje ustawienia.";
+"notification.en.statusNotActive.title" = "Problem techniczny";
 
 "notification.upload.failed.header" = "Zadzwoń do GGD";
 "moreInformation.about.helpdesk.title" = "Masz inne pytanie dotyczące aplikacji?";
@@ -318,6 +319,7 @@
 "notification.upload.failed.notification" = "Nie udało się wysłać powiadomienia innym. Dlatego zadzwoń do GGD. Przeczytaj więcej w aplikacji.";
 "notification.upload.failed.title" = "Nie udało się wysłać powiadomienia innym";
 "notification.upload.failed.content" = "Próbowaliśmy wysłać powiadomienie, ale nie udało się. Zadzwoń do GGD, aby spróbować ponownie. Istotne jest, abyś zrobił to szybko. W przeciwnym razie, więcej osób może się zarazić.";
+"notification.updateApp.title" = "Aplikacja wymaga aktualizacji";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Jesteś pewien, że chcesz usunąć to powiadomienie?";
@@ -334,6 +336,8 @@
 "status.appState.inactive.title" = "Aplikacja nie jest aktywna";
 "status.appState.inactive.description" = "CoronaMelder działa wyłącznie, gdy włączone są niezbędne ustawienia";
 "status.appState.inactive.notification" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś.";
+"status.appState.inactive.notification.title" = "Problem techniczny";
+
 "status.appState.inactive.no_recent_updates.description" = "Aplikacja w ciągu 24 godzin nie mogła skontrolować, czy wykryto koronawirusa u osób, które spotkałeś. Upewnij się, że wifi lub dane komórkowe są włączone i spróbuj ponownie.";
 "status.appState.partlyinactive.title" = "Aplikacja jest częściowo aktywna";
 "status.appState.partlyinactive.bluetooth.description" = "Bluetooth jest wyłączony. W związku z tym aplikacja <b>nie</b> monitoruje nowych spotkań. Aplikacja <b>wciąż</b> jeszcze kontroluje, czy wykryto koronawirusa u osób, które spotkałeś wcześniej.";
@@ -560,6 +564,8 @@
 "enableSettings.localNotifications.step3" = "Włącz <b>Zezwalaj na przesyłanie wiadomości</b>";
 "enableSettings.localNotifications.step3.action.title" = "Zezwalaj na przesyłanie wiadomości";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Możliwy kontakt z koronawirusem";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "%@ znajdowałeś się w pobliżu osoby z koronawirusem. Przeczytaj więcej w aplikacji.";
 
