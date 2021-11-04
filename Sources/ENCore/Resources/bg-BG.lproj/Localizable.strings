@@ -219,6 +219,7 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "В момента CoronaMelder не е включен. Провери настройките си.";
+"notification.en.statusNotActive.title" = "Технически проблем";
 
 "notification.upload.failed.header" = "Обади се на Общинската здравна инспекция (GGD).";
 "moreInformation.about.helpdesk.title" = "Друг въпрос относно приложението?";
@@ -318,6 +319,7 @@
 "notification.upload.failed.notification" = "Изпращането на известие до други лица е неуспешно. Обади се на Общинската здравна инспекция (GGD). Прочети повече в приложението.";
 "notification.upload.failed.title" = "Изпращането на известие до други лица е неуспешно";
 "notification.upload.failed.content" = "Опитахме да изпратим известието, но безуспешно. Обади се на GGD, за да направиш това отново. Много е важно да действаш бързо. В противен случай могат да бъдат заразени повече хора.";
+"notification.updateApp.title" = "Приложението има нужда от актуализиране";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Сигурен ли си, че искаш да премахнеш това известие?";
@@ -334,6 +336,8 @@
 "status.appState.inactive.title" = "Приложението не е активно";
 "status.appState.inactive.description" = "CoronaMelder работи само ако са включени необходимите настройки.";
 "status.appState.inactive.notification" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. ";
+"status.appState.inactive.notification.title" = "Технически проблем";
+
 "status.appState.inactive.no_recent_updates.description" = "Приложението не можа 24 часа да провери дали при хората, с които си се срещал, по-късно е установен коронавирус. Провери дали са включени wifi или мобилните ти данни и опитай отново.";
 "status.appState.partlyinactive.title" = "Приложението е частично активно";
 "status.appState.partlyinactive.bluetooth.description" = "Твоят bluetooth е изключен. Така приложението <b>не</b> следи за нови срещи. То <b>обаче</b> проверява дали хората, които си срещнал по-рано, са се оказали заразени с коронавирус.";
@@ -560,6 +564,8 @@
 "enableSettings.localNotifications.step3" = "Включи <b>Разреши известяването</b>";
 "enableSettings.localNotifications.step3.action.title" = "Разреши известяването";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Възможен контакт с коронавируса";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Намирал си се %@ близо до някого с коронавирус. Прочети повече в приложението.";
 

@@ -219,6 +219,7 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder nu este activată în acest moment. Controlați configurările.";
+"notification.en.statusNotActive.title" = "Problemă tehnică";
 
 "notification.upload.failed.header" = "Sunați la GGD (Serviciul de Sănătate Municipal)";
 "moreInformation.about.helpdesk.title" = "Altă întrebare despre aplicație?";
@@ -319,6 +320,7 @@
 "notification.upload.failed.notification" = "Nu a fost posibil să trimiteți notificări altora. De aceea trebuie să sunați la GGD (Serviciul de Sănătate Municipal). Citiți mai multe informații în aplicație.";
 "notification.upload.failed.title" = "Nu a fost posibil să trimiteți altora o notificare.";
 "notification.upload.failed.content" = "Am încercat să trimitem notificarea, dar acest lucru nu a fost posibil. Sunați la GGD (Serviciul de Sănătate Municipal) pentru a face acest lucru din nou. Este foarte important să faceți acest lucru repede. În caz contrar, mai multe persoane pot fi infectate.";
+"notification.updateApp.title" = "Aplicația trebuie actualizată";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Sunteți sigur că doriți să ștergeți această notificare?";
@@ -335,6 +337,8 @@
 "status.appState.inactive.title" = "Aplicația nu este activă";
 "status.appState.inactive.description" = "CoronaMelder funcționează doar dacă configurările necesare sunt activate.";
 "status.appState.inactive.notification" = "Aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedid a fi infectate cu coronavirus.";
+"status.appState.inactive.notification.title" = "Problemă tehnică";
+
 "status.appState.inactive.no_recent_updates.description" = "În ultimele 24 de ore, aplicația nu a putut să verifice dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. Verificați dacă  WiFi sau datele celulare sunt activate și încercați din nou.";
 "status.appState.partlyinactive.title" = "Aplicația este parțial activă";
 "status.appState.partlyinactive.bluetooth.description" = "Semnalul Bluetooth este dezactivat. Din această cauză aplicația <b>nu</b> ține evidența noilor întâlniri. Aplicația controlează însă <b>încă</b> dacă persoanele  întâlnite mai devreme se dovedesc a fi infectate cu coronavirus.";
@@ -561,6 +565,8 @@
 "enableSettings.localNotifications.step3" = "Activați opțiunea <b>Permitere notificări</b>";
 "enableSettings.localNotifications.step3.action.title" = "Permiteți notificări";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Posibil contact cu coronavirus";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Acum  %@ ați fost în apropierea cuiva infectat cu coronavirus. Citiți mai multe detalii în aplicație.";
 
