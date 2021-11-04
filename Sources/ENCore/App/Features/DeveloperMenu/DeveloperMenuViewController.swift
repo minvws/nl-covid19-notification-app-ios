@@ -254,7 +254,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               action: { [weak self] in self?.changeNetworkConfiguration() })
             ]),
             ("Notifications", [
-                DeveloperItem(title: "Schedule Message Flow",
+                DeveloperItem(title: "Schedule Exposure Notification",
                               subtitle: "Schedules a push notification. to be sent in 5 seconds.",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue) }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
