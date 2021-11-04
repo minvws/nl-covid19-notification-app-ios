@@ -319,6 +319,7 @@ extension String {
     static var messageButtonTitle: String { return Localization.string(for: "message.button.title") }
 
     static var notificationEnStatusNotActive: String { Localization.string(for: "notification.en.statusNotActive") }
+    static var notificationEnStatusNotActiveTitle: String { Localization.string(for: "notification.en.statusNotActive.title") }
 
     static var notificationUploadFailedNotification: String { Localization.string(for: "notification.upload.failed.notification") }
     static var notificationUploadFailedHeader: String { Localization.string(for: "notification.upload.failed.header") }
@@ -327,6 +328,8 @@ extension String {
 
     static var notificationAppUnpausedTitle: String { Localization.string(for: "notification.app.unpaused.title") }
     static var notificationManualUnpauseDescription: String { Localization.string(for: "notification.app.unpaused.manualunpause.description") }
+
+    static var notificationUpdateAppTitle: String { return Localization.string(for: "notification.updateApp.title") }
 
     // MARK: - Main
 
@@ -350,6 +353,7 @@ extension String {
     static var statusAppStateInactiveTitle: String { return Localization.string(for: "status.appState.inactive.title") }
     static var statusAppStateInactiveDescription: String { return Localization.string(for: "status.appState.inactive.description") }
     static var statusAppStateInactiveNotification: String { return Localization.string(for: "status.appState.inactive.notification") }
+    static var statusAppStateInactiveNotificationTitle: String { return Localization.string(for: "status.appState.inactive.notification.title") }
     static var statusAppStateInactiveNoRecentUpdatesDescription: String { return Localization.string(for: "status.appState.inactive.no_recent_updates.description") }
     static var statusAppStatePartlyInactiveTitle: String { return Localization.string(for: "status.appState.partlyinactive.title") }
     static var statusAppStatePartlyInactiveBluetoothDescription: String { return Localization.string(for: "status.appState.partlyinactive.bluetooth.description") }
@@ -667,6 +671,7 @@ extension String {
 
     // MARK: - Exposure Notification Received - User Explanation
 
+    static var exposureNotificationUserExplanationTitle: String { return Localization.string(for: "exposure.notification.userExplanation.title") }
     static func exposureNotificationUserExplanation(_ one: String) -> String { return Localization.string(for: "exposure.notification.userExplanation", [one]) }
 
     static func exposureNotificationReminder(_ one: String) -> String { return Localization.string(for: "exposure.notification.reminder", [one]) }

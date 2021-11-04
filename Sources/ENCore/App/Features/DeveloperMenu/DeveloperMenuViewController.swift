@@ -40,13 +40,15 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
          mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming,
          exposureController: ExposureControlling,
          storageController: StorageControlling,
-         featureFlagController: FeatureFlagControlling) {
+         featureFlagController: FeatureFlagControlling,
+         userNotificationController: UserNotificationControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
         self.exposureController = exposureController
         self.storageController = storageController
         self.featureFlagController = featureFlagController
+        self.userNotificationController = userNotificationController
 
         super.init(theme: theme)
 
@@ -251,13 +253,59 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
                               action: { [weak self] in self?.changeNetworkConfiguration() })
             ]),
-            ("Push Notifications", [
+            ("Notifications", [
                 DeveloperItem(title: "Schedule Message Flow",
-                              subtitle: "Schedules a push notification to be sent in 5 seconds.",
+                              subtitle: "Schedules a push notification. to be sent in 5 seconds.",
                               action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.exposure.rawValue) }),
                 DeveloperItem(title: "Schedule Upload Failed Flow",
-                              subtitle: "Schedules a push notification to be sent in 5 seconds",
-                              action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.uploadFailed.rawValue) })
+                              subtitle: "Schedules a push notification. to be sent in 5 seconds",
+                              action: { [weak self] in self?.wantsScheduleNotification(identifier: PushNotificationIdentifier.uploadFailed.rawValue) }),
+                DeveloperItem(title: "Schedule Pause Expiration Notification",
+                              subtitle: "Schedules a pause expiration notification. to be sent in 5 seconds",
+                              action: { [weak self] in self?.userNotificationController.schedulePauseExpirationNotification(pauseEndDate: Date().addingTimeInterval(5)) }),
+                DeveloperItem(title: "Schedule Not Active Notification",
+                              subtitle: "Schedules a notification informing the user the app is not active. to be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.displayNotActiveNotification(completion: { _ in })
+                                  }
+                              }),
+                DeveloperItem(title: "Schedule App Update Required Notification",
+                              subtitle: "Schedules a notification informing the user the app should be updated. to be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.displayAppUpdateRequiredNotification(withUpdateMessage: .updateAppContent, completion: { _ in })
+                                  }
+                              }),
+                DeveloperItem(title: "Schedule Exposure Notification",
+                              subtitle: "Schedules a notification informing the user of an exposure. to be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.displayExposureNotification(daysSinceLastExposure: 3, completion: { _ in })
+                                  }
+                              }),
+                DeveloperItem(title: "Schedule Exposure Reminder Notification",
+                              subtitle: "Schedules a notification reminding the user of an exposure. to be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.displayExposureReminderNotification(daysSinceLastExposure: 3, completion: { _ in })
+                                  }
+                              }),
+                DeveloperItem(title: "Schedule 24H No Activity Notification",
+                              subtitle: "Schedules a notification informing the user of a potentially broken app. to be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.display24HoursNoActivityNotification(completion: { _ in })
+                                  }
+                              }),
+                DeveloperItem(title: "Schedule Upload Failed Notification",
+                              subtitle: "Schedules a notification informing the user the GGD Key upload failed. Only works between 08:00 - 20:00. To be sent in 5 seconds",
+                              action: {
+                                  DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+                                      self?.userNotificationController.display24HoursNoActivityNotification(completion: { _ in })
+                                  }
+                              })
+
             ]),
             ("Logging", [
                 DeveloperItem(title: "Log Files",
@@ -826,6 +874,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private let exposureController: ExposureControlling
     private let storageController: StorageControlling
     private let featureFlagController: FeatureFlagControlling
+    private let userNotificationController: UserNotificationControlling
     private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {
