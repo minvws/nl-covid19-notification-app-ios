@@ -186,7 +186,7 @@ private final class TechnicalInformationView: View {
     private lazy var hiddenButtonHeaderView: View = {
         let view = View(theme: theme)
         view.isAccessibilityElement = true
-        view.accessibilityLabel = .aboutWebsiteTitle
+        view.accessibilityLabel = .moreInformationAboutTheApp
         view.accessibilityTraits = .header
         return view
     }()

@@ -227,6 +227,8 @@
 "moreInformation.about.website.title" = "Uygulama hakkında daha fazla bilgi";
 "moreInformation.about.website.subtitle" = "Coronamelder.nl adresine gidin";
 
+"moreInformation.more_about_the_app" = "Uygulama hakkında daha fazla bilgi";
+
 /* MARK: - Consent */
 "skipStep" = "Atla";
 

@@ -230,6 +230,8 @@
 "moreInformation.about.website.title" = "En savoir plus sur l'application";
 "moreInformation.about.website.subtitle" = "Consultez coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "En savoir plus sur l'application";
+
 /* MARK: - Consent */
 "skipStep" = "Ignorer";
 

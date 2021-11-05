@@ -229,6 +229,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.about.website.title" = "More about the app";
 "moreInformation.about.website.subtitle" = "Go to coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "More about the app";
+
 /* MARK: - Consent */
 "skipStep" = "Skip";
 
