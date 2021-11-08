@@ -302,7 +302,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               subtitle: "Schedules a notification informing the user the GGD Key upload failed. Only works between 08:00 - 20:00. To be sent in 5 seconds",
                               action: {
                                   DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-                                      self?.userNotificationController.display24HoursNoActivityNotification(completion: { _ in })
+                                      self?.userNotificationController.displayUploadFailedNotification()
                                   }
                               })
 
