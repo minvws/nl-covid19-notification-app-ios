@@ -227,6 +227,8 @@
 "moreInformation.about.website.title" = "Mai multe informații despre aplicație";
 "moreInformation.about.website.subtitle" = "Accesați coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "Mai multe informații despre aplicație";
+
 /* MARK: - Consent */
 "skipStep" = "Omiteți";
 

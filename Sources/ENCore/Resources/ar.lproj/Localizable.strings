@@ -228,6 +228,8 @@
 "moreInformation.about.website.title" = "للمزيد من المعلومات حول التطبيق";
 "moreInformation.about.website.subtitle" = "راجع موقع Coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "للمزيد من المعلومات حول التطبيق";
+
 /* MARK: - Consent */
 "skipStep" = "تخطى";
 

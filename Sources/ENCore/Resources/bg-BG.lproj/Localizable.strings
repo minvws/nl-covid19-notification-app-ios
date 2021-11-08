@@ -227,6 +227,8 @@
 "moreInformation.about.website.title" = "Повече за приложението";
 "moreInformation.about.website.subtitle" = "Отиди на coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "Повече за приложението";
+
 /* MARK: - Consent */
 "skipStep" = "Пропусни";
 

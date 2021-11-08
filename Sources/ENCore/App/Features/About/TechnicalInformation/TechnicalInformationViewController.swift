@@ -89,6 +89,7 @@ private final class TechnicalInformationView: View {
         tableViewWrapperView.addSubview(tableView)
         addSubview(scrollableStackView)
 
+        buttonsWrapperView.addSubview(hiddenButtonHeaderView)
         buttonsWrapperView.addSubview(appInfoButton)
         buttonsWrapperView.addSubview(githubCardButton)
 
@@ -112,8 +113,14 @@ private final class TechnicalInformationView: View {
             maker.bottom.equalToSuperview()
         }
 
+        hiddenButtonHeaderView.snp.makeConstraints { maker in
+            maker.leading.top.equalToSuperview()
+            maker.width.height.equalTo(1)
+        }
+
         appInfoButton.snp.makeConstraints { maker in
-            maker.top.leading.trailing.equalToSuperview().inset(16)
+            maker.top.equalTo(hiddenButtonHeaderView.snp.bottom)
+            maker.leading.trailing.equalToSuperview().inset(16)
         }
 
         githubCardButton.snp.makeConstraints { maker in
@@ -175,6 +182,14 @@ private final class TechnicalInformationView: View {
                                                      image: UIImage.technicalInformationStep5,
                                                      title: String.helpTechnicalInformationStep5Title.attributed(),
                                                      message: String.helpTechnicalInformationStep5Description.attributed())
+
+    private lazy var hiddenButtonHeaderView: View = {
+        let view = View(theme: theme)
+        view.isAccessibilityElement = true
+        view.accessibilityLabel = .moreInformationAboutTheApp
+        view.accessibilityTraits = .header
+        return view
+    }()
 
     private lazy var buttonsWrapperView = View(theme: theme)
     private lazy var tableViewWrapperView = View(theme: theme)

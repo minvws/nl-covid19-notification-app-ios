@@ -228,6 +228,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.about.website.title" = "Más información sobre la app";
 "moreInformation.about.website.subtitle" = "Visita coronamelder.nl";
 
+"moreInformation.more_about_the_app" = "Más información sobre la app";
+
 /* MARK: - Consent */
 "skipStep" = "Omitir";
 

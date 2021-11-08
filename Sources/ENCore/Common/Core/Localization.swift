@@ -266,6 +266,8 @@ extension String {
     static var helpOtherCountriesTitle: String { return Localization.string(for: "help.apps_other_countries.title") }
     static var helpOtherCountriesDescription: String { return Localization.string(for: "help.apps_other_countries.description") }
 
+    static var moreInformationAboutTheApp: String { return Localization.string(for: "moreInformation.more_about_the_app") }
+
     // MARK: - About - What the app do
 
     static var helpWhatAppDoesTitle: String { return Localization.string(for: "help.what_does_the_app_do.title") }
