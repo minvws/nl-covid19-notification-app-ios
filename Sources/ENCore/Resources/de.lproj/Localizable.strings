@@ -322,6 +322,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Es ist nicht gelungen, anderen eine Nachricht zu schicken. Rufen Sie deshalb den GGD an. Lesen Sie mehr in der App.";
 "notification.upload.failed.title" = "Es ist nicht gelungen, anderen eine Nachricht zu schicken.";
+"notification.upload.failed.notification.title" = "Schicken von Nachrichten fehlgeschlagen";
 "notification.upload.failed.content" = "Wir haben versucht, die Nachricht zu schicken. Aber das ist fehlgeschlagen. Rufen Sie den GGD an, um die Nachricht erneut zu schicken. Es ist sehr wichtig, dass Sie das schnell tun. Sonst können sich noch mehr Menschen anstecken.";
 "notification.updateApp.title" = "Die App muss aktualisiert werden.";
 

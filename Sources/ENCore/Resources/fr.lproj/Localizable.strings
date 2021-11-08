@@ -323,6 +323,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Impossible d'envoyer une notification aux autres. Veuillez appeler le GGD. En lire plus dans l'application.";
 "notification.upload.failed.title" = "Impossible d'envoyer une notification aux autres";
+"notification.upload.failed.notification.title" = "L'envoi de la notification a échoué";
 "notification.upload.failed.content" = "L'envoi de la notification a échoué. Veuillez appeler le GGD pour réessayer. Il est très important que vous le fassiez rapidement au risque de contaminer d'autres personnes.";
 "notification.updateApp.title" = "L'application a besoin d’être mise à jour";
 

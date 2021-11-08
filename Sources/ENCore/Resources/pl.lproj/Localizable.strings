@@ -320,6 +320,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Nie udało się wysłać powiadomienia innym. Dlatego zadzwoń do GGD. Przeczytaj więcej w aplikacji.";
 "notification.upload.failed.title" = "Nie udało się wysłać powiadomienia innym";
+"notification.upload.failed.notification.title" = "Nie udało się wysłać powiadomienia";
 "notification.upload.failed.content" = "Próbowaliśmy wysłać powiadomienie, ale nie udało się. Zadzwoń do GGD, aby spróbować ponownie. Istotne jest, abyś zrobił to szybko. W przeciwnym razie, więcej osób może się zarazić.";
 "notification.updateApp.title" = "Aplikacja wymaga aktualizacji";
 

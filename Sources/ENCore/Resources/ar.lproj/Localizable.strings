@@ -325,6 +325,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "لم تنجح في إرسال الإشعار إلى الآخرين. اتصل إذًا بالـ GGD. اقرأ المزيد في التطبيق.";
 "notification.upload.failed.title" = "لم ننجح في إرسال إشعار إلى الآخرين.";
+"notification.upload.failed.notification.title" = "لم تنجح في إرسال الإشعار";
 "notification.upload.failed.content" = "حاولنا إرسالك إشعارًا, إلا أننا لم ننجح في ذلك. اتصل بالـ GGD لإعادة المحاولة. من المهم جدًا أن تقوم بذلك بسرعة وإلا فقد يصاب عدد أكبر من الأشخاص بالعدوى.";
 "notification.updateApp.title" = "التطبيق بحاجة إلى التحديث";
 

@@ -321,6 +321,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
+"notification.upload.failed.notification.title" = "Melding versturen is mislukt";
 "notification.upload.failed.content" = "We hebben geprobeerd de melding te versturen, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
 "notification.updateApp.title" = "De app heeft een update nodig";
 

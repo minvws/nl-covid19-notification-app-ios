@@ -323,6 +323,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "The notification failed to send to others. Call the GGD. Read more in the app.";
 "notification.upload.failed.title" = "The notification failed to send to others";
+"notification.upload.failed.notification.title" = "The notification failed to send";
 "notification.upload.failed.content" = "We tried sending the notification, but it failed. Call the GGD to try again. Please do this as quickly as possible so no one else gets infected.";
 "notification.updateApp.title" = "The app needs to be updated";
 

@@ -326,6 +326,7 @@ extension String {
     static var notificationUploadFailedNotification: String { Localization.string(for: "notification.upload.failed.notification") }
     static var notificationUploadFailedHeader: String { Localization.string(for: "notification.upload.failed.header") }
     static var notificationUploadFailedTitle: String { Localization.string(for: "notification.upload.failed.title") }
+    static var notificationUploadFailedNotificationTitle: String { Localization.string(for: "notification.upload.failed.notification.title") }
     static var notificationUploadFailedContent: String { Localization.string(for: "notification.upload.failed.content") }
 
     static var notificationAppUnpausedTitle: String { Localization.string(for: "notification.app.unpaused.title") }

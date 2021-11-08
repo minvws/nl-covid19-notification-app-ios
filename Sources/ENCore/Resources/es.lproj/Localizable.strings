@@ -321,6 +321,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "No se ha podido enviar la notificación a otras personas. Llama al GGD (servicio municipal de salud). Lee más al respecto en la app.";
 "notification.upload.failed.title" = "No se pudo enviar una notificación a otras personas";
+"notification.upload.failed.notification.title" = "Falló el envío de la notificación";
 "notification.upload.failed.content" = "Hemos intentado enviar la notificación sin conseguirlo. Llama al GGD (servicio municipal de salud) para volver a intentarlo. Es importante hacerlo lo antes posible, ya que mientras tanto podrían contagiarse más personas.";
 "notification.updateApp.title" = "La app necesita actualizarse";
 
