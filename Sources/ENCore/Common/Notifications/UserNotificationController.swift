@@ -193,7 +193,10 @@ class UserNotificationController: UserNotificationControlling, Logging {
             trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         }
 
-        addNotification(body: .notificationUploadFailedNotification, identifier: .uploadFailed, trigger: trigger)
+        addNotification(title: .notificationUploadFailedNotificationTitle,
+                        body: .notificationUploadFailedNotification,
+                        identifier: .uploadFailed,
+                        trigger: trigger)
     }
 
     // MARK: - Private

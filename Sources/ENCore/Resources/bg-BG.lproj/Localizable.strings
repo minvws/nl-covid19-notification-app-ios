@@ -320,6 +320,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Изпращането на известие до други лица е неуспешно. Обади се на Общинската здравна инспекция (GGD). Прочети повече в приложението.";
 "notification.upload.failed.title" = "Изпращането на известие до други лица е неуспешно";
+"notification.upload.failed.notification.title" = "Изпращането на известие е неуспешно";
 "notification.upload.failed.content" = "Опитахме да изпратим известието, но безуспешно. Обади се на GGD, за да направиш това отново. Много е важно да действаш бързо. В противен случай могат да бъдат заразени повече хора.";
 "notification.updateApp.title" = "Приложението има нужда от актуализиране";
 

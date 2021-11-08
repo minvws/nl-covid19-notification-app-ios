@@ -321,6 +321,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Başkalarına bildirim göndermek mümkün olmadı. GGD'yi arayın. Daha fazlasını uygulamada okuyun.";
 "notification.upload.failed.title" = "Başkalarına bildirim göndermek mümkün olmadı";
+"notification.upload.failed.notification.title" = "Bildirim gönderilemedi";
 "notification.upload.failed.content" = "Bildirim göndermeye çalıştık, ancak bu başarısız oldu. Bunu tekrar yapmak için GGD'yi arayın. Bunu bir an evvel yapmanız çok önemlidir. Aksi takdirde, daha fazla insan enfekte olabilir.";
 "notification.updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";
 

@@ -321,6 +321,7 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Nu a fost posibil să trimiteți notificări altora. De aceea trebuie să sunați la GGD (Serviciul de Sănătate Municipal). Citiți mai multe informații în aplicație.";
 "notification.upload.failed.title" = "Nu a fost posibil să trimiteți altora o notificare.";
+"notification.upload.failed.notification.title" = "Trimiterea notificării eșuată";
 "notification.upload.failed.content" = "Am încercat să trimitem notificarea, dar acest lucru nu a fost posibil. Sunați la GGD (Serviciul de Sănătate Municipal) pentru a face acest lucru din nou. Este foarte important să faceți acest lucru repede. În caz contrar, mai multe persoane pot fi infectate.";
 "notification.updateApp.title" = "Aplicația trebuie actualizată";
 

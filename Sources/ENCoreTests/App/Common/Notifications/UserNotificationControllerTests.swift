@@ -292,6 +292,8 @@ class UserNotificationControllerTests: TestCase {
 
         // Assert
         XCTAssertNil(mockUserNotificationCenter.addArgValues.first?.trigger)
+        XCTAssertEqual(mockUserNotificationCenter.addArgValues.first?.content.title, "The notification failed to send")
+        XCTAssertEqual(mockUserNotificationCenter.addArgValues.first?.content.body, "The notification failed to send to others. Call the GGD. Read more in the app.")
     }
 
     func test_displayUploadFailedNotification_shouldScheduleNotificationDuringGGDClosingHours() throws {
