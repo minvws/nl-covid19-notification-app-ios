@@ -36,7 +36,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
         let url = configuration.manifestUrl
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
     }
@@ -49,7 +49,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
         let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
     }
@@ -60,7 +60,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
         let url = configuration.appConfigUrl(identifier: appConfig)
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
     }
@@ -71,7 +71,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
         let url = configuration.riskCalculationParametersUrl(identifier: identifier)
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
     }
@@ -84,7 +84,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
         let url = configuration.exposureKeySetUrl(identifier: identifier)
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         download(request: urlRequest) { result in
             switch result {
@@ -195,13 +195,14 @@ final class NetworkManager: NetworkManaging, Logging {
     private func constructRequest(url: URL?,
                                   method: HTTPMethod = .GET,
                                   body: Encodable? = nil,
-                                  headers: [HTTPHeaderKey: String] = [:]) -> Result<URLRequest, NetworkError> {
+                                  headers: [HTTPHeaderKey: String] = [:],
+                                  cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy) -> Result<URLRequest, NetworkError> {
         guard let url = url else {
             return .failure(.invalidRequest)
         }
 
         var request = URLRequest(url: url,
-                                 cachePolicy: .useProtocolCachePolicy,
+                                 cachePolicy: cachePolicy,
                                  timeoutInterval: 10)
         request.httpMethod = method.rawValue
 
