@@ -38,7 +38,7 @@ final class ReceivedNotificationViewControllerTests: TestCase {
     // MARK: - Tests
 
     func testSnapshotReceivedNotificationViewController() {
-//        assertSnapshot(matching: snapshotWrapper(viewController.view, width: 320, height: 480), as: .recursiveDescription)
+        assertSnapshot(matching: snapshotWrapper(viewController.view, width: 320, height: 480), as: .recursiveDescription)
     }
 
     func testPresentationControllerDidDismissCallsListener() {
