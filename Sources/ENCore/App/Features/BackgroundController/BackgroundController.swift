@@ -39,7 +39,6 @@ struct BackgroundTaskConfiguration {
 /// When the breakpoint is hit put this into the console `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"nl.rijksoverheid.en.exposure-notification"]`
 /// and resume the application. The background task will be run.
 final class BackgroundController: BackgroundControlling, Logging {
-
     // MARK: - Init
 
     init(exposureController: ExposureControlling,
@@ -67,7 +66,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - BackgroundControlling
 
     func scheduleTasks() {
-
         let scheduleTasks: () -> () = {
             self.exposureController
                 .isAppDeactivated()
@@ -84,7 +82,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                     self.logError("Background: ExposureController activated state result: \(error)")
                     self.logError("Background: Scheduling refresh sequence")
                     self.scheduleRefresh()
-                    })
+                })
                 .disposed(by: self.disposeBag)
         }
 
@@ -93,7 +91,6 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     @available(iOS 13, *)
     func handle(task: BackgroundTask) {
-
         guard task.isBackgroundProcessingTask else {
             return logError("Background: Task is not of type `BGProcessingTask`")
         }
@@ -115,7 +112,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     // least once per day. In iOS 13 and later, registering an
     // activity handler does nothing.
     func registerActivityHandle() {
-
         logDebug("BackgroundController - registerActivityHandle() called")
 
         guard environmentController.isiOS12 else {
@@ -123,14 +119,13 @@ final class BackgroundController: BackgroundControlling, Logging {
             return
         }
 
-        self.exposureManager.setLaunchActivityHandler { [weak self] activityFlags in
+        exposureManager.setLaunchActivityHandler { [weak self] activityFlags in
 
             guard let strongSelf = self else { return }
 
             strongSelf.logDebug("BackgroundController.registerActivityHandle() setLaunchActivityHandler: \(activityFlags)")
 
             if activityFlags.contains(.periodicRun) {
-
                 strongSelf.logInfo("Periodic activity callback called (iOS 12.5)")
                 strongSelf.refresh(task: nil)
             }
@@ -168,33 +163,31 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///     Ensure only 1 decoy per day
     ///     x = the time it typically takes a slow, real user to go from app startup to the ggd code screen.
     func performDecoySequenceIfNeeded() {
-
         logDebug("performDecoySequenceIfNeeded()")
 
-        guard self.isExposureManagerActive else {
-            self.logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
+        guard isExposureManagerActive else {
+            logDebug("ExposureManager inactive - Not handling performDecoySequenceIfNeeded")
             return
         }
 
-        guard self.dataController.canProcessDecoySequence else {
-            return self.logDebug("Not running decoy `/register` Process already run today")
+        guard dataController.canProcessDecoySequence else {
+            return logDebug("Not running decoy `/register` Process already run today")
         }
 
         func execute(decoyProbability: Float) {
-
             // Extra check to see if the decoy sequence has already been performed today.
             // Because this call is called with a delay, once we reach this point the register
             // call might already have been performed somewhere else
-            guard self.dataController.canProcessDecoySequence else {
-                return self.logDebug("Not running decoy `/register` Process already run today")
+            guard dataController.canProcessDecoySequence else {
+                return logDebug("Not running decoy `/register` Process already run today")
             }
 
-            let r = self.randomNumberGenerator.randomFloat(in: configuration.decoyProbabilityRange)
+            let r = randomNumberGenerator.randomFloat(in: configuration.decoyProbabilityRange)
             guard r < decoyProbability else {
                 return logDebug("Not running decoy `/register` \(r) >= \(decoyProbability)")
             }
 
-            self.dataController.setLastDecoyProcessDate(currentDate())
+            dataController.setLastDecoyProcessDate(currentDate())
 
             exposureController.requestLabConfirmationKey { _ in
 
@@ -236,7 +229,8 @@ final class BackgroundController: BackgroundControlling, Logging {
 
             sequence = [
                 removePreviousExposureDateIfNeeded(),
-                displayPauseExpirationReminderIfNeeded()
+                displayPauseExpirationReminderIfNeeded(),
+                scheduleRemoteNotification()
             ]
 
         } else {
@@ -250,7 +244,8 @@ final class BackgroundController: BackgroundControlling, Logging {
                 sendNotificationIfAppShouldUpdate(),
                 updateTreatmentPerspective(),
                 sendExposureReminderNotificationIfNeeded(),
-                processDecoyRegisterAndStopKeys()
+                processDecoyRegisterAndStopKeys(),
+                scheduleRemoteNotification()
             ]
         }
 
@@ -278,13 +273,12 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func handleDecoyStopkeys() {
-
         guard isExposureManagerActive else {
             logDebug("ExposureManager inactive - Not handling handleDecoyStopkeys()")
             return
         }
 
-        self.logDebug("Decoy `/stopkeys` started")
+        logDebug("Decoy `/stopkeys` started")
         exposureController
             .getPadding()
             .flatMapCompletable { padding in
@@ -320,7 +314,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func activateExposureController() -> Completable {
         logDebug("BackgroundTask: Activate Exposure Controller Called")
-        return self.exposureController.activate()
+        return exposureController.activate()
             .do { error in
                 self.logError("BackgroundTask: Activate Exposure Controller Failed. Reason: \(error)")
             } onCompleted: {
@@ -366,7 +360,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func fetchAndProcessKeysets() -> Completable {
         logDebug("BackgroundTask: Fetch And Process Keysets Called")
-        return self.exposureController.updateWhenRequired()
+        return exposureController.updateWhenRequired()
             .do { error in
                 self.logError("BackgroundTask: Fetch And Process Keysets Failed. Reason: \(error)")
             } onCompleted: {
@@ -417,7 +411,7 @@ final class BackgroundController: BackgroundControlling, Logging {
 
     private func updateTreatmentPerspective() -> Completable {
         logDebug("BackgroundTask: Update Treatment Perspective Message Function Called")
-        return self.exposureController
+        return exposureController
             .updateTreatmentPerspective()
             .do { error in
                 self.logError("BackgroundTask: Update Treatment Perspective Message Failed. Reason: \(error)")
@@ -449,7 +443,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     ///    Ensure only 1 decoy per day
     ///    y = about 5 minutes (about less, e.g. 250 sec) and/or new param: iOS decoyDelayBetweenRegisterAndUpload (this param value depends on how long a prioritized task is allowed to run)
     private func processDecoyRegisterAndStopKeys() -> Completable {
-
         logDebug("Background: processDecoyRegisterAndStopKeys()")
 
         return .create { (observer) -> Disposable in
@@ -489,12 +482,11 @@ final class BackgroundController: BackgroundControlling, Logging {
                         // Note: We ignore the response
                         self.logError("Decoy `/stopkeys` complete")
                         observer(.completed)
-                        })
+                    })
                     .disposed(by: self.disposeBag)
             }
 
             func processDecoyRegister(decoyProbability: Float) {
-
                 // Extra check to see if the decoy sequence has already been performed today.
                 // Because this call is called with a delay, once we reach this point the register
                 // call might already have been performed somewhere else
@@ -540,7 +532,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     // Returns a Date with the specified hour and minute, for the next day
     // E.g. date(hour: 1, minute: 0) returns 1:00 am for the next day
     private func date(hour: Int, minute: Int, dayOffset: Int = 1) -> Date? {
-
         let calendar = Calendar.current
         guard let tomorrow = calendar.date(byAdding: .day, value: dayOffset, to: currentDate()) else {
             return nil
@@ -570,6 +561,37 @@ final class BackgroundController: BackgroundControlling, Logging {
         } catch {
             logError("Background: Could not schedule \(backgroundTaskIdentifier): \(error.localizedDescription)")
             completion?(true)
+        }
+    }
+
+    private func scheduleRemoteNotification() -> Completable {
+        logDebug("Background: scheduleRemoteNotification()")
+
+        userNotificationController.removeScheduledRemoteNotification()
+
+        return .create { (observer) -> Disposable in
+            guard let notification = self.exposureController
+                .getScheduledNotificaton() else {
+                self.logDebug("Background: No remote notification to schedule")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            guard let scheduledDate = notification.scheduledDateTimeComponents() else {
+                self.logError("Background: Could not schedule remote notification: no scheduledDateTimeComponents()")
+                observer(.completed)
+                return Disposables.create()
+            }
+
+            self.userNotificationController.scheduleRemoteNotification(title: notification.title,
+                                                                       body: notification.body,
+                                                                       date: scheduledDate,
+                                                                       targetScreen: notification.targetScreen)
+
+            self.logDebug("Background: Scheduled remote notification: `\(notification.title) - \(notification.body) at \(notification.scheduledDateTime)` ✅")
+
+            observer(.completed)
+            return Disposables.create()
         }
     }
 

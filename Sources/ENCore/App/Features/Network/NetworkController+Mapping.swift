@@ -56,6 +56,7 @@ extension AppConfig {
                                         decativated: coronaMelderDeactivated == "deactivated",
                                         appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
                                         featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
+                                        scheduledNotification: scheduledNotification?.asApplicationConfigurationNotification(),
                                         shareKeyURL: shareKeyURL)
     }
 }
@@ -63,6 +64,12 @@ extension AppConfig {
 extension AppConfig.FeatureFlag {
     func asApplicationConfigurationFeatureFlag() -> ApplicationConfiguration.FeatureFlag {
         .init(id: id, featureEnabled: featureEnabled)
+    }
+}
+
+extension AppConfig.Notification {
+    func asApplicationConfigurationNotification() -> ApplicationConfiguration.Notification? {
+        .init(scheduledDateTime: scheduledDateTime, title: title, body: body, targetScreen: targetScreen)
     }
 }
 

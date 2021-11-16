@@ -194,6 +194,10 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.getStoredAppConfigFeatureFlags()
     }
 
+    func getScheduledNotificaton() -> ApplicationConfiguration.Notification? {
+        dataController.getScheduledNotificaton()
+    }
+
     func getStoredShareKeyURL() -> String? {
         dataController.getStoredShareKeyURL()
     }

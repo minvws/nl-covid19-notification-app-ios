@@ -307,6 +307,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
+    func getScheduledNotificaton() -> ApplicationConfiguration.Notification? {
+        guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+            return nil
+        }
+        return storedAppConfig.scheduledNotification
+    }
+
     var isAppPaused: Bool {
         pauseEndDate != nil
     }

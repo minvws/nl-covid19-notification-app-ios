@@ -500,6 +500,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     () // Do nothing
                 case .pauseEnded:
                     () // Do nothing
+                case .remoteScheduled:
+                    strongSelf.routeToMain()
                 }
             })
             .disposed(by: disposeBag)

@@ -11,7 +11,6 @@ import NotificationCenter
 
 /// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true;displayAppUpdateRequiredNotification=true)
 protocol UserNotificationControlling {
-
     // Authorization and Permissions
     func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ())
     func getIsAuthorized(completionHandler: @escaping (_ isAuthorized: Bool) -> ())
@@ -22,6 +21,7 @@ protocol UserNotificationControlling {
     func removeAllPendingNotificationRequests()
     func removePendingNotificationRequests(withIdentifiers identifiers: [String])
     func removeDeliveredNotifications(withIdentifiers identifiers: [String])
+    func removeScheduledRemoteNotification()
 
     // Scheduling or displaying actual notifications
     func schedulePauseExpirationNotification(pauseEndDate: Date)
@@ -32,6 +32,7 @@ protocol UserNotificationControlling {
     func displayExposureReminderNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ())
     func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ())
     func displayUploadFailedNotification()
+    func scheduleRemoteNotification(title: String, body: String, date: DateComponents, targetScreen: String)
 }
 
 /// Internal representation mirroring UNAuthorizationStatus
@@ -55,7 +56,6 @@ enum NotificationAuthorizationStatus: Int {
 }
 
 class UserNotificationController: UserNotificationControlling, Logging {
-
     private let userNotificationCenter: UserNotificationCenter
 
     init(userNotificationCenter: UserNotificationCenter = UNUserNotificationCenter.current()) {
@@ -75,7 +75,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func requestNotificationPermission(_ completion: @escaping (() -> ())) {
-
         userNotificationCenter.getAuthorizationStatus { authorizationStatus in
             if authorizationStatus == .authorized {
                 completion()
@@ -103,7 +102,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func removeNotificationsFromNotificationsCenter() {
-
         let identifiers = [
             PushNotificationIdentifier.exposure.rawValue,
             PushNotificationIdentifier.inactive.rawValue,
@@ -115,8 +113,11 @@ class UserNotificationController: UserNotificationControlling, Logging {
         userNotificationCenter.removeDeliveredNotifications(withIdentifiers: identifiers)
     }
 
-    func schedulePauseExpirationNotification(pauseEndDate: Date) {
+    func removeScheduledRemoteNotification() {
+        removePendingNotificationRequests(withIdentifiers: [PushNotificationIdentifier.remoteScheduled.rawValue])
+    }
 
+    func schedulePauseExpirationNotification(pauseEndDate: Date) {
         // Notification is scheduled 30 seconds after the actual pause end date to make it more likely that
         // the app updates correctly if the notification comes in while the app is in the foreground
         let dateComponents = Calendar.current.dateComponents([.hour, .minute, .second], from: pauseEndDate.addingTimeInterval(.seconds(30)))
@@ -129,7 +130,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayPauseExpirationReminder(completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .notificationAppUnpausedTitle,
                         body: .notificationManualUnpauseDescription,
                         identifier: .pauseEnded,
@@ -137,7 +137,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayNotActiveNotification(completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .notificationEnStatusNotActiveTitle,
                         body: .notificationEnStatusNotActive,
                         identifier: .enStatusDisabled,
@@ -145,7 +144,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayAppUpdateRequiredNotification(withUpdateMessage body: String, completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .notificationUpdateAppTitle,
                         body: body,
                         identifier: .appUpdateRequired,
@@ -153,7 +151,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayExposureNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .exposureNotificationUserExplanationTitle,
                         body: .exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure)),
                         identifier: .exposure,
@@ -161,7 +158,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayExposureReminderNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .exposureNotificationUserExplanationTitle,
                         body: .exposureNotificationReminder(.exposureNotificationUserExplanation(.statusNotifiedDaysAgo(days: daysSinceLastExposure))),
                         identifier: .exposure,
@@ -169,7 +165,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ()) {
-
         addNotification(title: .statusAppStateInactiveNotificationTitle,
                         body: .statusAppStateInactiveNotification,
                         identifier: .inactive,
@@ -177,7 +172,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func displayUploadFailedNotification() {
-
         let date = currentDate()
         let calendar = Calendar.current
         let hour = calendar.component(.hour, from: date)
@@ -199,6 +193,18 @@ class UserNotificationController: UserNotificationControlling, Logging {
                         trigger: trigger)
     }
 
+    func scheduleRemoteNotification(title: String, body: String, date: DateComponents, targetScreen: String) {
+        removeScheduledRemoteNotification()
+
+        let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: false)
+
+        addNotification(title: title,
+                        body: body,
+                        identifier: .remoteScheduled,
+                        trigger: trigger,
+                        userInfo: ["targetScreen": targetScreen])
+    }
+
     // MARK: - Private
 
     private func addNotification(
@@ -206,9 +212,9 @@ class UserNotificationController: UserNotificationControlling, Logging {
         body: String,
         identifier: PushNotificationIdentifier,
         trigger: UNNotificationTrigger? = nil,
+        userInfo: [AnyHashable: Any] = [:],
         completion: ((_ success: Bool) -> ())? = nil
     ) {
-
         userNotificationCenter.getAuthorizationStatus { [weak self] authorizationStatus in
 
             guard let strongSelf = self else { return }
@@ -223,6 +229,7 @@ class UserNotificationController: UserNotificationControlling, Logging {
             content.title = title
             content.body = body
             content.badge = 0
+            content.userInfo = userInfo
 
             let request = UNNotificationRequest(identifier: identifier.rawValue,
                                                 content: content,
