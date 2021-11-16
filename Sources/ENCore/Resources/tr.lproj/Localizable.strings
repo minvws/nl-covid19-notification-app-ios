@@ -219,12 +219,15 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder şu anda etkin değil. Ayarlarınızı kontrol edin.";
+"notification.en.statusNotActive.title" = "Teknik sorun";
 
 "notification.upload.failed.header" = "GGD'yi arayın";
 "moreInformation.about.helpdesk.title" = "Uygulama hakkında başka sorunuz mu var?";
 "moreInformation.about.helpdesk.subtitle" = "0800-1280'i ücretsiz olarak arayın";
 "moreInformation.about.website.title" = "Uygulama hakkında daha fazla bilgi";
 "moreInformation.about.website.subtitle" = "Coronamelder.nl adresine gidin";
+
+"moreInformation.more_about_the_app" = "Uygulama hakkında daha fazla bilgi";
 
 /* MARK: - Consent */
 "skipStep" = "Atla";
@@ -318,7 +321,9 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Başkalarına bildirim göndermek mümkün olmadı. GGD'yi arayın. Daha fazlasını uygulamada okuyun.";
 "notification.upload.failed.title" = "Başkalarına bildirim göndermek mümkün olmadı";
+"notification.upload.failed.notification.title" = "Bildirim gönderilemedi";
 "notification.upload.failed.content" = "Bildirim göndermeye çalıştık, ancak bu başarısız oldu. Bunu tekrar yapmak için GGD'yi arayın. Bunu bir an evvel yapmanız çok önemlidir. Aksi takdirde, daha fazla insan enfekte olabilir.";
+"notification.updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Bu bildirimi silmek istediğinizden emin misiniz?";
@@ -335,6 +340,8 @@
 "status.appState.inactive.title" = "Uygulama etkin değil";
 "status.appState.inactive.description" = "CoronaMelder yalnızca gerekli ayarlar etkinleştirilirse çalışır";
 "status.appState.inactive.notification" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi.";
+"status.appState.inactive.notification.title" = "Teknik sorun";
+
 "status.appState.inactive.no_recent_updates.description" = "Uygulama, tanıştığınız kişilerin daha sonra Korona olup olmadıklarını 24 saat boyunca kontrol edemedi. Wi-Fi veya mobil verinizin açık olduğundan emin olun ve tekrar deneyin.";
 "status.appState.partlyinactive.title" = "Uygulama kısmen etkin";
 "status.appState.partlyinactive.bluetooth.description" = "Bluetooth'unuz kapalı. Bu nedenle uygulama yeni karşılaşmaları <b> takip etmez</b>. Uygulama daha önce karşılaştığınız kişilerde Korona olup olmadığını hala<b>kontrol eder</b>.";
@@ -561,6 +568,8 @@
 "enableSettings.localNotifications.step3" = "<b>Raporlamaya izin ver</b>'i açın";
 "enableSettings.localNotifications.step3.action.title" = "Raporlamaya izin verin";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Korona virüsü ile olası temas";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Korona virüsü olan bir kişinin etrafında %@ bulundunuz. Uygulamada daha fazlasını okuyun.";
 

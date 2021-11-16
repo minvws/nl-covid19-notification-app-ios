@@ -220,12 +220,15 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "تطبيق CoronaMelder غير نشط الآن، راجع إعداداتك.";
+"notification.en.statusNotActive.title" = "مشكلة تقنية";
 
 "notification.upload.failed.header" = "اتصل بالمصلحة الصحية للبلدية";
 "moreInformation.about.helpdesk.title" = "هل لديك سؤال آخر عن التطبيق؟";
 "moreInformation.about.helpdesk.subtitle" = "اتصل مجانًا على الرقم 1280 -0800";
 "moreInformation.about.website.title" = "للمزيد من المعلومات حول التطبيق";
 "moreInformation.about.website.subtitle" = "راجع موقع Coronamelder.nl";
+
+"moreInformation.more_about_the_app" = "للمزيد من المعلومات حول التطبيق";
 
 /* MARK: - Consent */
 "skipStep" = "تخطى";
@@ -322,7 +325,9 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "لم تنجح في إرسال الإشعار إلى الآخرين. اتصل إذًا بالـ GGD. اقرأ المزيد في التطبيق.";
 "notification.upload.failed.title" = "لم ننجح في إرسال إشعار إلى الآخرين.";
+"notification.upload.failed.notification.title" = "لم تنجح في إرسال الإشعار";
 "notification.upload.failed.content" = "حاولنا إرسالك إشعارًا, إلا أننا لم ننجح في ذلك. اتصل بالـ GGD لإعادة المحاولة. من المهم جدًا أن تقوم بذلك بسرعة وإلا فقد يصاب عدد أكبر من الأشخاص بالعدوى.";
+"notification.updateApp.title" = "التطبيق بحاجة إلى التحديث";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "هل أنت متأكد من أنك تريد حذف التحذير هذا؟";
@@ -339,6 +344,8 @@
 "status.appState.inactive.title" = "التطبيق غير نشط";
 "status.appState.inactive.description" = "تطبيق CoronaMelder يعمل فقط إذا قمت بضبط الإعدادات اللازمة.";
 "status.appState.inactive.notification" = "لم يتمكن التطبيق من التحقق لمدة 24 ساعة فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا.";
+"status.appState.inactive.notification.title" = "مشكلة تقنية";
+
 "status.appState.inactive.no_recent_updates.description" = "لم يتمكن التطبيق لمدة 24 ساعة من التحقق فيما إذا تبين لاحقًا أن الأشخاص الذين قابلتهم مصابين بكورونا. تأكد من تشغيل شبكة Wi-Fi أو بيانات الهاتف وحاول مجددًا.";
 "status.appState.partlyinactive.title" = "التطبيق نشط جزئيًا";
 "status.appState.partlyinactive.bluetooth.description" = "البلوتوث غير مشغّل. وبالتالي فإن التطبيق <b>لا</ b> يستطيع تتبع أي مخالطات جديدة. سيقوم التطبيق <b> بفحص </ b> ما إذا كان الأشخاص الذين قابلتهم من قبل مصابين بكورونا.";
@@ -569,6 +576,8 @@
 "enableSettings.localNotifications.step3" = "قم بتشغيل <b> السماح باستلام الإشعارات</ b>";
 "enableSettings.localNotifications.step3.action.title" = "اسمح باستلام الإشعارات";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "تعرض محتمل لفيروس كورونا";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "تواجدت %@ بالقرب من شخص مصاب بفيروس كورونا.";
 

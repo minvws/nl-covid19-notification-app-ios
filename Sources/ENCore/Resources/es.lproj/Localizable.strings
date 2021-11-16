@@ -220,12 +220,15 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder no está activada en estos momentos. Controla tus ajustes.";
+"notification.en.statusNotActive.title" = "Problema técnico";
 
 "notification.upload.failed.header" = "Llamar al GGD";
 "moreInformation.about.helpdesk.title" = "¿Tienes más preguntas sobre la app?";
 "moreInformation.about.helpdesk.subtitle" = "Llama gratis al 0800-1280";
 "moreInformation.about.website.title" = "Más información sobre la app";
 "moreInformation.about.website.subtitle" = "Visita coronamelder.nl";
+
+"moreInformation.more_about_the_app" = "Más información sobre la app";
 
 /* MARK: - Consent */
 "skipStep" = "Omitir";
@@ -318,7 +321,9 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "No se ha podido enviar la notificación a otras personas. Llama al GGD (servicio municipal de salud). Lee más al respecto en la app.";
 "notification.upload.failed.title" = "No se pudo enviar una notificación a otras personas";
+"notification.upload.failed.notification.title" = "Falló el envío de la notificación";
 "notification.upload.failed.content" = "Hemos intentado enviar la notificación sin conseguirlo. Llama al GGD (servicio municipal de salud) para volver a intentarlo. Es importante hacerlo lo antes posible, ya que mientras tanto podrían contagiarse más personas.";
+"notification.updateApp.title" = "La app necesita actualizarse";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "¿Estás seguro de que quieres eliminar esta notificación?";
@@ -335,6 +340,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "status.appState.inactive.title" = "La app no está activada";
 "status.appState.inactive.description" = "CoronaMelder solo funciona si están activados los ajustes necesarios";
 "status.appState.inactive.notification" = "La app no ha podido controlar en las últimas 24 horas si las personas con las que te encontraste resultaron tener coronavirus.";
+"status.appState.inactive.notification.title" = "Problema técnico";
+
 "status.appState.inactive.no_recent_updates.description" = "La app no ha podido controlar si las personas con las que te has encontrado resultaron tener coronavirus. Comprueba si están activados tu wifi o tus datos y prueba otra vez.";
 "status.appState.partlyinactive.title" = "La app está parcialmente activada";
 "status.appState.partlyinactive.bluetooth.description" = "Tu Bluetooth está desactivado, por lo que la app no registrará <b>ningún</b> encuentro nuevo. La app <b>sigue</b> controlando si las personas con las que te has encontrado resultan tener coronavirus.";
@@ -561,6 +568,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "enableSettings.localNotifications.step3" = "Activar <b>Permitir notificaciones</b>";
 "enableSettings.localNotifications.step3.action.title" = "Permitir notificaciones";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Posible contacto con el coronavirus";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Hace %@ estuviste cerca de alguien con coronavirus. Lee más sobre ello en la app.";
 

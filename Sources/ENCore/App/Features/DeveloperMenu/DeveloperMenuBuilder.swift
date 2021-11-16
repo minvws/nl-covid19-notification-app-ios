@@ -34,17 +34,20 @@ private final class DeveloperMenuDependencyProvider: DependencyProvider<Develope
     var mutableExposureStateStream: MutableExposureStateStreaming {
         return dependency.mutableExposureStateStream
     }
-    
+
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
                               exposureController: dependency.exposureController,
                               environmentController: environmentController)
     }
-    
+
     var environmentController: EnvironmentControlling {
         EnvironmentController()
     }
-    
+
+    var userNotificationController: UserNotificationControlling {
+        UserNotificationController()
+    }
 }
 
 final class DeveloperMenuBuilder: Builder<DeveloperMenuDependency>, DeveloperMenuBuildable {
@@ -57,6 +60,7 @@ final class DeveloperMenuBuilder: Builder<DeveloperMenuDependency>, DeveloperMen
                                            mutableNetworkConfigurationStream: dependencyProvider.dependency.mutableNetworkConfigurationStream,
                                            exposureController: dependencyProvider.dependency.exposureController,
                                            storageController: dependencyProvider.dependency.storageController,
-                                           featureFlagController: dependencyProvider.featureFlagController)
+                                           featureFlagController: dependencyProvider.featureFlagController,
+                                           userNotificationController: dependencyProvider.userNotificationController)
     }
 }

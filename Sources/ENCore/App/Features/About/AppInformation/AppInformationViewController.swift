@@ -78,6 +78,7 @@ private final class AppInformationView: View {
         addSubview(scrollableStackView)
 
         tableViewWrapperView.addSubview(tableView)
+        buttonWrapperView.addSubview(hiddenButtonHeaderView)
         buttonWrapperView.addSubview(technicalInformationButton)
 
         scrollableStackView.attributedTitle = String.helpWhatAppDoesTitle.attributed()
@@ -100,8 +101,14 @@ private final class AppInformationView: View {
             maker.bottom.equalToSuperview()
         }
 
+        hiddenButtonHeaderView.snp.makeConstraints { maker in
+            maker.leading.top.equalToSuperview()
+            maker.width.height.equalTo(1)
+        }
+
         technicalInformationButton.snp.makeConstraints { maker in
-            maker.top.leading.trailing.bottom.equalToSuperview().inset(16)
+            maker.top.equalTo(hiddenButtonHeaderView.snp.bottom)
+            maker.leading.trailing.bottom.equalToSuperview().inset(16)
         }
 
         tableView.snp.makeConstraints { maker in
@@ -153,6 +160,14 @@ private final class AppInformationView: View {
                                                             pretitle: String.example.attributed(),
                                                             title: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainTitle, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment),
                                                             message: NSAttributedString.makeFromHtml(text: String.helpWhatAppDoesExampleTrainDescription, font: theme.fonts.body, textColor: theme.colors.textSecondary, textAlignment: Localization.textAlignment))
+
+    private lazy var hiddenButtonHeaderView: View = {
+        let view = View(theme: theme)
+        view.isAccessibilityElement = true
+        view.accessibilityLabel = .moreInformationAboutTheApp
+        view.accessibilityTraits = .header
+        return view
+    }()
 
     private lazy var buttonWrapperView = View(theme: theme)
     private lazy var tableViewWrapperView = View(theme: theme)

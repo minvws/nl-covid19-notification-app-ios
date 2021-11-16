@@ -221,12 +221,15 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder is not active at the moment. Check your settings.";
+"notification.en.statusNotActive.title" = "Technical problem";
 
 "notification.upload.failed.header" = "Call the GGD";
 "moreInformation.about.helpdesk.title" = "Other questions about the app?";
 "moreInformation.about.helpdesk.subtitle" = "Call 0800-1280";
 "moreInformation.about.website.title" = "More about the app";
 "moreInformation.about.website.subtitle" = "Go to coronamelder.nl";
+
+"moreInformation.more_about_the_app" = "More about the app";
 
 /* MARK: - Consent */
 "skipStep" = "Skip";
@@ -320,7 +323,9 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "The notification failed to send to others. Call the GGD. Read more in the app.";
 "notification.upload.failed.title" = "The notification failed to send to others";
+"notification.upload.failed.notification.title" = "The notification failed to send";
 "notification.upload.failed.content" = "We tried sending the notification, but it failed. Call the GGD to try again. Please do this as quickly as possible so no one else gets infected.";
+"notification.updateApp.title" = "The app needs to be updated";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Are you sure you want to delete this notification?";
@@ -337,6 +342,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "status.appState.inactive.title" = "The app is not active";
 "status.appState.inactive.description" = "CoronaMelder only works if the necessary settings are turned on.";
 "status.appState.inactive.notification" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.";
+"status.appState.inactive.notification.title" = "Technical problem";
+
 "status.appState.inactive.no_recent_updates.description" = "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona. Check if your Wi-Fi or mobile data are turned on and try again.";
 "status.appState.partlyinactive.title" = "The app is partially active";
 "status.appState.partlyinactive.bluetooth.description" = "Bluetooth is turned off. Therefore, the app <b>does not</b> track any new encounters. The app <b>does</b> still check if people you've encountered later turn out to have coronavirus.";
@@ -563,6 +570,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "enableSettings.localNotifications.step3" = "Turn on <b>Allow notifications</b>";
 "enableSettings.localNotifications.step3.action.title" = "Allow notifications";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Possible coronavirus exposure";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "You were near someone who has coronavirus %@. Read more in the app.";
 

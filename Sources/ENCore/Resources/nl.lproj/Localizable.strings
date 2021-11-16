@@ -219,12 +219,15 @@
 
 /* MARK: - Notifications */
 "notification.en.statusNotActive" = "CoronaMelder is op dit moment niet actief. Controleer je instellingen.";
+"notification.en.statusNotActive.title" = "Technisch probleem";
 
 "notification.upload.failed.header" = "Bel de GGD";
 "moreInformation.about.helpdesk.title" = "Andere vraag over de app?";
 "moreInformation.about.helpdesk.subtitle" = "Bel gratis 0800-1280";
 "moreInformation.about.website.title" = "Meer over de app";
 "moreInformation.about.website.subtitle" = "Ga naar coronamelder.nl";
+
+"moreInformation.more_about_the_app" = "Meer over de app";
 
 /* MARK: - Consent */
 "skipStep" = "Sla over";
@@ -318,7 +321,9 @@
 /* MARK: - Notifications */
 "notification.upload.failed.notification" = "Het is niet gelukt anderen een melding te sturen. Bel daarom de GGD. Lees meer in de app.";
 "notification.upload.failed.title" = "Het is niet gelukt anderen een melding te sturen";
+"notification.upload.failed.notification.title" = "Melding versturen is mislukt";
 "notification.upload.failed.content" = "We hebben geprobeerd de melding te versturen, maar dit is niet gelukt. Bel de GGD om dit opnieuw te doen. Het is heel belangrijk dat je dit snel doet. Anders kunnen er meer mensen besmet raken.";
+"notification.updateApp.title" = "De app heeft een update nodig";
 
 /* MARK: - Main */
 "main.confirmNotificationRemoval.title" = "Weet je zeker dat je deze melding wilt verwijderen?";
@@ -335,6 +340,8 @@
 "status.appState.inactive.title" = "De app is niet actief";
 "status.appState.inactive.description" = "CoronaMelder werkt alleen als de noodzakelijke instellingen aanstaan.";
 "status.appState.inactive.notification" = "De app kon 24 uur niet controleren of de mensen die jij hebt ontmoet later corona bleken te hebben.";
+"status.appState.inactive.notification.title" = "Technisch probleem";
+
 "status.appState.inactive.no_recent_updates.description" = "De app kon 24 uur niet controleren of de mensen die jij hebt ontmoet later corona bleken te hebben. Controleer of je wifi of mobiele data aanstaan en probeer het opnieuw.";
 "status.appState.partlyinactive.title" = "De app is deels actief";
 "status.appState.partlyinactive.bluetooth.description" = "Je bluetooth staat uit. De app houdt daarom <b>geen</b> nieuwe ontmoetingen bij. De app controleert nog <b>wel</b> of de mensen die je eerder hebt ontmoet corona blijken te hebben.";
@@ -561,6 +568,8 @@
 "enableSettings.localNotifications.step3" = "Zet <b>Sta berichtgeving toe</b> aan";
 "enableSettings.localNotifications.step3.action.title" = "Sta berichtgeving toe";
 
+/* MARK: - Exposure Notification Received - User Explanation */
+"exposure.notification.userExplanation.title" = "Mogelijk contact met het coronavirus";
 /* MARK: - Exposure Notification Received - User Explanation */
 "exposure.notification.userExplanation" = "Je bent %@ in de buurt geweest van iemand met het coronavirus. Lees meer in de app.";
 
