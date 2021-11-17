@@ -201,8 +201,7 @@ class UserNotificationController: UserNotificationControlling, Logging {
         addNotification(title: title,
                         body: body,
                         identifier: .remoteScheduled,
-                        trigger: trigger,
-                        userInfo: ["targetScreen": targetScreen])
+                        trigger: trigger)
     }
 
     // MARK: - Private
@@ -212,7 +211,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
         body: String,
         identifier: PushNotificationIdentifier,
         trigger: UNNotificationTrigger? = nil,
-        userInfo: [AnyHashable: Any] = [:],
         completion: ((_ success: Bool) -> ())? = nil
     ) {
         userNotificationCenter.getAuthorizationStatus { [weak self] authorizationStatus in
@@ -229,7 +227,6 @@ class UserNotificationController: UserNotificationControlling, Logging {
             content.title = title
             content.body = body
             content.badge = 0
-            content.userInfo = userInfo
 
             let request = UNNotificationRequest(identifier: identifier.rawValue,
                                                 content: content,

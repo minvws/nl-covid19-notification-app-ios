@@ -41,7 +41,7 @@ public protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency, ShareSheetDependency {
 
     // MARK: - Child Builders
 
@@ -87,6 +87,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     fileprivate var webviewBuilder: WebviewBuildable {
         return WebviewBuilder(dependency: self)
+    }
+
+    var shareBuilder: ShareSheetBuildable {
+        return ShareSheetBuilder(dependency: self)
     }
 
     // MARK: - Exposure Related
@@ -257,6 +261,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           userNotificationController: dependencyProvider.userNotificationController,
                           currentAppVersion: unwrappedCurrentAppVersion,
                           environmentController: dependencyProvider.environmentController,
-                          pauseController: dependencyProvider.pauseController)
+                          pauseController: dependencyProvider.pauseController,
+                          shareBuilder: dependencyProvider.shareBuilder)
     }
 }

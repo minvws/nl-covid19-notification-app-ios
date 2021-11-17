@@ -63,6 +63,17 @@ struct ApplicationConfiguration: Codable, Equatable {
 
             return date
         }
+
+        func getTargetScreen() -> TargetScreen {
+            if targetScreen.lowercased() == "share" {
+                return .share
+            }
+            return .main
+        }
+
+        enum TargetScreen {
+            case main, share
+        }
     }
 }
 
