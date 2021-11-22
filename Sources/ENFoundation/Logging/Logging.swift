@@ -39,7 +39,7 @@ public extension Logging {
     func logError(_ message: String, function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
         DDLogError(message, file: file, function: function, line: line, tag: loggingCategory)
     }
-    
+
     func logTrace(function: StaticString = #function, file: StaticString = #file, line: UInt = #line) {
         DDLogDebug("Trace: \(file):\(function):\(line)")
     }

@@ -12,7 +12,8 @@ struct NetworkConfiguration {
         let scheme: String
         let host: String
         let port: Int?
-        let path: [String]
+        let path: String
+        let signatureFallbackPath: String?
         let sslFingerprints: [Certificate.Fingerprint]? // SSL pinning certificate, nil = no pinning
         let tokenParams: [String: String]
     }
@@ -34,7 +35,8 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v01"],
+            path: "v01",
+            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         ),
@@ -42,7 +44,8 @@ struct NetworkConfiguration {
             scheme: "http",
             host: "localhost",
             port: 5004,
-            path: ["v01"],
+            path: "v01",
+            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         )
@@ -54,7 +57,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -62,7 +66,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "test.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v5",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -74,7 +79,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -82,7 +88,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v5",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -94,7 +101,8 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "coronamelder-api.nl",
             port: nil,
-            path: ["v1"],
+            path: "v1",
+            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -102,26 +110,31 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "productie.coronamelder-dist.nl",
             port: nil,
-            path: ["v4"],
+            path: "v5",
+            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
     )
 
-    var manifestUrl: URL? {
-        return self.combine(endpoint: Endpoint.manifest, fromCdn: true, params: cdn.tokenParams)
+    func manifestUrl(useFallback: Bool) -> URL? {
+        return self.combine(endpoint: Endpoint.manifest(version: useFallback ? cdn.signatureFallbackPath : nil), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func exposureKeySetUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.exposureKeySet(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func exposureKeySetUrl(useFallback: Bool, identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.exposureKeySet(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func riskCalculationParametersUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.riskCalculationParameters(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func riskCalculationParametersUrl(useFallback: Bool, identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.riskCalculationParameters(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func appConfigUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.appConfig(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func appConfigUrl(useFallback: Bool, identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.appConfig(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    }
+
+    func treatmentPerspectiveUrl(useFallback: Bool, identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.treatmentPerspective(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     var registerUrl: URL? {
@@ -136,10 +149,6 @@ struct NetworkConfiguration {
         return self.combine(endpoint: Endpoint.stopKeys, fromCdn: false, params: ["sig": signature])
     }
 
-    func getTreatmentPerspectiveUrl(identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.treatmentPerspective(identifier: identifier), fromCdn: true, params: cdn.tokenParams)
-    }
-
     private func combine(endpoint: Endpoint, fromCdn: Bool, params: [String: String] = [:]) -> URL? {
         let config = fromCdn ? cdn : api
 
@@ -147,11 +156,7 @@ struct NetworkConfiguration {
         urlComponents.scheme = config.scheme
         urlComponents.host = config.host
         urlComponents.port = config.port
-        if let endpointVersion = endpoint.version {
-            urlComponents.path = "/" + ([endpointVersion] + endpoint.pathComponents).joined(separator: "/")
-        } else {
-            urlComponents.path = "/" + (config.path + endpoint.pathComponents).joined(separator: "/")
-        }
+        urlComponents.path = "/" + ([endpoint.version ?? config.path] + endpoint.pathComponents).joined(separator: "/")
 
         if !params.isEmpty {
             urlComponents.percentEncodedQueryItems = params.compactMap { parameter in
