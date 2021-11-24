@@ -196,6 +196,8 @@ class UserNotificationController: UserNotificationControlling, Logging {
     func scheduleRemoteNotification(title: String, body: String, date: DateComponents, targetScreen: String) {
         removeScheduledRemoteNotification()
 
+        self.logDebug("scheduleRemoteNotification: title: \(title), body:\(body), date: \(date), targetScreen: \(targetScreen)")
+
         let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: false)
 
         addNotification(title: title,

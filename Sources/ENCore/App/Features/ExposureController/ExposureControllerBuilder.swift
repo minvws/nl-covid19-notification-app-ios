@@ -96,7 +96,7 @@ protocol ExposureControlling: AnyObject {
 
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
 
-    func getScheduledNotificaton() -> ApplicationConfiguration.Notification?
+    func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification?
 
     func getStoredShareKeyURL() -> String?
 

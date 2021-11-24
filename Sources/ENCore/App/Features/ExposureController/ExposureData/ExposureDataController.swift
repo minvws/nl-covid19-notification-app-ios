@@ -10,7 +10,6 @@ import Foundation
 import RxSwift
 
 enum Announcement: String, Codable {
-
     @available(*, deprecated)
     // Leaving this in place because the enum needs a case and we might want to know in the future what kind of announcements we could have stored before
     case interopAnnouncement
@@ -77,7 +76,6 @@ struct ExposureDataStorageKey {
 /// Although it started out with the specific purposes of ONLY accessing data related to this exposure feature, it has grown until it now encompasses a lot of other
 /// data that is unrelated. This broad responsibility is not ideal. Data storage and retrieval should eventually be moved to the feature that it relates to.
 final class ExposureDataController: ExposureDataControlling, Logging {
-
     private(set) var isFirstRun: Bool = false
     private lazy var pauseEndDateSubject = BehaviorSubject<Date?>(value: pauseEndDate)
 
@@ -111,7 +109,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
-        self.requestApplicationConfiguration()
+        requestApplicationConfiguration()
             .flatMapCompletable { _ in
                 self.fetchAndStoreExposureKeySets().catch { _ in
                     self.processStoredExposureKeySets(exposureManager: exposureManager)
@@ -145,7 +143,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         get {
             return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.ignoreFirstV2Exposure) ?? false
         } set {
-            self.storageController.requestExclusiveAccess { storageController in
+            storageController.requestExclusiveAccess { storageController in
                 storageController.store(
                     object: newValue,
                     identifiedBy: ExposureDataStorageKey.ignoreFirstV2Exposure,
@@ -201,7 +199,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func processStoredExposureKeySets(exposureManager: ExposureManaging) -> Completable {
-        self.logDebug("ExposureDataController: processStoredExposureKeySets")
+        logDebug("ExposureDataController: processStoredExposureKeySets")
         return requestExposureRiskConfiguration()
             .flatMapCompletable { configuration in
                 self.operationProvider
@@ -211,7 +209,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func fetchAndStoreExposureKeySets() -> Completable {
-        self.logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
+        logDebug("ExposureDataController: fetchAndStoreExposureKeySets")
         return requestApplicationManifest()
             .map { (manifest: ApplicationManifest) -> [String] in
                 manifest.exposureKeySetsIdentifiers
@@ -228,7 +226,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func processPendingUploadRequests() -> Completable {
         return getPadding()
             .flatMapCompletable { (padding: Padding) in
-                return self.operationProvider
+                self.operationProvider
                     .processPendingLabConfirmationUploadRequestsOperation(padding: padding)
                     .execute()
             }
@@ -263,14 +261,14 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func isAppDeactivated() -> Single<Bool> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return applicationConfiguration.decativated
+                applicationConfiguration.decativated
             }
     }
 
     func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return ExposureDataAppVersionInformation(
+                ExposureDataAppVersionInformation(
                     minimumVersion: applicationConfiguration.minimumVersion,
                     minimumVersionMessage: applicationConfiguration.minimumVersionMessage,
                     appStoreURL: applicationConfiguration.appStoreURL
@@ -295,19 +293,19 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return applicationConfiguration.decoyProbability
+                applicationConfiguration.decoyProbability
             }
     }
 
     func getPadding() -> Single<Padding> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
-                               maximumRequestSize: applicationConfiguration.requestMaximumSize)
+                Padding(minimumRequestSize: applicationConfiguration.requestMinimumSize,
+                        maximumRequestSize: applicationConfiguration.requestMaximumSize)
             }
     }
 
-    func getScheduledNotificaton() -> ApplicationConfiguration.Notification? {
+    func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification? {
         guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
             return nil
         }
@@ -329,9 +327,8 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         get {
             return storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.pauseEndDate)
         } set {
-
             if let newDate = newValue {
-                self.storageController.requestExclusiveAccess { storageController in
+                storageController.requestExclusiveAccess { storageController in
                     storageController.store(
                         object: newDate,
                         identifiedBy: ExposureDataStorageKey.pauseEndDate,
@@ -395,7 +392,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
 
     /// Can be called to remove the stored previous exposure date in case it is more than 14 days ago
     func removePreviousExposureDateIfNeeded() -> Completable {
-
         let completable = Completable.create { [weak self] observer in
 
             guard let previousDate = self?.previousExposureDate,
@@ -449,7 +445,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     func getAppointmentPhoneNumber() -> Single<String> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in
-                return applicationConfiguration.appointmentPhoneNumber
+                applicationConfiguration.appointmentPhoneNumber
             }
     }
 
@@ -472,7 +468,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func updateLastSuccessfulExposureProcessingDate(_ date: Date) {
-
         storageController.requestExclusiveAccess { storageController in
             storageController.store(
                 object: date,
@@ -485,7 +480,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     func updateExposureFirstNotificationReceivedDate(_ date: Date) {
-
         storageController.requestExclusiveAccess { storageController in
             storageController.store(
                 object: date,
@@ -523,7 +517,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func requestApplicationConfiguration() -> Single<ApplicationConfiguration> {
-        return self.requestApplicationManifest()
+        return requestApplicationManifest()
             .flatMap {
                 self.operationProvider
                     .requestAppConfigurationOperation(identifier: $0.appConfigurationIdentifier)
@@ -566,7 +560,6 @@ final class ExposureDataController: ExposureDataControlling, Logging {
     }
 
     private func executeUpdate(from fromVersion: String, to toVersion: String) {
-
         // Always clear the app manifest on update to prevent stale settings from being used
         // Especially when switching to a new API version, manifest info like the resource bundle ID
         // from the old manifest might not be appropriate for the new API version

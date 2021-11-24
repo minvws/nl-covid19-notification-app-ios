@@ -194,7 +194,7 @@ final class ExposureController: ExposureControlling, Logging {
         dataController.getStoredAppConfigFeatureFlags()
     }
 
-    func getScheduledNotificaton() -> ApplicationConfiguration.Notification? {
+    func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification? {
         dataController.getScheduledNotificaton()
     }
 

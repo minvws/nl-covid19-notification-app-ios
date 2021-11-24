@@ -67,8 +67,8 @@ extension AppConfig.FeatureFlag {
     }
 }
 
-extension AppConfig.Notification {
-    func asApplicationConfigurationNotification() -> ApplicationConfiguration.Notification? {
+extension AppConfig.ScheduledNotification {
+    func asApplicationConfigurationNotification() -> ApplicationConfiguration.ScheduledNotification? {
         .init(scheduledDateTime: scheduledDateTime, title: title, body: body, targetScreen: targetScreen)
     }
 }
