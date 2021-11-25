@@ -91,6 +91,7 @@ final class NetworkManager: NetworkManaging, Logging {
 
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
         let url = configuration.exposureKeySetUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
