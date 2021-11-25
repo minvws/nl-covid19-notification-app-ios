@@ -36,8 +36,13 @@ final class NetworkManager: NetworkManaging, Logging {
 
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+<<<<<<< HEAD
         let url = configuration.manifestUrl(useFallback: useFallbackEndpoint)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+=======
+        let url = configuration.manifestUrl
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+>>>>>>> 0f652a1b (Updated caching policy for network requests)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
     }
@@ -50,8 +55,13 @@ final class NetworkManager: NetworkManaging, Logging {
 
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+<<<<<<< HEAD
         let url = configuration.treatmentPerspectiveUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+=======
+        let url = configuration.getTreatmentPerspectiveUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+>>>>>>> 0f652a1b (Updated caching policy for network requests)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
     }
@@ -62,8 +72,13 @@ final class NetworkManager: NetworkManaging, Logging {
 
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+<<<<<<< HEAD
         let url = configuration.appConfigUrl(useFallback: useFallbackEndpoint, identifier: appConfig)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+=======
+        let url = configuration.appConfigUrl(identifier: appConfig)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+>>>>>>> 0f652a1b (Updated caching policy for network requests)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
     }
@@ -73,8 +88,13 @@ final class NetworkManager: NetworkManaging, Logging {
     func getRiskCalculationParameters(identifier: String, completion: @escaping (Result<RiskCalculationParameters, NetworkError>) -> ()) {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+<<<<<<< HEAD
         let url = configuration.riskCalculationParametersUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+=======
+        let url = configuration.riskCalculationParametersUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+>>>>>>> 0f652a1b (Updated caching policy for network requests)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
     }
@@ -87,8 +107,13 @@ final class NetworkManager: NetworkManaging, Logging {
 
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+<<<<<<< HEAD
         let url = configuration.exposureKeySetUrl(useFallback: useFallbackEndpoint, identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
+=======
+        let url = configuration.exposureKeySetUrl(identifier: identifier)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+>>>>>>> 0f652a1b (Updated caching policy for network requests)
 
         self.logDebug("GAEN: Getting exposureKeySets from fallback endpoint? \(useFallbackEndpoint)")
 
@@ -205,13 +230,14 @@ final class NetworkManager: NetworkManaging, Logging {
     private func constructRequest(url: URL?,
                                   method: HTTPMethod = .GET,
                                   body: Encodable? = nil,
-                                  headers: [HTTPHeaderKey: String] = [:]) -> Result<URLRequest, NetworkError> {
+                                  headers: [HTTPHeaderKey: String] = [:],
+                                  cachePolicy: NSURLRequest.CachePolicy = .useProtocolCachePolicy) -> Result<URLRequest, NetworkError> {
         guard let url = url else {
             return .failure(.invalidRequest)
         }
 
         var request = URLRequest(url: url,
-                                 cachePolicy: .useProtocolCachePolicy,
+                                 cachePolicy: cachePolicy,
                                  timeoutInterval: 10)
         request.httpMethod = method.rawValue
 
