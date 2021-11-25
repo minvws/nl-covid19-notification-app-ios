@@ -102,7 +102,7 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     }
 
     var userNotificationController: UserNotificationControlling {
-        UserNotificationController()
+        UserNotificationController(storageController: storageController)
     }
 
     var pauseController: PauseControlling {
@@ -112,21 +112,21 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
     var pushNotificationStream: PushNotificationStreaming {
         dependency.pushNotificationStream
     }
-    
+
     var alertControllerBuilder: AlertControllerBuildable {
         AlertControllerBuilder()
     }
-    
+
     var keySharingBuilder: KeySharingBuildable {
         KeySharingBuilder(dependency: self)
     }
-    
+
     var featureFlagController: FeatureFlagControlling {
         FeatureFlagController(userDefaults: UserDefaults.standard,
                               exposureController: dependency.exposureController,
                               environmentController: environmentController)
     }
-    
+
     var applicationController: ApplicationControlling {
         ApplicationController()
     }

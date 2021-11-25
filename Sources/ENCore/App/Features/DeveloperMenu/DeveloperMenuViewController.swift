@@ -33,7 +33,6 @@ private struct DeveloperItem {
 }
 
 final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewControllable, UIGestureRecognizerDelegate, Logging {
-
     init(listener: DeveloperMenuListener,
          theme: Theme,
          mutableExposureStateStream: MutableExposureStateStreaming,
@@ -58,7 +57,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
+        view = internalView
     }
 
     override func viewDidLoad() {
@@ -84,7 +83,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                                        style: .destructive,
                                        handler: { [weak actionViewController] _ in
                                            actionViewController?.dismiss(animated: true, completion: nil)
-            })
+                                       })
         actionViewController.addAction(cancelItem)
 
         present(actionViewController, animated: true, completion: nil)
@@ -160,7 +159,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private var sections: [(title: String, items: [DeveloperItem])] = []
 
     private func reloadData() {
-
         let featureFlagOptions = Feature
             .allCases
             .map { feature in
@@ -187,14 +185,14 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             ]),
             ("Exposure", [
                 DeveloperItem(title: "Change Exposure State",
-                              subtitle: "Current: \(self.mutableExposureStateStream.currentExposureState.activeState.asString)",
+                              subtitle: "Current: \(mutableExposureStateStream.currentExposureState.activeState.asString)",
                               action: { [weak self] in self?.changeExposureState() }),
                 DeveloperItem(title: "Trigger Exposure",
-                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
+                              subtitle: "Currently exposed: \(mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposure() }),
 
                 DeveloperItem(title: "Trigger Exposure and Schedule Message Flow",
-                              subtitle: "Currently exposed: \(self.mutableExposureStateStream.currentExposureState.notifiedState.asString)",
+                              subtitle: "Currently exposed: \(mutableExposureStateStream.currentExposureState.notifiedState.asString)",
                               action: { [weak self] in self?.triggerExposureAndScheduleMessage() }),
                 DeveloperItem(title: "Upload Exposure Keys",
                               subtitle: "Upload keys after giving permission",
@@ -250,7 +248,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
             ]),
             ("Networking", [
                 DeveloperItem(title: "Network Configuration",
-                              subtitle: "Current: \(self.mutableNetworkConfigurationStream.configuration.name)",
+                              subtitle: "Current: \(mutableNetworkConfigurationStream.configuration.name)",
                               action: { [weak self] in self?.changeNetworkConfiguration() })
             ]),
             ("Notifications", [
@@ -304,6 +302,16 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                                   DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
                                       self?.userNotificationController.displayUploadFailedNotification()
                                   }
+                              }),
+                DeveloperItem(title: "Schedule Main AppConfig Local Notification",
+                              subtitle: "Schedules a loccal notification triggerd by the AppConfig routing to Main to screen, to ben send in 1 minute.",
+                              action: {
+                                  self.scheduleRemoteNotification(toScreen: "main")
+                              }),
+                DeveloperItem(title: "Schedule Share AppConfig Local Notification",
+                              subtitle: "Schedules a loccal notification triggerd by the AppConfig routing to Share screen, to ben send in 1 minute.",
+                              action: {
+                                  self.scheduleRemoteNotification(toScreen: "share")
                               })
 
             ]),
@@ -370,7 +378,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     private func triggerExposure() {
-
         let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
         let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
@@ -401,7 +408,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     private func triggerExposureAndScheduleMessage() {
-
         let dayOptions = [-15, -14, -13, -6, -5, -4, -3, -2, -1, 0]
         let actionItems = dayOptions.reversed().map { (day) -> UIAlertAction in
             let actionHandler: (UIAlertAction) -> () = { [weak self] _ in
@@ -523,7 +529,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     private func continueUploadKey(with key: ExposureConfirmationKey) {
-        self.exposureController.requestUploadKeys(forLabConfirmationKey: key) { result in
+        exposureController.requestUploadKeys(forLabConfirmationKey: key) { result in
             let title = "Result: \(result)"
 
             self.present(actionItems: [], title: title)
@@ -608,7 +614,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
 
         for (index, _) in pendingRequests.enumerated() { pendingRequests[index].expiryDate = Date() }
 
-        self.storageController.requestExclusiveAccess { storageController in
+        storageController.requestExclusiveAccess { storageController in
             storageController.store(object: pendingRequests, identifiedBy: ExposureDataStorageKey.pendingLabUploadRequests) { _ in }
         }
     }
@@ -658,7 +664,6 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     }
 
     private func getPauseUnit() -> String {
-
         #if DEBUG || USE_DEVELOPER_MENU
             return PauseOverrides.useMinutesInsteadOfHours ? "minutes" : "hours"
         #else
@@ -674,7 +679,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         }
 
         let wasProcessedInLast24h: (Date) -> Bool = { date in
-            return date > cutOffDate
+            date > cutOffDate
         }
 
         return apiCalls
@@ -778,7 +783,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                                        style: .destructive,
                                        handler: { [weak alertController] _ in
                                            alertController?.dismiss(animated: true, completion: nil)
-            })
+                                       })
         alertController.addAction(cancelItem)
         present(alertController, animated: true, completion: nil)
     }
@@ -864,6 +869,53 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         window.addGestureRecognizer(gestureRecognizer)
 
         internalView.tapGestureRecognizer.addTarget(self, action: #selector(didTapBackground))
+    }
+
+    private func scheduleRemoteNotification(toScreen screen: String) {
+        let scheduledDateComponents = Calendar.current.dateComponents([
+            .year,
+            .month,
+            .day,
+            .hour,
+            .minute,
+            .timeZone
+        ],
+        from: Date())
+
+        var date = DateComponents()
+        date.year = scheduledDateComponents.year
+        date.month = scheduledDateComponents.month
+        date.day = scheduledDateComponents.day
+        date.hour = scheduledDateComponents.hour
+        date.minute = scheduledDateComponents.minute
+        date.timeZone = scheduledDateComponents.timeZone
+
+        if let minute = date.minute { date.minute = minute + 2 }
+
+        let actionTitle = "Scheduling AppConfig Local Notification in: \(date) routing to screen: \(screen)"
+        let actionItems = [
+            UIAlertAction(title: "Ok",
+                          style: .default,
+                          handler: { [weak self] _ in
+
+                              guard var appConfiguration = self?.storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+                                  return
+                              }
+
+                              appConfiguration.scheduledNotification = ApplicationConfiguration.ScheduledNotification(scheduledDateTime: "Can be ignored while testing",
+                                                                                                                      title: "Scheduled Remote Notification",
+                                                                                                                      body: "Routing to \(screen)",
+                                                                                                                      targetScreen: screen)
+
+                              self?.storageController.store(object: appConfiguration, identifiedBy: ExposureDataStorageKey.appConfiguration) { _ in }
+                              self?.userNotificationController.scheduleRemoteNotification(title: appConfiguration.scheduledNotification?.title ?? "",
+                                                                                          body: appConfiguration.scheduledNotification?.body ?? "",
+                                                                                          date: date,
+                                                                                          targetScreen: appConfiguration.scheduledNotification?.targetScreen ?? "")
+                          })
+        ]
+
+        present(actionItems: actionItems, title: actionTitle)
     }
 
     private lazy var internalView: DeveloperMenuView = DeveloperMenuView(theme: self.theme)

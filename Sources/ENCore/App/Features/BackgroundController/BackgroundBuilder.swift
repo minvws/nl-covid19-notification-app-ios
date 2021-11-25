@@ -30,6 +30,7 @@ protocol BackgroundDependency {
     var dataController: ExposureDataControlling { get }
     var randomNumberGenerator: RandomNumberGenerating { get }
     var environmentController: EnvironmentControlling { get }
+    var storageController: StorageControlling { get }
 }
 
 /// @mockable
@@ -78,7 +79,7 @@ protocol BackgroundControllerBuildable {
 private final class BackgroundControllerDependencyProvider: DependencyProvider<BackgroundDependency> {
 
     fileprivate var userNotificationController: UserNotificationControlling {
-        UserNotificationController()
+        UserNotificationController(storageController: dependency.storageController)
     }
 
     fileprivate var bundleIdentifier: String {

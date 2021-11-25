@@ -24,7 +24,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let decativated: Bool
     let appointmentPhoneNumber: String
     let featureFlags: [FeatureFlag]
-    let scheduledNotification: ScheduledNotification?
+    var scheduledNotification: ScheduledNotification?
     let shareKeyURL: String?
 
     struct FeatureFlag: Codable, Equatable {

@@ -198,7 +198,7 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
     }
 
     fileprivate var userNotificationController: UserNotificationControlling {
-        UserNotificationController()
+        UserNotificationController(storageController: storageController)
     }
 
     var randomNumberGenerator: RandomNumberGenerating {

@@ -213,7 +213,7 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     }
 
     fileprivate var userNotificationController: UserNotificationControlling {
-        return UserNotificationController()
+        return UserNotificationController(storageController: storageController)
     }
 
     fileprivate var currentAppVersion: String {
