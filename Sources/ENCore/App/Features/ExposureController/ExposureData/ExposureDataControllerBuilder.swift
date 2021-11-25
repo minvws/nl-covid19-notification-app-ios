@@ -26,7 +26,6 @@ struct ExposureDataAppVersionInformation {
 
 /// @mockable(history:updateLastSuccessfulExposureProcessingDate=true;addPreviousExposureDate=true;isKnownPreviousExposureDate=true)
 protocol ExposureDataControlling: AnyObject {
-
     // MARK: - Exposure Detection
 
     var lastExposure: ExposureReport? { get }
@@ -41,7 +40,7 @@ protocol ExposureDataControlling: AnyObject {
     var lastAppLaunchDate: Date? { get }
     var lastUnseenExposureNotificationDate: Date? { get }
     var ignoreFirstV2Exposure: Bool { get set }
-    
+
     func setLastDecoyProcessDate(_ date: Date)
     var canProcessDecoySequence: Bool { get }
 
@@ -53,11 +52,11 @@ protocol ExposureDataControlling: AnyObject {
     func clearLastUnseenExposureNotificationDate()
 
     // MARK: - Previous known exposure dates
-    
+
     func addPreviousExposureDate(_ exposureDate: Date) -> Completable
     func isKnownPreviousExposureDate(_ exposureDate: Date) -> Bool
     func removePreviousExposureDateIfNeeded() -> Completable
-    
+
     // MARK: - Lab Flow
 
     func processPendingUploadRequests() -> Completable
@@ -69,8 +68,9 @@ protocol ExposureDataControlling: AnyObject {
 
     func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
+    func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification?
     func getStoredShareKeyURL() -> String?
-    
+
     func isAppDeactivated() -> Single<Bool>
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
@@ -100,7 +100,6 @@ protocol ExposureDataControllerDependency {
 }
 
 private final class ExposureDataControllerDependencyProvider: DependencyProvider<ExposureDataControllerDependency>, ExposureDataOperationProviderDependency {
-
     // MARK: - ExposureDataOperationProviderDependency
 
     var networkController: NetworkControlling {
@@ -118,7 +117,7 @@ private final class ExposureDataControllerDependencyProvider: DependencyProvider
     var environmentController: EnvironmentControlling {
         return EnvironmentController()
     }
-    
+
     // MARK: - Private Dependencies
 
     var operationProvider: ExposureDataOperationProvider {
@@ -131,11 +130,11 @@ final class ExposureDataControllerBuilder: Builder<ExposureDataControllerDepende
         let dependencyProvider = ExposureDataControllerDependencyProvider(dependency: dependency)
 
         let controller = ExposureDataController(operationProvider: dependencyProvider.operationProvider,
-                                      storageController: dependencyProvider.storageController,
-                                      environmentController: dependencyProvider.environmentController)
-        
+                                                storageController: dependencyProvider.storageController,
+                                                environmentController: dependencyProvider.environmentController)
+
         controller.performInitialisationTasks()
-        
+
         return controller
     }
 }

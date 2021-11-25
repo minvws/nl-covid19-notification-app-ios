@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 /// Routing interface for the Root feature. Contains functions that are
@@ -48,9 +49,28 @@ protocol RootRouting: Routing {
 
     // Detaches the webview
     func detachWebview(shouldDismissViewController: Bool)
+
+    func routeToSharing()
+    func detachSharing(shouldHideViewController: Bool)
 }
 
-final class RootViewController: ViewController, RootViewControllable {
+final class RootViewController: ViewController, RootViewControllable, Logging {
+
+    func shareSheetDidComplete(shouldHideViewController: Bool) {
+        router?.detachSharing(shouldHideViewController: shouldHideViewController)
+    }
+
+    func displayShareSheet(usingViewController viewcontroller: ViewController, completion: @escaping ((Bool) -> ())) {
+        if let storeLink = URL(string: .shareAppUrl) {
+            let activityVC = UIActivityViewController(activityItems: [.shareAppTitle as String, storeLink], applicationActivities: nil)
+            activityVC.completionWithItemsHandler = { _, completed, _, _ in
+                completion(completed)
+            }
+            viewcontroller.present(activityVC, animated: true)
+        } else {
+            self.logError("Couldn't retreive a valid url")
+        }
+    }
 
     // MARK: - RootViewControllable
 

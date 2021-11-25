@@ -32,6 +32,7 @@ final class RootRouterTests: TestCase {
     private let mockEnvironmentController = EnvironmentControllingMock()
     private let updateOperatingSystemBuilder = UpdateOperatingSystemBuildableMock()
     private var mockPauseController: PauseControllingMock!
+    private var mockShareBuilder = ShareSheetBuildableMock()
 
     private var router: RootRouter!
 
@@ -91,7 +92,8 @@ final class RootRouterTests: TestCase {
                             userNotificationController: userNotificationController,
                             currentAppVersion: "1.0",
                             environmentController: mockEnvironmentController,
-                            pauseController: mockPauseController)
+                            pauseController: mockPauseController,
+                            shareBuilder: mockShareBuilder)
         set(activeState: .notAuthorized)
     }
 
@@ -151,7 +153,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_callStartTwice_doesNotPresentTwice() {
-
         let viewcontrollerPresentExpectation = expectation(description: "viewControllerPresented")
         viewcontrollerPresentExpectation.expectedFulfillmentCount = 2
 
@@ -228,7 +229,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_activatesExposureController() {
-
         let postExposureManagerActivationExpectation = expectation(description: "postExposureManagerActivation")
         let decoySequenceExpectation = expectation(description: "decoySequence")
 
@@ -312,7 +312,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_start_appIsDeactivated_showsEndOfLifeViewController() {
-
         let viewcontrollerPresentExpectation = expectation(description: "viewControllerPresented")
 
         viewController.presentInNavigationControllerHandler = { _, _, _ in
@@ -341,7 +340,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didBecomeActive_shouldAlsoPerformForegroundActionsOniOS12() {
-
         let completionExpectation = expectation(description: "completion")
         let updateWhenRequiredExpectation = expectation(description: "updateWhenRequired")
 
@@ -392,7 +390,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didEnterForeground_callsRefreshStatus() {
-
         exposureController.updateWhenRequiredHandler = { .empty() }
 
         waitForRouterStart()
@@ -405,7 +402,6 @@ final class RootRouterTests: TestCase {
     }
 
     func test_didEnterForeground_callsUpdateWhenRequired() {
-
         let completionExpectation = expectation(description: "completion")
 
         exposureController.updateWhenRequiredHandler = {
@@ -425,7 +421,7 @@ final class RootRouterTests: TestCase {
 
         waitForExpectations()
 
-        XCTAssertEqual(self.exposureController.updateWhenRequiredCallCount, 1)
+        XCTAssertEqual(exposureController.updateWhenRequiredCallCount, 1)
     }
 
     // MARK: - Handling Notifications

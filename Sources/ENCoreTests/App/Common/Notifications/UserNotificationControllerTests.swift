@@ -10,18 +10,18 @@ import ENFoundation
 import XCTest
 
 class UserNotificationControllerTests: TestCase {
-
     private var mockUserNotificationCenter: UserNotificationCenterMock!
     private var sut: UserNotificationController!
+    private var storageController = StorageControllingMock()
 
     override func setUpWithError() throws {
-
         mockUserNotificationCenter = UserNotificationCenterMock()
         mockUserNotificationCenter.getAuthorizationStatusHandler = { completion in
             completion(.authorized)
         }
 
-        sut = UserNotificationController(userNotificationCenter: mockUserNotificationCenter)
+        sut = UserNotificationController(userNotificationCenter: mockUserNotificationCenter,
+                                         storageController: storageController)
     }
 
     func test_getIsAuthorized_shouldCallUserNotificationCenter() {
@@ -233,7 +233,6 @@ class UserNotificationControllerTests: TestCase {
     }
 
     func test_displayExposureNotification() throws {
-
         XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
 
         // Act

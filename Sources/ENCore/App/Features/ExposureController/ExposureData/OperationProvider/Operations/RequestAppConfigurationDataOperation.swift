@@ -24,11 +24,56 @@ struct ApplicationConfiguration: Codable, Equatable {
     let decativated: Bool
     let appointmentPhoneNumber: String
     let featureFlags: [FeatureFlag]
+    var scheduledNotification: ScheduledNotification?
     let shareKeyURL: String?
-    
+
     struct FeatureFlag: Codable, Equatable {
         let id: String
         let featureEnabled: Bool
+    }
+
+    struct ScheduledNotification: Codable, Equatable {
+        let scheduledDateTime: String
+        let title: String
+        let body: String
+        let targetScreen: String
+
+        func scheduledDateTimeComponents() -> DateComponents? {
+            guard let scheduledDate = Date().toDate(scheduledDateTime) else {
+                return nil
+            }
+
+            let scheduledDateComponents = Calendar.current.dateComponents([
+                .year,
+                .month,
+                .day,
+                .hour,
+                .minute,
+                .timeZone
+            ],
+            from: scheduledDate)
+
+            var date = DateComponents()
+            date.year = scheduledDateComponents.year
+            date.month = scheduledDateComponents.month
+            date.day = scheduledDateComponents.day
+            date.hour = scheduledDateComponents.hour
+            date.minute = scheduledDateComponents.minute
+            date.timeZone = scheduledDateComponents.timeZone
+
+            return date
+        }
+
+        func getTargetScreen() -> TargetScreen {
+            if targetScreen.lowercased() == "share" {
+                return .share
+            }
+            return .main
+        }
+
+        enum TargetScreen {
+            case main, share
+        }
     }
 }
 
@@ -38,7 +83,6 @@ protocol RequestAppConfigurationDataOperationProtocol {
 }
 
 final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOperationProtocol, Logging {
-    
     init(networkController: NetworkControlling,
          storageController: StorageControlling,
          applicationSignatureController: ApplicationSignatureControlling,
@@ -48,27 +92,26 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
         self.applicationSignatureController = applicationSignatureController
         self.appConfigurationIdentifier = appConfigurationIdentifier
     }
-    
+
     // MARK: - ExposureDataOperation
-    
+
     func execute() -> Single<ApplicationConfiguration> {
-        self.logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
-        
-        let configurationSingle = Single<ApplicationConfiguration>.create { (observer) in
-            
+        logDebug("Started executing RequestAppConfigurationDataOperation with identifier: \(appConfigurationIdentifier)")
+
+        let configurationSingle = Single<ApplicationConfiguration>.create { observer in
+
             if let appConfiguration = self.applicationSignatureController.retrieveStoredConfiguration(),
-               let storedSignature = self.applicationSignatureController.retrieveStoredSignature(),
-               appConfiguration.identifier == self.appConfigurationIdentifier,
-               storedSignature == self.applicationSignatureController.signature(for: appConfiguration) {
-                
+                let storedSignature = self.applicationSignatureController.retrieveStoredSignature(),
+                appConfiguration.identifier == self.appConfigurationIdentifier,
+                storedSignature == self.applicationSignatureController.signature(for: appConfiguration) {
                 self.logDebug("RequestAppConfigurationDataOperation: Using cached version")
-                
+
                 observer(.success(appConfiguration))
                 return Disposables.create()
             }
-            
+
             self.logDebug("RequestAppConfigurationDataOperation: Using network version")
-            
+
             return self.networkController
                 .applicationConfiguration(identifier: self.appConfigurationIdentifier)
                 .observe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
@@ -77,18 +120,18 @@ final class RequestAppConfigurationDataOperation: RequestAppConfigurationDataOpe
                 .flatMap(self.storeSignature)
                 .subscribe(observer)
         }
-        
+
         return configurationSingle.subscribe(on: ConcurrentDispatchQueueScheduler(qos: .userInitiated))
     }
-    
+
     private func storeAppConfiguration(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return applicationSignatureController.storeAppConfiguration(appConfiguration)
     }
-    
+
     private func storeSignature(_ appConfiguration: ApplicationConfiguration) -> Single<ApplicationConfiguration> {
         return applicationSignatureController.storeSignature(for: appConfiguration)
     }
-    
+
     private let networkController: NetworkControlling
     private let storageController: StorageControlling
     private let applicationSignatureController: ApplicationSignatureControlling

@@ -12,23 +12,23 @@ struct TreatmentPerspective: Codable {
     let guidance: Guidance
 
     struct Guidance: Codable {
-        
+
         internal init(layoutByRelativeExposureDay: [TreatmentPerspective.RelativeExposureDayLayout]? = nil, layout: [TreatmentPerspective.LayoutElement]? = nil) {
             self.layoutByRelativeExposureDay = layoutByRelativeExposureDay
             self.layout = layout
         }
-        
+
         let layoutByRelativeExposureDay: [RelativeExposureDayLayout]?
         let layout: [LayoutElement]?
     }
-    
+
     struct RelativeExposureDayLayout: Codable {
         internal init(exposureDaysLowerBoundary: Int, exposureDaysUpperBoundary: Int? = nil, layout: [TreatmentPerspective.LayoutElement]) {
             self.exposureDaysLowerBoundary = exposureDaysLowerBoundary
             self.exposureDaysUpperBoundary = exposureDaysUpperBoundary
             self.layout = layout
         }
-        
+
         let exposureDaysLowerBoundary: Int
         let exposureDaysUpperBoundary: Int?
         let layout: [LayoutElement]

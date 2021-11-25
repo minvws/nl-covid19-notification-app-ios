@@ -42,7 +42,7 @@ private final class ExposureDataOperationProviderDependencyProvider: DependencyP
     }
 
     var userNotificationController: UserNotificationControlling {
-        return UserNotificationController()
+        return UserNotificationController(storageController: dependency.storageController)
     }
 
     var application: ApplicationControlling {

@@ -11,7 +11,7 @@ extension Date {
     func isBefore(_ otherDate: Date) -> Bool {
         otherDate.timeIntervalSince(self) > 0
     }
-    
+
     var startOfDay: Date? {
         let calendar = Calendar(identifier: .gregorian)
         var components = calendar.dateComponents([.day, .month, .year], from: self)
@@ -20,5 +20,14 @@ extension Date {
         components.second = 0
         components.timeZone = TimeZone(secondsFromGMT: 0)
         return calendar.date(from: components)
+    }
+
+    func toDate(_ string: String, withFormat format: String = "yyyy-MM-dd'T'HH:mm:ssZ") -> Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = format
+        guard let date = dateFormatter.date(from: string) else {
+            return nil
+        }
+        return date
     }
 }

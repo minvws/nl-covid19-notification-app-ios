@@ -44,7 +44,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             return appConfig
         }
-        
+
         let exp = expectation(description: "Completion")
 
         operation.execute()
@@ -59,7 +59,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
 
         XCTAssertEqual(mockNetworkController.applicationConfigurationCallCount, 0)
     }
-    
+
     func test_execute_withStoredConfiguration_andCorrectSignature_shouldReturnStoredAppConfiguration() {
         let appConfig = createApplicationConfiguration()
 
@@ -211,6 +211,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             decativated: false,
             appointmentPhoneNumber: "",
             featureFlags: [],
+            scheduledNotification: nil,
             shareKeyURL: "http://www.coronatest.nl"
         )
     }

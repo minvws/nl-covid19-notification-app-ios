@@ -19,7 +19,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable(history: present = true; dismiss = true; presentInNavigationController = true)
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, EndOfLifeListener, WebviewListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, EndOfLifeListener, WebviewListener, ShareSheetListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool, presentFullScreen: Bool)
@@ -30,6 +30,17 @@ protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMe
 }
 
 final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint, Logging {
+    func detachSharing(shouldHideViewController: Bool) {
+        guard let shareViewController = shareViewController else {
+            return
+        }
+        self.shareViewController = nil
+
+        if shouldHideViewController {
+            viewController.dismiss(viewController: shareViewController, animated: true, completion: nil)
+        }
+    }
+
     // MARK: - Initialisation
 
     init(viewController: RootViewControllable,
@@ -52,7 +63,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          userNotificationController: UserNotificationControlling,
          currentAppVersion: String,
          environmentController: EnvironmentControlling,
-         pauseController: PauseControlling) {
+         pauseController: PauseControlling,
+         shareBuilder: ShareSheetBuildable) {
         self.launchScreenBuilder = launchScreenBuilder
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
@@ -80,6 +92,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
         self.environmentController = environmentController
         self.pauseController = pauseController
+
+        self.shareBuilder = shareBuilder
 
         super.init(viewController: viewController)
 
@@ -330,6 +344,17 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
+    func routeToSharing() {
+        guard shareViewController == nil else {
+            return
+        }
+
+        let shareViewController = shareBuilder.build(withListener: viewController, items: [])
+        self.shareViewController = shareViewController
+
+        viewController.present(viewController: shareViewController, animated: true, completion: nil)
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -500,6 +525,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     () // Do nothing
                 case .pauseEnded:
                     () // Do nothing
+                case .remoteScheduled:
+                    if self?.exposureController.getScheduledNotificaton()?.getTargetScreen() == .share {
+                        strongSelf.routeToSharing()
+                        return
+                    }
+                    strongSelf.routeToMain()
                 }
             })
             .disposed(by: disposeBag)
@@ -551,6 +582,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let environmentController: EnvironmentControlling
     private let pauseController: PauseControlling
+
+    private let shareBuilder: ShareSheetBuildable
+    private var shareViewController: ViewControllable?
 }
 
 private extension ExposureActiveState {

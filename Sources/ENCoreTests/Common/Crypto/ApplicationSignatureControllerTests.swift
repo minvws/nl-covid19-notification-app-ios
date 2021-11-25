@@ -187,6 +187,7 @@ class ApplicationSignatureControllerTests: TestCase {
             decativated: false,
             appointmentPhoneNumber: "",
             featureFlags: [],
+            scheduledNotification: nil,
             shareKeyURL: "http://www.coronatest.nl"
         )
     }

@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import Foundation
 import RxSwift
 import UserNotifications
-import ENFoundation
 
 /// @mockable(history: pause = true)
 protocol ExposureControlling: AnyObject {
@@ -32,7 +32,7 @@ protocol ExposureControlling: AnyObject {
 
     // MARK: - Updates
 
-    func refreshStatus(completion: (() -> Void)?)
+    func refreshStatus(completion: (() -> ())?)
 
     func updateWhenRequired() -> Completable
     func processPendingUploadRequests() -> Completable
@@ -75,7 +75,7 @@ protocol ExposureControlling: AnyObject {
     func clearUnseenExposureNotificationDate()
 
     func updateExposureFirstNotificationReceivedDate(_ date: Date)
-    
+
     /// Sequentially runs `updateWhenRequired` then `processPendingUploadRequests`
     func updateAndProcessPendingUploads() -> Completable
 
@@ -93,11 +93,13 @@ protocol ExposureControlling: AnyObject {
 
     /// Updates the treatment perspective message
     func updateTreatmentPerspective() -> Completable
-    
+
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
 
+    func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification?
+
     func getStoredShareKeyURL() -> String?
-    
+
     // MARK: - Onboarding
 
     /// Whether the user runs the app for the first time
@@ -116,7 +118,7 @@ protocol ExposureControlling: AnyObject {
 
     /// Get the latest  TEK processing date
     func lastTEKProcessingDate() -> Observable<Date?>
-    
+
     func updateLastExposureProcessingDateSubject()
 }
 
@@ -199,7 +201,7 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     var exposureManager: ExposureManaging {
         return dependency.exposureManager
     }
-    
+
     var cellularDataStream: CellularDataStreaming {
         CellularDataStream()
     }
@@ -211,7 +213,7 @@ private final class ExposureControllerDependencyProvider: DependencyProvider<Exp
     }
 
     fileprivate var userNotificationController: UserNotificationControlling {
-        return UserNotificationController()
+        return UserNotificationController(storageController: storageController)
     }
 
     fileprivate var currentAppVersion: String {

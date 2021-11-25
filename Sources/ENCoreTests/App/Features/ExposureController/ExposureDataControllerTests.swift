@@ -12,7 +12,6 @@ import RxSwift
 import XCTest
 
 final class ExposureDataControllerTests: TestCase {
-
     private var sut: ExposureDataController!
     private var mockOperationProvider: ExposureDataOperationProviderMock!
     private var mockStorageController: StorageControllingMock!
@@ -144,7 +143,6 @@ final class ExposureDataControllerTests: TestCase {
 
         mockStorageController.storeHandler = { data, key, _ in
             if (key as? StoreKey)?.asString == ExposureDataStorageKey.ignoreFirstV2Exposure.asString {
-
                 let jsonDecoder = JSONDecoder()
                 let receivedBoolean = try! jsonDecoder.decode(Bool.self, from: data)
                 XCTAssertTrue(receivedBoolean)
@@ -183,7 +181,7 @@ final class ExposureDataControllerTests: TestCase {
 
         let treatmentPerspectiveOperationMock = UpdateTreatmentPerspectiveDataOperationProtocolMock()
         treatmentPerspectiveOperationMock.executeHandler = {
-            return .empty()
+            .empty()
         }
         mockOperationProvider.updateTreatmentPerspectiveDataOperation = treatmentPerspectiveOperationMock
 
@@ -212,7 +210,7 @@ final class ExposureDataControllerTests: TestCase {
 
         let uploadOperationMock = UploadDiagnosisKeysDataOperationProtocolMock()
         uploadOperationMock.executeHandler = {
-            return .empty()
+            .empty()
         }
 
         mockOperationProvider.uploadDiagnosisKeysOperationHandler = { _, _, _ in
@@ -529,7 +527,7 @@ final class ExposureDataControllerTests: TestCase {
     func test_isKnownPreviousExposureDate_withNoPreviousDate() {
         // Arrange
         mockStorageController.retrieveDataHandler = { _ in
-            return nil
+            nil
         }
 
         // Act
@@ -541,8 +539,7 @@ final class ExposureDataControllerTests: TestCase {
 
     func test_addPreviousExposureDate() {
         // Arrange
-        mockStorageController.removeDataHandler = { key, _ in
-            return
+        mockStorageController.removeDataHandler = { _, _ in
         }
 
         let exposureDate = currentDate().startOfDay!
@@ -874,7 +871,6 @@ final class ExposureDataControllerTests: TestCase {
     @discardableResult
     private func mockExpiredLabConfirmationNotificationOperation(in mockOperationProvider: ExposureDataOperationProviderMock,
                                                                  andExpectation expectation: XCTestExpectation? = nil) -> ExpiredLabConfirmationNotificationDataOperationProtocolMock {
-
         let operationMock = ExpiredLabConfirmationNotificationDataOperationProtocolMock()
         operationMock.executeHandler = {
             expectation?.fulfill()
@@ -886,10 +882,9 @@ final class ExposureDataControllerTests: TestCase {
 
     @discardableResult
     private func mockUploadDiagnosisKeysOperation(in mockOperationProvider: ExposureDataOperationProviderMock) -> UploadDiagnosisKeysDataOperationProtocolMock {
-
         let operationMock = UploadDiagnosisKeysDataOperationProtocolMock()
         operationMock.executeHandler = {
-            return .empty()
+            .empty()
         }
         mockOperationProvider.uploadDiagnosisKeysOperationHandler = { _, _, _ in operationMock }
         return operationMock
@@ -897,10 +892,9 @@ final class ExposureDataControllerTests: TestCase {
 
     @discardableResult
     private func mockRequestLabConfirmationKeyOperation(in mockOperationProvider: ExposureDataOperationProviderMock) -> RequestLabConfirmationKeyDataOperationProtocolMock {
-
         let operationMock = RequestLabConfirmationKeyDataOperationProtocolMock()
         operationMock.executeHandler = {
-            return .just(.testData())
+            .just(.testData())
         }
         mockOperationProvider.requestLabConfirmationKeyOperationHandler = { _ in operationMock }
         return operationMock
@@ -934,7 +928,7 @@ private extension ApplicationManifest {
 
 private extension ApplicationConfiguration {
     static func testData(manifestRefreshFrequency: Int = 3600, featureFlags: [ApplicationConfiguration.FeatureFlag] = [], deactivated: Bool = false) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: deactivated, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: featureFlags, shareKeyURL: "http://www.coronatest.nl")
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: deactivated, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: featureFlags, scheduledNotification: nil, shareKeyURL: "http://www.coronatest.nl")
     }
 }
 

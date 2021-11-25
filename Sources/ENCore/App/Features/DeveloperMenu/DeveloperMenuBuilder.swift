@@ -46,7 +46,7 @@ private final class DeveloperMenuDependencyProvider: DependencyProvider<Develope
     }
 
     var userNotificationController: UserNotificationControlling {
-        UserNotificationController()
+        UserNotificationController(storageController: dependency.storageController)
     }
 }
 
