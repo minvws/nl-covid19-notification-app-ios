@@ -352,7 +352,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let shareViewController = shareBuilder.build(withListener: viewController, items: [])
         self.shareViewController = shareViewController
 
-        viewController.present(viewController: shareViewController, animated: true, completion: nil)
+        viewController.presentInNavigationController(viewController: shareViewController, animated: true, presentFullScreen: false)
     }
 
     // MARK: - Private
