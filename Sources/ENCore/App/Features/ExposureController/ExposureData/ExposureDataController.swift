@@ -311,7 +311,7 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
             return nil
         }
-        return storedAppConfig.scheduledNotification
+        return storedAppConfig.notification
     }
 
     var isAppPaused: Bool {

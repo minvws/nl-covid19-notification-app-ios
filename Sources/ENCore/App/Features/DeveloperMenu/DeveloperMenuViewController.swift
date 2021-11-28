@@ -40,7 +40,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
          exposureController: ExposureControlling,
          storageController: StorageControlling,
          featureFlagController: FeatureFlagControlling,
-         userNotificationController: UserNotificationControlling) {
+         userNotificationController: UserNotificationControlling,
+         backgroundController: BackgroundControlling) {
         self.listener = listener
         self.mutableExposureStateStream = mutableExposureStateStream
         self.mutableNetworkConfigurationStream = mutableNetworkConfigurationStream
@@ -48,7 +49,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
         self.storageController = storageController
         self.featureFlagController = featureFlagController
         self.userNotificationController = userNotificationController
-
+        self.backgroundController = backgroundController
         super.init(theme: theme)
 
         attach()
@@ -184,6 +185,9 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               action: { [weak self] in self?.listener?.developerMenuRequestUpdateApp(appStoreURL: "https://apps.apple.com/nl/app/id1517652429", minimumVersionMessage: nil) })
             ]),
             ("Exposure", [
+                DeveloperItem(title: "Execute background refresh task",
+                              subtitle: "Will perform all tasks normally executed in the background",
+                              action: { [weak self] in self?.backgroundController.refresh(task: nil) }),
                 DeveloperItem(title: "Change Exposure State",
                               subtitle: "Current: \(mutableExposureStateStream.currentExposureState.activeState.asString)",
                               action: { [weak self] in self?.changeExposureState() }),
@@ -901,16 +905,16 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                                   return
                               }
 
-                              appConfiguration.scheduledNotification = ApplicationConfiguration.ScheduledNotification(scheduledDateTime: "Can be ignored while testing",
-                                                                                                                      title: "Scheduled Remote Notification",
-                                                                                                                      body: "Routing to \(screen)",
-                                                                                                                      targetScreen: screen)
+                              appConfiguration.notification = ApplicationConfiguration.ScheduledNotification(scheduledDateTime: "Can be ignored while testing",
+                                                                                                             title: "Scheduled Remote Notification",
+                                                                                                             body: "Routing to \(screen)",
+                                                                                                             targetScreen: screen)
 
                               self?.storageController.store(object: appConfiguration, identifiedBy: ExposureDataStorageKey.appConfiguration) { _ in }
-                              self?.userNotificationController.scheduleRemoteNotification(title: appConfiguration.scheduledNotification?.title ?? "",
-                                                                                          body: appConfiguration.scheduledNotification?.body ?? "",
+                              self?.userNotificationController.scheduleRemoteNotification(title: appConfiguration.notification?.title ?? "",
+                                                                                          body: appConfiguration.notification?.body ?? "",
                                                                                           date: date,
-                                                                                          targetScreen: appConfiguration.scheduledNotification?.targetScreen ?? "")
+                                                                                          targetScreen: appConfiguration.notification?.targetScreen ?? "")
                           })
         ]
 
@@ -926,6 +930,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
     private let storageController: StorageControlling
     private let featureFlagController: FeatureFlagControlling
     private let userNotificationController: UserNotificationControlling
+    private let backgroundController: BackgroundControlling
     private var disposeBag = DisposeBag()
 
     private var isFetchingKeys: Bool {
