@@ -56,7 +56,7 @@ extension AppConfig {
                                         decativated: coronaMelderDeactivated == "deactivated",
                                         appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
                                         featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
-                                        scheduledNotification: scheduledNotification?.asApplicationConfigurationNotification(),
+                                        notification: notification?.asApplicationConfigurationNotification(),
                                         shareKeyURL: shareKeyURL)
     }
 }

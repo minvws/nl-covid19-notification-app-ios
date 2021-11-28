@@ -185,7 +185,7 @@ final class NetworkManagerTests: TestCase {
 
     func test_getAppConfig_requestSuccessShouldReturnModel() throws {
 
-        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], scheduledNotification: nil, shareKeyURL: "http://www.coronatest.nl")
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl")
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)
@@ -209,7 +209,7 @@ final class NetworkManagerTests: TestCase {
 
     func test_getAppConfig_unzipErrorShouldReturnError() throws {
 
-        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], scheduledNotification: nil, shareKeyURL: "http://www.coronatest.nl")
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl")
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)
@@ -233,7 +233,7 @@ final class NetworkManagerTests: TestCase {
 
     func test_getAppConfig_validateSignatureErrorShouldReturnError() throws {
 
-        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], scheduledNotification: nil, shareKeyURL: "http://www.coronatest.nl")
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl")
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)
@@ -257,7 +257,7 @@ final class NetworkManagerTests: TestCase {
 
     func test_getAppConfig_ReadFromDiskErrorShouldReturnError() throws {
 
-        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], scheduledNotification: nil, shareKeyURL: "http://www.coronatest.nl")
+        let mockModel = AppConfig(version: 1, manifestFrequency: 10, decoyProbability: 2, appStoreURL: "someurl", iOSMinimumVersion: "1.0.0", iOSMinimumVersionMessage: "", iOSAppStoreURL: "", requestMinimumSize: 10, requestMaximumSize: 20, repeatedUploadDelay: nil, coronaMelderDeactivated: nil, appointmentPhoneNumber: nil, featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl")
         let mockData = try JSONEncoder().encode(mockModel)
 
         mockUrlSession(mockData: mockData)

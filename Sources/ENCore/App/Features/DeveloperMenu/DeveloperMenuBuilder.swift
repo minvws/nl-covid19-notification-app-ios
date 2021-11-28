@@ -28,6 +28,7 @@ protocol DeveloperMenuDependency {
     var mutableNetworkConfigurationStream: MutableNetworkConfigurationStreaming { get }
     var exposureController: ExposureControlling { get }
     var storageController: StorageControlling { get }
+    var backgroundController: BackgroundControlling { get }
 }
 
 private final class DeveloperMenuDependencyProvider: DependencyProvider<DeveloperMenuDependency> {
@@ -61,6 +62,7 @@ final class DeveloperMenuBuilder: Builder<DeveloperMenuDependency>, DeveloperMen
                                            exposureController: dependencyProvider.dependency.exposureController,
                                            storageController: dependencyProvider.dependency.storageController,
                                            featureFlagController: dependencyProvider.featureFlagController,
-                                           userNotificationController: dependencyProvider.userNotificationController)
+                                           userNotificationController: dependencyProvider.userNotificationController,
+                                           backgroundController: dependencyProvider.dependency.backgroundController)
     }
 }

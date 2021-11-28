@@ -22,7 +22,7 @@ extension Date {
         return calendar.date(from: components)
     }
 
-    func toDate(_ string: String, withFormat format: String = "yyyy-MM-dd'T'HH:mm:ssZ") -> Date? {
+    static func toDate(_ string: String, withFormat format: String = "yyyy-MM-dd'T'HH:mm:ssZ") -> Date? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
         guard let date = dateFormatter.date(from: string) else {
