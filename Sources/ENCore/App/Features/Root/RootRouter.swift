@@ -344,7 +344,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
-    func routeToSharing() {
+    func routeToSharing(shouldAnimate: Bool = false) {
         guard shareViewController == nil else {
             return
         }
@@ -352,7 +352,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let shareViewController = shareBuilder.build(withListener: viewController, items: [])
         self.shareViewController = shareViewController
 
-        viewController.presentInNavigationController(viewController: shareViewController, animated: true, presentFullScreen: false)
+        viewController.presentInNavigationController(viewController: shareViewController, animated: shouldAnimate, presentFullScreen: false)
     }
 
     // MARK: - Private
@@ -530,7 +530,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         strongSelf.routeToSharing()
                         return
                     }
-                    strongSelf.routeToMain()
                 }
             })
             .disposed(by: disposeBag)
