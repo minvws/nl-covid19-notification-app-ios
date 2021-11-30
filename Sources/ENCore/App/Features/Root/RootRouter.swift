@@ -267,6 +267,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         routeToMain()
+        subscribeToPushNotificationStream()
         detachOnboarding(animated: animated)
     }
 
