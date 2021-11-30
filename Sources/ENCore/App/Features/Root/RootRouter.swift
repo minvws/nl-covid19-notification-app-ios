@@ -535,7 +535,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                         self?.logDebug("Routing to: share")
                         return
                     }
-                    self?.logDebug("Routing to: main")
                     () // Do nothing
                 }
             })
