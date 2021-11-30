@@ -346,7 +346,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     }
 
     func routeToSharing(shouldAnimate: Bool = false) {
-        if shareViewController != nil { detachSharing(shouldHideViewController: true) }
+        guard shareViewController == nil else {
+            return
+        }
 
         let shareViewController = shareBuilder.build(withListener: viewController, items: [])
         self.shareViewController = shareViewController
@@ -526,7 +528,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     () // Do nothing
                 case .remoteScheduled:
 
-                    self?.logDebug("Should route to: \(self?.exposureController.getScheduledNotificaton()?.getTargetScreen() == .share ? "share" : "main")")
+                    self?.logDebug("Should route to: \(String(describing: self?.exposureController.getScheduledNotificaton()?.getTargetScreen()))")
 
                     if self?.exposureController.getScheduledNotificaton()?.getTargetScreen() == .share {
                         strongSelf.routeToSharing()
