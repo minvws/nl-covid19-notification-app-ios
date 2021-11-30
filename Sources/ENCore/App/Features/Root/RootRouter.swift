@@ -267,6 +267,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         routeToMain()
+        subscribeToPushNotificationStream()
         detachOnboarding(animated: animated)
     }
 
@@ -526,10 +527,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 case .pauseEnded:
                     () // Do nothing
                 case .remoteScheduled:
+
+                    self?.logDebug("Should route to: \(String(describing: self?.exposureController.getScheduledNotificaton()?.getTargetScreen()))")
+
                     if self?.exposureController.getScheduledNotificaton()?.getTargetScreen() == .share {
                         strongSelf.routeToSharing()
+                        self?.logDebug("Routing to: share")
                         return
                     }
+                    () // Do nothing
                 }
             })
             .disposed(by: disposeBag)
