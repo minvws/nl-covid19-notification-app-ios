@@ -144,6 +144,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 if strongSelf.exposureController.didCompleteOnboarding {
                     strongSelf.backgroundController.scheduleTasks()
+                    strongSelf.backgroundController.scheduleRemoteNotification()
                 }
 
                 guard !didRoute else {

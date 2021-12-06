@@ -913,7 +913,7 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               self?.storageController.store(object: appConfiguration, identifiedBy: ExposureDataStorageKey.appConfiguration) { _ in }
                               self?.userNotificationController.scheduleRemoteNotification(title: appConfiguration.notification?.title ?? "",
                                                                                           body: appConfiguration.notification?.body ?? "",
-                                                                                          date: date,
+                                                                                          dateComponents: date,
                                                                                           targetScreen: appConfiguration.notification?.targetScreen ?? "")
                           })
         ]

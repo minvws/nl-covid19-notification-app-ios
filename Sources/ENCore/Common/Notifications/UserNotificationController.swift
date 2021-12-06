@@ -32,7 +32,7 @@ protocol UserNotificationControlling {
     func displayExposureReminderNotification(daysSinceLastExposure: Int, completion: @escaping (_ success: Bool) -> ())
     func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ())
     func displayUploadFailedNotification()
-    func scheduleRemoteNotification(title: String, body: String, date: DateComponents, targetScreen: String)
+    func scheduleRemoteNotification(title: String, body: String, dateComponents: DateComponents, targetScreen: String)
 }
 
 /// Internal representation mirroring UNAuthorizationStatus
@@ -196,42 +196,48 @@ class UserNotificationController: UserNotificationControlling, Logging {
                         trigger: trigger)
     }
 
-    func scheduleRemoteNotification(title: String, body: String, date: DateComponents, targetScreen: String) {
-        removeScheduledRemoteNotification()
+    func scheduleRemoteNotification(title: String, body: String, dateComponents: DateComponents, targetScreen: String) {
 
-        let trigger = UNCalendarNotificationTrigger(dateMatching: date, repeats: false)
+        guard let notificationDate = Calendar.current.date(from: dateComponents), notificationDate.isAfter(currentDate()) else {
+            logDebug("scheduleRemoteNotification: remote notification NOT scheduled because desired date / time is in the past")
+            return
+        }
 
-        if let notification: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) {
-            let resource = notification.resources[.treatmentPerspectiveLanguage]
-            let fallbackResource = notification.resources["en"]
+        guard let resourceBundle: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective) else {
+            logDebug("scheduleRemoteNotification: remote notification NOT scheduled there is no resourcebundle for translations available")
+            return
+        }
 
-            if let localizedTitle = resource?[title], let localizedBody = resource?[body] {
+        let resource = resourceBundle.resources[.treatmentPerspectiveLanguage]
+        let fallbackResource = resourceBundle.resources["en"]
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
 
-                logDebug("scheduleRemoteNotification: title: \(localizedTitle), body:\(localizedBody), date: \(date), targetScreen: \(targetScreen)")
+        if let localizedTitle = resource?[title], let localizedBody = resource?[body] {
 
-                addNotification(title: localizedTitle,
-                                body: localizedBody,
+            logDebug("scheduleRemoteNotification: title: \(localizedTitle), body:\(localizedBody), date: \(notificationDate), targetScreen: \(targetScreen)")
+
+            addNotification(title: localizedTitle,
+                            body: localizedBody,
+                            identifier: .remoteScheduled,
+                            trigger: trigger)
+        } else if let fallbackTitle = fallbackResource?[title], let fallbackBody = fallbackResource?[body] {
+
+            logDebug("scheduleRemoteNotification: title: \(fallbackTitle), body:\(fallbackBody), date: \(notificationDate), targetScreen: \(targetScreen)")
+
+            addNotification(title: fallbackTitle,
+                            body: fallbackBody,
+                            identifier: .remoteScheduled,
+                            trigger: trigger)
+        } else {
+            #if DEBUG || USE_DEVELOPER_MENU
+
+                logDebug("scheduleRemoteNotification: title: \(title), body:\(body), date: \(notificationDate), targetScreen: \(targetScreen)")
+
+                addNotification(title: title,
+                                body: body,
                                 identifier: .remoteScheduled,
                                 trigger: trigger)
-            } else if let fallbackTitle = fallbackResource?[title], let fallbackBody = fallbackResource?[body] {
-
-                logDebug("scheduleRemoteNotification: title: \(fallbackTitle), body:\(fallbackBody), date: \(date), targetScreen: \(targetScreen)")
-
-                addNotification(title: fallbackTitle,
-                                body: fallbackBody,
-                                identifier: .remoteScheduled,
-                                trigger: trigger)
-            } else {
-                #if DEBUG || USE_DEVELOPER_MENU
-
-                    logDebug("scheduleRemoteNotification: title: \(title), body:\(body), date: \(date), targetScreen: \(targetScreen)")
-
-                    addNotification(title: title,
-                                    body: body,
-                                    identifier: .remoteScheduled,
-                                    trigger: trigger)
-                #endif
-            }
+            #endif
         }
     }
 

@@ -21,6 +21,7 @@ protocol BackgroundControlling {
     func handle(task: BackgroundTask)
     func removeAllTasks()
     func performDecoySequenceIfNeeded()
+    func scheduleRemoteNotification()
 }
 
 protocol BackgroundDependency {

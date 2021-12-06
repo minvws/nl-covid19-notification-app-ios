@@ -12,6 +12,10 @@ extension Date {
         otherDate.timeIntervalSince(self) > 0
     }
 
+    func isAfter(_ otherDate: Date) -> Bool {
+        otherDate.timeIntervalSince(self) < 0
+    }
+
     var startOfDay: Date? {
         let calendar = Calendar(identifier: .gregorian)
         var components = calendar.dateComponents([.day, .month, .year], from: self)
