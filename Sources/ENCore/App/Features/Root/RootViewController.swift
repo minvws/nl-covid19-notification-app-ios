@@ -50,7 +50,7 @@ protocol RootRouting: Routing {
     // Detaches the webview
     func detachWebview(shouldDismissViewController: Bool)
 
-    func routeToSharing()
+    func routeToSharing(shouldAnimate: Bool)
     func detachSharing(shouldHideViewController: Bool)
 }
 

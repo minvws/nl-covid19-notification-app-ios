@@ -211,7 +211,7 @@ final class RequestAppConfigurationDataOperationTests: TestCase {
             decativated: false,
             appointmentPhoneNumber: "",
             featureFlags: [],
-            scheduledNotification: nil,
+            notification: nil,
             shareKeyURL: "http://www.coronatest.nl"
         )
     }

@@ -230,7 +230,7 @@ final class BackgroundController: BackgroundControlling, Logging {
             sequence = [
                 removePreviousExposureDateIfNeeded(),
                 displayPauseExpirationReminderIfNeeded(),
-                scheduleRemoteNotification()
+                scheduleRemoteNotificationCompletable()
             ]
 
         } else {
@@ -245,7 +245,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 updateTreatmentPerspective(),
                 sendExposureReminderNotificationIfNeeded(),
                 processDecoyRegisterAndStopKeys(),
-                scheduleRemoteNotification()
+                scheduleRemoteNotificationCompletable()
             ]
         }
 
@@ -564,35 +564,36 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
-    private func scheduleRemoteNotification() -> Completable {
+    private func scheduleRemoteNotificationCompletable() -> Completable {
         logDebug("Background: scheduleRemoteNotification()")
 
-        userNotificationController.removeScheduledRemoteNotification()
-
         return .create { (observer) -> Disposable in
-            guard let notification = self.exposureController
-                .getScheduledNotificaton() else {
-                self.logDebug("Background: No remote notification to schedule")
-                observer(.completed)
-                return Disposables.create()
-            }
-
-            guard let scheduledDate = notification.scheduledDateTimeComponents() else {
-                self.logError("Background: Could not schedule remote notification: no scheduledDateTimeComponents()")
-                observer(.completed)
-                return Disposables.create()
-            }
-
-            self.userNotificationController.scheduleRemoteNotification(title: notification.title,
-                                                                       body: notification.body,
-                                                                       date: scheduledDate,
-                                                                       targetScreen: notification.targetScreen)
-
-            self.logDebug("Background: Scheduled remote notification: `\(notification.title) - \(notification.body) at \(notification.scheduledDateTime)` ✅")
-
+            self.scheduleRemoteNotification()
             observer(.completed)
             return Disposables.create()
         }
+    }
+
+    func scheduleRemoteNotification() {
+
+        userNotificationController.removeScheduledRemoteNotification()
+
+        guard let notification = exposureController.getScheduledNotificaton() else {
+            logDebug("Remote Notification: No remote notification to schedule")
+            return
+        }
+
+        guard let scheduledDate = notification.scheduledDateTimeComponents() else {
+            logError("Remote Notification: Could not schedule remote notification: no scheduledDateTimeComponents()")
+            return
+        }
+
+        userNotificationController.scheduleRemoteNotification(title: notification.title,
+                                                              body: notification.body,
+                                                              dateComponents: scheduledDate,
+                                                              targetScreen: notification.targetScreen)
+
+        logDebug("Scheduled remote notification: `\(notification.title) - \(notification.body) at \(notification.scheduledDateTime)` ✅")
     }
 
     private var isExposureManagerActive: Bool {

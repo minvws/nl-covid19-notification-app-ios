@@ -24,7 +24,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let decativated: Bool
     let appointmentPhoneNumber: String
     let featureFlags: [FeatureFlag]
-    var scheduledNotification: ScheduledNotification?
+    var notification: ScheduledNotification?
     let shareKeyURL: String?
 
     struct FeatureFlag: Codable, Equatable {
@@ -39,7 +39,7 @@ struct ApplicationConfiguration: Codable, Equatable {
         let targetScreen: String
 
         func scheduledDateTimeComponents() -> DateComponents? {
-            guard let scheduledDate = Date().toDate(scheduledDateTime) else {
+            guard let scheduledDate = Date.toDate(scheduledDateTime) else {
                 return nil
             }
 

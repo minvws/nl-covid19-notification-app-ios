@@ -144,6 +144,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
                 if strongSelf.exposureController.didCompleteOnboarding {
                     strongSelf.backgroundController.scheduleTasks()
+                    strongSelf.backgroundController.scheduleRemoteNotification()
                 }
 
                 guard !didRoute else {
@@ -267,6 +268,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     func detachOnboardingAndRouteToMain(animated: Bool) {
         routeToMain()
+        subscribeToPushNotificationStream()
         detachOnboarding(animated: animated)
     }
 
@@ -344,7 +346,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         }
     }
 
-    func routeToSharing() {
+    func routeToSharing(shouldAnimate: Bool = false) {
         guard shareViewController == nil else {
             return
         }
@@ -352,7 +354,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let shareViewController = shareBuilder.build(withListener: viewController, items: [])
         self.shareViewController = shareViewController
 
-        viewController.present(viewController: shareViewController, animated: true, completion: nil)
+        viewController.presentInNavigationController(viewController: shareViewController, animated: shouldAnimate, presentFullScreen: false)
     }
 
     // MARK: - Private
@@ -526,11 +528,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                 case .pauseEnded:
                     () // Do nothing
                 case .remoteScheduled:
+
+                    self?.logDebug("Should route to: \(String(describing: self?.exposureController.getScheduledNotificaton()?.getTargetScreen()))")
+
                     if self?.exposureController.getScheduledNotificaton()?.getTargetScreen() == .share {
                         strongSelf.routeToSharing()
+                        self?.logDebug("Routing to: share")
                         return
                     }
-                    strongSelf.routeToMain()
+                    () // Do nothing
                 }
             })
             .disposed(by: disposeBag)

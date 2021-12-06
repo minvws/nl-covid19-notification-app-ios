@@ -20,7 +20,7 @@ struct AppConfig: Codable {
     let coronaMelderDeactivated: String?
     let appointmentPhoneNumber: String?
     let featureFlags: [FeatureFlag]
-    var scheduledNotification: ScheduledNotification?
+    var notification: ScheduledNotification?
     let shareKeyURL: String?
 
     struct FeatureFlag: Codable {
