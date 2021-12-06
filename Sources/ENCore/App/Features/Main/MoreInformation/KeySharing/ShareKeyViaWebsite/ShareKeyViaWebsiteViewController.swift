@@ -417,6 +417,7 @@ private final class ShareKeyViaWebsiteView: View {
                                    title: .moreInformationKeySharingCoronaTestStep3Title,
                                    stepCount: 3,
                                    buttonTitle: buttonTitle,
+                                   buttonIcon: .digiD,
                                    buttonActionHandler: buttonActionHandler,
                                    isDisabled: disabled)
     }

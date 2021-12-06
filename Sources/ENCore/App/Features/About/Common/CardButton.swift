@@ -19,7 +19,7 @@ final class CardButton: Button {
     init(title: String, subtitle: String, image: UIImage?, type: CardButton.CardType = .short, theme: Theme) {
         self.image = image
         self.cardImageView = UIImageView(image: image)
-        
+
         self.cardType = type
         super.init(theme: theme)
 
@@ -39,22 +39,22 @@ final class CardButton: Button {
         fatalError("init(coder:) has not been implemented. Use designated CardButton init instead.")
     }
 
-    required init(title: String = "", theme: Theme) {
-        fatalError("init(title:theme:) has not been implemented. Use designated CardButton init instead.")
+    required init(title: String = "", theme: Theme, icon: UIImage? = nil) {
+        fatalError("init(title:theme:icon:) has not been implemented")
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         cardImageView.image = image
     }
-    
+
     // MARK: - Private
 
     private let cardTitleLabel = Label(frame: .zero)
     private let subtitleTextLabel = Label(frame: .zero)
     private let cardImageView: UIImageView
     private let cardType: CardButton.CardType
-    
+
     private let image: UIImage?
 
     private func build() {

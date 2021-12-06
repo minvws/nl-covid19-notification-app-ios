@@ -248,6 +248,7 @@ final class InfoSectionStepView: View {
 
     private var buttonActionHandler: (() -> ())?
     private var buttonTitle: String?
+    private var buttonIcon: UIImage?
     private var disabledButtonTitle: String?
 
     private let stepCountView: StepCountView
@@ -279,7 +280,7 @@ final class InfoSectionStepView: View {
             return nil
         }
 
-        let button = Button(title: buttonTitle, theme: theme)
+        let button = Button(title: buttonTitle, theme: theme, icon: buttonIcon)
         button.setTitle(disabledButtonTitle, for: .disabled)
         button.isEnabled = !isDisabled
         button.action = buttonActionHandler
@@ -319,6 +320,7 @@ final class InfoSectionStepView: View {
          stepCount: Int,
          isLastStep: Bool = false,
          buttonTitle: String? = nil,
+         buttonIcon: UIImage? = nil,
          disabledButtonTitle: String? = nil,
          buttonActionHandler: (() -> ())? = nil,
          isDisabled: Bool = false,
@@ -334,6 +336,7 @@ final class InfoSectionStepView: View {
         self.isLastStep = isLastStep
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
+        self.buttonIcon = buttonIcon
         self.disabledButtonTitle = disabledButtonTitle
         self.loadingIndicatorTitle = loadingIndicatorTitle
 
