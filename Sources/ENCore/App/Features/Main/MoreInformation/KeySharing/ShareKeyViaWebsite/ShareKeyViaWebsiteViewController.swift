@@ -38,7 +38,6 @@ enum ShareKeyViaWebsiteState {
 }
 
 final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsiteViewControllable, UIAdaptivePresentationControllerDelegate, Logging, ShareKeyViaWebsiteViewListener {
-
     weak var router: ShareKeyViaWebsiteRouting?
 
     private var disposeBag = DisposeBag()
@@ -63,6 +62,13 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
         }
     }
 
+    var overrideShowHeader: Bool?
+    var showHeader: Bool = true {
+        didSet {
+            internalView.infoView.showHeader = overrideShowHeader ?? showHeader
+        }
+    }
+
     init(theme: Theme,
          exposureController: ExposureControlling,
          exposureStateStream: ExposureStateStreaming,
@@ -81,8 +87,8 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     // MARK: - Overrides
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -92,7 +98,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
 
         navigationItem.rightBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton(sender:)))
 
-        internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+        showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
 
         internalView.listener = self
 
@@ -116,7 +122,6 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     }
 
     private func subscribeToStreams() {
-
         guard !didSubscribeToStreams else { return }
 
         exposureStateStream
@@ -131,7 +136,7 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
             .isLandscape
             .observe(on: MainScheduler.instance)
             .subscribe { [weak self] isLandscape in
-                self?.internalView.infoView.showHeader = !isLandscape
+                self?.showHeader = !isLandscape
             }.disposed(by: disposeBag)
 
         applicationLifecycleStream
@@ -281,7 +286,6 @@ final class ShareKeyViaWebsiteViewController: ViewController, ShareKeyViaWebsite
     }
 
     private func requestLabConfirmationKey() {
-
         // Only request a key if we don't already have one
         guard exposureConfirmationKey == nil else { return }
 
@@ -306,7 +310,6 @@ private protocol ShareKeyViaWebsiteViewListener: AnyObject {
 }
 
 private final class ShareKeyViaWebsiteView: View {
-
     weak var listener: ShareKeyViaWebsiteViewListener?
 
     fileprivate let infoView: InfoView
@@ -335,7 +338,7 @@ private final class ShareKeyViaWebsiteView: View {
     }
 
     fileprivate lazy var contentView: InfoSectionTextView = {
-        return InfoSectionTextView(theme: theme, content: content)
+        InfoSectionTextView(theme: theme, content: content)
     }()
 
     private lazy var stepStackView: UIStackView = {
@@ -382,7 +385,7 @@ private final class ShareKeyViaWebsiteView: View {
                                        disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Done,
                                        buttonActionHandler: { [weak self] in
                                            self?.listener?.didRequestShareCodes()
-                            }, isDisabled: true)
+                                       }, isDisabled: true)
 
         view.buttonEnabled = false
         return view
@@ -396,7 +399,7 @@ private final class ShareKeyViaWebsiteView: View {
                                        disabledButtonTitle: .moreInformationKeySharingCoronaTestStep1Button,
                                        buttonActionHandler: { [weak self] in
                                            self?.listener?.didRequestShareCodes()
-                            }, isDisabled: true)
+                                       }, isDisabled: true)
 
         view.buttonEnabled = false
         return view
@@ -440,7 +443,7 @@ private final class ShareKeyViaWebsiteView: View {
                                     headerImage: .infectedHeader,
                                     stickyButtons: false)
         self.showWebsiteLink = showWebsiteLink
-        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
+        infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
 
@@ -457,7 +460,6 @@ private final class ShareKeyViaWebsiteView: View {
     }
 
     private func updateContentView() {
-
         infoView.removeAllSections()
 
         if cardContentView.subviews.isEmpty {
@@ -486,7 +488,6 @@ private final class ShareKeyViaWebsiteView: View {
     // MARK: - Public
 
     func update(state: ShareKeyViaWebsiteState) {
-
         DispatchQueue.main.async { [weak self] in
 
             guard let self = self else { return }
@@ -498,7 +499,6 @@ private final class ShareKeyViaWebsiteView: View {
             self.stepStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
 
             switch state {
-
             case .loading:
                 self.stepStackView.addArrangedSubview(self.shareYourCodesLoading)
                 self.controlCode.set(state: .disabled)
@@ -531,11 +531,9 @@ private final class ShareKeyViaWebsiteView: View {
     // MARK: - Private
 
     fileprivate func set(cardView: UIView?) {
-
         cardContentView.subviews.forEach { $0.removeFromSuperview() }
 
         if let cardView = cardView {
-
             cardContentView.addSubview(cardView)
 
             cardView.snp.makeConstraints { make in
