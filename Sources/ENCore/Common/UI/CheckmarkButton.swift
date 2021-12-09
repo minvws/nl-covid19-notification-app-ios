@@ -25,8 +25,8 @@ final class CheckmarkButton: Button {
         fatalError("init(coder:) has not been implemented")
     }
 
-    required init(title: String = "", theme: Theme) {
-        fatalError("init(title:theme:) has not been implemented")
+    required init(title: String = "", theme: Theme, icon: UIImage? = nil) {
+        fatalError("init(title:theme:icon:) has not been implemented")
     }
 
     override var accessibilityTraits: UIAccessibilityTraits {

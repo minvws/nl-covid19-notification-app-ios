@@ -28,14 +28,14 @@ extension UIImage {
     static var warning: UIImage? { return Image.named("Warning") }
     static var coronatest: UIImage? { return Image.named("Coronatest") }
     static var coronatestHeader: UIImage? { return Image.named("CoronatestHeader") }
-    static var infected: UIImage? { return Image.named("Infected") }    
+    static var infected: UIImage? { return Image.named("Infected") }
     static var infectedHeader: UIImage? { return Image.named("InfectedHeader") }
     static var thankYouHeader: UIImage? { return Image.named("ThankYouHeader") }
     static var receivedNotificationHeader: UIImage? { return Image.named("ReceivedNotificationHeader") }
     static var coronaTestHeader: UIImage? { return Image.named("CoronatestHeader") }
     static var statusStars: UIImage? { return Image.named("StatusStars") }
     static var statusCloud1: UIImage? { return Image.named("StatusCloud1") }
-    static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }    
+    static var statusCloud2: UIImage? { return Image.named("StatusCloud2") }
     static var statusIconOk: UIImage? { return Image.named("StatusIconOk") }
     static var statusIconNotified: UIImage? { return Image.named("StatusIconNotified") }
     static var statusIconInactive: UIImage? { return Image.named("StatusIconInactive") }
@@ -59,7 +59,7 @@ extension UIImage {
     static var illustrationTrain: UIImage? { return Image.named("IllustrationTrain") }
     static var illustrationConnections: UIImage? { return Image.named("IllustrationConnections") }
     static var illustrationCheckmark: UIImage? { return Image.named("IllustrationCheckmark") }
-    
+
     static var technicalInformationStep1: UIImage? { return Image.named("TechnicalInfoStep1") }
     static var technicalInformationStep2: UIImage? { return Image.named("TechnicalInfoStep2") }
     static var technicalInformationStep3: UIImage? { return Image.named("TechnicalInfoStep3") }
@@ -87,10 +87,10 @@ extension UIImage {
     static var notification: UIImage? { return Image.named("Notification") }
     static var settingsPlain: UIImage? { return Image.named("SettingsPlain") }
     static var mobileData: UIImage? { return Image.named("MobileData") }
+    static var digiD: UIImage? { return Image.named("DigiD") }
 }
 
 extension UIImage {
-
     var aspectRatio: CGFloat {
         let width = size.width
         let height = size.height
@@ -99,5 +99,15 @@ extension UIImage {
             return 1
         }
         return width / height
+    }
+
+    func resizedTo(_ size: CGSize) -> UIImage? {
+        let frame = CGRect(origin: CGPoint.zero, size: CGSize(width: size.width, height: size.height))
+        UIGraphicsBeginImageContextWithOptions(frame.size, false, 0)
+        draw(in: frame)
+        let resizedImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        withRenderingMode(.alwaysOriginal)
+        return resizedImage
     }
 }

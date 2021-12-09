@@ -14,7 +14,6 @@ import SnapshotTesting
 import XCTest
 
 final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
-
     private var sut: ShareKeyViaWebsiteViewController!
 
     private var mockRouter: ShareKeyViaWebsiteRoutingMock!
@@ -63,6 +62,15 @@ final class ShareKeyViaWebsiteViewControllerSnapshotTests: TestCase {
 
     func test_snapshot_stateLoading() {
         sut.state = .loading
+        snapshots(matching: sut, waitForMainThread: true)
+    }
+
+    func test_snapshot_shareKeyButtonWithIcon() {
+        mockExposureController.getStoredShareKeyURLHandler = {
+            "http://www.someurl.com"
+        }
+        sut.state = .keysUploaded(confirmationKey: getFakeLabConfirmationKey())
+        sut.overrideShowHeader = false
         snapshots(matching: sut, waitForMainThread: true)
     }
 

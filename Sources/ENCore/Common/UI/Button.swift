@@ -9,7 +9,6 @@ import ENFoundation
 import UIKit
 
 class Button: UIButton, Themeable {
-
     enum ButtonType {
         case primary
         case secondary
@@ -33,7 +32,7 @@ class Button: UIButton, Themeable {
 
     var title = "" {
         didSet {
-            self.setTitle(title, for: .normal)
+            setTitle(title, for: .normal)
         }
     }
 
@@ -49,23 +48,32 @@ class Button: UIButton, Themeable {
 
     // MARK: - Init
 
-    required init(title: String = "", theme: Theme) {
+    required init(title: String = "", theme: Theme, icon: UIImage? = nil) {
         self.theme = theme
         super.init(frame: .zero)
 
-        self.setTitle(title, for: .normal)
-        self.titleLabel?.font = theme.fonts.headline
-        self.titleLabel?.lineBreakMode = .byWordWrapping
-        self.titleLabel?.textAlignment = .center
+        setTitle(title, for: .normal)
+        titleLabel?.font = theme.fonts.headline
+        titleLabel?.lineBreakMode = .byWordWrapping
+        titleLabel?.textAlignment = .center
 
-        self.layer.cornerRadius = 10
-        self.clipsToBounds = true
+        if let icon = icon {
+            transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+            titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+            setImage(icon.resizedTo(CGSize(width: 30, height: 30)), for: .normal)
+            imageView?.contentMode = .scaleAspectFit
+            imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+            imageEdgeInsets = UIEdgeInsets(top: 15, left: 0, bottom: 15, right: 15)
+        }
 
-        self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchDragExit)
-        self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchCancel)
-        self.addTarget(self, action: #selector(self.touchUpAnimation), for: .touchUpInside)
-        self.addTarget(self, action: #selector(self.touchDownAnimation), for: .touchDown)
-        self.addTarget(self, action: #selector(self.touchUpAction), for: .touchUpInside)
+        layer.cornerRadius = 10
+        clipsToBounds = true
+
+        addTarget(self, action: #selector(touchUpAnimation), for: .touchDragExit)
+        addTarget(self, action: #selector(touchUpAnimation), for: .touchCancel)
+        addTarget(self, action: #selector(touchUpAnimation), for: .touchUpInside)
+        addTarget(self, action: #selector(touchDownAnimation), for: .touchDown)
+        addTarget(self, action: #selector(touchUpAction), for: .touchUpInside)
 
         if let label = titleLabel {
             label.snp.makeConstraints { maker in
@@ -127,7 +135,6 @@ class Button: UIButton, Themeable {
     }
 
     @objc private func touchDownAnimation() {
-
         if useHapticFeedback { Haptic.light() }
 
         UIButton.animate(withDuration: 0.2, animations: {
