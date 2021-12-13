@@ -62,6 +62,7 @@
 "enableSettings.exposureNotifications.137.step4.action.title" = "تحديد المنطقة النشطة";
 
 "privacyAgreement.steps.title"= "هذه هي النقاط الرئيسية:";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "احتمالية الإصابة بالعدوى";
 
@@ -182,9 +183,8 @@
 "consentStep3PrimaryButton" = "إعطاء الموافقة";
 "consentStep3SecondaryButton" = "ربما في وقت لاحق";
 
-"consentStep4Title" = "عرَف الآخرين بإنك تساهم في وقف الفيروس.";
-"consentStep4Content" = "كلما قام عدد أكبر من الأشخاص باستخدام CoronaMelder، كلما أصبح التطبيق يعمل بصورة أفضل. معاً فقط نستطيع إيقاف انتشار الفيروس. شارك التطبيق إذاً مع أكبر عدد ممكن من الأشخاص.
-";
+"consentStep4Title" = "شارك التطبيق مع الأشخاص الآخرين في محيطك.";
+"consentStep4Content" = "كلما زاد عدد الأشخاص الذين يستخدمون CoronaMelder، كلما أصبح التطبيق يعمل بصورة أفضل. لذا شارك التطبيق مع أكبر عدد ممكن من الأشخاص في محيطك. على سبيل المثال الأصدقاء والعائلة.";
 "consentStep4PrimaryButton" = "مشاركة التطبيق";
 "consentStep4SecondaryButton" = "متابعة";
 
@@ -433,9 +433,8 @@
 "moreInformation.about.interoperability.title" = "ما هي التطبيقات الأجنبية التي يعمل معها CoronaMelder؟";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "عرَف الآخرين بإنك تساهم في وقف الفيروس.";
-"moreInformation.share.description" = "كلما قام عدد أكبر من الأشخاص باستخدام CoronaMelder، كلما أصبح التطبيق يعمل بصورة أفضل. معًا فقط نستطيع إيقاف انتشار الفيروس. شارك التطبيق إذًا مع أكبر عدد ممكن من الأشخاص.
-";
+"moreInformation.share.title" = "شارك التطبيق مع الأشخاص الآخرين في محيطك.";
+"moreInformation.share.description" = "كلما زاد عدد الأشخاص الذين يستخدمون CoronaMelder، كلما أصبح التطبيق يعمل بصورة أفضل. لذا شارك التطبيق مع أكبر عدد ممكن من الأشخاص في محيطك. على سبيل المثال الأصدقاء والعائلة.";
 "moreInformation.share.action" = "مشاركة التطبيق";
 
 /* MARK: - MoreInformation | Infected */
@@ -479,8 +478,8 @@
 "moreInformation.keysharing.coronatest.step1.button" = "مشاركة الرموز";
 "moreInformation.keysharing.coronatest.step1.done" = "تمت مشاركة الرموز";
 "moreInformation.keysharing.coronatest.step2.title" = "اكتب أو انسخ رمز الـ GGD الخاص بك";
-"moreInformation.keysharing.coronatest.step3.title" = "أدخل مفتاح الـ GGD الخاص بك في coronatest.nl. هذه هي الطريقة التي تحذر بها الأشخاص الذين كنت قريبًا منهم.";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "انتقل إلى coronatest.nl وأدخل رمز الـ GGD الخاص بك. تحذّر بهذه الطريقة الأشخاص الآخرين الذين كنت على مقربة منهم.";
+"moreInformation.keysharing.coronatest.step3.title" = "قم بتسجيل الدخول على الموقع الإلكتروني coronatest.nl باستخدام كود تعريف الهوية للدخول إلى المواقع الحكومية على الإنترنت (GGD) الخاص بك. وأدخل هناك مفتاح كود تعريف الهوية للدخول إلى المواقع الحكومية على الإنترنت (GGD) الخاص بك لتحذير الأشخاص الآخرين الذين كنت على مقربة منهم";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "قم بتسجيل الدخول على الموقع الإلكتروني coronatest.nl باستخدام كود تعريف الهوية للدخول إلى المواقع الحكومية على الإنترنت (GGD) الخاص بك. وأدخل هناك مفتاح كود تعريف الهوية للدخول إلى المواقع الحكومية على الإنترنت (GGD) الخاص بك لتحذير الأشخاص الآخرين الذين كنت على مقربة منهم";
 "moreInformation.keysharing.coronatest.step3.button" = "راجع الموقع Coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "هل تم ملء رمز الـ GGD؟";
 "moreInformation.keysharing.coronatest.step4.content" = "لقد انتهيت. سيتلقى الأشخاص الذين كنت على مقربة منهم عندما كنت ناقلاً للعدوى إشعارًا. يحدث هذا في غضون 8 ساعات.";
