@@ -62,6 +62,13 @@
 "enableSettings.exposureNotifications.137.step4.action.title" = "Definir como región activa";
 
 "privacyAgreement.steps.title"= "Estos son los puntos más importantes:";
+
+/* MARK: - Pre Selection - Chance of contamination */
+"contamination.pre_selection.title" = "Riesgo de contagio";
+"contamination.pre_selection.near_someone_with_corona.title" = "Estuviste cerca de alguien con coronavirus";
+"contamination.pre_selection.near_someone_with_corona.description" = "Lo que tienes que hacer depende de si ya estás protegido/a contra el coronavirus. Indica cuál es tu situación:";
+"contamination.pre_selection.footer" = "Te preguntamos esto para poder darte las recomendaciones debidas. La app <b><u>no</u></b> recuerda tu respuesta.";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Riesgo de contagio";
 
@@ -183,8 +190,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "consentStep3PrimaryButton" = "Permitir";
 "consentStep3SecondaryButton" = "Quizá más tarde";
 
-"consentStep4Title" = "Cuéntale a más gente cómo estás ayudando a detener el virus";
-"consentStep4Content" = "Cuantas más personas utilicen CoronaMelder, mejor funcionará. Solo juntos podemos contener la propagación del virus, así que comparte la app con tanta gente como puedas.";
+"consentStep4Title" = "Comparte la app con tu entorno cercano";
+"consentStep4Content" = "Cuantas más personas utilicen CoronaMelder, mejor funcionará. Comparte la app con tanta gente como puedas. Por ejemplo, familiares y amigos.";
 "consentStep4PrimaryButton" = "Compartir la app";
 "consentStep4SecondaryButton" = "Continuar";
 
@@ -429,8 +436,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.about.interoperability.title" = "¿Con qué apps extranjeras colabora CoronaMelder?";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "Cuéntale a más gente cómo estás ayudando a detener el virus";
-"moreInformation.share.description" = "Cuantas más personas utilicen CoronaMelder, mejor funcionará. Solo juntos podemos contener el coronavirus, así que comparte la app con tanta gente como puedas.";
+"moreInformation.share.title" = "Comparte la app con tu entorno cercano";
+"moreInformation.share.description" = "Cuantas más personas utilicen CoronaMelder, mejor funcionará. Comparte la app con tanta gente como puedas. Por ejemplo, familiares y amigos.";
 "moreInformation.share.action" = "Compartir la app";
 
 /* MARK: - MoreInformation | Infected */
@@ -474,8 +481,8 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.keysharing.coronatest.step1.button" = "Compartir códigos";
 "moreInformation.keysharing.coronatest.step1.done" = "Códigos compartidos";
 "moreInformation.keysharing.coronatest.step2.title" = "Escribe tu clave GGD o cópiala";
-"moreInformation.keysharing.coronatest.step3.title" = "Introduce tu clave GGD en coronatest.nl. Así avisarás a las personas que estuvieron cerca de ti.";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Ve a coronatest.nl e introduce tu clave GGD. Así avisarás a las personas que estuvieron cerca de ti.";
+"moreInformation.keysharing.coronatest.step3.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
 "moreInformation.keysharing.coronatest.step3.button" = "Ir a coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "¿Ya has introducido tu clave GGD?";
 "moreInformation.keysharing.coronatest.step4.content" = "Ya has terminado. Las personas que estuvieron cerca de ti mientras eras contagioso/a recibirán una notificación. Esto ocurrirá en las próximas 8 horas.";
@@ -537,7 +544,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "cards.stilluseful.content" = "Incluso aunque estés vacunado/a o te hayas recuperado del coronavirus, la app sigue siendo un medio importante en la lucha contra el coronavirus.";
 "cards.stilluseful.action" = "Más información";
 "cards.stilluseful.page.title" = "Estoy vacunado/a o me he recuperado del coronavirus. ¿Sigue siendo útil la app?";
-"cards.stilluseful.page.content" = "Sí, sigue siendo útil tener la app instalada en tu móvil, incluso si ya estás vacunado/a o te has recuperado del coronavirus. El virus sigue entre nosotros y, con la app de CoronaMelder, se pueden rastrear y detener contagios.<br><br>También tienes que seguir cumpliendo con las medidas vigentes: mantener una distancia de 1,5 metros, lavarse las manos a menudo y llevar puesta la mascarilla en lugares donde sea obligatorio, como en el transporte público o en el avión.<br><br>En algunos eventos o lugares, la medida de 1,5 metros de distancia no se aplica. Por ejemplo, en un evento donde todos los visitantes muestran mediante la app CoronaCheck que se han hecho un test y ha salido negativo o que ya se han vacunado dos veces.";
+"cards.stilluseful.page.content" = "Sí, sigue siendo útil tener la app instalada en tu móvil, incluso si ya estás vacunado/a o te has recuperado del coronavirus. El virus sigue entre nosotros y, con la app de CoronaMelder, se pueden rastrear y detener contagios más rápidamente.<br><br>También tienes que seguir cumpliendo con las medidas vigentes: mantener una distancia de 1,5 metros, lavarte las manos a menudo y llevar puesta la mascarilla en lugares donde sea obligatorio, como en el transporte público o en el avión.<br><br>En algunos actos o lugares, la medida de 1,5 metros de distancia no se aplica. Por ejemplo, en un acto en el que todos los visitantes muestren mediante la app CoronaCheck que se han hecho un test y ha salido negativo o que ya se han vacunado dos veces.";
 
 /* MARK: - Cards - Enable Settings */
 "enableSettings.exposureNotifications.title" = "Activar notificaciones de contacto";

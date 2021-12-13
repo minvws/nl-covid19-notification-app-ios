@@ -64,6 +64,13 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "enableSettings.exposureNotifications.137.step4.action.title" = "Set as active region";
 
 "privacyAgreement.steps.title"= "These are the most important points:";
+
+/* MARK: - Pre Selection - Chance of contamination */
+"contamination.pre_selection.title" = "Risk of infection";
+"contamination.pre_selection.near_someone_with_corona.title" = "You've been near someone who has coronavirus";
+"contamination.pre_selection.near_someone_with_corona.description" = "What you have to do now depends on whether you are already protected against coronavirus. Please specify which situation applies to you:";
+"contamination.pre_selection.footer" = "This question is asked to be able to give you the right advice. The app does <b><u>not</u></b> remember which choice you make.";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risk of infection";
 
@@ -184,8 +191,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "consentStep3PrimaryButton" = "Give permission";
 "consentStep3SecondaryButton" = "Maybe later";
 
-"consentStep4Title" = "Let others know you're helping to stop the coronavirus";
-"consentStep4Content" = "The more people that use CoronaMelder, the better it works. Only together can we get coronavirus under control. So share the app with as many other people as you can.";
+"consentStep4Title" = "Share the app with others";
+"consentStep4Content" = "The more people use CoronaMelder, the better it works. So, share the app with as many other people as you can. Like friends and family.";
 "consentStep4PrimaryButton" = "Share app";
 "consentStep4SecondaryButton" = "Continue";
 
@@ -431,8 +438,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.about.interoperability.title" = "Which apps from other countries does CoronaMelder work with?";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "Let others know you're helping to stop the spread of the virus";
-"moreInformation.share.description" = "The more people that use CoronaMelder, the better it works. Only together can we get coronavirus under control. So share the app with as many other people as you can.";
+"moreInformation.share.title" = "Share the app with others";
+"moreInformation.share.description" = "The more people use CoronaMelder, the better it works. So, share the app with as many other people as you can. Like friends and family.";
 "moreInformation.share.action" = "Share app";
 
 /* MARK: - MoreInformation | Infected */
@@ -476,8 +483,8 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "moreInformation.keysharing.coronatest.step1.button" = "Share codes";
 "moreInformation.keysharing.coronatest.step1.done" = "Codes shared";
 "moreInformation.keysharing.coronatest.step2.title" = "Write down or copy your GGD key";
-"moreInformation.keysharing.coronatest.step3.title" = "Enter your GGD key on coronatest.nl. This way you warn others you've been near to";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Go (back) to coronatest.nl and enter your GGD key. This way you warn others you've been near to";
+"moreInformation.keysharing.coronatest.step3.title" = "Use your DigiD to log into coronatest.nl. Then please enter your GGD key to warn others.";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Use your DigiD to log into coronatest.nl. Then please enter your GGD key to warn others.";
 "moreInformation.keysharing.coronatest.step3.button" = "To coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "Entered your GGD key?";
 "moreInformation.keysharing.coronatest.step4.content" = "You're all done. People you've been near to, while you were contagious, will receive a notification. This happens within 8 hours.";

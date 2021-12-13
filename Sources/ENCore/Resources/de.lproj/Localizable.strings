@@ -62,6 +62,13 @@
 "enableSettings.exposureNotifications.137.step4.action.title" = "Als aktive Region festlegen";
 
 "privacyAgreement.steps.title"= "Das sind die wichtigsten Punkte:";
+
+/* MARK: - Pre Selection - Chance of contamination */
+"contamination.pre_selection.title" = "Ansteckungsgefahr";
+"contamination.pre_selection.near_someone_with_corona.title" = "Sie waren in der Nähe einer Person mit Corona";
+"contamination.pre_selection.near_someone_with_corona.description" = "Was Sie jetzt tun müssen, hängt davon ab, ob Sie schon vor Corona geschützt sind. Geben Sie an, welche Situation auf Sie zutrifft:";
+"contamination.pre_selection.footer" = "Diese Frage wird gestellt, um Sie korrekt beraten zu können. Die App speichert <b><u>nicht</u></b>, was Sie antworten.";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risiko einer Ansteckung";
 
@@ -182,8 +189,8 @@
 "consentStep3PrimaryButton" = "Erlauben";
 "consentStep3SecondaryButton" = "Vielleicht später";
 
-"consentStep4Title" = "Teilen Sie anderen mit, dass Sie dazu beitragen, das Virus zu stoppen.";
-"consentStep4Content" = "Je mehr Menschen CoronaMelder verwenden, desto besser funktioniert die App. Nur gemeinsam bekommen wir Corona unter Kontrolle. Teilen Sie die App deshalb mit möglichst vielen anderen.";
+"consentStep4Title" = "Teilen Sie die App mit Menschen in Ihrer Umgebung";
+"consentStep4Content" = "Je mehr Menschen CoronaMelder nutzen, desto besser funktioniert die App. Teilen Sie die App deshalb mit möglichst vielen Personen in Ihrer Umgebung, zum Beispiel Freunden und Angehörigen.";
 "consentStep4PrimaryButton" = "App teilen";
 "consentStep4SecondaryButton" = "Weiter";
 
@@ -430,8 +437,8 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.about.interoperability.title" = "Mit welchen ausländischen Apps arbeitet CoronaMelder zusammen?";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "Teilen Sie anderen mit, dass Sie dazu beitragen, das Virus zu stoppen.";
-"moreInformation.share.description" = "Je mehr Menschen CoronaMelder nutzen, desto besser funktioniert die App. Nur gemeinsam bekommen wir Corona unter Kontrolle. Teilen Sie die App deshalb mit möglichst vielen anderen.";
+"moreInformation.share.title" = "Teilen Sie die App mit Menschen in Ihrer Umgebung";
+"moreInformation.share.description" = "Je mehr Menschen CoronaMelder nutzen, desto besser funktioniert die App. Teilen Sie die App deshalb mit möglichst vielen Personen in Ihrer Umgebung, zum Beispiel Freunden und Angehörigen.";
 "moreInformation.share.action" = "App teilen";
 
 /* MARK: - MoreInformation | Infected */
@@ -475,8 +482,8 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "moreInformation.keysharing.coronatest.step1.button" = "Codes teilen";
 "moreInformation.keysharing.coronatest.step1.done" = "Codes geteilt";
 "moreInformation.keysharing.coronatest.step2.title" = "Schreiben Sie Ihren GGD-Schlüssel auf oder kopieren Sie ihn.";
-"moreInformation.keysharing.coronatest.step3.title" = "Geben Sie Ihren GGD-Schlüssel auf coronatest.nl ein. So warnen Sie Personen, in deren Nähe Sie waren.";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Gehen Sie (zurück) zu coronatest.nl und geben Sie Ihren GGD-Schlüssel ein. So warnen Sie Personen, in deren Nähe Sie waren.";
+"moreInformation.keysharing.coronatest.step3.title" = "Melden Sie sich auf coronatest.nl mit Ihrer DigiD an und geben Sie Ihren GGD-Schlüssel ein, um andere Personen zu warnen";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Melden Sie sich auf coronatest.nl mit Ihrer DigiD an und geben Sie Ihren GGD-Schlüssel ein, um andere Personen zu warnen";
 "moreInformation.keysharing.coronatest.step3.button" = "Zu coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "GGD-Schlüssel eingegeben?";
 "moreInformation.keysharing.coronatest.step4.content" = "Sie sind fertig. Personen, in deren Nähe Sie waren, als Sie ansteckend waren, bekommen innerhalb von 8 Stunden eine Nachricht.";

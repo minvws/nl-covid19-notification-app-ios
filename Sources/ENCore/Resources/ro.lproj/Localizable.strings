@@ -62,6 +62,13 @@
 "enableSettings.exposureNotifications.137.step4.action.title" = "Setați ca regiune activă";
 
 "privacyAgreement.steps.title"= "Cele mai importante puncte sunt:";
+
+/* MARK: - Pre Selection - Chance of contamination */
+"contamination.pre_selection.title" = "Risc de infectare";
+"contamination.pre_selection.near_someone_with_corona.title" = "Ați fost în apropierea unei persoane infectate cu coronavirusul";
+"contamination.pre_selection.near_someone_with_corona.description" = "De situația imunizării dvs. față de coronavirus depinde ce trebuie să faceți în continuare. Alegeți situația care vi se aplică:";
+"contamination.pre_selection.footer" = "Această întrebare vă este adresată pentru a vă putea oferi recomandarea adecvată. Aplicația <b><u>nu</u></b> reține varianta pe care o alegeți.";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risc de infectare";
 
@@ -182,8 +189,8 @@
 "consentStep3PrimaryButton" = "Autorizare";
 "consentStep3SecondaryButton" = "Poate mai târziu";
 
-"consentStep4Title" = "Înștiințați-i pe ceilalți că ajutați la oprirea virusului.";
-"consentStep4Content" = "Cu cât sunt mai multe persoane care folosesc CoronaMelder, cu atât aceasta funcționează mai bine. Numai împreună putem ține coronavirus sub control. Distribuiți aplicația cât mai multor persoane.";
+"consentStep4Title" = "Spuneți-le și altora despre aplicație.";
+"consentStep4Content" = "Cu cât sunt mai multe persoane care folosesc CoronaMelder, cu atât aceasta funcționează mai bine. Așadar, spuneți-le cât mai multor cunoscuți despre aplicație. De exemplu, prietenilor și rudelor.";
 "consentStep4PrimaryButton" = "Distribuire aplicație";
 "consentStep4SecondaryButton" = "Continuați";
 
@@ -429,8 +436,8 @@
 "moreInformation.about.interoperability.title" = "Cu ce alte aplicații străine colaborează CoronaMelder?";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "Înștiințați-i pe ceilalți că ajutați la oprirea virusului.";
-"moreInformation.share.description" = "Cu cât sunt mai multe persoane care folosesc CoronaMelder, cu atât aceasta funcționează mai bine. Numai împreună putem ține coronavirus sub control. Deci distribuiți aplicația cât mai multor persoane.";
+"moreInformation.share.title" = "Spuneți-le și altora despre aplicație.";
+"moreInformation.share.description" = "Cu cât sunt mai multe persoane care folosesc CoronaMelder, cu atât aceasta funcționează mai bine. Așadar, spuneți-le cât mai multor cunoscuți despre aplicație. De exemplu, prietenilor și rudelor.";
 "moreInformation.share.action" = "Distribuiți aplicația";
 
 /* MARK: - MoreInformation | Infected */
@@ -474,8 +481,8 @@
 "moreInformation.keysharing.coronatest.step1.button" = "Partajați coduri";
 "moreInformation.keysharing.coronatest.step1.done" = "Coduri partajate";
 "moreInformation.keysharing.coronatest.step2.title" = "Notați sau copiați cheia GGD";
-"moreInformation.keysharing.coronatest.step3.title" = "Introduceți cheia dvs. GGD pe coronatest.nl. Așa îi avertizați pe cei în apropierea cărora v-ați aflat";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Mergeți (înapoi) la coronatest.nl și introduceți cheia GGD. În acest fel avertizați persoanele în apropierea cărora v-ați aflat.";
+"moreInformation.keysharing.coronatest.step3.title" = "Conectați-vă pe coronatest.nl cu DigiD-ul dvs. Introduceți acolo cheia dvs. GGD pentru a-i avertiza pe alții.";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Conectați-vă pe coronatest.nl cu DigiD-ul dvs. Introduceți acolo cheia dvs. GGD pentru a-i avertiza pe alții.";
 "moreInformation.keysharing.coronatest.step3.button" = "Mergeți la coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "Ați introdus cheia GGD?";
 "moreInformation.keysharing.coronatest.step4.content" = "Sunteți gata. Persoanele în apropierea cărora ați fost în timp ce erați contagios vor primi o notificare. Acest lucru se întâmplă în decurs de 8 ore.";

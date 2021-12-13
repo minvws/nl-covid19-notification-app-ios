@@ -62,6 +62,13 @@
 "enableSettings.exposureNotifications.137.step4.action.title" = "Aktif bölge olarak ayarla";
 
 "privacyAgreement.steps.title"= "Önemli noktalar şunlardır:";
+
+/* MARK: - Pre Selection - Chance of contamination */
+"contamination.pre_selection.title" = "Enfeksiyon olasılığı";
+"contamination.pre_selection.near_someone_with_corona.title" = "Korona olan birisinin yakınında bulundunuz";
+"contamination.pre_selection.near_someone_with_corona.description" = "Şimdi yapmanız gereken şey, Korona virüsüne karşı korunup korunmadığınıza bağlı. Hangi durumun sizin için geçerli olduğunu belirtin:";
+"contamination.pre_selection.footer" = "Bu soru size doğru tavsiyeyi verebilmek için sorulmuştur. Uygulama hangi seçimi yaptığınızı <b><u>hatırlamaz</u></b>.";
+
 /* MARK: - Chance of contamination */
 "contamination.title" = "Enfeksiyon riski";
 
@@ -182,8 +189,8 @@
 "consentStep3PrimaryButton" = "İzin vermek";
 "consentStep3SecondaryButton" = "Belki sonra";
 
-"consentStep4Title" = "Virüsün durdurulmasına yardımcı olduğunuzu başkalarına bildirin";
-"consentStep4Content" = "CoronaMelder'i ne kadar çok kişi kullanırsa, uygulama o kadar iyi çalışır. Korona'nın yayılmasını ancak birlikte durdurabiliriz. Bu yüzden uygulamayı olabildiğince çok kişiyle paylaşın.";
+"consentStep4Title" = "Uygulamayı çevrenizdekilerle paylaşın";
+"consentStep4Content" = "CoronaMelder'ı ne kadar çok kişi kullanırsa, o kadar daha iyi çalışır. Bu nedenle, uygulamayı çevrenizdeki mümkün olduğunca çok kişiyle paylaşın. Örneğin arkadaşlar ve aile ile.";
 "consentStep4PrimaryButton" = "Uygulamayı paylaşın";
 "consentStep4SecondaryButton" = "Devam et";
 
@@ -429,8 +436,8 @@
 "moreInformation.about.interoperability.title" = "CoronaMelder hangi yabancı uygulamalarla çalışıyor?";
 
 /* MARK: - MoreInformation | Share */
-"moreInformation.share.title" = "Virüsün durdurulmasına yardımcı olduğunuzu başkalarına bildirin";
-"moreInformation.share.description" = "CoronaMelder'i ne kadar çok kişi kullanırsa, uygulama o kadar iyi çalışır. Korona'nın yayılmasını ancak birlikte durdurabiliriz. Bu yüzden uygulamayı olabildiğince çok kişiyle paylaşın.";
+"moreInformation.share.title" = "Uygulamayı çevrenizdekilerle paylaşın";
+"moreInformation.share.description" = "CoronaMelder'ı ne kadar çok kişi kullanırsa, o kadar daha iyi çalışır. Bu nedenle, uygulamayı çevrenizdeki mümkün olduğunca çok kişiyle paylaşın. Örneğin arkadaşlar ve aile ile.";
 "moreInformation.share.action" = "Uygulamayı Paylaşın";
 
 /* MARK: - MoreInformation | Infected */
@@ -474,8 +481,8 @@
 "moreInformation.keysharing.coronatest.step1.button" = "Kodları paylaşın";
 "moreInformation.keysharing.coronatest.step1.done" = "Kodlar paylaşıldı";
 "moreInformation.keysharing.coronatest.step2.title" = "GGD anahtarınızı yazın veya kopyalayın";
-"moreInformation.keysharing.coronatest.step3.title" = "Coronatest.nl adresinde GGD anahtarınızı girin. Yakınınında bulunmuş olduğunuz diğerlerini bu şekilde uyarırsınız";
-"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Coronatest.nl'ye (geri) gidin ve GGD anahtarınızı girin. Böylelikle yakınında bulunmuş olduğunuz diğer kişileri uyarırsınız.";
+"moreInformation.keysharing.coronatest.step3.title" = "DigiD'niz ile coronatest.nl'de oturum açın. Başkalarını uyarmak için GGD anahtarınızı oraya girin";
+"moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "DigiD'niz ile coronatest.nl'de oturum açın. Başkalarını uyarmak için GGD anahtarınızı oraya girin";
 "moreInformation.keysharing.coronatest.step3.button" = "Coronatest.nl'ye";
 "moreInformation.keysharing.coronatest.step4.title" = "GGD anahtarı dolduruldu mu?";
 "moreInformation.keysharing.coronatest.step4.content" = "Şimdi tamam. Bulaşıcıyken yakınında bulunduğunuz kişiler bir bildirim alacak. Bu 8 saat içinde gerçekleşir.";
