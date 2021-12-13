@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "Das sind die wichtigsten Punkte:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Ansteckungsgefahr";
-"contamination.pre_selection.near_someone_with_corona.title" = "Sie waren in der Nähe einer Person mit Corona";
-"contamination.pre_selection.near_someone_with_corona.description" = "Was Sie jetzt tun müssen, hängt davon ab, ob Sie schon vor Corona geschützt sind. Geben Sie an, welche Situation auf Sie zutrifft:";
-"contamination.pre_selection.footer" = "Diese Frage wird gestellt, um Sie korrekt beraten zu können. Die App speichert <b><u>nicht</u></b>, was Sie antworten.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risiko einer Ansteckung";
 

@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "Cele mai importante puncte sunt:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Risc de infectare";
-"contamination.pre_selection.near_someone_with_corona.title" = "Ați fost în apropierea unei persoane infectate cu coronavirusul";
-"contamination.pre_selection.near_someone_with_corona.description" = "De situația imunizării dvs. față de coronavirus depinde ce trebuie să faceți în continuare. Alegeți situația care vi se aplică:";
-"contamination.pre_selection.footer" = "Această întrebare vă este adresată pentru a vă putea oferi recomandarea adecvată. Aplicația <b><u>nu</u></b> reține varianta pe care o alegeți.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risc de infectare";
 

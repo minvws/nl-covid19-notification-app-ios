@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "Това са най-важните неща:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Риск от заразяване";
-"contamination.pre_selection.near_someone_with_corona.title" = "Бил си близо до човек с коронавирус";
-"contamination.pre_selection.near_someone_with_corona.description" = "Какво трябва да направиш сега, зависи от това дали вече си защитен срещу коронавируса. Отбележи коя ситуация е валидна за теб:";
-"contamination.pre_selection.footer" = "Този въпрос се задава, за да може да ти се даде правилната препоръка. Приложението <b><u>не</u></b> запомня какъв избор правиш.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Риск от заразяване";
 

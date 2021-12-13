@@ -65,12 +65,6 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 
 "privacyAgreement.steps.title"= "These are the most important points:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Risk of infection";
-"contamination.pre_selection.near_someone_with_corona.title" = "You've been near someone who has coronavirus";
-"contamination.pre_selection.near_someone_with_corona.description" = "What you have to do now depends on whether you are already protected against coronavirus. Please specify which situation applies to you:";
-"contamination.pre_selection.footer" = "This question is asked to be able to give you the right advice. The app does <b><u>not</u></b> remember which choice you make.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Risk of infection";
 

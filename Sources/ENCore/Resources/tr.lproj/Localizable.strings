@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "Önemli noktalar şunlardır:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Enfeksiyon olasılığı";
-"contamination.pre_selection.near_someone_with_corona.title" = "Korona olan birisinin yakınında bulundunuz";
-"contamination.pre_selection.near_someone_with_corona.description" = "Şimdi yapmanız gereken şey, Korona virüsüne karşı korunup korunmadığınıza bağlı. Hangi durumun sizin için geçerli olduğunu belirtin:";
-"contamination.pre_selection.footer" = "Bu soru size doğru tavsiyeyi verebilmek için sorulmuştur. Uygulama hangi seçimi yaptığınızı <b><u>hatırlamaz</u></b>.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Enfeksiyon riski";
 

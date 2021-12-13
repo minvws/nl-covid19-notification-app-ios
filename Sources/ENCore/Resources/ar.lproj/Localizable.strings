@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "هذه هي النقاط الرئيسية:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "احتمالية التعرض للإصابة";
-"contamination.pre_selection.near_someone_with_corona.title" = "لقد كنت على مقربة من شخص مصاب بفيروس كورونا";
-"contamination.pre_selection.near_someone_with_corona.description" = "يعتمد ما يجب عليك فعله الآن على ما إذا كنت محميًا بالفعل من فيروس كورونا. اختر الحالة الذي تنطبق عليك:";
-"contamination.pre_selection.footer" = "يتم طرح هذا السؤال لإعطائك النصيحة المناسبة. التطبيق <u>لا</u> يتذكر الخيار الذي تحدده.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "احتمالية الإصابة بالعدوى";
 

@@ -63,12 +63,6 @@
 
 "privacyAgreement.steps.title"= "Estos son los puntos más importantes:";
 
-/* MARK: - Pre Selection - Chance of contamination */
-"contamination.pre_selection.title" = "Riesgo de contagio";
-"contamination.pre_selection.near_someone_with_corona.title" = "Estuviste cerca de alguien con coronavirus";
-"contamination.pre_selection.near_someone_with_corona.description" = "Lo que tienes que hacer depende de si ya estás protegido/a contra el coronavirus. Indica cuál es tu situación:";
-"contamination.pre_selection.footer" = "Te preguntamos esto para poder darte las recomendaciones debidas. La app <b><u>no</u></b> recuerda tu respuesta.";
-
 /* MARK: - Chance of contamination */
 "contamination.title" = "Riesgo de contagio";
 
