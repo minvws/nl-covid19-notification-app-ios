@@ -1,4 +1,5 @@
 name: '$(Date:yyyyMMdd)$(Rev:.r)-$(BuildID)'
+timeoutInMinutes: 120
 trigger:
   - master
   - release/*
