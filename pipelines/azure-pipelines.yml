@@ -1,5 +1,4 @@
 name: '$(Date:yyyyMMdd)$(Rev:.r)-$(BuildID)'
-timeoutInMinutes: 120
 trigger:
   - master
   - release/*
@@ -14,6 +13,7 @@ stages:
     displayName: Build
     jobs:
     - job: Build
+      timeoutInMinutes: 120
       steps:
       - checkout: self
         clean: true
