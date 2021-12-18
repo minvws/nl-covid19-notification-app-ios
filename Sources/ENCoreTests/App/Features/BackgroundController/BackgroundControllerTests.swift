@@ -596,13 +596,7 @@ final class BackgroundControllerTests: TestCase {
     func test_scheduleRemoteNotification_shouldScheduleNotification_withoutProbability() throws {
 
         exposureController.getScheduledNotificatonHandler = {
-            ApplicationConfiguration.ScheduledNotification(
-                scheduledDateTime: "2021-12-16T14:00:00+01:00",
-                title: "Title",
-                body: "Body",
-                targetScreen: "share",
-                probability: nil
-            )
+            self.getScheduledNotification(probability: nil)
         }
 
         controller.scheduleRemoteNotification()
@@ -665,7 +659,7 @@ final class BackgroundControllerTests: TestCase {
 
     // MARK: - Private
 
-    private func getScheduledNotification(probability: Float) -> ApplicationConfiguration.ScheduledNotification {
+    private func getScheduledNotification(probability: Float?) -> ApplicationConfiguration.ScheduledNotification {
         ApplicationConfiguration.ScheduledNotification(
             scheduledDateTime: "2021-12-16T14:00:00+01:00",
             title: "Title",
