@@ -605,11 +605,6 @@ final class BackgroundControllerTests: TestCase {
         let (title, body, datecomponents, targetscreen) = try XCTUnwrap(userNotificationController.scheduleRemoteNotificationArgValues.first)
         XCTAssertEqual(title, "Title")
         XCTAssertEqual(body, "Body")
-        XCTAssertEqual(datecomponents.day, 16)
-        XCTAssertEqual(datecomponents.month, 12)
-        XCTAssertEqual(datecomponents.year, 2021)
-        XCTAssertEqual(datecomponents.hour, 14)
-        XCTAssertEqual(datecomponents.minute, 0)
         XCTAssertEqual(targetscreen, "share")
     }
 
