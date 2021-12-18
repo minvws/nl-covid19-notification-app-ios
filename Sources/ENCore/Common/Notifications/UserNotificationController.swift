@@ -9,7 +9,7 @@ import ENFoundation
 import Foundation
 import NotificationCenter
 
-/// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true;displayAppUpdateRequiredNotification=true)
+/// @mockable(history:removeDeliveredNotifications = true;removePendingNotificationRequests=true;displayAppUpdateRequiredNotification=true;scheduleRemoteNotification=true)
 protocol UserNotificationControlling {
     // Authorization and Permissions
     func getAuthorizationStatus(completionHandler: @escaping (_ status: NotificationAuthorizationStatus) -> ())

@@ -587,18 +587,13 @@ final class BackgroundController: BackgroundControlling, Logging {
             return
         }
 
-        if let probability = notification.probability {
-            let randomProbabilityComparator = Float.random(in: 0 ..< 1)
-            if probability >= randomProbabilityComparator {
-                userNotificationController.scheduleRemoteNotification(title: notification.title,
-                                                                      body: notification.body,
-                                                                      dateComponents: scheduledDate,
-                                                                      targetScreen: notification.targetScreen)
-                logDebug("Scheduled remote notification with probability: `\(notification.title) - \(notification.body) at \(notification.scheduledDateTime)` probability: \(probability) random comparator: \(randomProbabilityComparator) ✅")
+        if let notificationProbability = notification.probability {
+            let randomProbabilityComparator = randomNumberGenerator.randomFloat(in: 0 ..< 1)
+
+            guard randomProbabilityComparator <= notificationProbability else {
+                logDebug("Remote Notification: Not scheduling remote notification, probability: \(notificationProbability) random comparator: \(randomProbabilityComparator)")
                 return
             }
-            logDebug("Remote Notification: Not scheduling remote notification, probability: \(probability) random comparator: \(randomProbabilityComparator)")
-            return
         }
 
         userNotificationController.scheduleRemoteNotification(title: notification.title,

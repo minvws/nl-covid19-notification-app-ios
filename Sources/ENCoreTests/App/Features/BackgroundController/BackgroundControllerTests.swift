@@ -586,7 +586,94 @@ final class BackgroundControllerTests: TestCase {
         XCTAssertEqual(exposureManager.setLaunchActivityHandlerCallCount, 0)
     }
 
+    func test_scheduleRemoteNotification_shouldRemoveNotificationFirst() {
+
+        controller.scheduleRemoteNotification()
+
+        XCTAssertEqual(userNotificationController.removeScheduledRemoteNotificationCallCount, 1)
+    }
+
+    func test_scheduleRemoteNotification_shouldScheduleNotification_withoutProbability() throws {
+
+        exposureController.getScheduledNotificatonHandler = {
+            ApplicationConfiguration.ScheduledNotification(
+                scheduledDateTime: "2021-12-16T14:00:00+01:00",
+                title: "Title",
+                body: "Body",
+                targetScreen: "share",
+                probability: nil
+            )
+        }
+
+        controller.scheduleRemoteNotification()
+
+        XCTAssertEqual(userNotificationController.scheduleRemoteNotificationCallCount, 1)
+        let (title, body, datecomponents, targetscreen) = try XCTUnwrap(userNotificationController.scheduleRemoteNotificationArgValues.first)
+        XCTAssertEqual(title, "Title")
+        XCTAssertEqual(body, "Body")
+        XCTAssertEqual(datecomponents.day, 16)
+        XCTAssertEqual(datecomponents.month, 12)
+        XCTAssertEqual(datecomponents.year, 2021)
+        XCTAssertEqual(datecomponents.hour, 14)
+        XCTAssertEqual(datecomponents.minute, 0)
+        XCTAssertEqual(targetscreen, "share")
+    }
+
+    func test_scheduleRemoteNotification_withZeroProbability() throws {
+
+        mockRandomNumberGenerator.randomFloatHandler = { range in
+            0.1
+        }
+        exposureController.getScheduledNotificatonHandler = {
+            self.getScheduledNotification(probability: 0)
+        }
+
+        controller.scheduleRemoteNotification()
+
+        XCTAssertEqual(userNotificationController.scheduleRemoteNotificationCallCount, 0)
+    }
+
+    func test_scheduleRemoteNotification_with100PercentProbability() throws {
+
+        mockRandomNumberGenerator.randomFloatHandler = { range in
+            XCTAssertEqual(range.lowerBound, 0)
+            XCTAssertEqual(range.upperBound, 1)
+            return 0.1
+        }
+        exposureController.getScheduledNotificatonHandler = {
+            self.getScheduledNotification(probability: 1)
+        }
+
+        controller.scheduleRemoteNotification()
+
+        XCTAssertEqual(userNotificationController.scheduleRemoteNotificationCallCount, 1)
+    }
+
+    func test_scheduleRemoteNotification_withEqualProbability() throws {
+
+        mockRandomNumberGenerator.randomFloatHandler = { range in
+            0.5
+        }
+        exposureController.getScheduledNotificatonHandler = {
+            self.getScheduledNotification(probability: 0.5)
+        }
+
+        controller.scheduleRemoteNotification()
+
+        XCTAssertEqual(userNotificationController.scheduleRemoteNotificationCallCount, 1)
+    }
+
     // MARK: - Private
+
+    private func getScheduledNotification(probability: Float) -> ApplicationConfiguration.ScheduledNotification {
+        ApplicationConfiguration.ScheduledNotification(
+            scheduledDateTime: "2021-12-16T14:00:00+01:00",
+            title: "Title",
+            body: "Body",
+            targetScreen: "share",
+            probability: probability
+        )
+    }
 
     private var labConfirmationKey: LabConfirmationKey {
         LabConfirmationKey(identifier: "", bucketIdentifier: Data(), confirmationKey: Data(), validUntil: currentDate())
