@@ -594,6 +594,8 @@ final class BackgroundController: BackgroundControlling, Logging {
                 logDebug("Remote Notification: Not scheduling remote notification, probability: \(notificationProbability) random comparator: \(randomProbabilityComparator)")
                 return
             }
+
+            logDebug("Remote Notification: Going to scheduling remote notification, probability: \(notificationProbability) random comparator: \(randomProbabilityComparator)")
         }
 
         userNotificationController.scheduleRemoteNotification(title: notification.title,
