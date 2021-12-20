@@ -908,7 +908,8 @@ final class DeveloperMenuViewController: TableViewController, DeveloperMenuViewC
                               appConfiguration.notification = ApplicationConfiguration.ScheduledNotification(scheduledDateTime: "Can be ignored while testing",
                                                                                                              title: "Scheduled Remote Notification",
                                                                                                              body: "Routing to \(screen)",
-                                                                                                             targetScreen: screen)
+                                                                                                             targetScreen: screen,
+                                                                                                             probability: nil)
 
                               self?.storageController.store(object: appConfiguration, identifiedBy: ExposureDataStorageKey.appConfiguration) { _ in }
                               self?.userNotificationController.scheduleRemoteNotification(title: appConfiguration.notification?.title ?? "",

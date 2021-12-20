@@ -575,7 +575,6 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     func scheduleRemoteNotification() {
-
         userNotificationController.removeScheduledRemoteNotification()
 
         guard let notification = exposureController.getScheduledNotificaton() else {
@@ -586,6 +585,15 @@ final class BackgroundController: BackgroundControlling, Logging {
         guard let scheduledDate = notification.scheduledDateTimeComponents() else {
             logError("Remote Notification: Could not schedule remote notification: no scheduledDateTimeComponents()")
             return
+        }
+
+        if let notificationProbability = notification.probability {
+            let randomProbabilityComparator = randomNumberGenerator.randomFloat(in: 0 ..< 1)
+
+            guard randomProbabilityComparator <= notificationProbability else {
+                logDebug("Remote Notification: Not scheduling remote notification, probability: \(notificationProbability) random comparator: \(randomProbabilityComparator)")
+                return
+            }
         }
 
         userNotificationController.scheduleRemoteNotification(title: notification.title,

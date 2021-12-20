@@ -33,5 +33,6 @@ struct AppConfig: Codable {
         let title: String
         let body: String
         let targetScreen: String
+        let probability: Float?
     }
 }

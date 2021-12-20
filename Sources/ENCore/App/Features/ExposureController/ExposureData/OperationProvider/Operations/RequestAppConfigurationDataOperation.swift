@@ -37,6 +37,7 @@ struct ApplicationConfiguration: Codable, Equatable {
         let title: String
         let body: String
         let targetScreen: String
+        let probability: Float?
 
         func scheduledDateTimeComponents() -> DateComponents? {
             guard let scheduledDate = Date.toDate(scheduledDateTime) else {
