@@ -582,6 +582,8 @@ final class BackgroundController: BackgroundControlling, Logging {
             return
         }
 
+        logDebug("Remote Notification: start scheduling notification with title: \(notification.title), body: \(notification.body), scheduledDateTime: \(notification.scheduledDateTime), targetScreen: \(notification.targetScreen),  probability: \(String(describing: notification.probability))")
+
         guard let scheduledDate = notification.scheduledDateTimeComponents() else {
             logError("Remote Notification: Could not schedule remote notification: no scheduledDateTimeComponents()")
             return
