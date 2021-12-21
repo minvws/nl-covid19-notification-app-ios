@@ -32,7 +32,7 @@ struct ApplicationConfiguration: Codable, Equatable {
         let featureEnabled: Bool
     }
 
-    struct ScheduledNotification: Codable, Equatable {
+    struct ScheduledNotification: Codable, Equatable, Logging {
         let scheduledDateTime: String
         let title: String
         let body: String
@@ -41,6 +41,7 @@ struct ApplicationConfiguration: Codable, Equatable {
 
         func scheduledDateTimeComponents() -> DateComponents? {
             guard let scheduledDate = Date.toDate(scheduledDateTime) else {
+                logError("ApplicationConfiguration - ScheduledNotification - scheduledDateTimeComponents - Cannot parse: \(scheduledDateTime)")
                 return nil
             }
 
