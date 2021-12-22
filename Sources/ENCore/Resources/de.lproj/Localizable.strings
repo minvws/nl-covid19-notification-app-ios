@@ -359,7 +359,7 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "status.active.description" = "Ihre Begegnungen werden nachverfolgt, auch wenn Sie die App schließen.";
 "status.notified.days_ago_one" = "vor %@ Tag";
 "status.notified.days_ago_other" = "vor %@ Tagen";
-"status.notified.description" = "Am %@  (%@) sind Sie möglicherweise abgesteckt worden.";
+"status.notified.description" = "Am %@  (%@) sind Sie möglicherweise angesteckt worden.";
 "status.notified.moreInfo" = "Was kann ich jetzt machen?";
 "status.notified.removeNotification" = "Nachricht löschen";
 
