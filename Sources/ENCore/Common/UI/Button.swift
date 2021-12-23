@@ -138,12 +138,14 @@ class Button: UIButton, Themeable {
         if useHapticFeedback { Haptic.light() }
 
         UIButton.animate(withDuration: 0.2, animations: {
+            guard self.imageView?.image == nil else { return }
             self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
         })
     }
 
     @objc private func touchUpAnimation() {
         UIButton.animate(withDuration: 0.2, animations: {
+            guard self.imageView?.image == nil else { return }
             self.transform = CGAffineTransform.identity
         })
     }
