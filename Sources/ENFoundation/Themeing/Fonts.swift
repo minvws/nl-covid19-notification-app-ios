@@ -23,6 +23,9 @@ public protocol Fonts {
     var caption1: UIFont { get }
 
     func subhead(limitMaximumSize: Bool) -> UIFont
+
+    var preferredContentSizeCategoryIsSetBigger: Bool { get }
+    var preferredContentSizeCategoryIsSetSmaller: Bool { get }
 }
 
 final class ENFonts: Fonts {
@@ -87,6 +90,22 @@ final class ENFonts: Fonts {
 
     var caption1: UIFont {
         font(textStyle: .caption1) // size 12 points
+    }
+
+    var preferredContentSizeCategoryIsSetBigger: Bool {
+        switch UIApplication.shared.preferredContentSizeCategory {
+        case .large, .medium, .small, .extraSmall, .unspecified:
+            return false
+        default:
+            return true
+        }
+    }
+
+    var preferredContentSizeCategoryIsSetSmaller: Bool {
+        guard UIApplication.shared.preferredContentSizeCategory != .large else {
+            return false
+        }
+        return !preferredContentSizeCategoryIsSetBigger
     }
 
     // MARK: - Private

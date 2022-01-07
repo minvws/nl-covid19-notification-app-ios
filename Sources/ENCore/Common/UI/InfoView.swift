@@ -182,7 +182,6 @@ final class InfoView: View {
             }
         }
         if showButtons {
-
             buttonStackView.arrangedSubviews.forEach { button in
                 button.snp.remakeConstraints { maker in
                     maker.height.greaterThanOrEqualTo(48)
@@ -240,7 +239,6 @@ final class InfoView: View {
 }
 
 final class InfoSectionStepView: View {
-
     private let titleLabel: Label
     private let descriptionLabel: Label
     private let progressLine: View
@@ -325,7 +323,6 @@ final class InfoSectionStepView: View {
          buttonActionHandler: (() -> ())? = nil,
          isDisabled: Bool = false,
          loadingIndicatorTitle: String? = nil) {
-
         stepCountView = StepCountView(theme: theme, stepNumber: stepCount)
         stepCountView.disabled = isDisabled
         titleLabel = Label(frame: .zero)
@@ -336,7 +333,7 @@ final class InfoSectionStepView: View {
         self.isLastStep = isLastStep
         self.buttonActionHandler = buttonActionHandler
         self.buttonTitle = buttonTitle
-        self.buttonIcon = buttonIcon
+        self.buttonIcon = theme.fonts.preferredContentSizeCategoryIsSetBigger ? nil : buttonIcon
         self.disabledButtonTitle = disabledButtonTitle
         self.loadingIndicatorTitle = loadingIndicatorTitle
 
@@ -411,7 +408,6 @@ final class InfoSectionStepView: View {
 }
 
 final class InfoSectionTextView: View {
-
     var linkHandler: ((String) -> ())?
 
     private let textView: SplitTextView
@@ -525,9 +521,9 @@ final class StepCountView: View {
     }
 
     init(theme: Theme, stepNumber: Int) {
-        self.label = Label(frame: .zero)
-        self.label.text = String(stepNumber)
-        self.borderView = View(theme: theme)
+        label = Label(frame: .zero)
+        label.text = String(stepNumber)
+        borderView = View(theme: theme)
 
         super.init(theme: theme)
 
