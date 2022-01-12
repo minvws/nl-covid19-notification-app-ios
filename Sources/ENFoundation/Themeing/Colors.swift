@@ -66,6 +66,8 @@ public protocol Colors: AnyObject {
     var cardBluePrimary: UIColor { get }
     var cardBlueSecondary: UIColor { get }
     var cardBodyText: UIColor { get }
+
+    var focusBorder: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
@@ -255,6 +257,10 @@ final class ENColors: Colors, Logging {
 
     var cardBodyText: UIColor {
         return color(for: "CardBodyText")
+    }
+
+    var focusBorder: UIColor {
+        return color(for: "FocusBorder")
     }
 
     // MARK: - Private
