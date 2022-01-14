@@ -17,9 +17,13 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
-        self.entry = entry
+        self.shouldDisplayLinkedQuestions = entry.linkedEntries.isEmpty == false
         self.linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
 
+        self.internalView = HelpView(theme: theme,
+                                     entry: entry,
+                                     linkedContentTableViewManager: linkedContentTableViewManager,
+                                     shouldDisplayButton: shouldShowEnableAppButton)
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
     }
@@ -38,27 +42,21 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
             self?.listener?.helpDetailRequestRedirect(to: selectedContent)
         }
 
-        internalView.titleLabel.attributedText = .makeFromHtml(text: entry.title,
-                                                               font: theme.fonts.largeTitle,
-                                                               textColor: theme.colors.textPrimary,
-                                                               textAlignment: Localization.isRTL ? .right : .left)
-
-        internalView.contentLabel.attributedText = .makeFromHtml(text: entry.answer,
-                                                                 font: theme.fonts.body,
-                                                                 textColor: theme.colors.textSecondary,
-                                                                 textAlignment: Localization.isRTL ? .right : .left)
-
         internalView.acceptButton.addTarget(self, action: #selector(acceptButtonPressed), for: .touchUpInside)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+        if shouldDisplayLinkedQuestions {
+            internalView.tableView.addObserver(self, forKeyPath: "contentSize", options: .new, context: nil)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
+        if shouldDisplayLinkedQuestions {
+            internalView.tableView.removeObserver(self, forKeyPath: "contentSize")
+        }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
@@ -83,31 +81,16 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     // MARK: - Private
 
-    private lazy var internalView: HelpView = HelpView(theme: theme,
-                                                       linkedContentTableViewManager: linkedContentTableViewManager,
-                                                       shouldDisplayButton: shouldShowEnableAppButton)
+    private var internalView: HelpView
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
     private weak var listener: HelpDetailListener?
 
+    private let shouldDisplayLinkedQuestions: Bool
     private let shouldShowEnableAppButton: Bool
-    private let entry: HelpDetailEntry
     private let linkedContentTableViewManager: LinkedContentTableViewManager
 }
 
 private final class HelpView: View {
-
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        label.accessibilityTraits = .header
-        return label
-    }()
-
-    lazy var contentLabel: SplitTextView = {
-        let textView = SplitTextView(theme: theme)
-        return textView
-    }()
 
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
@@ -117,11 +100,20 @@ private final class HelpView: View {
         return button
     }()
 
+    private var entry: HelpDetailEntry
+    private var infoView: InfoView
     lazy var tableView = LinkedContentTableView(manager: tableViewManager)
+    private lazy var tableViewWrapperView = View(theme: theme)
 
-    init(theme: Theme, linkedContentTableViewManager: LinkedContentTableViewManager, shouldDisplayButton: Bool) {
+    init(theme: Theme, entry: HelpDetailEntry, linkedContentTableViewManager: LinkedContentTableViewManager, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
         self.tableViewManager = linkedContentTableViewManager
+        self.entry = entry
+
+        let config = InfoViewConfig(showButtons: false)
+        self.infoView = InfoView(theme: theme, config: config)
+        self.infoView.showHeader = false
+
         super.init(theme: theme)
     }
 
@@ -130,49 +122,42 @@ private final class HelpView: View {
         hasBottomMargin = true
         tableView.isScrollEnabled = false
 
-        addSubview(scrollView)
+        tableViewWrapperView.addSubview(tableView)
 
-        scrollView.addSubview(contentView)
+        infoView.addSections([
+            faqContent(),
+            tableViewWrapperView
+        ])
 
-        contentView.addSubview(titleLabel)
-        contentView.addSubview(contentLabel)
-        contentView.addSubview(tableView)
+        addSubview(infoView)
 
         if shouldDisplayButton {
             addSubview(acceptButton)
         }
     }
 
+    private func faqContent() -> InfoSectionTextView {
+        InfoSectionTextView(theme: theme,
+                            useLargeTitle: true,
+                            title: entry.title,
+                            content: .makeFromHtml(text: entry.answer,
+                                                   font: theme.fonts.body,
+                                                   textColor: theme.colors.textSecondary,
+                                                   textAlignment: Localization.isRTL ? .right : .left))
+    }
+
     override func setupConstraints() {
         super.setupConstraints()
 
-        scrollView.snp.makeConstraints { maker in
+        infoView.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.top.equalToSuperview()
-
-            let bottomAnchor = shouldDisplayButton ? acceptButton.snp.top : snp.bottom
-            maker.bottom.equalTo(bottomAnchor)
-        }
-
-        contentView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
-            maker.width.equalToSuperview()
-            maker.height.greaterThanOrEqualToSuperview().priority(.low)
-        }
-
-        titleLabel.snp.makeConstraints { maker in
-            maker.top.leading.trailing.width.equalToSuperview().inset(16)
-        }
-
-        contentLabel.snp.makeConstraints { maker in
-            maker.top.equalTo(titleLabel.snp.bottom).offset(16)
-            maker.leading.trailing.width.equalToSuperview().inset(16)
+            maker.top.bottom.equalToSuperview()
         }
 
         tableView.snp.makeConstraints { maker in
-            maker.leading.trailing.bottom.width.equalToSuperview()
-            maker.top.greaterThanOrEqualTo(contentLabel.snp.bottom).offset(16)
-            maker.height.equalTo(0)
+            maker.leading.trailing.top.bottom.equalToSuperview()
+            maker.width.equalToSuperview()
+            maker.height.equalTo(0).priority(.high)
         }
 
         if shouldDisplayButton {
@@ -186,7 +171,7 @@ private final class HelpView: View {
 
     func updateTableViewHeight() {
         tableView.snp.updateConstraints { maker in
-            maker.height.equalTo(tableView.contentSize.height)
+            maker.height.equalTo(tableView.contentSize.height).priority(.high)
         }
     }
 

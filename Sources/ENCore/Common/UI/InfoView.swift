@@ -413,14 +413,19 @@ final class InfoSectionTextView: View {
     private let textView: SplitTextView
     private let title: String?
     private let content: NSAttributedString
+    private let useLargeTitle: Bool
 
     // MARK: - Init
 
-    init(theme: Theme, title: String? = nil, content: NSAttributedString) {
+    init(theme: Theme,
+         useLargeTitle: Bool = false,
+         title: String? = nil,
+         content: NSAttributedString) {
         textView = SplitTextView(theme: theme)
 
         self.title = title
         self.content = content
+        self.useLargeTitle = useLargeTitle
 
         super.init(theme: theme)
 
@@ -438,7 +443,10 @@ final class InfoSectionTextView: View {
 
         let completeContent = NSMutableAttributedString()
         if let title = title {
-            completeContent.append(.makeFromHtml(text: title, font: theme.fonts.title2, textColor: theme.colors.textPrimary, textAlignment: Localization.textAlignment))
+            completeContent.append(.makeFromHtml(text: title,
+                                                 font: useLargeTitle ? theme.fonts.largeTitle : theme.fonts.title2,
+                                                 textColor: theme.colors.textPrimary,
+                                                 textAlignment: Localization.textAlignment))
             completeContent.append(.init(string: "\n"))
         }
         completeContent.append(content)
