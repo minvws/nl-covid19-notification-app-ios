@@ -67,7 +67,7 @@ final class WebviewViewController: ViewController, Logging, UIAdaptivePresentati
     private let applicationController: ApplicationControlling
     private let initialURL: URL
     private weak var listener: WebviewListener?
-    
+
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }
 
@@ -79,6 +79,10 @@ private final class WebviewView: View, WKNavigationDelegate {
 
     weak var delegate: WebviewViewDelegate?
     private var url: URL?
+
+    override var canBecomeFocused: Bool {
+        return true
+    }
 
     private lazy var webView: WKWebView = {
         let webView = WKWebView()
