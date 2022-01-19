@@ -96,8 +96,8 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
 private final class HelpView: View {
 
-    lazy var titleLabel: UILabel = {
-        let label = UILabel()
+    lazy var titleLabel: Label = {
+        let label = Label()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         label.accessibilityTraits = .header
@@ -128,10 +128,15 @@ private final class HelpView: View {
     override func build() {
         super.build()
         hasBottomMargin = true
+        tableView.isAccessibilityElement = true
         tableView.isScrollEnabled = false
 
+        isAccessibilityElement = false
+
+        scrollView.isAccessibilityElement = false
         addSubview(scrollView)
 
+        contentView.isAccessibilityElement = false
         scrollView.addSubview(contentView)
 
         contentView.addSubview(titleLabel)
