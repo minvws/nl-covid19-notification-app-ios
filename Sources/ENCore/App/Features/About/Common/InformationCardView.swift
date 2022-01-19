@@ -18,15 +18,15 @@ final class InformationCardView: View {
         self.messageLabel = Label(frame: .zero)
         self.imageView = UIImageView(image: image)
         self.titleStackView = UIStackView(frame: .zero)
-        
+
         super.init(theme: theme)
 
         titleStackView.axis = .vertical
         titleStackView.spacing = 8
         titleStackView.accessibilityTraits = [.header]
         titleStackView.isAccessibilityElement = true
-        titleStackView.accessibilityLabel = [pretitle?.string, title.string].compactMap({ $0 }).joined(separator: ". ")
-        
+        titleStackView.accessibilityLabel = [pretitle?.string, title.string].compactMap { $0 }.joined(separator: ". ")
+
         pretitleLabel.attributedText = pretitle
         pretitleLabel.isAccessibilityElement = false
         pretitleLabel.font = theme.fonts.subheadBold
@@ -42,6 +42,10 @@ final class InformationCardView: View {
         messageLabel.font = theme.fonts.body
     }
 
+    override var canBecomeFocused: Bool {
+        return true
+    }
+
     // MARK: - Overrides
 
     override func build() {
@@ -54,7 +58,7 @@ final class InformationCardView: View {
         addSubview(imageView)
         addSubview(messageLabel)
         addSubview(titleStackView)
-        
+
         titleStackView.addArrangedSubview(pretitleLabel)
         titleStackView.addArrangedSubview(titleLabel)
     }
@@ -73,7 +77,7 @@ final class InformationCardView: View {
             maker.height.equalTo(snp.width).multipliedBy(imageAspectRatio)
         }
 
-        titleStackView.snp.makeConstraints { (maker) in
+        titleStackView.snp.makeConstraints { maker in
             maker.top.equalTo(imageView.snp.bottom).offset(8)
             maker.leading.trailing.equalToSuperview().inset(16)
         }

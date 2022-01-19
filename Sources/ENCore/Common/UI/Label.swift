@@ -69,6 +69,11 @@ class Label: UILabel {
         }
     }
 
+    // Mark the Label as focusable when interaction is possible
+    override var canBecomeFocused: Bool {
+        return isUserInteractionEnabled
+    }
+
     override var canBecomeFirstResponder: Bool {
         return true
     }
