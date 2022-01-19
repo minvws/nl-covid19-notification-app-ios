@@ -93,7 +93,10 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 private final class HelpView: View {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 506e9ca10d8ca1867bc1c5386b0511a6294b0d86
     lazy var titleLabel: Label = {
         let label = Label()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -140,6 +143,7 @@ private final class HelpView: View {
         tableView.isScrollEnabled = false
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         tableViewWrapperView.addSubview(tableView)
 
         infoView.addSections([
@@ -147,6 +151,8 @@ private final class HelpView: View {
             tableViewWrapperView
         ])
 =======
+=======
+>>>>>>> 506e9ca10d8ca1867bc1c5386b0511a6294b0d86
         isAccessibilityElement = false
 
         scrollView.isAccessibilityElement = false
