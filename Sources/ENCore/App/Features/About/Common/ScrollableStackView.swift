@@ -35,6 +35,9 @@ final class ScrollableStackView: View {
     override func build() {
         super.build()
 
+        isAccessibilityElement = false
+
+        stackView.isAccessibilityElement = false
         stackView.axis = .vertical
         stackView.alignment = .fill
         stackView.distribution = .fill
@@ -47,6 +50,7 @@ final class ScrollableStackView: View {
         titleLabel.font = theme.fonts.largeTitle
         titleLabel.accessibilityTraits = .header
 
+        scrollView.isAccessibilityElement = false
         addSubview(scrollView)
         scrollView.addSubview(stackView)
 

@@ -92,6 +92,22 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
 private final class HelpView: View {
 
+<<<<<<< HEAD
+=======
+    lazy var titleLabel: Label = {
+        let label = Label()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.accessibilityTraits = .header
+        return label
+    }()
+
+    lazy var contentLabel: SplitTextView = {
+        let textView = SplitTextView(theme: theme)
+        return textView
+    }()
+
+>>>>>>> 506e9ca1 (Added keyboard support for "Veelgestelde vragen" screen)
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -120,14 +136,25 @@ private final class HelpView: View {
     override func build() {
         super.build()
         hasBottomMargin = true
+        tableView.isAccessibilityElement = true
         tableView.isScrollEnabled = false
 
+<<<<<<< HEAD
         tableViewWrapperView.addSubview(tableView)
 
         infoView.addSections([
             faqContent(),
             tableViewWrapperView
         ])
+=======
+        isAccessibilityElement = false
+
+        scrollView.isAccessibilityElement = false
+        addSubview(scrollView)
+
+        contentView.isAccessibilityElement = false
+        scrollView.addSubview(contentView)
+>>>>>>> 506e9ca1 (Added keyboard support for "Veelgestelde vragen" screen)
 
         addSubview(infoView)
 
