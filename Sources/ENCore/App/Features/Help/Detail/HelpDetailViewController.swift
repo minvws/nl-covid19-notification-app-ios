@@ -10,20 +10,19 @@ import UIKit
 import WebKit
 
 final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
-
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
          entry: HelpDetailEntry,
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
-        self.shouldDisplayLinkedQuestions = entry.linkedEntries.isEmpty == false
-        self.linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
+        shouldDisplayLinkedQuestions = entry.linkedEntries.isEmpty == false
+        linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
 
-        self.internalView = HelpView(theme: theme,
-                                     entry: entry,
-                                     linkedContentTableViewManager: linkedContentTableViewManager,
-                                     shouldDisplayButton: shouldShowEnableAppButton)
+        internalView = HelpView(theme: theme,
+                                entry: entry,
+                                linkedContentTableViewManager: linkedContentTableViewManager,
+                                shouldDisplayButton: shouldShowEnableAppButton)
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
     }
@@ -31,8 +30,8 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -73,7 +72,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let obj = object as? UITableView {
-            if obj == self.internalView.tableView, keyPath == "contentSize" {
+            if obj == internalView.tableView, keyPath == "contentSize" {
                 internalView.updateTableViewHeight()
             }
         }
@@ -91,6 +90,18 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 }
 
 private final class HelpView: View {
+    lazy var titleLabel: Label = {
+        let label = Label()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        label.accessibilityTraits = .header
+        return label
+    }()
+
+    lazy var contentLabel: SplitTextView = {
+        let textView = SplitTextView(theme: theme)
+        return textView
+    }()
 
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
@@ -107,12 +118,12 @@ private final class HelpView: View {
 
     init(theme: Theme, entry: HelpDetailEntry, linkedContentTableViewManager: LinkedContentTableViewManager, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
-        self.tableViewManager = linkedContentTableViewManager
+        tableViewManager = linkedContentTableViewManager
         self.entry = entry
 
         let config = InfoViewConfig(showButtons: false)
-        self.infoView = InfoView(theme: theme, config: config)
-        self.infoView.showHeader = false
+        infoView = InfoView(theme: theme, config: config)
+        infoView.showHeader = false
 
         super.init(theme: theme)
     }
@@ -120,6 +131,7 @@ private final class HelpView: View {
     override func build() {
         super.build()
         hasBottomMargin = true
+        tableView.isAccessibilityElement = true
         tableView.isScrollEnabled = false
 
         tableViewWrapperView.addSubview(tableView)
@@ -128,6 +140,14 @@ private final class HelpView: View {
             faqContent(),
             tableViewWrapperView
         ])
+
+        isAccessibilityElement = false
+
+        scrollView.isAccessibilityElement = false
+        addSubview(scrollView)
+
+        contentView.isAccessibilityElement = false
+        scrollView.addSubview(contentView)
 
         addSubview(infoView)
 

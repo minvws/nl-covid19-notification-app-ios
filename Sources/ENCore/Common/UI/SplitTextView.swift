@@ -60,6 +60,7 @@ class SplitTextView: UIStackView {
                 if part.isHeader {
                     element.accessibilityTraits = .header
                 }
+
                 addArrangedSubview(element)
             }
         }

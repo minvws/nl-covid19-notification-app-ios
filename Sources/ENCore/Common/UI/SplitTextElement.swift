@@ -131,6 +131,10 @@ class SplitTextElement: UITextView, UITextViewDelegate {
         self.accessibilityAttributedValue = accessibilityString
     }
 
+    override var canBecomeFocused: Bool {
+        true
+    }
+
     override var attributedText: NSAttributedString? {
         get {
             return super.attributedText
