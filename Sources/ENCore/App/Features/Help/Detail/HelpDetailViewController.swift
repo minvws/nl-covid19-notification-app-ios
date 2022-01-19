@@ -10,20 +10,19 @@ import UIKit
 import WebKit
 
 final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresentationControllerDelegate {
-
     init(listener: HelpDetailListener,
          shouldShowEnableAppButton: Bool,
          entry: HelpDetailEntry,
          theme: Theme) {
         self.listener = listener
         self.shouldShowEnableAppButton = shouldShowEnableAppButton
-        self.shouldDisplayLinkedQuestions = entry.linkedEntries.isEmpty == false
-        self.linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
+        shouldDisplayLinkedQuestions = entry.linkedEntries.isEmpty == false
+        linkedContentTableViewManager = LinkedContentTableViewManager(content: entry.linkedEntries, theme: theme)
 
-        self.internalView = HelpView(theme: theme,
-                                     entry: entry,
-                                     linkedContentTableViewManager: linkedContentTableViewManager,
-                                     shouldDisplayButton: shouldShowEnableAppButton)
+        internalView = HelpView(theme: theme,
+                                entry: entry,
+                                linkedContentTableViewManager: linkedContentTableViewManager,
+                                shouldDisplayButton: shouldShowEnableAppButton)
         super.init(theme: theme)
         navigationItem.rightBarButtonItem = closeBarButtonItem
     }
@@ -31,8 +30,8 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -73,7 +72,7 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if let obj = object as? UITableView {
-            if obj == self.internalView.tableView, keyPath == "contentSize" {
+            if obj == internalView.tableView, keyPath == "contentSize" {
                 internalView.updateTableViewHeight()
             }
         }
@@ -91,12 +90,6 @@ final class HelpDetailViewController: ViewController, Logging, UIAdaptivePresent
 }
 
 private final class HelpView: View {
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 506e9ca10d8ca1867bc1c5386b0511a6294b0d86
     lazy var titleLabel: Label = {
         let label = Label()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +103,6 @@ private final class HelpView: View {
         return textView
     }()
 
->>>>>>> 506e9ca1 (Added keyboard support for "Veelgestelde vragen" screen)
     lazy var acceptButton: Button = {
         let button = Button(theme: self.theme)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -126,12 +118,12 @@ private final class HelpView: View {
 
     init(theme: Theme, entry: HelpDetailEntry, linkedContentTableViewManager: LinkedContentTableViewManager, shouldDisplayButton: Bool) {
         self.shouldDisplayButton = shouldDisplayButton
-        self.tableViewManager = linkedContentTableViewManager
+        tableViewManager = linkedContentTableViewManager
         self.entry = entry
 
         let config = InfoViewConfig(showButtons: false)
-        self.infoView = InfoView(theme: theme, config: config)
-        self.infoView.showHeader = false
+        infoView = InfoView(theme: theme, config: config)
+        infoView.showHeader = false
 
         super.init(theme: theme)
     }
@@ -142,17 +134,13 @@ private final class HelpView: View {
         tableView.isAccessibilityElement = true
         tableView.isScrollEnabled = false
 
-<<<<<<< HEAD
-<<<<<<< HEAD
         tableViewWrapperView.addSubview(tableView)
 
         infoView.addSections([
             faqContent(),
             tableViewWrapperView
         ])
-=======
-=======
->>>>>>> 506e9ca10d8ca1867bc1c5386b0511a6294b0d86
+
         isAccessibilityElement = false
 
         scrollView.isAccessibilityElement = false
@@ -160,7 +148,6 @@ private final class HelpView: View {
 
         contentView.isAccessibilityElement = false
         scrollView.addSubview(contentView)
->>>>>>> 506e9ca1 (Added keyboard support for "Veelgestelde vragen" screen)
 
         addSubview(infoView)
 
