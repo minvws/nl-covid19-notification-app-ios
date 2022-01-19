@@ -128,6 +128,16 @@ class Button: UIButton, Themeable {
         tintColor = .white
     }
 
+    /// Overridden to show black border on keyboard focus
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        if isFocused {
+            layer.borderWidth = 5
+            layer.borderColor = theme.colors.focusBorder.cgColor
+        } else {
+            layer.borderWidth = 0
+        }
+    }
+
     private func updateRoundedCorners() {
         if rounded {
             layer.cornerRadius = min(bounds.width, bounds.height) / 2
