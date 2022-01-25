@@ -824,6 +824,7 @@ private final class InfoSectionDynamicSuccessView: View {
 
         titleLabel.textAlignment = .center
         titleLabel.font = theme.fonts.largeTitle
+        titleLabel.numberOfLines = 0
 
         addSubview(titleLabel)
     }
