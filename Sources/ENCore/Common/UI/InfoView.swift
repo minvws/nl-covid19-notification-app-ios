@@ -282,6 +282,9 @@ final class InfoSectionStepView: View {
         button.setTitle(disabledButtonTitle, for: .disabled)
         button.isEnabled = !isDisabled
         button.action = buttonActionHandler
+        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.minimumScaleFactor = 0.5
         return button
     }()
 
