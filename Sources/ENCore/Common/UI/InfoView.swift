@@ -282,8 +282,8 @@ final class InfoSectionStepView: View {
         button.setTitle(disabledButtonTitle, for: .disabled)
         button.isEnabled = !isDisabled
         button.action = buttonActionHandler
-        button.titleLabel?.adjustsFontSizeToFitWidth = true
-        button.titleLabel?.numberOfLines = 1
+        button.titleLabel?.adjustsFontSizeToFitWidth = false
+        button.titleLabel?.numberOfLines = 0
         button.titleLabel?.lineBreakMode = .byWordWrapping
         button.titleLabel?.setContentHuggingPriority(.required, for: .vertical)
         button.titleLabel?.setContentHuggingPriority(.required, for: .horizontal)
@@ -406,7 +406,7 @@ final class InfoSectionStepView: View {
 
         if let button = actionButton {
             button.snp.makeConstraints { maker in
-                maker.height.equalTo(48)
+                maker.height.greaterThanOrEqualTo(48)
             }
         }
     }
