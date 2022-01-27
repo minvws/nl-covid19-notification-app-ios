@@ -66,6 +66,21 @@ class SplitTextElement: UITextView, UITextViewDelegate {
         ]
     }
 
+    // Make the SplitTextElement act as a button when Switch Control is active, or when VoiceOver isn't running.
+    // This way when Switch Control or Voice Control is active, the SplitTextElement will be reachable.
+    override var accessibilityTraits: UIAccessibilityTraits {
+        get {
+            if UIAccessibility.isSwitchControlRunning || !UIAccessibility.isVoiceOverRunning {
+                return super.accessibilityTraits.union(.button)
+            } else {
+                return super.accessibilityTraits
+            }
+        }
+        set {
+            super.accessibilityTraits = newValue
+        }
+    }
+
     /// Calculates the intrisic content size
     override var intrinsicContentSize: CGSize {
         let superSize = super.intrinsicContentSize
@@ -151,11 +166,11 @@ class SplitTextElement: UITextView, UITextViewDelegate {
             let attributes = newText.attributes(at: 0, effectiveRange: nil)
 
             if newText.isHeader {
-                accessibilityTraits.formUnion(.header)
+                super.accessibilityTraits.formUnion(.header)
             }
 
             if newText.hasLink {
-                accessibilityTraits.formUnion(.link)
+                super.accessibilityTraits.formUnion(.link)
             }
 
             guard let accessibilityTextCustom = attributes.filter({ (attribute) -> Bool in

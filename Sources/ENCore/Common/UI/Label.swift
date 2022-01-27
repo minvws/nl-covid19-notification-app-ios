@@ -78,6 +78,21 @@ class Label: UILabel {
         return true
     }
 
+    // Make the label act as a button when Switch Control is active, or when VoiceOver isn't running.
+    // This way when Switch Control or Voice Control is active, the label will be reachable.
+    override var accessibilityTraits: UIAccessibilityTraits {
+        get {
+            if UIAccessibility.isSwitchControlRunning || !UIAccessibility.isVoiceOverRunning {
+                return super.accessibilityTraits.union(.button)
+            } else {
+                return super.accessibilityTraits
+            }
+        }
+        set {
+            super.accessibilityTraits = newValue
+        }
+    }
+
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         return action == #selector(copy(_:))
     }
