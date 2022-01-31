@@ -66,12 +66,13 @@ class SplitTextElement: UITextView, UITextViewDelegate {
         ]
     }
 
-    // Make the SplitTextElement act as a button when Switch Control is active, or when VoiceOver isn't running.
+    // Make the SplitTextElement act as a link when Switch Control is active, or when VoiceOver isn't running.
     // This way when Switch Control or Voice Control is active, the SplitTextElement will be reachable.
+    // Using .link instead of .button prevents a popup label from showing during VoiceControl
     override var accessibilityTraits: UIAccessibilityTraits {
         get {
             if UIAccessibility.isSwitchControlRunning || !UIAccessibility.isVoiceOverRunning {
-                return super.accessibilityTraits.union(.button)
+                return super.accessibilityTraits.union(.link)
             } else {
                 return super.accessibilityTraits
             }
