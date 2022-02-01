@@ -23,7 +23,7 @@
                 "type" : "paragraph"
             },
             {
-                "body" : "advice_body",
+                "body" : "test_negative_body",
                 "title" : "advice_title",
                 "type" : "paragraph"
             },
@@ -54,7 +54,7 @@
                 "type" : "paragraph"
             },
             {
-                "body" : "advice_body",
+                "body" : "test_negative_body",
                 "title" : "advice_title",
                 "type" : "paragraph"
             },
