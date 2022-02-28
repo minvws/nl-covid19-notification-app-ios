@@ -21,6 +21,7 @@ public protocol Fonts {
     var subheadBold: UIFont { get }
     var footnote: UIFont { get }
     var caption1: UIFont { get }
+    var caption1Bold: UIFont { get }
 
     func subhead(limitMaximumSize: Bool) -> UIFont
 
@@ -90,6 +91,10 @@ final class ENFonts: Fonts {
 
     var caption1: UIFont {
         font(textStyle: .caption1) // size 12 points
+    }
+
+    var caption1Bold: UIFont {
+        font(textStyle: .caption1, isBold: true) // size 12 points
     }
 
     var preferredContentSizeCategoryIsSetBigger: Bool {

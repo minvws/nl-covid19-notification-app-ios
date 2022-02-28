@@ -58,8 +58,16 @@ final class GraphView: View {
     private let dateContainerView = UIStackView()
     private let startDateLabel = Label()
     private let endDateLabel = Label()
+    private let selectedDateLabel = Label()
     private let markerView = UIImageView(image: .graphMarker)
     private let selectionView = UIImageView(image: .graphSelection)
+
+    private let popupContainerView = UIView()
+    private let popupBubbleView = UIView()
+    private let popupArrowView = UIImageView(image: .popupArrow)
+    private let popupLabel = Label()
+
+    private lazy var panningViews = [selectedDateLabel, markerView, selectionView, popupContainerView]
 
     // MARK: - Init
 
@@ -83,12 +91,25 @@ final class GraphView: View {
         lowerBoundLabel.textColor = theme.colors.captionGray
 
         startDateLabel.font = theme.fonts.caption1
-        startDateLabel.text = "4 jan. 2022"
+        startDateLabel.text = "4 jan"
         startDateLabel.textColor = theme.colors.captionGray
 
         endDateLabel.font = theme.fonts.caption1
-        endDateLabel.text = "18 jan. 2022"
+        endDateLabel.text = "18 jan"
         endDateLabel.textColor = theme.colors.captionGray
+
+        selectedDateLabel.font = theme.fonts.caption1Bold
+        selectedDateLabel.text = "12 jan"
+        selectedDateLabel.textColor = theme.colors.textDark
+        selectedDateLabel.textAlignment = .center
+        selectedDateLabel.backgroundColor = .white
+
+        popupLabel.font = theme.fonts.caption1
+        popupLabel.text = "Mensen in ziekenhuis: 1.200"
+        popupLabel.textColor = theme.colors.captionGray
+
+        popupBubbleView.backgroundColor = .white
+        popupBubbleView.layer.cornerRadius = 8
 
         addSubview(upperBoundLabel)
         addSubview(drawingView)
@@ -96,9 +117,20 @@ final class GraphView: View {
         addSubview(dateContainerView)
         addSubview(selectionView)
         addSubview(markerView)
+        addSubview(selectedDateLabel)
+        addSubview(popupContainerView)
 
-        markerView.isHidden = true
-        selectionView.isHidden = true
+        popupContainerView.translatesAutoresizingMaskIntoConstraints = false
+        popupContainerView.layer.shadowOffset = CGSize(width: 0, height: 8)
+        popupContainerView.layer.shadowRadius = 12
+        popupContainerView.layer.shadowColor = UIColor.black.cgColor
+        popupContainerView.layer.shadowOpacity = 0.1
+
+        popupContainerView.addSubview(popupBubbleView)
+        popupContainerView.addSubview(popupArrowView)
+        popupBubbleView.addSubview(popupLabel)
+
+        panningViews.forEach { $0.isHidden = true }
 
         dateContainerView.addArrangedSubview(startDateLabel)
         dateContainerView.addArrangedSubview(endDateLabel)
@@ -111,14 +143,7 @@ final class GraphView: View {
 
     @objc
     private func handlePan(_ recognizer: UIPanGestureRecognizer) {
-        switch recognizer.state {
-        case .ended, .cancelled, .failed:
-            markerView.isHidden = true
-            selectionView.isHidden = true
-        default:
-            markerView.isHidden = false
-            selectionView.isHidden = false
-        }
+        panningViews.forEach { $0.isHidden = [.ended, .cancelled, .failed].contains(recognizer.state) }
 
         let offset = recognizer.location(in: self).x
 
@@ -134,6 +159,30 @@ final class GraphView: View {
         selectionView.frame.origin.y = drawingView.frame.minY + 1
         selectionView.frame.size.height = drawingView.frame.height - 1
         selectionView.center.x = horizontalOffset
+
+        selectedDateLabel.sizeToFit()
+
+        let selectedDateMargin: CGFloat = 4
+
+        selectedDateLabel.frame.origin.y = dateContainerView.frame.minY
+        selectedDateLabel.frame.size.height = dateContainerView.frame.height
+        selectedDateLabel.frame.size.width += selectedDateMargin * 2
+
+        let minCenter = -selectedDateMargin + selectedDateLabel.frame.width / 2
+        let maxCenter = bounds.width - selectedDateLabel.frame.width / 2 + selectedDateMargin
+
+        selectedDateLabel.center.x = min(max(horizontalOffset, minCenter), maxCenter)
+
+        let arrowHalfWidth = (popupArrowView.image?.size.width ?? 1) / 2
+        let popupHalfWidth = popupContainerView.frame.width / 2
+
+        let popupMinCenter = popupHalfWidth - arrowHalfWidth
+        let popupMaxCenter = bounds.width - popupHalfWidth + arrowHalfWidth
+
+        let popupCenter = min(max(horizontalOffset, popupMinCenter), popupMaxCenter)
+        let popupCenterDifference = horizontalOffset - popupCenter
+        popupContainerView.transform = CGAffineTransform(translationX: popupCenter - popupHalfWidth, y: 0)
+        popupArrowView.transform = CGAffineTransform(translationX: popupHalfWidth + popupCenterDifference - arrowHalfWidth, y: 0)
     }
 
     override func setupConstraints() {
@@ -161,6 +210,34 @@ final class GraphView: View {
             maker.trailing.equalToSuperview()
             maker.bottom.equalToSuperview()
             maker.height.greaterThanOrEqualTo(20)
+        }
+
+        let arrowSize = popupArrowView.image?.size ?? .zero
+
+        popupLabel.snp.makeConstraints { maker in
+            maker.left.equalToSuperview().offset(8)
+            maker.right.equalToSuperview().offset(-8)
+            maker.top.equalToSuperview().offset(13)
+            maker.bottom.equalToSuperview().offset(-13)
+        }
+
+        popupBubbleView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.left.equalToSuperview()
+            maker.right.equalToSuperview()
+        }
+
+        popupArrowView.snp.makeConstraints { maker in
+            maker.top.equalTo(popupBubbleView.snp.bottom).offset(-8)
+            maker.left.equalToSuperview()
+            maker.bottom.equalToSuperview()
+            maker.height.equalTo(arrowSize.height)
+            maker.width.equalTo(arrowSize.width)
+        }
+
+        popupContainerView.snp.makeConstraints { maker in
+            maker.left.equalToSuperview()
+            maker.bottom.equalTo(drawingView.snp.top).offset(-2)
         }
 
         hasBottomMargin = true
@@ -198,6 +275,26 @@ private class GraphDrawingView: View {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
 
+        // Draw the horizontal lines
+        let lineCount = data.graphUpperBound / data.orderOfMagnitude
+
+        let segmentHeight = bounds.height / CGFloat(lineCount)
+
+        (1 ... lineCount)
+            .forEach { line in
+                var offset = bounds.height - CGFloat(line) * segmentHeight
+                offset += 0.5 // offset the line half a point, so the line at the top won't be clipped
+
+                let linePath = UIBezierPath()
+                linePath.move(to: .init(x: 0, y: offset))
+                linePath.addLine(to: .init(x: bounds.width, y: offset))
+
+                theme.colors.graphLine.setStroke()
+                linePath.lineCapStyle = .square
+                linePath.lineWidth = 1
+                linePath.stroke()
+            }
+
         // Draw the filled area
         let filledShapePath = UIBezierPath()
         // start bottom right
@@ -220,26 +317,6 @@ private class GraphDrawingView: View {
 
         theme.colors.graphFill.setFill()
         filledShapePath.fill()
-
-        // Draw the horizontal lines
-        let lineCount = data.graphUpperBound / data.orderOfMagnitude
-
-        let segmentHeight = bounds.height / CGFloat(lineCount)
-
-        (1 ... lineCount)
-            .forEach { line in
-                var offset = bounds.height - CGFloat(line) * segmentHeight
-                offset += 0.5 // offset the line half a point, so the line at the top won't be clipped
-
-                let linePath = UIBezierPath()
-                linePath.move(to: .init(x: 0, y: offset))
-                linePath.addLine(to: .init(x: bounds.width, y: offset))
-
-                theme.colors.graphLine.setStroke()
-                linePath.lineCapStyle = .square
-                linePath.lineWidth = 1
-                linePath.stroke()
-            }
 
         // Draw the graph line
         let strokePath = UIBezierPath()

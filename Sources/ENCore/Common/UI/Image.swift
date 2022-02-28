@@ -91,6 +91,7 @@ extension UIImage {
 
     static var graphMarker: UIImage? { return Image.named("GraphMarker") }
     static var graphSelection: UIImage? { return Image.named("GraphSelection") }
+    static var popupArrow: UIImage? { return Image.named("PopupArrow") }
 }
 
 extension UIImage {
