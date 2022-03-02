@@ -17,6 +17,7 @@ struct GraphData {
     let maxValue: UInt
     let orderOfMagnitude: UInt
     let graphUpperBound: UInt
+    let normalizedValues: [CGFloat]
     let scaledNormalizedValues: [CGFloat]
 
     init(values: [UInt]) {
@@ -45,15 +46,24 @@ struct GraphData {
         do { // Normalize and scale to bound
             scaledNormalizedValues = values.map { [graphUpperBound] in CGFloat($0) / CGFloat(graphUpperBound) }
         }
+
+        do { // Normalize
+            normalizedValues = values.map { [maxValue] in CGFloat($0) / CGFloat(maxValue) }
+        }
     }
 }
 
 final class GraphView: View {
 
+    enum Style {
+        case normal
+        case compact
+    }
+
     var data = GraphData(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) })
 
     private let upperBoundLabel = Label()
-    private lazy var drawingView = GraphDrawingView(theme: theme, data: data)
+    private lazy var drawingView = GraphDrawingView(theme: theme, data: data, style: style)
     private let lowerBoundLabel = Label()
     private let dateContainerView = UIStackView()
     private let startDateLabel = Label()
@@ -66,12 +76,14 @@ final class GraphView: View {
     private let popupBubbleView = UIView()
     private let popupArrowView = UIImageView(image: .popupArrow)
     private let popupLabel = Label()
+    private let style: Style
 
     private lazy var panningViews = [selectedDateLabel, markerView, selectionView, popupContainerView]
 
     // MARK: - Init
 
-    override init(theme: Theme) {
+    init(theme: Theme, style: Style) {
+        self.style = style
         super.init(theme: theme)
 
         isUserInteractionEnabled = true
@@ -82,6 +94,24 @@ final class GraphView: View {
     override func build() {
         super.build()
 
+        switch style {
+        case .normal:
+            buildNormal()
+        case .compact:
+            buildCompact()
+        }
+    }
+
+    private func buildNormal() {
+        addSubview(drawingView)
+        addSubview(upperBoundLabel)
+        addSubview(lowerBoundLabel)
+        addSubview(dateContainerView)
+        addSubview(selectionView)
+        addSubview(markerView)
+        addSubview(selectedDateLabel)
+        addSubview(popupContainerView)
+
         upperBoundLabel.font = theme.fonts.caption1
         upperBoundLabel.text = String(data.graphUpperBound)
         upperBoundLabel.textColor = theme.colors.captionGray
@@ -91,11 +121,11 @@ final class GraphView: View {
         lowerBoundLabel.textColor = theme.colors.captionGray
 
         startDateLabel.font = theme.fonts.caption1
-        startDateLabel.text = "4 jan"
+        startDateLabel.text = "4 jan. 2022"
         startDateLabel.textColor = theme.colors.captionGray
 
         endDateLabel.font = theme.fonts.caption1
-        endDateLabel.text = "18 jan"
+        endDateLabel.text = "18 jan. 2022"
         endDateLabel.textColor = theme.colors.captionGray
 
         selectedDateLabel.font = theme.fonts.caption1Bold
@@ -110,15 +140,6 @@ final class GraphView: View {
 
         popupBubbleView.backgroundColor = .white
         popupBubbleView.layer.cornerRadius = 8
-
-        addSubview(upperBoundLabel)
-        addSubview(drawingView)
-        addSubview(lowerBoundLabel)
-        addSubview(dateContainerView)
-        addSubview(selectionView)
-        addSubview(markerView)
-        addSubview(selectedDateLabel)
-        addSubview(popupContainerView)
 
         popupContainerView.translatesAutoresizingMaskIntoConstraints = false
         popupContainerView.layer.shadowOffset = CGSize(width: 0, height: 8)
@@ -139,6 +160,87 @@ final class GraphView: View {
 
         let panGestureRecognizer = ImmediatePanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGestureRecognizer)
+    }
+
+    private func buildCompact() {
+        addSubview(drawingView)
+        addSubview(markerView)
+
+        panningViews.forEach { $0.isHidden = true }
+        markerView.isHidden = false
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        switch style {
+        case .normal:
+            setupConstraintsNormal()
+        case .compact:
+            setupConstraintsCompact()
+        }
+    }
+
+    private func setupConstraintsNormal() {
+        drawingView.snp.makeConstraints { maker in
+            maker.top.equalTo(upperBoundLabel.snp.bottom).offset(1)
+            maker.leading.equalToSuperview()
+            maker.trailing.equalToSuperview()
+        }
+
+        upperBoundLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.leading.equalToSuperview().offset(4)
+        }
+
+        lowerBoundLabel.snp.makeConstraints { maker in
+            maker.bottom.equalTo(drawingView.snp.bottom).offset(-1)
+            maker.leading.equalToSuperview().offset(4)
+        }
+
+        dateContainerView.snp.makeConstraints { maker in
+            maker.top.equalTo(drawingView.snp.bottom).offset(4)
+            maker.leading.equalToSuperview()
+            maker.trailing.equalToSuperview()
+            maker.bottom.equalToSuperview()
+            maker.height.greaterThanOrEqualTo(20)
+        }
+
+        let arrowSize = popupArrowView.image?.size ?? .zero
+
+        popupLabel.snp.makeConstraints { maker in
+            maker.left.equalToSuperview().offset(8)
+            maker.right.equalToSuperview().offset(-8)
+            maker.top.equalToSuperview().offset(13)
+            maker.bottom.equalToSuperview().offset(-13)
+        }
+
+        popupBubbleView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.left.equalToSuperview()
+            maker.right.equalToSuperview()
+        }
+
+        popupArrowView.snp.makeConstraints { maker in
+            maker.top.equalTo(popupBubbleView.snp.bottom).offset(-8)
+            maker.left.equalToSuperview()
+            maker.bottom.equalToSuperview()
+            maker.height.equalTo(arrowSize.height)
+            maker.width.equalTo(arrowSize.width)
+        }
+
+        popupContainerView.snp.makeConstraints { maker in
+            maker.left.equalToSuperview()
+            maker.bottom.equalTo(drawingView.snp.top).offset(-2)
+        }
+
+        hasBottomMargin = true
+    }
+
+    private func setupConstraintsCompact() {
+        drawingView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
     }
 
     @objc
@@ -185,62 +287,18 @@ final class GraphView: View {
         popupArrowView.transform = CGAffineTransform(translationX: popupHalfWidth + popupCenterDifference - arrowHalfWidth, y: 0)
     }
 
-    override func setupConstraints() {
-        super.setupConstraints()
+    override func layoutSubviews() {
+        super.layoutSubviews()
 
-        upperBoundLabel.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.leading.equalToSuperview().offset(4)
+        switch style {
+        case .normal:
+            break
+        case .compact:
+            let lastValue = data.normalizedValues.last ?? 0
+
+            markerView.center.x = drawingView.frame.width
+            markerView.center.y = drawingView.graphOffset + (drawingView.frame.height - drawingView.graphOffset) * (1 - lastValue)
         }
-
-        drawingView.snp.makeConstraints { maker in
-            maker.top.equalTo(upperBoundLabel.snp.bottom).offset(1)
-            maker.leading.equalToSuperview()
-            maker.trailing.equalToSuperview()
-        }
-
-        lowerBoundLabel.snp.makeConstraints { maker in
-            maker.bottom.equalTo(drawingView.snp.bottom).offset(-1)
-            maker.leading.equalToSuperview().offset(4)
-        }
-
-        dateContainerView.snp.makeConstraints { maker in
-            maker.top.equalTo(drawingView.snp.bottom).offset(4)
-            maker.leading.equalToSuperview()
-            maker.trailing.equalToSuperview()
-            maker.bottom.equalToSuperview()
-            maker.height.greaterThanOrEqualTo(20)
-        }
-
-        let arrowSize = popupArrowView.image?.size ?? .zero
-
-        popupLabel.snp.makeConstraints { maker in
-            maker.left.equalToSuperview().offset(8)
-            maker.right.equalToSuperview().offset(-8)
-            maker.top.equalToSuperview().offset(13)
-            maker.bottom.equalToSuperview().offset(-13)
-        }
-
-        popupBubbleView.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.left.equalToSuperview()
-            maker.right.equalToSuperview()
-        }
-
-        popupArrowView.snp.makeConstraints { maker in
-            maker.top.equalTo(popupBubbleView.snp.bottom).offset(-8)
-            maker.left.equalToSuperview()
-            maker.bottom.equalToSuperview()
-            maker.height.equalTo(arrowSize.height)
-            maker.width.equalTo(arrowSize.width)
-        }
-
-        popupContainerView.snp.makeConstraints { maker in
-            maker.left.equalToSuperview()
-            maker.bottom.equalTo(drawingView.snp.top).offset(-2)
-        }
-
-        hasBottomMargin = true
     }
 }
 
@@ -256,13 +314,16 @@ private class ImmediatePanGestureRecognizer: UIPanGestureRecognizer {
 private class GraphDrawingView: View {
 
     let data: GraphData
+    let style: GraphView.Style
 
     // MARK: - Init
 
-    init(theme: Theme, data: GraphData) {
+    init(theme: Theme, data: GraphData, style: GraphView.Style) {
         self.data = data
+        self.style = style
 
         super.init(theme: theme)
+        setContentCompressionResistancePriority(.required, for: .vertical)
     }
 
     override func layoutSubviews() {
@@ -270,59 +331,84 @@ private class GraphDrawingView: View {
         setNeedsDisplay()
     }
 
+    var graphOffset: CGFloat {
+        switch style {
+        case .normal:
+            return 0
+        case .compact:
+            return 8
+        }
+    }
+
     // MARK: - Overrides
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
 
-        // Draw the horizontal lines
-        let lineCount = data.graphUpperBound / data.orderOfMagnitude
+        let graphWidth = bounds.width
+        let graphHeight = bounds.height - graphOffset
+        let scaledDataPoints: [CGFloat]
+        let drawLines: Bool
 
-        let segmentHeight = bounds.height / CGFloat(lineCount)
+        switch style {
+        case .normal:
+            scaledDataPoints = data.scaledNormalizedValues
+            drawLines = true
+        case .compact:
+            scaledDataPoints = data.normalizedValues
+            drawLines = false
+        }
 
-        (1 ... lineCount)
-            .forEach { line in
-                var offset = bounds.height - CGFloat(line) * segmentHeight
-                offset += 0.5 // offset the line half a point, so the line at the top won't be clipped
+        if drawLines {
+            // Draw the horizontal lines
+            let lineCount = data.graphUpperBound / data.orderOfMagnitude
 
-                let linePath = UIBezierPath()
-                linePath.move(to: .init(x: 0, y: offset))
-                linePath.addLine(to: .init(x: bounds.width, y: offset))
+            let segmentHeight = graphHeight / CGFloat(lineCount)
 
-                theme.colors.graphLine.setStroke()
-                linePath.lineCapStyle = .square
-                linePath.lineWidth = 1
-                linePath.stroke()
-            }
+            (1 ... lineCount)
+                .forEach { line in
+                    var offset = graphHeight - CGFloat(line) * segmentHeight
+                    offset += 0.5 // offset the line half a point, so the line at the top won't be clipped
+
+                    let linePath = UIBezierPath()
+                    linePath.move(to: .init(x: 0, y: offset))
+                    linePath.addLine(to: .init(x: graphWidth, y: offset))
+
+                    theme.colors.graphLine.setStroke()
+                    linePath.lineCapStyle = .square
+                    linePath.lineWidth = 1
+                    linePath.apply(CGAffineTransform(translationX: 0, y: graphOffset))
+                    linePath.stroke()
+                }
+        }
 
         // Draw the filled area
         let filledShapePath = UIBezierPath()
         // start bottom right
-        filledShapePath.move(to: .init(x: bounds.width, y: bounds.height))
-        filledShapePath.addLine(to: .init(x: 0, y: bounds.height))
+        filledShapePath.move(to: .init(x: graphWidth, y: graphHeight))
+        filledShapePath.addLine(to: .init(x: 0, y: graphHeight))
 
-        let segmentWidth = bounds.width / CGFloat(data.values.count - 1)
-
-        let scaledDataPoints = data.scaledNormalizedValues
+        let segmentWidth = graphWidth / CGFloat(data.values.count - 1)
 
         scaledDataPoints
             .enumerated()
             .forEach { index, value in
                 filledShapePath
                     .addLine(to: .init(x: CGFloat(index) * segmentWidth,
-                                       y: (1.0 - value) * bounds.height))
+                                       y: (1.0 - value) * graphHeight))
             }
 
         filledShapePath.close()
 
         theme.colors.graphFill.setFill()
+        filledShapePath.apply(CGAffineTransform(translationX: 0, y: graphOffset))
         filledShapePath.fill()
 
         // Draw the graph line
         let strokePath = UIBezierPath()
         scaledDataPoints.first.map { value in
             strokePath.move(to: .init(x: 0,
-                                      y: (1.0 - value) * bounds.height))
+                                      y: (1.0 - value) * graphHeight))
         }
 
         scaledDataPoints
@@ -331,12 +417,17 @@ private class GraphDrawingView: View {
             .forEach { index, value in
                 strokePath
                     .addLine(to: .init(x: CGFloat(index) * segmentWidth,
-                                       y: (1.0 - value) * bounds.height))
+                                       y: (1.0 - value) * graphHeight))
             }
 
         theme.colors.graphStroke.setStroke()
         strokePath.lineWidth = 2
         strokePath.lineCapStyle = .square
+        strokePath.apply(CGAffineTransform(translationX: 0, y: graphOffset))
         strokePath.stroke()
+    }
+
+    override var intrinsicContentSize: CGSize {
+        return CGSize(width: 100, height: style == .compact ? 48 : 88)
     }
 }

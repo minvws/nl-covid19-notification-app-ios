@@ -13,6 +13,7 @@ import UserNotifications
 /// @mockable
 protocol MainRouting: Routing {
     func attachStatus(topAnchor: NSLayoutYAxisAnchor)
+    func attachDashboard()
     func attachMoreInformation()
 
     func routeToAboutApp()
@@ -73,6 +74,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         super.viewDidLoad()
 
         router?.attachStatus(topAnchor: view.topAnchor)
+        router?.attachDashboard()
         router?.attachMoreInformation()
 
         if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
