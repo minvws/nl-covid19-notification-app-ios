@@ -53,6 +53,12 @@ private final class DashboardView: View {
     private var scrollView = UIScrollView()
     private var outerStackView = UIStackView()
     private var cardStackView = UIStackView()
+    private var headerContainer = UIView()
+    private var headerStackView = UIStackView()
+    private var headerBackgroundView = UIView()
+    private var headerLabel = UILabel()
+    private var currentSituationLabelContainer = UIView()
+    private var currentSituationLabel = UILabel()
 
     override init(theme: Theme) {
         super.init(theme: theme)
@@ -67,6 +73,31 @@ private final class DashboardView: View {
 
         addSubview(outerStackView)
 
+        outerStackView.spacing = 3
+        outerStackView.axis = .vertical
+
+        headerBackgroundView.addSubview(headerLabel)
+        headerBackgroundView.backgroundColor = theme.colors.dashboardHeaderBackground
+        headerBackgroundView.layer.cornerRadius = 4
+
+        headerLabel.textColor = theme.colors.dashboardHeaderText
+        headerLabel.text = "CORONA DASHBOARD"
+        headerLabel.font = theme.fonts.caption1Bold
+
+        currentSituationLabel.text = "De situatie nu in Nederland"
+        currentSituationLabel.font = theme.fonts.headlineBold
+
+        headerStackView.addArrangedSubview(headerBackgroundView)
+        headerStackView.addArrangedSubview(currentSituationLabel)
+
+        headerStackView.axis = .vertical
+        headerStackView.spacing = 9
+        headerStackView.alignment = .leading
+
+        headerContainer.addSubview(headerStackView)
+
+        outerStackView.addArrangedSubview(headerContainer)
+        outerStackView.addArrangedSubview(currentSituationLabelContainer)
         outerStackView.addArrangedSubview(scrollView)
 
         cardStackView.axis = .horizontal
@@ -90,8 +121,25 @@ private final class DashboardView: View {
 
         heightConstraint = heightAnchor.constraint(equalToConstant: 0).withPriority(.defaultHigh + 100)
 
+        headerLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(2)
+            maker.bottom.equalToSuperview().offset(-2)
+            maker.left.equalToSuperview().offset(4)
+            maker.right.equalToSuperview().offset(-4)
+        }
+
+        headerStackView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(0)
+            maker.bottom.equalToSuperview().offset(0)
+            maker.left.equalToSuperview().offset(16)
+            maker.right.equalToSuperview().offset(-16)
+        }
+
         outerStackView.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.top.equalToSuperview().offset(16)
+            maker.bottom.equalToSuperview()
+            maker.left.equalToSuperview()
+            maker.right.equalToSuperview()
         }
 
         cardStackView.snp.makeConstraints { maker in
