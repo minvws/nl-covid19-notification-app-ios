@@ -103,9 +103,7 @@ extension String {
 
     static var helpDeskPhoneNumber = "0800-1280"
     static var coronaTestPhoneNumber = "0800-1202"
-    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected person
-    static var coronaTestWebUrl = "https://coronatest.nl"
-    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
+    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected perso
     static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
     static var githubLink = "https://github.com/minvws"
 
