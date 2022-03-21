@@ -53,8 +53,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         internalView.linkButtonActionHandler = { [weak self] in
 
-//            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
-
             guard let coronaTestURL = self?.dataController.getStoredCoronaTestURL() else {
                 self?.logError("Unable to to retreive coronaTestURL from storage")
                 return
