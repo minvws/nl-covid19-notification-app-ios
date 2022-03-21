@@ -292,6 +292,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storedAppConfig.shareKeyURL
     }
 
+    func getStoredCoronaTestURL() -> String? {
+        guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+            return nil
+        }
+        return storedAppConfig.coronaTestURL
+    }
+
     func getDecoyProbability() -> Single<Float> {
         requestApplicationConfiguration()
             .map { applicationConfiguration in

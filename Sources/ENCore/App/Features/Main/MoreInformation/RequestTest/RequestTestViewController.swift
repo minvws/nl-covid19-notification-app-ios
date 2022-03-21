@@ -53,22 +53,18 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         internalView.linkButtonActionHandler = { [weak self] in
 
-            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
+//            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
 
-            guard let url = URL(string: testWebsiteUrl) else {
-                self?.logError("Unable to open \(testWebsiteUrl)")
+            guard let coronaTestURL = self?.dataController.getStoredCoronaTestURL() else {
+                self?.logError("Unable to to retreive coronaTestURL from storage")
+                return
+            }
+
+            guard let url = URL(string: coronaTestURL) else {
+                self?.logError("Unable to open \(coronaTestURL)")
                 return
             }
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        }
-        internalView.phoneButtonActionHandler = { [weak self] in
-            guard let strongSelf = self else { return }
-            let phoneNumberLink: String = .phoneNumberLink(from: strongSelf.testPhoneNumber)
-            if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            } else {
-                strongSelf.logError("Unable to open \(phoneNumberLink)")
-            }
         }
     }
 
@@ -81,16 +77,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
             .subscribe { [weak self] isLandscape in
                 self?.internalView.showVisual = !isLandscape
             }.disposed(by: disposeBag)
-
-        dataController
-            .getAppointmentPhoneNumber()
-            .observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: { exposedPhoneNumber in
-                self.testPhoneNumber = self.isExposed ? exposedPhoneNumber : .coronaTestPhoneNumber
-            }, onFailure: { _ in
-                self.testPhoneNumber = self.isExposed ? .coronaTestExposedPhoneNumber : .coronaTestPhoneNumber
-            })
-            .disposed(by: disposeBag)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,15 +93,9 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
     private weak var listener: RequestTestListener?
 
-    private var testPhoneNumber: String = "" {
-        didSet {
-            internalView.testPhoneNumber = testPhoneNumber
-        }
-    }
-
     private var isExposed: Bool
 
-    private lazy var internalView = RequestTestView(theme: self.theme, testPhoneNumber: testPhoneNumber)
+    private lazy var internalView = RequestTestView(theme: self.theme)
 
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let dataController: ExposureDataControlling
@@ -128,10 +108,6 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
 private final class RequestTestView: View {
 
-    var phoneButtonActionHandler: (() -> ())? {
-        get { infoView.secondaryActionHandler }
-        set { infoView.secondaryActionHandler = newValue }
-    }
     var linkButtonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
@@ -143,27 +119,13 @@ private final class RequestTestView: View {
         }
     }
 
-    var testPhoneNumber: String {
-        didSet {
-            // This string is manually formatted to ensure the phone number is always displayed left-to-right.
-            // \u{202A} starts left-to-right text, \u{202C} pops directional formatting
-            formattedPhoneNumber = String(format: .moreInformationRequestTestPhone, arguments: ["\u{202A}\(testPhoneNumber)\u{202C}"])
-            infoView.secondaryButton?.title = formattedPhoneNumber
-        }
-    }
-
-    private var formattedPhoneNumber: String = ""
     private let infoView: InfoView
 
     // MARK: - Init
 
-    init(theme: Theme, testPhoneNumber: String) {
-
-        self.testPhoneNumber = testPhoneNumber
-        let callButtonTitle = formattedPhoneNumber
+    override init(theme: Theme) {
 
         let config = InfoViewConfig(actionButtonTitle: .moreInformationRequestTestLink,
-                                    secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
                                     stickyButtons: true)
         self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
