@@ -57,25 +57,16 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                 return
             }
 
-            strongSelf.dataController
-                .getAppointmentPhoneNumber()
-                .subscribe { event in
-                    var phoneNumber: String = .coronaTestExposedPhoneNumber
+            guard let coronaTestURL = strongSelf.dataController.getStoredCoronaTestURL() else {
+                strongSelf.logError("Unable to to retreive coronaTestURL from storage")
+                return
+            }
 
-                    if case let .success(retrievedPhoneNumber) = event {
-                        phoneNumber = retrievedPhoneNumber
-                    }
-
-                    // Because the current screen is only shown on exposed devices, we can use the phonenumber that is exclusively for exposed persons
-                    let phoneNumberLink: String = .phoneNumberLink(from: phoneNumber)
-
-                    if let url = URL(string: phoneNumberLink), UIApplication.shared.canOpenURL(url) {
-                        UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                    } else {
-                        strongSelf.logError("Unable to open \(phoneNumberLink)")
-                    }
-                }
-                .disposed(by: strongSelf.disposeBag)
+            guard let url = URL(string: coronaTestURL) else {
+                strongSelf.logError("Unable to open \(coronaTestURL)")
+                return
+            }
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
 
         internalView.infoView.showHeader = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
