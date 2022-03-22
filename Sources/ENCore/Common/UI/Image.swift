@@ -94,6 +94,11 @@ extension UIImage {
     static var popupArrow: UIImage? { return Image.named("PopupArrow") }
 
     static var dashboardCardBackground: UIImage? { return Image.named("Dashboard/CardBackground") }
+    static var dashboardHospitalIcon: UIImage? { return Image.named("Dashboard/Hospital") }
+    static var dashboardTestsIcon: UIImage? { return Image.named("Dashboard/Tests") }
+    static var dashboardUsersIcon: UIImage? { return Image.named("Dashboard/Users") }
+    static var dashboardUsersIllustration: UIImage? { return Image.named("Dashboard/UsersIllustration") }
+    static var dashboardVaccinationsIcon: UIImage? { return Image.named("Dashboard/Vaccinations") }
 }
 
 extension UIImage {

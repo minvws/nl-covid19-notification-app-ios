@@ -60,7 +60,7 @@ final class GraphView: View {
         case compact
     }
 
-    var data = GraphData(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) })
+    private let data: GraphData
 
     private let upperBoundLabel = Label()
     private lazy var drawingView = GraphDrawingView(theme: theme, data: data, style: style)
@@ -82,8 +82,9 @@ final class GraphView: View {
 
     // MARK: - Init
 
-    init(theme: Theme, style: Style) {
+    init(theme: Theme, data: GraphData, style: Style) {
         self.style = style
+        self.data = data
         super.init(theme: theme)
 
         isUserInteractionEnabled = true

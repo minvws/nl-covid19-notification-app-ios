@@ -722,6 +722,33 @@ extension String {
     static var contaminationChanceComplaintsStep5: String { return Localization.string(for: "contamination.complaints.step5") }
     static var contaminationChanceComplaintsStep6: String { return Localization.string(for: "contamination.complaints.step6") }
 
+    /* MARK: - Dashboard */
+    static var dashboardPositiveTestResultsHeader: String { return Localization.string(for: "dashboard.positiveTestResults.header") }
+    static var dashboardCoronaMelderUsersHeader: String { return Localization.string(for: "dashboard.coronaMelderUsers.header") }
+    static var dashboardHospitalAdmissionsHeader: String { return Localization.string(for: "dashboard.hospitalAdmissions.header") }
+    static var dashboardIcuAdmissionsHeader: String { return Localization.string(for: "dashboard.icuAdmissions.header") }
+    static var dashboardVaccinationCoverageHeader: String { return Localization.string(for: "dashboard.vaccinationCoverage.header") }
+    static var dashboardVaccinationCoverageElderLabel: String { return Localization.string(for: "dashboard.vaccinationCoverage.elder.label") }
+    static var dashboardVaccinationCoverageBoosterLabel: String { return Localization.string(for: "dashboard.vaccinationCoverage.booster.label") }
+    static var dashboardTitle: String { return Localization.string(for: "dashboard.title") }
+    static var dashboardMoreInfoHeader: String { return Localization.string(for: "dashboard.moreInfo.header") }
+
+    static func dashboardHighlightedDate(daysAgo: Int, date: String) -> String {
+        switch daysAgo {
+        case 0: return Localization.string(for: "status.notified.today")
+        case 1: return Localization.string(for: "yesterday")
+        case 2: return Localization.string(for: "dayBeforeYesterday")
+        default: return date
+        }
+    }
+
+    static var dashboardMoreInfoLink: String { return Localization.string(for: "dashboard.moreInfo.link") }
+    static var dashboardHeader: String { return Localization.string(for: "dashboard.header") }
+    static var dashboardSummaryCardText: String { return Localization.string(for: "dashboard.summaryCardText") }
+    static var dashboardSummaryText: String { return Localization.string(for: "dashboard.summaryText") }
+    static var dashboardTag: String { return Localization.string(for: "dashboard.tag") }
+    static var dashboardServerError: String { return Localization.string(for: "dashboard.serverError") }
+
     func attributed() -> NSMutableAttributedString {
         return NSMutableAttributedString(string: self)
     }
