@@ -70,7 +70,7 @@ protocol ExposureDataControlling: AnyObject {
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
     func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification?
     func getStoredShareKeyURL() -> String?
-    func getStoredCoronaTestURL() -> String?
+    func getStoredCoronaTestURL() -> String
 
     func isAppDeactivated() -> Single<Bool>
     func getDecoyProbability() -> Single<Float>
