@@ -57,10 +57,7 @@ final class MessageViewController: ViewController, MessageViewControllable, UIAd
                 return
             }
 
-            guard let coronaTestURL = strongSelf.dataController.getStoredCoronaTestURL() else {
-                strongSelf.logError("Unable to to retreive coronaTestURL from storage")
-                return
-            }
+            let coronaTestURL = strongSelf.dataController.getStoredCoronaTestURL()
 
             guard let url = URL(string: coronaTestURL) else {
                 strongSelf.logError("Unable to open \(coronaTestURL)")

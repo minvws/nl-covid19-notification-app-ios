@@ -58,7 +58,7 @@ extension AppConfig {
                                         featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
                                         notification: notification?.asApplicationConfigurationNotification(),
                                         shareKeyURL: shareKeyURL,
-                                        coronaTestURL: coronaTestURL ?? "https://coronatest.nl/ik-wil-me-laten-testen/online-een-afspraak-maken")
+                                        coronaTestURL: coronaTestURL)
     }
 }
 

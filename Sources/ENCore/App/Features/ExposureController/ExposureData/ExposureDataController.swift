@@ -292,11 +292,12 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storedAppConfig.shareKeyURL
     }
 
-    func getStoredCoronaTestURL() -> String? {
+    func getStoredCoronaTestURL() -> String {
+        let fallbackCoronaTestURL = "https://coronatest.nl/ik-wil-me-laten-testen/online-een-afspraak-maken"
         guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
-            return nil
+            return fallbackCoronaTestURL
         }
-        return storedAppConfig.coronaTestURL
+        return storedAppConfig.coronaTestURL ?? fallbackCoronaTestURL
     }
 
     func getDecoyProbability() -> Single<Float> {
