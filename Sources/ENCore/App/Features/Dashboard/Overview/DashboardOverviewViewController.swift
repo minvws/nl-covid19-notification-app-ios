@@ -10,12 +10,9 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol DashboardOverviewRouting: Routing {
-    // TODO: Add any routing functions that are called from the ViewController
-    // func routeToChild()
-}
+protocol DashboardOverviewRouting: Routing {}
 
-final class DashboardOverviewViewController: ViewController, DashboardOverviewViewControllable {
+final class DashboardOverviewViewController: ViewController, DashboardOverviewViewControllable, DashboardCardViewListener {
 
     init(listener: DashboardOverviewListener, theme: Theme) {
         self.listener = listener
@@ -35,78 +32,140 @@ final class DashboardOverviewViewController: ViewController, DashboardOverviewVi
 
         navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
 
-        internalView.addButton(title: "Tests") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .tests)
-        }
-
-        internalView.addButton(title: "Users") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .users)
-        }
-
-        internalView.addButton(title: "Hospital") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .hospitalAdmissions)
-        }
-
-        internalView.addButton(title: "Vaccinations") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .vaccinations)
-        }
+        internalView.set(data: objects, listener: self)
     }
 
     // MARK: - DashboardOverviewViewControllable
 
-    weak var router: DashboardOverviewRouting?
+    // MARK: - DashboardCardViewListener
 
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
-
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
-    }
-
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
+    func didSelect(identifier: DashboardIdentifier) {
+        listener?.dashboardOverviewRequestsRouteToDetail(with: identifier)
     }
 
     // MARK: - Private
 
     private weak var listener: DashboardOverviewListener?
     private lazy var internalView = OverviewView(theme: self.theme)
+    private var objects: [DashboardCard] {
+        let positiveTestsCard = DashboardCardViewModel(identifier: .tests,
+                                                       icon: .dashboardTestsIcon,
+                                                       title: .dashboardPositiveTestResultsHeader,
+                                                       graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
+                                                       date: Date(),
+                                                       displayedAmount: 54225)
+        let activeUsersCard = DashboardCardViewModel(identifier: .users,
+                                                     icon: .dashboardUsersIcon,
+                                                     title: .dashboardCoronaMelderUsersHeader,
+                                                     visual: .dashboardUsersIllustration!,
+                                                     date: Date(),
+                                                     displayedAmount: 2680672)
+        let hospitalCard = DashboardCardViewModel(identifier: .hospitalAdmissions,
+                                                  icon: .dashboardHospitalIcon,
+                                                  title: .dashboardHospitalAdmissionsHeader,
+                                                  graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
+                                                  date: Date(timeIntervalSinceNow: -24 * 3600),
+                                                  displayedAmount: 233)
+
+        let vaccinationsCard = DashboardCardViewModel(identifier: .vaccinations,
+                                                      icon: .dashboardVaccinationsIcon,
+                                                      title: .dashboardVaccinationCoverageHeader,
+                                                      bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)])
+
+        return [
+            positiveTestsCard,
+            activeUsersCard,
+            hospitalCard,
+            vaccinationsCard
+        ]
+    }
 }
 
 private final class OverviewView: View {
-    private lazy var stackView = UIStackView()
-    private var buttonHandlers = [() -> ()]()
 
     override func build() {
         super.build()
 
-        addSubview(stackView)
-        stackView.axis = .vertical
-        stackView.spacing = 16
-    }
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
 
-    func addButton(title: String, handler: @escaping () -> ()) {
-        let button = Button(title: title, theme: theme)
-        button.addTarget(self, action: #selector(handleButton), for: .touchUpInside)
-        button.tag = buttonHandlers.count
+        outerStackView.spacing = 16
+        outerStackView.axis = .vertical
 
-        stackView.addArrangedSubview(button)
-        buttonHandlers.append(handler)
-    }
+        currentSituationLabel.text = .dashboardHeader
+        currentSituationLabel.font = theme.fonts.title1
+        currentSituationLabel.numberOfLines = 0
 
-    @objc private func handleButton(_ sender: Button) {
-        buttonHandlers[sender.tag]()
+        headerBackgroundView.addSubview(headerLabel)
+        headerBackgroundView.backgroundColor = theme.colors.dashboardHeaderBackground
+        headerBackgroundView.layer.cornerRadius = 4
+
+        headerLabel.textColor = theme.colors.dashboardHeaderText
+        headerLabel.text = .dashboardTitle.uppercased()
+        headerLabel.font = theme.fonts.caption1Bold
+
+        headerStackView.addArrangedSubview(currentSituationLabel)
+        headerStackView.addArrangedSubview(headerBackgroundView)
+
+        headerStackView.axis = .vertical
+        headerStackView.spacing = 9
+        headerStackView.alignment = .leading
+
+        summaryLabel.text = .dashboardSummaryText
+        summaryLabel.font = theme.fonts.body
+        summaryLabel.numberOfLines = 0
+
+        outerStackView.addArrangedSubview(headerStackView)
+        outerStackView.addArrangedSubview(summaryLabel)
+        outerStackView.addArrangedSubview(currentSituationLabelContainer)
+        outerStackView.addArrangedSubview(cardStackView)
+
+        cardStackView.axis = .vertical
+        cardStackView.spacing = -16
+
+        scrollView.addSubview(outerStackView)
+        scrollView.clipsToBounds = false
+        scrollView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
     }
 
     override func setupConstraints() {
         super.setupConstraints()
 
-        stackView.snp.makeConstraints { maker in
-            maker.top.equalTo(safeAreaLayoutGuide)
-            maker.left.equalTo(safeAreaLayoutGuide).offset(16)
-            maker.right.equalTo(safeAreaLayoutGuide).offset(-16)
+        headerLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(2)
+            maker.bottom.equalToSuperview().offset(-2)
+            maker.left.equalToSuperview().offset(4)
+            maker.right.equalToSuperview().offset(-4)
+        }
+
+        outerStackView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
+
+        scrollView.snp.makeConstraints { maker in
+            maker.edges.equalTo(safeAreaLayoutGuide)
+        }
+
+        scrollView.frameLayoutGuide.snp.makeConstraints { maker in
+            maker.width.equalTo(outerStackView).offset(scrollView.contentInset.left + scrollView.contentInset.right)
+        }
+    }
+
+    // MARK: - Private
+
+    private var scrollView = UIScrollView()
+    private var outerStackView = UIStackView()
+    private var cardStackView = UIStackView()
+    private var headerStackView = UIStackView()
+    private var headerBackgroundView = UIView()
+    private var headerLabel = UILabel()
+    private var summaryLabel = UILabel()
+    private var currentSituationLabelContainer = UIView()
+    private var currentSituationLabel = UILabel()
+
+    fileprivate func set(data: [DashboardCard], listener: DashboardCardViewListener) {
+        data.forEach {
+            cardStackView.addArrangedSubview(DashboardCardView(listener: listener, theme: theme, viewModel: $0))
         }
     }
 }

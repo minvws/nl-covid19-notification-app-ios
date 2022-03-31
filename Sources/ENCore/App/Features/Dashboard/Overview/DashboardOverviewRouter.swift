@@ -8,26 +8,7 @@
 import UIKit
 
 /// @mockable
-protocol DashboardOverviewViewControllable: ViewControllable {
-    var router: DashboardOverviewRouting? { get set }
-
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
-
-    /// Presents a viewController
-    ///
-    /// - Parameter viewController: ViewController to present
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-
-    /// Dismisses a viewController
-    ///
-    /// - Parameter viewController: ViewController to dismiss
-    /// - Parameter animated: Animates the transition
-    /// - Parameter completion: Executed upon presentation completion
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
-}
+protocol DashboardOverviewViewControllable: ViewControllable {}
 
 final class DashboardOverviewRouter: Router<DashboardOverviewViewControllable>, DashboardOverviewRouting {
 
@@ -40,8 +21,6 @@ final class DashboardOverviewRouter: Router<DashboardOverviewViewControllable>, 
         // self.childBuilder = childBuilder
 
         super.init(viewController: viewController)
-
-        viewController.router = self
     }
 
     // TODO: Add any child routing functions here.
