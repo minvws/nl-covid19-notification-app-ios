@@ -11,6 +11,7 @@ import UIKit
 /// @mockable
 protocol DashboardRouting: Routing {
     func routeToOverview()
+    func routeToDetail(with identifier: DashboardIdentifier, animated: Bool)
 }
 
 final class DashboardViewController: NavigationController, DashboardViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -40,19 +41,43 @@ final class DashboardViewController: NavigationController, DashboardViewControll
         pushViewController(viewController.uiviewController, animated: animated)
     }
 
-    func cleanNavigationStackIfNeeded() {
-        if let first = viewControllers.first, let last = viewControllers.last {
-            if first != last {
-                viewControllers = [first, last]
-            }
+    func replaceSameOrPush(viewController: ViewControllable, animated: Bool) {
+        guard
+            let topViewController = viewControllers.last,
+            type(of: topViewController) == type(of: viewController.uiviewController) else {
+            return push(viewController: viewController, animated: animated)
         }
+
+        let currentViewControllers = viewControllers.dropLast()
+
+        setViewControllers(currentViewControllers + [viewController.uiviewController], animated: animated)
     }
 
     // MARK: - ViewController Lifecycle
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        router?.routeToOverview()
+
+        guard viewControllers.isEmpty else { return }
+
+        switch startIdentifer {
+        case .overview:
+            router?.routeToOverview()
+        default:
+            router?.routeToDetail(with: startIdentifer, animated: false)
+        }
+    }
+
+    // MARK: - DashboardOverviewListener
+
+    func dashboardOverviewRequestsRouteToDetail(with identifier: DashboardIdentifier) {
+        router?.routeToDetail(with: identifier, animated: true)
+    }
+
+    // MARK: - DashboardDetailListener
+
+    func dashboardDetailRequestsRouteToDetail(with identifier: DashboardIdentifier) {
+        router?.routeToDetail(with: identifier, animated: true)
     }
 
     // MARK: - Private

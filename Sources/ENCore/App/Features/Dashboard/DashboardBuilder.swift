@@ -24,7 +24,7 @@ protocol DashboardDependency {
     // TODO: Add any external dependency
 }
 
-private final class DashboardDependencyProvider: DependencyProvider<DashboardDependency>, DashboardOverviewDependency /* , ChildDependency */ {
+private final class DashboardDependencyProvider: DependencyProvider<DashboardDependency>, DashboardOverviewDependency, DashboardDetailDependency {
 
     // MARK: - Forwarding Dependencies
 
@@ -36,6 +36,10 @@ private final class DashboardDependencyProvider: DependencyProvider<DashboardDep
 
     var overviewBuilder: DashboardOverviewBuildable {
         return DashboardOverviewBuilder(dependency: self)
+    }
+
+    var detailBuilder: DashboardDetailBuildable {
+        return DashboardDetailBuilder(dependency: self)
     }
 }
 
@@ -54,6 +58,7 @@ final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
         return DashboardRouter(viewController: viewController,
-                               overviewBuilder: dependencyProvider.overviewBuilder)
+                               overviewBuilder: dependencyProvider.overviewBuilder,
+                               detailBuilder: dependencyProvider.detailBuilder)
     }
 }

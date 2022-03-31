@@ -85,19 +85,19 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     }
 
     func routeToDashboardDetail(with identifier: DashboardIdentifier) {
-        guard dashboardDetailRouter == nil else { return }
+        guard dashboardRouter == nil else { return }
 
-        let dashboardDetailRouter = dashboardBuilder.build(withListener: viewController, identifier: identifier)
-        self.dashboardDetailRouter = dashboardDetailRouter
+        let dashboardRouter = dashboardBuilder.build(withListener: viewController, identifier: identifier)
+        self.dashboardRouter = dashboardRouter
 
-        viewController.present(viewController: dashboardDetailRouter.viewControllable,
+        viewController.present(viewController: dashboardRouter.viewControllable,
                                animated: true)
     }
 
     func detachDashboardDetail(shouldDismissViewController: Bool) {
-        guard let dashboardDetailRouter = dashboardDetailRouter else { return }
+        guard let dashboardDetailRouter = dashboardRouter else { return }
 
-        self.dashboardDetailRouter = nil
+        self.dashboardRouter = nil
 
         if shouldDismissViewController {
             viewController.dismiss(viewController: dashboardDetailRouter.viewControllable, animated: true)
@@ -311,7 +311,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private var dashboardSummaryViewController: ViewControllable?
 
     private let dashboardBuilder: DashboardBuildable
-    private var dashboardDetailRouter: Routing?
+    private var dashboardRouter: Routing?
 
     private let moreInformationBuilder: MoreInformationBuildable
     private var moreInformationViewController: ViewControllable?

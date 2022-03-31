@@ -6,19 +6,19 @@
  */
 
 import ENFoundation
-import SnapKit
 import UIKit
 
 /// @mockable
-protocol DashboardOverviewRouting: Routing {
+protocol DashboardDetailRouting: Routing {
     // TODO: Add any routing functions that are called from the ViewController
     // func routeToChild()
 }
 
-final class DashboardOverviewViewController: ViewController, DashboardOverviewViewControllable {
+final class DashboardDetailViewController: ViewController, DashboardDetailViewControllable {
 
-    init(listener: DashboardOverviewListener, theme: Theme) {
+    init(listener: DashboardDetailListener, identifier: DashboardIdentifier, theme: Theme) {
         self.listener = listener
+        self.identifier = identifier
         super.init(theme: theme)
     }
 
@@ -35,47 +35,43 @@ final class DashboardOverviewViewController: ViewController, DashboardOverviewVi
 
         navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
 
-        internalView.addButton(title: "Tests") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .tests)
+        if identifier != .tests {
+            internalView.addButton(title: "Tests") { [weak self] in
+                self?.listener?.dashboardDetailRequestsRouteToDetail(with: .tests)
+            }
         }
 
-        internalView.addButton(title: "Users") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .users)
+        if identifier != .users {
+            internalView.addButton(title: "Users") { [weak self] in
+                self?.listener?.dashboardDetailRequestsRouteToDetail(with: .users)
+            }
         }
 
-        internalView.addButton(title: "Hospital") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .hospitalAdmissions)
+        if identifier != .hospitalAdmissions {
+            internalView.addButton(title: "Hospital") { [weak self] in
+                self?.listener?.dashboardDetailRequestsRouteToDetail(with: .hospitalAdmissions)
+            }
         }
 
-        internalView.addButton(title: "Vaccinations") { [weak self] in
-            self?.listener?.dashboardOverviewRequestsRouteToDetail(with: .vaccinations)
+        if identifier != .vaccinations {
+            internalView.addButton(title: "Vaccinations") { [weak self] in
+                self?.listener?.dashboardDetailRequestsRouteToDetail(with: .vaccinations)
+            }
         }
     }
 
-    // MARK: - DashboardOverviewViewControllable
+    // MARK: - DashboardDetailViewControllable
 
-    weak var router: DashboardOverviewRouting?
-
-    // TODO: Validate whether you need the below functions and remove or replace
-    //       them as desired.
-
-    func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
-    }
-
-    func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        viewController.uiviewController.dismiss(animated: animated, completion: completion)
-    }
+    weak var router: DashboardDetailRouting?
 
     // MARK: - Private
 
-    private weak var listener: DashboardOverviewListener?
-    private lazy var internalView = OverviewView(theme: self.theme)
+    private weak var listener: DashboardDetailListener?
+    private let identifier: DashboardIdentifier
+    private lazy var internalView = DetailView(theme: self.theme)
 }
 
-private final class OverviewView: View {
+private final class DetailView: View {
     private lazy var stackView = UIStackView()
     private var buttonHandlers = [() -> ()]()
 

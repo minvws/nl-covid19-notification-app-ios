@@ -8,11 +8,11 @@
 import UIKit
 
 /// @mockable
-protocol DashboardViewControllable: ViewControllable, DashboardOverviewListener {
+protocol DashboardViewControllable: ViewControllable, DashboardOverviewListener, DashboardDetailListener {
     var router: DashboardRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
-    func cleanNavigationStackIfNeeded()
+    func replaceSameOrPush(viewController: ViewControllable, animated: Bool)
 }
 
 final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting {
@@ -20,8 +20,10 @@ final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting
     // MARK: - Initialisation
 
     init(viewController: DashboardViewControllable,
-         overviewBuilder: DashboardOverviewBuildable) {
+         overviewBuilder: DashboardOverviewBuildable,
+         detailBuilder: DashboardDetailBuildable) {
         self.overviewBuilder = overviewBuilder
+        self.detailBuilder = detailBuilder
 
         super.init(viewController: viewController)
 
@@ -37,8 +39,15 @@ final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting
         viewController.push(viewController: overviewViewController, animated: false)
     }
 
+    func routeToDetail(with identifier: DashboardIdentifier, animated: Bool) {
+        let detailViewController = detailBuilder.build(withListener: viewController, identifier: identifier)
+
+        viewController.replaceSameOrPush(viewController: detailViewController, animated: animated)
+    }
+
     // MARK: - Private
 
     private let overviewBuilder: DashboardOverviewBuildable
+    private let detailBuilder: DashboardDetailBuildable
     private var overviewViewController: ViewControllable?
 }
