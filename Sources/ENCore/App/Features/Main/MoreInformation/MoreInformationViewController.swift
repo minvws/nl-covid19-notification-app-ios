@@ -36,7 +36,7 @@ struct MoreInformationCellViewModel: MoreInformation {
     let subtitle: String
 }
 
-final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListner, Logging {
+final class MoreInformationViewController: ViewController, MoreInformationViewControllable, MoreInformationCellListener, Logging {
 
     // MARK: - Init
 
@@ -69,9 +69,9 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                 self.moreInformationView.latestTekUpdate = .moreInformationLastTEKProcessingDateInformation(date)
             })
             .disposed(by: self.disposeBag)
-        
+
         exposureController.updateLastExposureProcessingDateSubject()
-        
+
         if let dictionary = bundleInfoDictionary,
             let version = dictionary["CFBundleShortVersionString"] as? String,
             let build = dictionary["CFBundleVersion"] as? String,
@@ -132,9 +132,9 @@ final class MoreInformationViewController: ViewController, MoreInformationViewCo
                                                             subtitle: .moreInformationCellRequestTestSubtitle)
 
         let keySharingModel = MoreInformationCellViewModel(identifier: .keySharing,
-                                                         icon: .infected,
-                                                         title: .moreInformationCellInfectedTitle,
-                                                         subtitle: .moreInformationCellInfectedSubtitle)
+                                                           icon: .infected,
+                                                           title: .moreInformationCellInfectedTitle,
+                                                           subtitle: .moreInformationCellInfectedSubtitle)
 
         return [
             aboutAppModel,
@@ -206,7 +206,7 @@ private final class MoreInformationView: View {
         versionLabel.textColor = theme.colors.textSecondary
         versionLabel.textAlignment = .center
         versionLabel.numberOfLines = 0
-        
+
         addSubview(stackView)
         addSubview(lastTEKProcessingDateLabel)
         addSubview(versionLabel)
@@ -235,7 +235,7 @@ private final class MoreInformationView: View {
 
     // MARK: - Private
 
-    fileprivate func set(data: [MoreInformation], listener: MoreInformationCellListner) {
+    fileprivate func set(data: [MoreInformation], listener: MoreInformationCellListener) {
         let lastIndex = data.count - 1
         for (index, object) in data.enumerated() {
             let borderIsHidden = index == lastIndex
