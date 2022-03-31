@@ -11,25 +11,25 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol DashboardRouting: Routing {
+protocol DashboardSummaryRouting: Routing {
     // TODO: Add any routing functions that are called from the ViewController
     // func routeToChild()
 }
 
-final class DashboardViewController: ViewController, DashboardViewControllable, DashboardCardViewListener {
+final class DashboardSummaryViewController: ViewController, DashboardSummaryViewControllable, DashboardCardViewListener {
 
     // MARK: - Init
 
-    init(listener: DashboardListener,
+    init(listener: DashboardSummaryListener,
          theme: Theme) {
         self.listener = listener
         super.init(theme: theme)
     }
 
-    // MARK: - DashboardViewControllable
+    // MARK: - DashboardSummaryViewControllable
 
-    weak var router: DashboardRouting?
-    weak var listener: DashboardListener?
+    weak var router: DashboardSummaryRouting?
+    weak var listener: DashboardSummaryListener?
 
     // MARK: - View Lifecycle
 
@@ -95,7 +95,7 @@ final class DashboardViewController: ViewController, DashboardViewControllable, 
     // MARK: - DashboardCardViewListener
 
     func didSelect(identifier: DashboardIdentifier) {
-        listener?.dashboardRequestsRouteToDetail(with: identifier)
+        listener?.dashboardSummaryRequestsRouteToDetail(with: identifier)
     }
 }
 

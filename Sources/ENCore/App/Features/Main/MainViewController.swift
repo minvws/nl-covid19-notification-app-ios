@@ -280,13 +280,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachEnableSetting(shouldDismissViewController: true)
     }
 
-    // MARK: - DashboardListener
+    // MARK: - DashboardSummaryListener
 
-    func dashboardRequestsRouteToDetail(with identifier: DashboardIdentifier) {
+    func dashboardSummaryRequestsRouteToDetail(with identifier: DashboardIdentifier) {
         router?.routeToDashboardDetail(with: identifier)
     }
 
-    func dashboardRequestsRouteToOverview() {}
+    func dashboardSummaryRequestsRouteToOverview() {}
 
     // MARK: - Private
 

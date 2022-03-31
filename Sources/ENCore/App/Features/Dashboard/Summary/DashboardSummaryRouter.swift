@@ -8,8 +8,8 @@
 import UIKit
 
 /// @mockable
-protocol DashboardViewControllable: ViewControllable {
-    var router: DashboardRouting? { get set }
+protocol DashboardSummaryViewControllable: ViewControllable {
+    var router: DashboardSummaryRouting? { get set }
 
     // TODO: Validate whether you need the below functions and remove or replace
     //       them as desired.
@@ -29,12 +29,12 @@ protocol DashboardViewControllable: ViewControllable {
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?)
 }
 
-final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting {
+final class DashboardSummaryRouter: Router<DashboardSummaryViewControllable>, DashboardSummaryRouting {
 
     // MARK: - Initialisation
 
-    init(listener: DashboardListener,
-         viewController: DashboardViewControllable /* ,
+    init(listener: DashboardSummaryListener,
+         viewController: DashboardSummaryViewControllable /* ,
           childBuilder: ChildBuildable */ ) {
         self.listener = listener
         // self.childBuilder = childBuilder
@@ -77,7 +77,7 @@ final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting
 
     // TODO: Add any private functions and instance variables here
 
-    private weak var listener: DashboardListener?
+    private weak var listener: DashboardSummaryListener?
 
     // private let childBuilder: ChildBuildable
     // private var childViewController: ViewControllable?

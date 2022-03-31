@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, DashboardListener, DashboardDetailListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, DashboardSummaryListener, DashboardDetailListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
 
     var router: MainRouting? { get set }
 
@@ -23,7 +23,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     init(viewController: MainViewControllable,
          statusBuilder: StatusBuildable,
-         dashboardBuilder: DashboardBuildable,
+         dashboardBuilder: DashboardSummaryBuildable,
          dashboardDetailBuilder: DashboardDetailBuildable,
          moreInformationBuilder: MoreInformationBuildable,
          aboutBuilder: AboutBuildable,
@@ -307,7 +307,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let statusBuilder: StatusBuildable
     private var statusViewController: ViewControllable?
 
-    private let dashboardBuilder: DashboardBuildable
+    private let dashboardBuilder: DashboardSummaryBuildable
     private var dashboardViewController: ViewControllable?
 
     private let dashboardDetailBuilder: DashboardDetailBuildable

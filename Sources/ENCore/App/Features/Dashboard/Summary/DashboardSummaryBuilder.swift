@@ -9,26 +9,26 @@ import ENFoundation
 import Foundation
 
 /// @mockable
-protocol DashboardListener: AnyObject {
-    func dashboardRequestsRouteToDetail(with identifier: DashboardIdentifier)
-    func dashboardRequestsRouteToOverview()
+protocol DashboardSummaryListener: AnyObject {
+    func dashboardSummaryRequestsRouteToDetail(with identifier: DashboardIdentifier)
+    func dashboardSummaryRequestsRouteToOverview()
 }
 
 /// @mockable
-protocol DashboardBuildable {
+protocol DashboardSummaryBuildable {
     /// Builds Dashboard
     ///
     /// - Parameter listener: Listener of created Dashboard component
     /// - Returns Routing instance which should be presented by parent
-    func build(withListener listener: DashboardListener) -> ViewControllable
+    func build(withListener listener: DashboardSummaryListener) -> ViewControllable
 }
 
-protocol DashboardDependency {
+protocol DashboardSummaryDependency {
     var theme: Theme { get }
     // TODO: Add any external dependency
 }
 
-private final class DashboardDependencyProvider: DependencyProvider<DashboardDependency> /* , ChildDependency */ {
+private final class DashboardSummaryDependencyProvider: DependencyProvider<DashboardSummaryDependency> /* , ChildDependency */ {
     // TODO: Create and return any dependency that should be limited
     //       to Dashboard's scope or any child of Dashboard
 
@@ -39,14 +39,14 @@ private final class DashboardDependencyProvider: DependencyProvider<DashboardDep
     // }
 }
 
-final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
-    func build(withListener listener: DashboardListener) -> ViewControllable {
+final class DashboardBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
+    func build(withListener listener: DashboardSummaryListener) -> ViewControllable {
         // TODO: Add any other dynamic dependency as parameter
 
-        let dependencyProvider = DashboardDependencyProvider(dependency: dependency)
+        let dependencyProvider = DashboardSummaryDependencyProvider(dependency: dependency)
 
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = DashboardViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        let viewController = DashboardSummaryViewController(listener: listener, theme: dependencyProvider.dependency.theme)
 
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.
