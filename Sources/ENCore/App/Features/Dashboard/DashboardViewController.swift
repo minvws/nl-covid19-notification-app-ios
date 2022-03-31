@@ -16,16 +16,31 @@ protocol DashboardRouting: Routing {
     // func routeToChild()
 }
 
-final class DashboardViewController: ViewController, DashboardViewControllable {
+final class DashboardViewController: ViewController, DashboardViewControllable, DashboardCardViewListener {
+
+    // MARK: - Init
+
+    init(listener: DashboardListener,
+         theme: Theme) {
+        self.listener = listener
+        super.init(theme: theme)
+    }
 
     // MARK: - DashboardViewControllable
 
     weak var router: DashboardRouting?
+    weak var listener: DashboardListener?
 
     // MARK: - View Lifecycle
 
     override func loadView() {
         view = dashboardView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        dashboardView.set(data: objects, listener: self)
     }
 
     // TODO: Validate whether you need the below functions and remove or replace
@@ -44,10 +59,47 @@ final class DashboardViewController: ViewController, DashboardViewControllable {
     // MARK: - Private
 
     private lazy var dashboardView: DashboardView = DashboardView(theme: self.theme)
+    private var objects: [DashboardCard] {
+        let positiveTestsCard = DashboardCardViewModel(identifier: .tests,
+                                                       icon: .dashboardTestsIcon,
+                                                       title: .dashboardPositiveTestResultsHeader,
+                                                       graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
+                                                       date: Date(),
+                                                       displayedAmount: 54225)
+        let activeUsersCard = DashboardCardViewModel(identifier: .users,
+                                                     icon: .dashboardUsersIcon,
+                                                     title: .dashboardCoronaMelderUsersHeader,
+                                                     visual: .dashboardUsersIllustration!,
+                                                     date: Date(),
+                                                     displayedAmount: 2680672)
+        let hospitalCard = DashboardCardViewModel(identifier: .hospitalAdmissions,
+                                                  icon: .dashboardHospitalIcon,
+                                                  title: .dashboardHospitalAdmissionsHeader,
+                                                  graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
+                                                  date: Date(timeIntervalSinceNow: -24 * 3600),
+                                                  displayedAmount: 233)
+
+        let vaccinationsCard = DashboardCardViewModel(identifier: .vaccinations,
+                                                      icon: .dashboardVaccinationsIcon,
+                                                      title: .dashboardVaccinationCoverageHeader,
+                                                      bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)])
+
+        return [
+            positiveTestsCard,
+            activeUsersCard,
+            hospitalCard,
+            vaccinationsCard
+        ]
+    }
+
+    // MARK: - DashboardCardViewListener
+
+    func didSelect(identifier: DashboardIdentifier) {
+        listener?.dashboardRequestsRouteToDetail(with: identifier)
+    }
 }
 
 private final class DashboardView: View {
-    weak var listener: DashboardListener?
 
     private var heightConstraint: NSLayoutConstraint?
     private var scrollView = UIScrollView()
@@ -104,35 +156,6 @@ private final class DashboardView: View {
         cardStackView.spacing = 16
         cardStackView.distribution = .equalSpacing
 
-        let positiveTestsCard = DashboardCardView(theme: theme,
-                                                  config: .init(icon: .dashboardTestsIcon,
-                                                                title: .dashboardPositiveTestResultsHeader,
-                                                                graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
-                                                                date: Date(),
-                                                                displayedAmount: 54225))
-        let activeUsersCard = DashboardCardView(theme: theme,
-                                                config: .init(icon: .dashboardUsersIcon,
-                                                              title: .dashboardCoronaMelderUsersHeader,
-                                                              visual: .dashboardUsersIllustration!,
-                                                              date: Date(),
-                                                              displayedAmount: 2680672))
-        let hospitalCard = DashboardCardView(theme: theme,
-                                             config: .init(icon: .dashboardHospitalIcon,
-                                                           title: .dashboardHospitalAdmissionsHeader,
-                                                           graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
-                                                           date: Date(timeIntervalSinceNow: -24 * 3600),
-                                                           displayedAmount: 233))
-
-        let vaccinationsCard = DashboardCardView(theme: theme,
-                                                 config: .init(icon: .dashboardVaccinationsIcon,
-                                                               title: .dashboardVaccinationCoverageHeader,
-                                                               bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)]))
-
-        cardStackView.addArrangedSubview(positiveTestsCard)
-        cardStackView.addArrangedSubview(activeUsersCard)
-        cardStackView.addArrangedSubview(hospitalCard)
-        cardStackView.addArrangedSubview(vaccinationsCard)
-
         scrollView.addSubview(cardStackView)
         scrollView.clipsToBounds = false
         scrollView.showsHorizontalScrollIndicator = false
@@ -188,6 +211,12 @@ private final class DashboardView: View {
 
     // MARK: - Private
 
+    fileprivate func set(data: [DashboardCard], listener: DashboardCardViewListener) {
+        data.forEach {
+            cardStackView.addArrangedSubview(DashboardCardView(listener: listener, theme: theme, viewModel: $0))
+        }
+    }
+
     /// Calculates the desired height for the current content
     /// This is required for stretching
     private func evaluateHeight() {
@@ -200,52 +229,113 @@ private final class DashboardView: View {
     }
 }
 
-private final class DashboardCardView: View {
+enum DashboardIdentifier {
+    case overview
+    case tests
+    case users
+    case hospitalAdmissions
+    case vaccinations
+}
 
-    struct Config {
-        let icon: UIImage?
-        let title: String
-        let visual: UIImage?
-        let graph: GraphData?
-        let bars: [(amount: Double, title: String)]?
-        let date: Date?
-        let displayedAmount: Int?
+protocol DashboardCard {
+    var identifier: DashboardIdentifier { get }
+    var icon: UIImage? { get }
+    var title: String { get }
+    var visual: UIImage? { get }
+    var graph: GraphData? { get }
+    var bars: [(amount: Double, title: String)]? { get }
+    var date: Date? { get }
+    var displayedAmount: Int? { get }
+}
 
-        init(icon: UIImage?, title: String, visual: UIImage, date: Date, displayedAmount: Int) {
-            self.icon = icon
-            self.title = title
-            self.visual = visual
-            self.date = date
-            self.displayedAmount = displayedAmount
+struct DashboardCardViewModel: DashboardCard {
+    let identifier: DashboardIdentifier
+    let icon: UIImage?
+    let title: String
+    let visual: UIImage?
+    let graph: GraphData?
+    let bars: [(amount: Double, title: String)]?
+    let date: Date?
+    let displayedAmount: Int?
 
-            self.graph = nil
-            self.bars = nil
-        }
+    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, visual: UIImage, date: Date, displayedAmount: Int) {
+        self.identifier = identifier
+        self.icon = icon
+        self.title = title
+        self.visual = visual
+        self.date = date
+        self.displayedAmount = displayedAmount
 
-        init(icon: UIImage?, title: String, graph: GraphData, date: Date, displayedAmount: Int) {
-            self.icon = icon
-            self.title = title
-            self.graph = graph
-            self.date = date
-            self.displayedAmount = displayedAmount
+        self.graph = nil
+        self.bars = nil
+    }
 
-            self.visual = nil
-            self.bars = nil
-        }
+    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, graph: GraphData, date: Date, displayedAmount: Int) {
+        self.identifier = identifier
+        self.icon = icon
+        self.title = title
+        self.graph = graph
+        self.date = date
+        self.displayedAmount = displayedAmount
 
-        init(icon: UIImage?, title: String, bars: [(amount: Double, title: String)]) {
-            self.icon = icon
-            self.title = title
-            self.bars = bars
+        self.visual = nil
+        self.bars = nil
+    }
 
-            self.date = nil
-            self.displayedAmount = nil
-            self.graph = nil
-            self.visual = nil
+    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, bars: [(amount: Double, title: String)]) {
+        self.identifier = identifier
+        self.icon = icon
+        self.title = title
+        self.bars = bars
+
+        self.date = nil
+        self.displayedAmount = nil
+        self.graph = nil
+        self.visual = nil
+    }
+}
+
+protocol DashboardCardViewListener: AnyObject {
+    func didSelect(identifier: DashboardIdentifier)
+}
+
+private final class DashboardCardView: UIControl, Themeable {
+
+    override var isHighlighted: Bool {
+        didSet {
+            UIView.animate(withDuration: 0.25) {
+                self.alpha = self.isHighlighted ? 0.6 : 1.0
+            }
         }
     }
 
+    let theme: Theme
+
     static let shadowMargin = UIEdgeInsets(top: 8, left: 16, bottom: 24, right: 16)
+
+    init(listener: DashboardCardViewListener, theme: Theme, viewModel: DashboardCard) {
+        self.viewModel = viewModel
+        self.theme = theme
+        self.listener = listener
+
+        super.init(frame: .zero)
+
+        build()
+        setupConstraints()
+
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+        isExclusiveTouch = true
+
+        setContentHuggingPriority(.required, for: .horizontal)
+    }
+
+    @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Private
 
     private let backgroundView = UIImageView(image: .dashboardCardBackground)
     private let contentLayoutGuide = UILayoutGuide()
@@ -259,33 +349,32 @@ private final class DashboardCardView: View {
     private let titleLabel = UILabel()
     private let dateLabel = UILabel()
     private let chevron = UIImageView(image: .chevron)
-    private let config: Config
+    private let viewModel: DashboardCard
 
-    init(theme: Theme, config: Config) {
-        self.config = config
+    private weak var listener: DashboardCardViewListener?
 
-        super.init(theme: theme)
-
-        setContentHuggingPriority(.required, for: .horizontal)
+    @objc private func didTap() {
+        Haptic.light()
+        listener?.didSelect(identifier: viewModel.identifier)
     }
 
-    // MARK: - Overrides
-
-    override func build() {
-        super.build()
+    private func build() {
+        addTarget(self, action: #selector(didTap), for: .touchUpInside)
 
         addSubview(backgroundView)
         addLayoutGuide(contentLayoutGuide)
         addSubview(outerStackView)
 
+        outerStackView.isUserInteractionEnabled = false
+
         outerStackView.axis = .vertical
         outerStackView.spacing = 8
 
-        titleLabel.text = config.title
+        titleLabel.text = viewModel.title
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.subheadBold
 
-        let iconView = UIImageView(image: config.icon)
+        let iconView = UIImageView(image: viewModel.icon)
         iconView.setContentHuggingPriority(.required, for: .horizontal)
         iconView.setContentCompressionResistancePriority(.required, for: .horizontal)
 
@@ -294,7 +383,7 @@ private final class DashboardCardView: View {
         titleStackView.addArrangedSubview(iconView)
         titleStackView.addArrangedSubview(titleLabel)
 
-        if let date = config.date {
+        if let date = viewModel.date {
             let now = currentDate()
             let dateFormatter = DateFormatter()
             dateFormatter.dateStyle = .medium
@@ -314,27 +403,27 @@ private final class DashboardCardView: View {
         numberFormatter.locale = Locale.current
         numberFormatter.numberStyle = .decimal
 
-        amountLabel.text = numberFormatter.string(for: config.displayedAmount)
+        amountLabel.text = numberFormatter.string(for: viewModel.displayedAmount)
         amountLabel.numberOfLines = 0
         amountLabel.font = theme.fonts.title2
 
         outerStackView.addArrangedSubview(titleStackView)
 
-        if let graph = config.graph {
+        if let graph = viewModel.graph {
             graphView = GraphView(theme: theme, data: graph, style: .compact)
             outerStackView.addArrangedSubview(graphView)
         }
 
         outerStackView.addArrangedSubview(visualView)
 
-        if let visual = config.visual {
+        if let visual = viewModel.visual {
             visualView.image = visual
             visualView.contentMode = .right
         } else {
             visualView.isHidden = true
         }
 
-        if let bars = config.bars {
+        if let bars = viewModel.bars {
             let barViews = bars.map { BarView(theme: theme, amount: $0.amount, label: $0.title) }
 
             let barStackView = UIStackView(arrangedSubviews: barViews)
@@ -354,9 +443,7 @@ private final class DashboardCardView: View {
         chevron.contentMode = .center
     }
 
-    override func setupConstraints() {
-        super.setupConstraints()
-
+    private func setupConstraints() {
         contentLayoutGuide.snp.makeConstraints { maker in
             maker.left.equalToSuperview().offset(16)
             maker.right.equalToSuperview().offset(-16)

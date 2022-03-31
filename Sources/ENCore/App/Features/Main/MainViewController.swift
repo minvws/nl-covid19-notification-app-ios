@@ -16,6 +16,9 @@ protocol MainRouting: Routing {
     func attachDashboard()
     func attachMoreInformation()
 
+    func routeToDashboardDetail(with identifier: DashboardIdentifier)
+    func detachDashboardDetail(shouldDismissViewController: Bool)
+
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
 
@@ -182,6 +185,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
+    // MARK: - DashboardDetailListener
+
+    func dashboardDetailRequestsDismissal(shouldDismissViewController: Bool) {
+        router?.detachDashboardDetail(shouldDismissViewController: shouldDismissViewController)
+    }
+
     // MARK: - AboutListener
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
@@ -270,6 +279,14 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     func enableSettingDidTriggerAction() {
         router?.detachEnableSetting(shouldDismissViewController: true)
     }
+
+    // MARK: - DashboardListener
+
+    func dashboardRequestsRouteToDetail(with identifier: DashboardIdentifier) {
+        router?.routeToDashboardDetail(with: identifier)
+    }
+
+    func dashboardRequestsRouteToOverview() {}
 
     // MARK: - Private
 

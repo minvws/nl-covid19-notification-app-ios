@@ -32,8 +32,6 @@ private final class AboutDependencyProvider: DependencyProvider<AboutDependency>
         return AboutManager()
     }
 
-    // MARK: - Forwarding Dependencies
-
     var theme: Theme {
         return dependency.theme
     }

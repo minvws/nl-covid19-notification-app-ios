@@ -10,8 +10,8 @@ import Foundation
 
 /// @mockable
 protocol DashboardListener: AnyObject {
-    // TODO: Add any functions to communicate to the parent
-    //       object, which should set itself as listener
+    func dashboardRequestsRouteToDetail(with identifier: DashboardIdentifier)
+    func dashboardRequestsRouteToOverview()
 }
 
 /// @mockable
@@ -46,7 +46,7 @@ final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
         let dependencyProvider = DashboardDependencyProvider(dependency: dependency)
 
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = DashboardViewController(theme: dependencyProvider.dependency.theme)
+        let viewController = DashboardViewController(listener: listener, theme: dependencyProvider.dependency.theme)
 
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

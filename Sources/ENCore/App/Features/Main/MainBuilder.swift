@@ -27,7 +27,7 @@ protocol MainDependency {
     var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, DashboardDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, DashboardDependency, DashboardDetailDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -51,6 +51,10 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var dashboardBuilder: DashboardBuildable {
         return DashboardBuilder(dependency: self)
+    }
+
+    var dashboardDetailBuilder: DashboardDetailBuildable {
+        return DashboardDetailBuilder(dependency: self)
     }
 
     var moreInformationBuilder: MoreInformationBuildable {
@@ -149,6 +153,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,
                           dashboardBuilder: dependencyProvider.dashboardBuilder,
+                          dashboardDetailBuilder: dependencyProvider.dashboardDetailBuilder,
                           moreInformationBuilder: dependencyProvider.moreInformationBuilder,
                           aboutBuilder: dependencyProvider.aboutBuilder,
                           shareBuilder: dependencyProvider.shareBuilder,
