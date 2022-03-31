@@ -9,15 +9,15 @@ import ENFoundation
 import UIKit
 
 /// @mockable
-protocol DashboardDetailRouting: Routing {
+protocol DashboardRouting: Routing {
     func routeToOverview()
 }
 
-final class DashboardDetailViewController: NavigationController, DashboardDetailViewControllable, UIAdaptivePresentationControllerDelegate {
+final class DashboardViewController: NavigationController, DashboardViewControllable, UIAdaptivePresentationControllerDelegate {
 
-    weak var router: DashboardDetailRouting?
+    weak var router: DashboardRouting?
 
-    init(listener: DashboardDetailListener, theme: Theme, identifier: DashboardIdentifier) {
+    init(listener: DashboardListener, theme: Theme, identifier: DashboardIdentifier) {
         self.listener = listener
         self.startIdentifer = identifier
         super.init(theme: theme)
@@ -27,14 +27,14 @@ final class DashboardDetailViewController: NavigationController, DashboardDetail
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        listener?.dashboardDetailRequestsDismissal(shouldDismissViewController: false)
+        listener?.dashboardRequestsDismissal(shouldDismissViewController: false)
     }
 
     @objc func didTapClose() {
-        listener?.dashboardDetailRequestsDismissal(shouldDismissViewController: true)
+        listener?.dashboardRequestsDismissal(shouldDismissViewController: true)
     }
 
-    // MARK: - DashboardDetailViewControllable
+    // MARK: - DashboardViewControllable
 
     func push(viewController: ViewControllable, animated: Bool) {
         pushViewController(viewController.uiviewController, animated: animated)
@@ -58,6 +58,6 @@ final class DashboardDetailViewController: NavigationController, DashboardDetail
     // MARK: - Private
 
     private let startIdentifer: DashboardIdentifier
-    private weak var listener: DashboardDetailListener?
+    private weak var listener: DashboardListener?
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapClose))
 }

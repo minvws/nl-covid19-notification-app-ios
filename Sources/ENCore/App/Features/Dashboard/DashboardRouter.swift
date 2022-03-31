@@ -8,18 +8,18 @@
 import UIKit
 
 /// @mockable
-protocol DashboardDetailViewControllable: ViewControllable, DashboardOverviewListener {
-    var router: DashboardDetailRouting? { get set }
+protocol DashboardViewControllable: ViewControllable, DashboardOverviewListener {
+    var router: DashboardRouting? { get set }
 
     func push(viewController: ViewControllable, animated: Bool)
     func cleanNavigationStackIfNeeded()
 }
 
-final class DashboardDetailRouter: Router<DashboardDetailViewControllable>, DashboardDetailRouting {
+final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting {
 
     // MARK: - Initialisation
 
-    init(viewController: DashboardDetailViewControllable,
+    init(viewController: DashboardViewControllable,
          overviewBuilder: DashboardOverviewBuildable) {
         self.overviewBuilder = overviewBuilder
 

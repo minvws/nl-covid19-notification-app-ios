@@ -13,7 +13,7 @@ import UserNotifications
 /// @mockable
 protocol MainRouting: Routing {
     func attachStatus(topAnchor: NSLayoutYAxisAnchor)
-    func attachDashboard()
+    func attachDashboardSummary()
     func attachMoreInformation()
 
     func routeToDashboardDetail(with identifier: DashboardIdentifier)
@@ -77,7 +77,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         super.viewDidLoad()
 
         router?.attachStatus(topAnchor: view.topAnchor)
-        router?.attachDashboard()
+        router?.attachDashboardSummary()
         router?.attachMoreInformation()
 
         if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
@@ -185,9 +185,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
-    // MARK: - DashboardDetailListener
+    // MARK: - DashboardListener
 
-    func dashboardDetailRequestsDismissal(shouldDismissViewController: Bool) {
+    func dashboardRequestsDismissal(shouldDismissViewController: Bool) {
         router?.detachDashboardDetail(shouldDismissViewController: shouldDismissViewController)
     }
 

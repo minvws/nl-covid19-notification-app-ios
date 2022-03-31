@@ -39,7 +39,7 @@ private final class DashboardSummaryDependencyProvider: DependencyProvider<Dashb
     // }
 }
 
-final class DashboardBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
+final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
     func build(withListener listener: DashboardSummaryListener) -> ViewControllable {
         // TODO: Add any other dynamic dependency as parameter
 

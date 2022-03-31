@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, DashboardSummaryListener, DashboardDetailListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, DashboardSummaryListener, DashboardListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
 
     var router: MainRouting? { get set }
 
@@ -23,8 +23,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     init(viewController: MainViewControllable,
          statusBuilder: StatusBuildable,
-         dashboardBuilder: DashboardSummaryBuildable,
-         dashboardDetailBuilder: DashboardDetailBuildable,
+         dashboardSummaryBuilder: DashboardSummaryBuildable,
+         dashboardBuilder: DashboardBuildable,
          moreInformationBuilder: MoreInformationBuildable,
          aboutBuilder: AboutBuildable,
          shareBuilder: ShareSheetBuildable,
@@ -37,8 +37,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          settingsBuilder: SettingsBuildable,
          applicationController: ApplicationControlling) {
         self.statusBuilder = statusBuilder
+        self.dashboardSummaryBuilder = dashboardSummaryBuilder
         self.dashboardBuilder = dashboardBuilder
-        self.dashboardDetailBuilder = dashboardDetailBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.shareBuilder = shareBuilder
@@ -66,13 +66,13 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         viewController.embed(stackedViewController: statusViewController)
     }
 
-    func attachDashboard() {
-        guard dashboardViewController == nil else { return }
+    func attachDashboardSummary() {
+        guard dashboardSummaryViewController == nil else { return }
 
-        let dashboardViewController = dashboardBuilder.build(withListener: viewController)
-        self.dashboardViewController = dashboardViewController
+        let dashboardSummaryViewController = dashboardSummaryBuilder.build(withListener: viewController)
+        self.dashboardSummaryViewController = dashboardSummaryViewController
 
-        viewController.embed(stackedViewController: dashboardViewController)
+        viewController.embed(stackedViewController: dashboardSummaryViewController)
     }
 
     func attachMoreInformation() {
@@ -87,7 +87,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     func routeToDashboardDetail(with identifier: DashboardIdentifier) {
         guard dashboardDetailRouter == nil else { return }
 
-        let dashboardDetailRouter = dashboardDetailBuilder.build(withListener: viewController, identifier: identifier)
+        let dashboardDetailRouter = dashboardBuilder.build(withListener: viewController, identifier: identifier)
         self.dashboardDetailRouter = dashboardDetailRouter
 
         viewController.present(viewController: dashboardDetailRouter.viewControllable,
@@ -307,10 +307,10 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let statusBuilder: StatusBuildable
     private var statusViewController: ViewControllable?
 
-    private let dashboardBuilder: DashboardSummaryBuildable
-    private var dashboardViewController: ViewControllable?
+    private let dashboardSummaryBuilder: DashboardSummaryBuildable
+    private var dashboardSummaryViewController: ViewControllable?
 
-    private let dashboardDetailBuilder: DashboardDetailBuildable
+    private let dashboardBuilder: DashboardBuildable
     private var dashboardDetailRouter: Routing?
 
     private let moreInformationBuilder: MoreInformationBuildable
