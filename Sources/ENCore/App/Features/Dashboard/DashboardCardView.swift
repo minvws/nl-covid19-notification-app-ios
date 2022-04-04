@@ -84,9 +84,10 @@ final class DashboardCardView: UIControl, Themeable {
 
     override var isHighlighted: Bool {
         didSet {
-            UIView.animate(withDuration: 0.25) {
-                self.alpha = self.isHighlighted ? 0.6 : 1.0
-            }
+            UIButton.animate(withDuration: 0.2, animations: {
+                let scale: CGFloat = self.isHighlighted ? 0.98 : 1
+                self.transform = CGAffineTransform(scaleX: scale, y: scale)
+            })
         }
     }
 

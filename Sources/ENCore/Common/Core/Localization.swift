@@ -733,6 +733,10 @@ extension String {
     static var dashboardTitle: String { return Localization.string(for: "dashboard.title") }
     static var dashboardMoreInfoHeader: String { return Localization.string(for: "dashboard.moreInfo.header") }
 
+    static func dashboardPositiveTestResultsSummary(amount: String, firstDate: String, secondDate: String, percentage: String) -> String {
+        return Localization.string(for: "dashboard.positiveTestResults.summary", [amount, firstDate, secondDate, percentage])
+    }
+
     static func dashboardHighlightedDate(daysAgo: Int, date: String) -> String {
         switch daysAgo {
         case 0: return Localization.string(for: "status.notified.today")

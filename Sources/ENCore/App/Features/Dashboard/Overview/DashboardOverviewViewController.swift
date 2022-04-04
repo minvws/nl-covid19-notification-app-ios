@@ -86,7 +86,6 @@ private final class OverviewView: View {
     override func build() {
         super.build()
 
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(scrollView)
 
         outerStackView.spacing = 16
