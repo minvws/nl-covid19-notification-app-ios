@@ -16,7 +16,6 @@ protocol SettingsOverviewRouting: Routing {
 }
 
 final class SettingsOverviewViewController: ViewController, SettingsOverviewViewControllable, Logging, PauseConfirmationListener {
-
     weak var router: SettingsOverviewRouting?
 
     // MARK: - Init
@@ -25,11 +24,13 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
          theme: Theme,
          exposureDataController: ExposureDataControlling,
          pauseController: PauseControlling,
-         pushNotificationStream: PushNotificationStreaming) {
+         pushNotificationStream: PushNotificationStreaming,
+         storageController: StorageControlling) {
         self.listener = listener
         self.exposureDataController = exposureDataController
         self.pauseController = pauseController
         self.pushNotificationStream = pushNotificationStream
+        self.storageController = storageController
 
         super.init(theme: theme)
     }
@@ -37,14 +38,14 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = self.navigationController?.navigationItem.rightBarButtonItem
+        navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
 
         internalView.mobileDataButton.action = { [weak self] in
             self?.listener?.settingsOverviewRequestsRoutingToMobileData()
@@ -134,19 +135,26 @@ final class SettingsOverviewViewController: ViewController, SettingsOverviewView
     // MARK: - Private
 
     private weak var listener: SettingsOverviewListener?
-    private lazy var internalView: SettingsView = SettingsView(theme: self.theme, pauseController: pauseController)
+    private lazy var internalView: SettingsView = SettingsView(theme: self.theme, pauseController: pauseController, storageController: storageController)
     private let exposureDataController: ExposureDataControlling
     private let pauseController: PauseControlling
     private let pushNotificationStream: PushNotificationStreaming
+    private let storageController: StorageControlling
     private var disposeBag = DisposeBag()
 }
 
 private final class SettingsView: View {
-
     private lazy var scrollableStackView = ScrollableStackView(theme: theme)
     private let pauseController: PauseControlling
+    private let storageController: StorageControlling
 
-    lazy var separatorView: View = {
+    lazy var firstSeparatorView: View = {
+        let view = View(theme: theme)
+        view.backgroundColor = theme.colors.divider
+        return view
+    }()
+
+    lazy var secondSeparatorView: View = {
         let view = View(theme: theme)
         view.backgroundColor = theme.colors.divider
         return view
@@ -239,11 +247,34 @@ private final class SettingsView: View {
         return countdownView
     }()
 
+    private lazy var showCoronaDashboardSwitchView: ShowCoronaDashboardSwitchView = {
+        ShowCoronaDashboardSwitchView(theme: theme, storageController: storageController)
+    }()
+
+    private lazy var showCoronaDashboarImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = .settingsCoronaDashboard
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    private lazy var showCoronaDashboardDescriptionLabel: Label = {
+        let label = Label()
+        label.font = theme.fonts.body
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = .moreInformationSettingsCoronadashboardContent
+        label.textColor = theme.colors.textSecondary
+        return label
+    }()
+
     // MARK: - Init
 
     init(theme: Theme,
-         pauseController: PauseControlling) {
+         pauseController: PauseControlling,
+         storageController: StorageControlling) {
         self.pauseController = pauseController
+        self.storageController = storageController
         super.init(theme: theme)
     }
 
@@ -262,10 +293,14 @@ private final class SettingsView: View {
             pauseAppDescriptionLabel,
             pauseAppButton,
             appPausedView,
-            separatorView,
+            firstSeparatorView,
             mobileDataTitleLabel,
             mobileDataDescriptionLabel,
-            mobileDataButton
+            mobileDataButton,
+            secondSeparatorView,
+            showCoronaDashboardSwitchView,
+            showCoronaDashboarImageView,
+            showCoronaDashboardDescriptionLabel
         ])
     }
 
@@ -285,7 +320,11 @@ private final class SettingsView: View {
             maker.height.greaterThanOrEqualTo(48)
         }
 
-        separatorView.snp.makeConstraints { maker in
+        firstSeparatorView.snp.makeConstraints { maker in
+            maker.height.equalTo(1)
+        }
+
+        secondSeparatorView.snp.makeConstraints { maker in
             maker.height.equalTo(1)
         }
 
@@ -295,8 +334,65 @@ private final class SettingsView: View {
     }
 }
 
-private final class PauseCountdownView: View {
+private final class ShowCoronaDashboardSwitchView: View, Logging {
+    private lazy var showCoronaDashboardTitleLabel: Label = {
+        let label = Label(frame: .zero)
+        label.isUserInteractionEnabled = true
+        label.font = theme.fonts.title3
+        label.text = .moreInformationSettingsCoronadashboardTitle
+        label.textColor = theme.colors.textPrimary
+        label.numberOfLines = 0
+        label.accessibilityTraits = .header
+        return label
+    }()
 
+    private lazy var showCoronaDashboardSwitch: UISwitch = {
+        let uiSwitch = UISwitch()
+        uiSwitch.translatesAutoresizingMaskIntoConstraints = false
+        uiSwitch.isOn = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.showCoronaDashboard) ?? true
+        uiSwitch.addTarget(self, action: #selector(valueChanged), for: .valueChanged)
+        return uiSwitch
+    }()
+
+    init(theme: Theme, storageController: StorageControlling) {
+        self.storageController = storageController
+        super.init(theme: theme)
+    }
+
+    override func build() {
+        super.build()
+
+        addSubview(showCoronaDashboardTitleLabel)
+        addSubview(showCoronaDashboardSwitch)
+    }
+
+    override func setupConstraints() {
+        super.setupConstraints()
+
+        showCoronaDashboardTitleLabel.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.left.equalToSuperview().offset(10)
+            maker.right.equalTo(showCoronaDashboardSwitch.snp.left).offset(-10)
+            maker.bottom.equalTo(-10)
+        }
+
+        showCoronaDashboardSwitch.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.right.equalToSuperview().offset(-20)
+        }
+    }
+
+    @objc private func valueChanged() {
+        storageController.store(object: showCoronaDashboardSwitch.isOn, identifiedBy: ExposureDataStorageKey.showCoronaDashboard, completion: { error in
+            guard let error = error else { return }
+            self.logWarning("SettingsOverviewViewController - Couldn't store new `showCoronaDashboard` value \(self.showCoronaDashboardSwitch.isOn) - Error: \(error.localizedDescription)")
+        })
+    }
+
+    private let storageController: StorageControlling
+}
+
+private final class PauseCountdownView: View {
     private var timer: Timer?
     private let pauseController: PauseControlling
 

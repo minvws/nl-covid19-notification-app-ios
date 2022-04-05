@@ -1,3 +1,33 @@
+"yesterday" = "Dün";
+"collapsed" = "Katlanmış";
+"dayBeforeYesterday" = "Dünden önceki gün";
+"expanded" = "Açılmış";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Test sonucu pozitif olan kişiler";
+"dashboard.coronaMelderUsers.header" = "CoronaMelder'i kullanan kişiler";
+"dashboard.hospitalAdmissions.header" = "Hastanede (Yoğun Bakım değil) koronalı kişiler";
+"dashboard.icuAdmissions.header" = "Yoğun Bakımda koronalı kişiler";
+"dashboard.vaccinationCoverage.header" = "Aşılama derecesi";
+"dashboard.vaccinationCoverage.booster.label" = "Hatırlatma aşısı yaptırılması (18 yaş üstü)";
+"dashboard.vaccinationCoverage.elder.label" = "Tamamen aşılanmış (18 yaş üstü)";
+"dashboard.title" = "Korona gösterge paneli";
+"dashboard.moreInfo.header" = "Daha fazla rakam";
+"dashboard.positiveTestResults.summary" = "Her gün %@ ve %@ arasında korona testi sonucu pozitif çıkan ortalama <b>%@</b> kişi vardır. GGD'de yapılan tüm testlerin sonucu pozitif çıkan sayı <b>%@</b>.";
+"dashboard.coronaMelderUsers.summary" = "Biraya gelmeleri bildirmek için %@ tarihinde <b>%@</b> kişi CoronaMelder uygulamasını kullanmıştır.";
+"dashboard.hospitalAdmissions.summary" = "Ortalama olarak, günde %@ ile %@ arasında <b>%@</b> kişi hastaneye kaldırılıyor. Son birkaç gün ortalama hesaplanmasına dâhil edilmemektedir çünkü bu günlerin rakamları henüz tamamlanmamıştır.";
+"dashboard.icuAdmissions.summary" = "Ortalama olarak, günde %@ ile %@ arasında <b>%@</b> yoğun bakım ünitesine kabul edilmektedir. Son birkaç gün ortalama hesaplanmasına dâhil edilmemektedir çünkü bu günlerin rakamları henüz tamamlanmamıştır.";
+"dashboard.vaccinationCoverage.summary" = "Şu anda 18 yaş ve üzeri nüfusun <b>%@</b> oranı koronaya karşı tam aşılıdır. Nüfusun <b>%@</b> oranı koronaya karşı bir hatırlatma aşısı olmuştur.";
+"dashboard.moreInfo.link" = "Tüm rakamları inceleyin";
+"dashboard.header" = "Hollanda'daki şu anki durum";
+"dashboard.summaryCardText" = "Tüm rakamları inceleyin";
+"dashboard.summaryText" = "Aşağıda CoronaMelder kullanımı ve Hollanda'daki korona durumunun gidişatının nasıl olduğu hakkında bir dizi önemli istatistik bulacaksınız.";
+"dashboard.tag" = "Korona gösterge paneli";
+"dashboard.serverError" = "Veriler yüklenemedi";
+"dashboard.datePrefix" = "%@ tarihinde";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Korona gösterge paneli";
+"dashboard.settings.description" = "Korona gösterge paneli, CoronaMelder kullanımı ve Hollanda'daki korona durumunun gidişatının nasıl olduğu hakkında bir dizi önemli istatistik gösteriyor.";
 "enableInternetDescription" = "Karşılaştığınız kişilerin sonradan Korona'ya yakalanıp yakalanmadığını kontrol edebilmek için uygulamanın bir internet bağlantısına ihtiyacı var.<br><br>WiFi'ye bağlanın veya bu uygulama için mobil verileri açın.";
 "enableInternetStepTitle" = "Mobil verileri açın";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Bir hata oluştu";
 "learnMore" = "Daha fazlasını oku";
 "retry" = "Tekrar deneyin";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store açılamıyor.";
 "updateApp.title" = "Uygulamanın güncellenmesi gerekiyor";
@@ -593,3 +622,4 @@
 "notification.app.unpaused.title" = "CoronaMelder'ı tekrar açın";
 "notification.app.unpaused.description" = "Uygulama tekrar aktif durumda. Buluşmalarınız şu andan itibaren tekrar takip edilecek.";
 "notification.app.unpaused.manualunpause.description" = "Dikkat: uygulama henüz aktif değil. Bunu uygulamada kendiniz açmanız gerekiyor.";
+
