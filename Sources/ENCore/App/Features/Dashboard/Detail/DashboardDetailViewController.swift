@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import CloudKit
 import ENFoundation
 import UIKit
 
@@ -74,6 +75,8 @@ final class DashboardDetailViewController: ViewController, DashboardDetailViewCo
         default:
             break
         }
+
+        internalView.setButtons(buttons)
     }
 
     // MARK: - DashboardDetailViewControllable
@@ -86,9 +89,109 @@ final class DashboardDetailViewController: ViewController, DashboardDetailViewCo
     private let identifier: DashboardIdentifier
     private let dashboardData: DashboardData
     private lazy var internalView = DetailView(theme: self.theme)
+
+    private var buttons: [DashboardDetailButton] {
+        var buttonsWithSorting: [(button: DashboardDetailButton, sortingValue: Int)] = []
+
+        func dateText(for date: Date) -> String {
+            let daysAgo = currentDate().days(sinceDate: date) ?? 0
+            let dateString = DetailView.dateFormatter.string(from: date)
+            return .dashboardHighlightedDate(daysAgo: daysAgo, date: dateString)
+        }
+
+        let buttonHandler = { [listener] (identifier: DashboardIdentifier) -> () in
+            listener?.dashboardDetailRequestsRouteToDetail(with: identifier)
+        }
+
+        dashboardData.positiveTestResults.map {
+            buttonsWithSorting.append(
+                (DashboardDetailButton(identifier: .tests,
+                                       title: .dashboardPositiveTestResultsHeader,
+                                       amountPrefix: dateText(for: $0.highlightedValue.date),
+                                       amount: DetailView.numberFormatter.string(from: $0.highlightedValue.value as NSNumber),
+                                       icon: .dashboardTestsIcon,
+                                       theme: theme,
+                                       handler: buttonHandler),
+                 $0.sortingValue))
+        }
+
+        dashboardData.coronaMelderUsers.map {
+            buttonsWithSorting.append(
+                (DashboardDetailButton(identifier: .users,
+                                       title: .dashboardCoronaMelderUsersHeader,
+                                       amountPrefix: dateText(for: $0.highlightedValue.date),
+                                       amount: DetailView.numberFormatter.string(from: $0.highlightedValue.value as NSNumber),
+                                       icon: .dashboardUsersIcon,
+                                       theme: theme,
+                                       handler: buttonHandler),
+                 $0.sortingValue))
+        }
+
+        dashboardData.hospitalAdmissions.map {
+            buttonsWithSorting.append(
+                (DashboardDetailButton(identifier: .hospitalAdmissions,
+                                       title: .dashboardHospitalAdmissionsHeader,
+                                       amountPrefix: dateText(for: $0.highlightedValue.date),
+                                       amount: DetailView.numberFormatter.string(from: $0.highlightedValue.value as NSNumber),
+                                       icon: .dashboardHospitalIcon,
+                                       theme: theme,
+                                       handler: buttonHandler),
+                 $0.sortingValue))
+        }
+
+        dashboardData.icuAdmissions.map {
+            buttonsWithSorting.append(
+                (DashboardDetailButton(identifier: .icuAdmissions,
+                                       title: .dashboardIcuAdmissionsHeader,
+                                       amountPrefix: dateText(for: $0.highlightedValue.date),
+                                       amount: DetailView.numberFormatter.string(from: $0.highlightedValue.value as NSNumber),
+                                       icon: .dashboardIcuIcon,
+                                       theme: theme,
+                                       handler: buttonHandler),
+                 $0.sortingValue))
+        }
+
+        dashboardData.vaccinationCoverage.map {
+            buttonsWithSorting.append(
+                (DashboardDetailButton(identifier: .vaccinations,
+                                       title: .dashboardVaccinationCoverageHeader,
+                                       amountPrefix: .dashboardVaccinationCoverageBoosterLabel,
+                                       amount: DetailView.percentageFormatter.string(from: ($0.boosterCoverage18Plus / 100) as NSNumber),
+                                       icon: .dashboardVaccinationsIcon,
+                                       theme: theme,
+                                       handler: buttonHandler),
+                 $0.sortingValue))
+        }
+
+        return buttonsWithSorting
+            .filter { $0.button.identifier != identifier }
+            .sorted { $0.sortingValue < $1.sortingValue }
+            .map(\.button)
+    }
 }
 
 private final class DetailView: View {
+
+    static var numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+
+    static var percentageFormatter: NumberFormatter = {
+        let percentageFormatter = NumberFormatter()
+        percentageFormatter.locale = Locale.current
+        percentageFormatter.numberStyle = .percent
+        percentageFormatter.maximumFractionDigits = 1
+        return percentageFormatter
+    }()
+
+    static var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("d MMMM")
+        return dateFormatter
+    }()
 
     override func build() {
         super.build()
@@ -132,6 +235,7 @@ private final class DetailView: View {
         graphHeaderStackView.addArrangedSubview(iconView)
         graphHeaderStackView.addArrangedSubview(graphHeaderLabel)
 
+        // TODO: Handle button
         let allDataButton = Button(title: .dashboardMoreInfoLink, theme: theme)
         allDataButton.style = .info
         allDataButton.contentHorizontalAlignment = .leading
@@ -153,46 +257,6 @@ private final class DetailView: View {
 
         buttonStackView.axis = .vertical
         buttonStackView.spacing = 8
-
-        let now = currentDate()
-        let date = Date(timeIntervalSinceNow: -3600 * 2)
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-
-        let dateString = dateFormatter.string(from: date)
-        let daysAgo = now.days(sinceDate: date) ?? 0
-
-        let dateText: String = .dashboardHighlightedDate(daysAgo: daysAgo, date: dateString)
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale.current
-        numberFormatter.numberStyle = .decimal
-
-        let percentageFormatter = NumberFormatter()
-        percentageFormatter.locale = Locale.current
-        percentageFormatter.numberStyle = .percent
-        percentageFormatter.maximumFractionDigits = 1
-
-        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardPositiveTestResultsHeader, amountPrefix: dateText, amount: numberFormatter.string(from: 54225), icon: .dashboardTestsIcon, theme: theme) { _ in
-            // TODO: forward tap
-        })
-
-        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardCoronaMelderUsersHeader, amountPrefix: dateText, amount: numberFormatter.string(from: 2680672), icon: .dashboardUsersIcon, theme: theme) { _ in
-            // TODO: forward tap
-        })
-
-        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardHospitalAdmissionsHeader, amountPrefix: dateText, amount: numberFormatter.string(from: 898), icon: .dashboardHospitalIcon, theme: theme) { _ in
-            // TODO: forward tap
-        })
-
-        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardIcuAdmissionsHeader, amountPrefix: dateText, amount: numberFormatter.string(from: 898), icon: .dashboardIcuIcon, theme: theme) { _ in
-            // TODO: forward tap
-        })
-
-        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardVaccinationCoverageHeader, amountPrefix: .dashboardVaccinationCoverageBoosterLabel, amount: percentageFormatter.string(from: 0.533), icon: .dashboardVaccinationsIcon, theme: theme) { _ in
-            // TODO: forward tap
-        })
     }
 
     override func setupConstraints() {
@@ -303,6 +367,10 @@ private final class DetailView: View {
         }
     }
 
+    func setButtons(_ buttons: [DashboardDetailButton]) {
+        buttons.forEach(buttonStackView.addArrangedSubview(_:))
+    }
+
     // MARK: - Private
 
     private var scrollView = UIScrollView()
@@ -317,27 +385,6 @@ private final class DetailView: View {
     private var moreDataLabel = UILabel()
     private var buttonStackView = UIStackView()
     private var iconView = UIImageView()
-
-    private static var numberFormatter: NumberFormatter = {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale.current
-        numberFormatter.numberStyle = .decimal
-        return numberFormatter
-    }()
-
-    private static var percentageFormatter: NumberFormatter = {
-        let percentageFormatter = NumberFormatter()
-        percentageFormatter.locale = Locale.current
-        percentageFormatter.numberStyle = .percent
-        percentageFormatter.maximumFractionDigits = 1
-        return percentageFormatter
-    }()
-
-    private static var dateFormatter: DateFormatter = {
-        let dateFormatter = DateFormatter()
-        dateFormatter.setLocalizedDateFormatFromTemplate("d MMMM")
-        return dateFormatter
-    }()
 }
 
 private final class DashboardDetailButton: UIControl, Themeable {
@@ -352,12 +399,20 @@ private final class DashboardDetailButton: UIControl, Themeable {
     }
 
     let theme: Theme
-    var handler: ((DashboardDetailButton) -> ())?
+    let identifier: DashboardIdentifier
+    var handler: ((DashboardIdentifier) -> ())?
 
     static let shadowMargin = UIEdgeInsets(top: 2, left: 3, bottom: 4, right: 3)
 
-    init(title: String, amountPrefix: String?, amount: String?, icon: UIImage?, theme: Theme, handler: ((DashboardDetailButton) -> ())? = nil) {
+    init(identifier: DashboardIdentifier,
+         title: String,
+         amountPrefix: String?,
+         amount: String?,
+         icon: UIImage?,
+         theme: Theme,
+         handler: @escaping (DashboardIdentifier) -> ()) {
         self.theme = theme
+        self.identifier = identifier
         self.handler = handler
 
         super.init(frame: .zero)
@@ -399,7 +454,7 @@ private final class DashboardDetailButton: UIControl, Themeable {
 
     @objc private func didTap() {
         Haptic.light()
-        handler?(self)
+        handler?(identifier)
     }
 
     private func build() {
