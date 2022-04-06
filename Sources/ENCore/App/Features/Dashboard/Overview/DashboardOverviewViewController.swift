@@ -14,8 +14,9 @@ protocol DashboardOverviewRouting: Routing {}
 
 final class DashboardOverviewViewController: ViewController, DashboardOverviewViewControllable, DashboardCardViewListener {
 
-    init(listener: DashboardOverviewListener, theme: Theme) {
+    init(listener: DashboardOverviewListener, data: DashboardData, theme: Theme) {
         self.listener = listener
+        self.dashboardData = data
         super.init(theme: theme)
     }
 
@@ -47,39 +48,69 @@ final class DashboardOverviewViewController: ViewController, DashboardOverviewVi
 
     private weak var listener: DashboardOverviewListener?
     private lazy var internalView = OverviewView(theme: self.theme)
+    private let dashboardData: DashboardData
     private var objects: [DashboardCard] {
-//        let positiveTestsCard = DashboardCardViewModel(identifier: .tests,
-//                                                       icon: .dashboardTestsIcon,
-//                                                       title: .dashboardPositiveTestResultsHeader,
-//                                                       graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
-//                                                       date: Date(),
-//                                                       displayedAmount: 54225)
-//        let activeUsersCard = DashboardCardViewModel(identifier: .users,
-//                                                     icon: .dashboardUsersIcon,
-//                                                     title: .dashboardCoronaMelderUsersHeader,
-//                                                     visual: .dashboardUsersIllustration!,
-//                                                     date: Date(),
-//                                                     displayedAmount: 2680672)
-//        let hospitalCard = DashboardCardViewModel(identifier: .hospitalAdmissions,
-//                                                  icon: .dashboardHospitalIcon,
-//                                                  title: .dashboardHospitalAdmissionsHeader,
-//                                                  graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
-//                                                  date: Date(timeIntervalSinceNow: -24 * 3600),
-//                                                  displayedAmount: 233)
-//
-//        let vaccinationsCard = DashboardCardViewModel(identifier: .vaccinations,
-//                                                      icon: .dashboardVaccinationsIcon,
-//                                                      title: .dashboardVaccinationCoverageHeader,
-//                                                      bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)])
-//
-//        return [
-//            positiveTestsCard,
-//            activeUsersCard,
-//            hospitalCard,
-//            vaccinationsCard
-//        ]
+        var objects = [(card: DashboardCard, sortingValue: Int)]()
 
-        return []
+        dashboardData.positiveTestResults.map {
+            objects.append(
+                (DashboardCardViewModel(identifier: .tests,
+                                        icon: .dashboardTestsIcon,
+                                        title: .dashboardPositiveTestResultsHeader,
+                                        graph: .init(values: $0.values),
+                                        date: $0.highlightedValue.date,
+                                        displayedAmount: $0.highlightedValue.value),
+                 $0.sortingValue))
+        }
+
+        dashboardData.coronaMelderUsers.map {
+            objects.append(
+                (DashboardCardViewModel(identifier: .users,
+                                        icon: .dashboardUsersIcon,
+                                        title: .dashboardCoronaMelderUsersHeader,
+                                        visual: .dashboardUsersIllustration!,
+                                        date: $0.highlightedValue.date,
+                                        displayedAmount: $0.highlightedValue.value),
+                 $0.sortingValue))
+        }
+
+        dashboardData.hospitalAdmissions.map {
+            objects.append(
+                (DashboardCardViewModel(identifier: .hospitalAdmissions,
+                                        icon: .dashboardHospitalIcon,
+                                        title: .dashboardHospitalAdmissionsHeader,
+                                        graph: .init(values: $0.values),
+                                        date: $0.highlightedValue.date,
+                                        displayedAmount: $0.highlightedValue.value),
+                 $0.sortingValue))
+        }
+
+        dashboardData.icuAdmissions.map {
+            objects.append(
+                (DashboardCardViewModel(identifier: .icuAdmissions,
+                                        icon: .dashboardIcuIcon,
+                                        title: .dashboardIcuAdmissionsHeader,
+                                        graph: .init(values: $0.values),
+                                        date: $0.highlightedValue.date,
+                                        displayedAmount: $0.highlightedValue.value),
+                 $0.sortingValue))
+        }
+
+        dashboardData.vaccinationCoverage.map {
+            objects.append(
+                (DashboardCardViewModel(identifier: .vaccinations,
+                                        icon: .dashboardVaccinationsIcon,
+                                        title: .dashboardVaccinationCoverageHeader,
+                                        bars: [
+                                            ($0.vaccinationCoverage18Plus / 100, .dashboardVaccinationCoverageElderLabel),
+                                            ($0.boosterCoverage18Plus / 100, .dashboardVaccinationCoverageBoosterLabel)
+                                        ]),
+                 $0.sortingValue))
+        }
+
+        return objects
+            .sorted { $0.sortingValue < $1.sortingValue }
+            .map(\.card)
     }
 }
 

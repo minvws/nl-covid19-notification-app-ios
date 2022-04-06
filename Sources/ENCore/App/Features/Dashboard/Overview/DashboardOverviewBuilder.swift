@@ -28,6 +28,6 @@ final class DashboardOverviewBuilder: Builder<DashboardOverviewDependency>, Dash
     func build(withData data: DashboardData, listener: DashboardOverviewListener) -> ViewControllable {
         let dependencyProvider = DashboardOverviewDependencyProvider(dependency: dependency)
 
-        return DashboardOverviewViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return DashboardOverviewViewController(listener: listener, data: data, theme: dependencyProvider.dependency.theme)
     }
 }
