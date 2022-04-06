@@ -23,41 +23,7 @@ final class DashboardOverviewRouter: Router<DashboardOverviewViewControllable>, 
         super.init(viewController: viewController)
     }
 
-    // TODO: Add any child routing functions here.
-    //       See RootRouter as an example
-    //
-    //    func routeToChild() {
-    //        guard childViewController == nil else {
-    //            // already presented
-    //            return
-    //        }
-    //
-    //        let childViewController = self.childBuilder.build()
-    //        self.childViewController = childViewController
-    //
-    //        self.viewController.present(viewController: childViewController,
-    //                                    animated: true,
-    //                                    completion: nil)
-    //    }
-    //
-    //    func detachChild() {
-    //        guard let childViewController = childViewController else {
-    //            return
-    //        }
-    //
-    //        self.childViewController = nil
-    //
-    //        viewController.dismiss(viewController: childViewController,
-    //                               animated: animated,
-    //                               completion: completion)
-    //    }
-
     // MARK: - Private
 
-    // TODO: Add any private functions and instance variables here
-
     private weak var listener: DashboardOverviewListener?
-
-    // private let childBuilder: ChildBuildable
-    // private var childViewController: ViewControllable?
 }

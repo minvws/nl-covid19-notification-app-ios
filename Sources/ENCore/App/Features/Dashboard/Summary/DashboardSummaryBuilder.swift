@@ -41,7 +41,6 @@ private final class DashboardSummaryDependencyProvider: DependencyProvider<Dashb
 
 final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
     func build(withListener listener: DashboardSummaryListener) -> ViewControllable {
-        // TODO: Add any other dynamic dependency as parameter
 
         let dependencyProvider = DashboardSummaryDependencyProvider(dependency: dependency)
 
@@ -49,9 +48,6 @@ final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, Dashbo
         let viewController = DashboardSummaryViewController(listener: listener,
                                                             theme: dependencyProvider.theme,
                                                             dataController: dependencyProvider.dataController)
-
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
         return viewController
     }
 }

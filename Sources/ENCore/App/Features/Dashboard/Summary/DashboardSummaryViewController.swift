@@ -11,10 +11,7 @@ import SnapKit
 import UIKit
 
 /// @mockable
-protocol DashboardSummaryRouting: Routing {
-    // TODO: Add any routing functions that are called from the ViewController
-    // func routeToChild()
-}
+protocol DashboardSummaryRouting: Routing {}
 
 final class DashboardSummaryViewController: ViewController, DashboardSummaryViewControllable, DashboardCardViewListener {
 

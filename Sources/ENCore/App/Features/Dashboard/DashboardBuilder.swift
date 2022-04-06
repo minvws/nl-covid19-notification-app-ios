@@ -50,8 +50,6 @@ private final class DashboardDependencyProvider: DependencyProvider<DashboardDep
 final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
     func build(withListener listener: DashboardListener,
                identifier: DashboardIdentifier) -> Routing {
-        // TODO: Add any other dynamic dependency as parameter
-
         let dependencyProvider = DashboardDependencyProvider(dependency: dependency)
 
         // let childBuilder = dependencyProvider.childBuilder
@@ -60,8 +58,6 @@ final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
                                                      identifier: identifier,
                                                      dataController: dependencyProvider.dataController)
 
-        // TODO: Adjust the initialiser to use the correct parameters.
-        //       Delete the `dependencyProvider` variable if not used.
         return DashboardRouter(viewController: viewController,
                                overviewBuilder: dependencyProvider.overviewBuilder,
                                detailBuilder: dependencyProvider.detailBuilder)

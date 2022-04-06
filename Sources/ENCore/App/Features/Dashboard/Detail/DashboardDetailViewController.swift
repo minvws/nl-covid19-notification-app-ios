@@ -10,10 +10,7 @@ import ENFoundation
 import UIKit
 
 /// @mockable
-protocol DashboardDetailRouting: Routing {
-    // TODO: Add any routing functions that are called from the ViewController
-    // func routeToChild()
-}
+protocol DashboardDetailRouting: Routing {}
 
 final class DashboardDetailViewController: ViewController, DashboardDetailViewControllable, Logging {
 
