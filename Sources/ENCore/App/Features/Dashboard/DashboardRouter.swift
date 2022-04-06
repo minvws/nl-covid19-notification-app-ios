@@ -30,17 +30,17 @@ final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting
         viewController.router = self
     }
 
-    func routeToOverview() {
+    func routeToOverview(with data: DashboardData) {
         guard overviewViewController == nil else { return }
 
-        let overviewViewController = overviewBuilder.build(withListener: viewController)
+        let overviewViewController = overviewBuilder.build(withData: data, listener: viewController)
         self.overviewViewController = overviewViewController
 
         viewController.push(viewController: overviewViewController, animated: false)
     }
 
-    func routeToDetail(with identifier: DashboardIdentifier, animated: Bool) {
-        let detailViewController = detailBuilder.build(withListener: viewController, identifier: identifier)
+    func routeToDetail(with identifier: DashboardIdentifier, data: DashboardData, animated: Bool) {
+        let detailViewController = detailBuilder.build(withData: data, listener: viewController, identifier: identifier)
 
         viewController.replaceSameOrPush(viewController: detailViewController, animated: animated)
     }

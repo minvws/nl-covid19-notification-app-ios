@@ -18,6 +18,7 @@ protocol ExposureDataOperationProvider {
     func requestExposureKeySetsOperation(identifiers: [String]) -> RequestExposureKeySetsDataOperationProtocol
 
     var requestManifestOperation: RequestAppManifestDataOperationProtocol { get }
+    var requestDashboardDataOperation: RequestDashboardDataOperationProtocol { get }
     var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol { get }
     func requestLabConfirmationKeyOperation(padding: Padding) -> RequestLabConfirmationKeyDataOperationProtocol
 

@@ -121,6 +121,10 @@ struct NetworkConfiguration {
         return self.combine(endpoint: Endpoint.manifest(version: useFallback ? cdn.signatureFallbackPath : nil), fromCdn: true, params: cdn.tokenParams)
     }
 
+    func dashboardUrl(useFallback: Bool) -> URL? {
+        return self.combine(endpoint: Endpoint.dashboard(version: "v1"), fromCdn: true, params: cdn.tokenParams)
+    }
+
     func exposureKeySetUrl(useFallback: Bool, identifier: String) -> URL? {
         return self.combine(endpoint: Endpoint.exposureKeySet(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }

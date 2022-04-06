@@ -15,6 +15,7 @@ enum DashboardIdentifier {
     case tests
     case users
     case hospitalAdmissions
+    case icuAdmissions
     case vaccinations
 }
 
@@ -39,7 +40,7 @@ struct DashboardCardViewModel: DashboardCard {
     let date: Date?
     let displayedAmount: Int?
 
-    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, visual: UIImage, date: Date, displayedAmount: Int) {
+    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, visual: UIImage, date: Date?, displayedAmount: Int?) {
         self.identifier = identifier
         self.icon = icon
         self.title = title
@@ -51,7 +52,7 @@ struct DashboardCardViewModel: DashboardCard {
         self.bars = nil
     }
 
-    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, graph: GraphData, date: Date, displayedAmount: Int) {
+    init(identifier: DashboardIdentifier, icon: UIImage?, title: String, graph: GraphData, date: Date?, displayedAmount: Int?) {
         self.identifier = identifier
         self.icon = icon
         self.title = title

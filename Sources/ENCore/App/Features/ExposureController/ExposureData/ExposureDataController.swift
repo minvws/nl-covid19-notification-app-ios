@@ -314,6 +314,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
         return storedAppConfig.notification
     }
 
+    func getDashboardData() -> Single<DashboardData> {
+        return operationProvider.requestDashboardDataOperation.execute()
+    }
+
     var isAppPaused: Bool {
         pauseEndDate != nil
     }

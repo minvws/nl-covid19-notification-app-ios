@@ -737,6 +737,22 @@ extension String {
         return Localization.string(for: "dashboard.positiveTestResults.summary", [amount, firstDate, secondDate, percentage])
     }
 
+    static func dashboardCoronaMelderUsersSummary(amount: String, date: String) -> String {
+        return Localization.string(for: "dashboard.coronaMelderUsers.summary", [date, amount])
+    }
+
+    static func dashboardHospitalAdmissionsSummary(amount: String, firstDate: String, secondDate: String) -> String {
+        return Localization.string(for: "dashboard.hospitalAdmissions.summary", [amount, firstDate, secondDate])
+    }
+
+    static func dashboardIcuAdmissionsSummary(amount: String, firstDate: String, secondDate: String) -> String {
+        return Localization.string(for: "dashboard.icuAdmissions.summary", [amount, firstDate, secondDate])
+    }
+
+    static func dashboardVaccinationCoverageSummary(fullyVacinated: String, boostered: String) -> String {
+        return Localization.string(for: "dashboard.vaccinationCoverage.summary", [fullyVacinated, boostered])
+    }
+
     static func dashboardHighlightedDate(daysAgo: Int, date: String) -> String {
         switch daysAgo {
         case 0: return Localization.string(for: "status.notified.today")

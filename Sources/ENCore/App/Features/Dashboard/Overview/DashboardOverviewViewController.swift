@@ -48,36 +48,38 @@ final class DashboardOverviewViewController: ViewController, DashboardOverviewVi
     private weak var listener: DashboardOverviewListener?
     private lazy var internalView = OverviewView(theme: self.theme)
     private var objects: [DashboardCard] {
-        let positiveTestsCard = DashboardCardViewModel(identifier: .tests,
-                                                       icon: .dashboardTestsIcon,
-                                                       title: .dashboardPositiveTestResultsHeader,
-                                                       graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
-                                                       date: Date(),
-                                                       displayedAmount: 54225)
-        let activeUsersCard = DashboardCardViewModel(identifier: .users,
-                                                     icon: .dashboardUsersIcon,
-                                                     title: .dashboardCoronaMelderUsersHeader,
-                                                     visual: .dashboardUsersIllustration!,
-                                                     date: Date(),
-                                                     displayedAmount: 2680672)
-        let hospitalCard = DashboardCardViewModel(identifier: .hospitalAdmissions,
-                                                  icon: .dashboardHospitalIcon,
-                                                  title: .dashboardHospitalAdmissionsHeader,
-                                                  graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
-                                                  date: Date(timeIntervalSinceNow: -24 * 3600),
-                                                  displayedAmount: 233)
+//        let positiveTestsCard = DashboardCardViewModel(identifier: .tests,
+//                                                       icon: .dashboardTestsIcon,
+//                                                       title: .dashboardPositiveTestResultsHeader,
+//                                                       graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 30000 ... 45000) }),
+//                                                       date: Date(),
+//                                                       displayedAmount: 54225)
+//        let activeUsersCard = DashboardCardViewModel(identifier: .users,
+//                                                     icon: .dashboardUsersIcon,
+//                                                     title: .dashboardCoronaMelderUsersHeader,
+//                                                     visual: .dashboardUsersIllustration!,
+//                                                     date: Date(),
+//                                                     displayedAmount: 2680672)
+//        let hospitalCard = DashboardCardViewModel(identifier: .hospitalAdmissions,
+//                                                  icon: .dashboardHospitalIcon,
+//                                                  title: .dashboardHospitalAdmissionsHeader,
+//                                                  graph: .init(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }),
+//                                                  date: Date(timeIntervalSinceNow: -24 * 3600),
+//                                                  displayedAmount: 233)
+//
+//        let vaccinationsCard = DashboardCardViewModel(identifier: .vaccinations,
+//                                                      icon: .dashboardVaccinationsIcon,
+//                                                      title: .dashboardVaccinationCoverageHeader,
+//                                                      bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)])
+//
+//        return [
+//            positiveTestsCard,
+//            activeUsersCard,
+//            hospitalCard,
+//            vaccinationsCard
+//        ]
 
-        let vaccinationsCard = DashboardCardViewModel(identifier: .vaccinations,
-                                                      icon: .dashboardVaccinationsIcon,
-                                                      title: .dashboardVaccinationCoverageHeader,
-                                                      bars: [(0.861, .dashboardVaccinationCoverageElderLabel), (0.533, .dashboardVaccinationCoverageBoosterLabel)])
-
-        return [
-            positiveTestsCard,
-            activeUsersCard,
-            hospitalCard,
-            vaccinationsCard
-        ]
+        return []
     }
 }
 

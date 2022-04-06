@@ -11,7 +11,6 @@ import Foundation
 /// @mockable
 protocol DashboardSummaryListener: AnyObject {
     func dashboardSummaryRequestsRouteToDetail(with identifier: DashboardIdentifier)
-    func dashboardSummaryRequestsRouteToOverview()
 }
 
 /// @mockable
@@ -25,18 +24,19 @@ protocol DashboardSummaryBuildable {
 
 protocol DashboardSummaryDependency {
     var theme: Theme { get }
-    // TODO: Add any external dependency
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class DashboardSummaryDependencyProvider: DependencyProvider<DashboardSummaryDependency> /* , ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to Dashboard's scope or any child of Dashboard
+    // MARK: - Forwarding Dependencies
 
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    // }
+    var theme: Theme {
+        return dependency.theme
+    }
+
+    var dataController: ExposureDataControlling {
+        return dependency.dataController
+    }
 }
 
 final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
@@ -46,7 +46,9 @@ final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, Dashbo
         let dependencyProvider = DashboardSummaryDependencyProvider(dependency: dependency)
 
         // let childBuilder = dependencyProvider.childBuilder
-        let viewController = DashboardSummaryViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        let viewController = DashboardSummaryViewController(listener: listener,
+                                                            theme: dependencyProvider.theme,
+                                                            dataController: dependencyProvider.dataController)
 
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

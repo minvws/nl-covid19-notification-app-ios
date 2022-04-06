@@ -286,8 +286,6 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.routeToDashboardDetail(with: identifier)
     }
 
-    func dashboardSummaryRequestsRouteToOverview() {}
-
     // MARK: - Private
 
     private lazy var mainView: MainView = MainView(theme: self.theme)

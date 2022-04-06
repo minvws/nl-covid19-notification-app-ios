@@ -21,7 +21,7 @@ protocol DashboardBuildable {
 
 protocol DashboardDependency {
     var theme: Theme { get }
-    // TODO: Add any external dependency
+    var dataController: ExposureDataControlling { get }
 }
 
 private final class DashboardDependencyProvider: DependencyProvider<DashboardDependency>, DashboardOverviewDependency, DashboardDetailDependency {
@@ -30,6 +30,10 @@ private final class DashboardDependencyProvider: DependencyProvider<DashboardDep
 
     var theme: Theme {
         return dependency.theme
+    }
+
+    var dataController: ExposureDataControlling {
+        return dependency.dataController
     }
 
     // MARK: - Child Builders
@@ -53,7 +57,8 @@ final class DashboardBuilder: Builder<DashboardDependency>, DashboardBuildable {
         // let childBuilder = dependencyProvider.childBuilder
         let viewController = DashboardViewController(listener: listener,
                                                      theme: dependencyProvider.dependency.theme,
-                                                     identifier: identifier)
+                                                     identifier: identifier,
+                                                     dataController: dependencyProvider.dataController)
 
         // TODO: Adjust the initialiser to use the correct parameters.
         //       Delete the `dependencyProvider` variable if not used.

@@ -12,7 +12,7 @@ import SnapKit
 import UIKit
 
 struct GraphData {
-    let values: [UInt]
+    let values: [DashboardData.DatedValue]
 
     let maxValue: UInt
     let orderOfMagnitude: UInt
@@ -20,8 +20,10 @@ struct GraphData {
     let normalizedValues: [CGFloat]
     let scaledNormalizedValues: [CGFloat]
 
-    init(values: [UInt]) {
+    init(values: [DashboardData.DatedValue]) {
         self.values = values
+        let values = values.map { UInt($0.value) }
+
         maxValue = values.max() ?? 0
 
         do { // orderOfMagnitude
@@ -103,6 +105,27 @@ final class GraphView: View {
         }
     }
 
+    // MARK: - Private
+
+    private static var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("d MMM YYYY")
+        return dateFormatter
+    }()
+
+    private static var shortDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("d MMM")
+        return dateFormatter
+    }()
+
+    private static var numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+
     private func buildNormal() {
         addSubview(drawingView)
         addSubview(upperBoundLabel)
@@ -122,21 +145,19 @@ final class GraphView: View {
         lowerBoundLabel.textColor = theme.colors.captionGray
 
         startDateLabel.font = theme.fonts.caption1
-        startDateLabel.text = "4 jan. 2022"
+        startDateLabel.text = data.values.first.map(\.date).map(Self.dateFormatter.string)
         startDateLabel.textColor = theme.colors.captionGray
 
         endDateLabel.font = theme.fonts.caption1
-        endDateLabel.text = "18 jan. 2022"
+        endDateLabel.text = data.values.last.map(\.date).map(Self.dateFormatter.string)
         endDateLabel.textColor = theme.colors.captionGray
 
         selectedDateLabel.font = theme.fonts.caption1Bold
-        selectedDateLabel.text = "12 jan"
         selectedDateLabel.textColor = theme.colors.textDark
         selectedDateLabel.textAlignment = .center
         selectedDateLabel.backgroundColor = .white
 
         popupLabel.font = theme.fonts.caption1
-        popupLabel.text = "Mensen in ziekenhuis: 1.200"
         popupLabel.textColor = theme.colors.captionGray
 
         popupBubbleView.backgroundColor = .white
@@ -286,6 +307,12 @@ final class GraphView: View {
         let popupCenterDifference = horizontalOffset - popupCenter
         popupContainerView.transform = CGAffineTransform(translationX: popupCenter - popupHalfWidth, y: 0)
         popupArrowView.transform = CGAffineTransform(translationX: popupHalfWidth + popupCenterDifference - arrowHalfWidth, y: 0)
+
+        let datedValue = data.values[selectedIndex]
+        selectedDateLabel.text = Self.shortDateFormatter.string(from: datedValue.date)
+
+        // TODO: Add localized prefix string
+        popupLabel.text = Self.numberFormatter.string(from: datedValue.value as NSNumber)
     }
 
     override func layoutSubviews() {

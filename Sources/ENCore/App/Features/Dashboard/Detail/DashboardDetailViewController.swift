@@ -14,11 +14,12 @@ protocol DashboardDetailRouting: Routing {
     // func routeToChild()
 }
 
-final class DashboardDetailViewController: ViewController, DashboardDetailViewControllable {
+final class DashboardDetailViewController: ViewController, DashboardDetailViewControllable, Logging {
 
-    init(listener: DashboardDetailListener, identifier: DashboardIdentifier, theme: Theme) {
+    init(listener: DashboardDetailListener, data: DashboardData, identifier: DashboardIdentifier, theme: Theme) {
         self.listener = listener
         self.identifier = identifier
+        self.dashboardData = data
         super.init(theme: theme)
     }
 
@@ -34,6 +35,45 @@ final class DashboardDetailViewController: ViewController, DashboardDetailViewCo
         modalPresentationStyle = .popover
 
         navigationItem.rightBarButtonItem = navigationController?.navigationItem.rightBarButtonItem
+
+        switch identifier {
+        case .tests:
+            guard let data = dashboardData.positiveTestResults else {
+                return logError("No data for positiveTestResults")
+            }
+
+            internalView.configureForPositiveTests(with: data)
+
+        case .users:
+            guard let data = dashboardData.coronaMelderUsers else {
+                return logError("No data for coronaMelderUsers")
+            }
+
+            internalView.configureForCoronaMelderUsers(with: data)
+
+        case .hospitalAdmissions:
+            guard let data = dashboardData.hospitalAdmissions else {
+                return logError("No data for hospitalAdmissions")
+            }
+
+            internalView.configureForHospitalAdmissions(with: data)
+
+        case .icuAdmissions:
+            guard let data = dashboardData.icuAdmissions else {
+                return logError("No data for icuAdmissions")
+            }
+
+            internalView.configureForIcuAdmissions(with: data)
+
+        case .vaccinations:
+            guard let data = dashboardData.vaccinationCoverage else {
+                return logError("No data for vaccinationCoverage")
+            }
+
+            internalView.configureForVaccinationCoverage(with: data)
+        default:
+            break
+        }
     }
 
     // MARK: - DashboardDetailViewControllable
@@ -44,6 +84,7 @@ final class DashboardDetailViewController: ViewController, DashboardDetailViewCo
 
     private weak var listener: DashboardDetailListener?
     private let identifier: DashboardIdentifier
+    private let dashboardData: DashboardData
     private lazy var internalView = DetailView(theme: self.theme)
 }
 
@@ -69,12 +110,9 @@ private final class DetailView: View {
         textStackView.addArrangedSubview(titleLabel)
         textStackView.addArrangedSubview(bodyLabel)
 
-        titleLabel.text = .dashboardPositiveTestResultsHeader
         titleLabel.font = theme.fonts.title1
         titleLabel.numberOfLines = 0
 
-        let summary: String = .dashboardPositiveTestResultsSummary(amount: "79.520", firstDate: "27 januari", secondDate: "3 februari", percentage: "59,3%")
-        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
         bodyLabel.numberOfLines = 0
 
         outerStackView.addArrangedSubview(graphStackView)
@@ -84,7 +122,6 @@ private final class DetailView: View {
         graphHeaderStackView.axis = .horizontal
         graphHeaderStackView.spacing = 4
 
-        let iconView = UIImageView(image: .dashboardTestsIcon)
         iconView.setContentHuggingPriority(.required, for: .horizontal)
         iconView.setContentCompressionResistancePriority(.required, for: .horizontal)
 
@@ -100,7 +137,6 @@ private final class DetailView: View {
         allDataButton.contentHorizontalAlignment = .leading
 
         graphStackView.addArrangedSubview(graphHeaderStackView)
-        graphStackView.addArrangedSubview(GraphView(theme: theme, data: GraphData(values: (0 ..< 20).map { _ in UInt.random(in: 100 ... 250) }), style: .normal))
         graphStackView.addArrangedSubview(allDataButton)
 
         outerStackView.addArrangedSubview(moreDataStackView)
@@ -150,6 +186,10 @@ private final class DetailView: View {
             // TODO: forward tap
         })
 
+        buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardIcuAdmissionsHeader, amountPrefix: dateText, amount: numberFormatter.string(from: 898), icon: .dashboardIcuIcon, theme: theme) { _ in
+            // TODO: forward tap
+        })
+
         buttonStackView.addArrangedSubview(DashboardDetailButton(title: .dashboardVaccinationCoverageHeader, amountPrefix: .dashboardVaccinationCoverageBoosterLabel, amount: percentageFormatter.string(from: 0.533), icon: .dashboardVaccinationsIcon, theme: theme) { _ in
             // TODO: forward tap
         })
@@ -171,6 +211,98 @@ private final class DetailView: View {
         }
     }
 
+    func configureForPositiveTests(with data: DashboardData.PositiveTestResults) {
+        titleLabel.text = .dashboardPositiveTestResultsHeader
+
+        let summary: String = .dashboardPositiveTestResultsSummary(
+            amount: Self.numberFormatter.string(from: data.movingAverage.value as NSNumber)!,
+            firstDate: Self.dateFormatter.string(from: data.movingAverage.start),
+            secondDate: Self.dateFormatter.string(from: data.movingAverage.end),
+            percentage: Self.percentageFormatter.string(from: (data.infectedPercentage / 100) as NSNumber)!)
+
+        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
+
+        iconView.image = .dashboardTestsIcon
+
+        graphHeaderLabel.text = .dashboardPositiveTestResultsHeader
+
+        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+    }
+
+    func configureForCoronaMelderUsers(with data: DashboardData.CoronaMelderUsers) {
+        titleLabel.text = .dashboardCoronaMelderUsersHeader
+
+        let daysAgo = currentDate().days(sinceDate: data.highlightedValue.date) ?? 0
+
+        let dateText: String = .dashboardHighlightedDate(daysAgo: daysAgo,
+                                                         date: Self.dateFormatter.string(from: data.highlightedValue.date))
+
+        let summary: String = .dashboardCoronaMelderUsersSummary(
+            amount: Self.numberFormatter.string(from: data.highlightedValue.value as NSNumber)!,
+            date: dateText)
+
+        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
+
+        iconView.image = .dashboardUsersIcon
+
+        graphHeaderLabel.text = .dashboardCoronaMelderUsersHeader
+
+        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+    }
+
+    func configureForHospitalAdmissions(with data: DashboardData.HospitalAdmissions) {
+        titleLabel.text = .dashboardHospitalAdmissionsHeader
+
+        let summary: String = .dashboardHospitalAdmissionsSummary(
+            amount: Self.numberFormatter.string(from: data.movingAverage.value as NSNumber)!,
+            firstDate: Self.dateFormatter.string(from: data.movingAverage.start),
+            secondDate: Self.dateFormatter.string(from: data.movingAverage.end))
+
+        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
+
+        iconView.image = .dashboardHospitalIcon
+
+        graphHeaderLabel.text = .dashboardHospitalAdmissionsHeader
+
+        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+    }
+
+    func configureForIcuAdmissions(with data: DashboardData.IcuAdmissions) {
+        titleLabel.text = .dashboardIcuAdmissionsHeader
+
+        let summary: String = .dashboardIcuAdmissionsSummary(
+            amount: Self.numberFormatter.string(from: data.movingAverage.value as NSNumber)!,
+            firstDate: Self.dateFormatter.string(from: data.movingAverage.start),
+            secondDate: Self.dateFormatter.string(from: data.movingAverage.end))
+
+        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
+
+        iconView.image = .dashboardIcuIcon
+
+        graphHeaderLabel.text = .dashboardIcuAdmissionsHeader
+
+        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+    }
+
+    func configureForVaccinationCoverage(with data: DashboardData.VaccinationCoverage) {
+        titleLabel.text = .dashboardVaccinationCoverageHeader
+        let fullyVaccinated = (data.vaccinationCoverage18Plus / 100) as NSNumber
+        let boostered = (data.boosterCoverage18Plus / 100) as NSNumber
+        let summary: String = .dashboardVaccinationCoverageSummary(
+            fullyVacinated: Self.percentageFormatter.string(from: fullyVaccinated)!,
+            boostered: Self.percentageFormatter.string(from: boostered)!)
+
+        bodyLabel.attributedText = .makeFromHtml(text: summary, font: theme.fonts.body, textColor: theme.colors.textPrimary, textAlignment: .natural)
+
+        iconView.image = .dashboardIcuIcon
+
+        graphHeaderLabel.text = .dashboardIcuAdmissionsHeader
+
+        if let values = data.values {
+            graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: values), style: .normal), at: 1)
+        }
+    }
+
     // MARK: - Private
 
     private var scrollView = UIScrollView()
@@ -184,6 +316,28 @@ private final class DetailView: View {
     private var moreDataStackView = UIStackView()
     private var moreDataLabel = UILabel()
     private var buttonStackView = UIStackView()
+    private var iconView = UIImageView()
+
+    private static var numberFormatter: NumberFormatter = {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.locale = Locale.current
+        numberFormatter.numberStyle = .decimal
+        return numberFormatter
+    }()
+
+    private static var percentageFormatter: NumberFormatter = {
+        let percentageFormatter = NumberFormatter()
+        percentageFormatter.locale = Locale.current
+        percentageFormatter.numberStyle = .percent
+        percentageFormatter.maximumFractionDigits = 1
+        return percentageFormatter
+    }()
+
+    private static var dateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("d MMMM")
+        return dateFormatter
+    }()
 }
 
 private final class DashboardDetailButton: UIControl, Themeable {

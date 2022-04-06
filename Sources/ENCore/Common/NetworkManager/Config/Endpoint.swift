@@ -25,6 +25,8 @@ struct Endpoint {
 
     static func manifest(version: String? = nil) -> Endpoint { Endpoint(version: version, components: "manifest") }
 
+    static func dashboard(version: String? = nil) -> Endpoint { Endpoint(version: version, components: "dashboarddata") }
+
     static func appConfig(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "appconfig", identifier) }
     static func exposureKeySet(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "exposurekeyset", identifier) }
     static func riskCalculationParameters(version: String? = nil, identifier: String) -> Endpoint { Endpoint(version: version, components: "riskcalculationparameters", identifier) }

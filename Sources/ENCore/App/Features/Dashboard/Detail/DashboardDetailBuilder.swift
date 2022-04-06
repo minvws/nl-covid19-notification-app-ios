@@ -15,29 +15,19 @@ protocol DashboardDetailListener: AnyObject {
 
 /// @mockable
 protocol DashboardDetailBuildable {
-    func build(withListener listener: DashboardDetailListener, identifier: DashboardIdentifier) -> ViewControllable
+    func build(withData data: DashboardData, listener: DashboardDetailListener, identifier: DashboardIdentifier) -> ViewControllable
 }
 
 protocol DashboardDetailDependency {
     var theme: Theme { get }
-    // TODO: Add any external dependency
 }
 
-private final class DashboardDetailDependencyProvider: DependencyProvider<DashboardDetailDependency> /* , ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to DashboardDetail's scope or any child of DashboardDetail
-
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    // }
-}
+private final class DashboardDetailDependencyProvider: DependencyProvider<DashboardDetailDependency> {}
 
 final class DashboardDetailBuilder: Builder<DashboardDetailDependency>, DashboardDetailBuildable {
-    func build(withListener listener: DashboardDetailListener, identifier: DashboardIdentifier) -> ViewControllable {
+    func build(withData data: DashboardData, listener: DashboardDetailListener, identifier: DashboardIdentifier) -> ViewControllable {
         let dependencyProvider = DashboardDetailDependencyProvider(dependency: dependency)
 
-        return DashboardDetailViewController(listener: listener, identifier: identifier, theme: dependencyProvider.dependency.theme)
+        return DashboardDetailViewController(listener: listener, data: data, identifier: identifier, theme: dependencyProvider.dependency.theme)
     }
 }

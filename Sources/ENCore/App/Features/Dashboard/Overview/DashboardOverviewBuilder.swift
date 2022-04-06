@@ -15,27 +15,17 @@ protocol DashboardOverviewListener: AnyObject {
 
 /// @mockable
 protocol DashboardOverviewBuildable {
-    func build(withListener listener: DashboardOverviewListener) -> ViewControllable
+    func build(withData data: DashboardData, listener: DashboardOverviewListener) -> ViewControllable
 }
 
 protocol DashboardOverviewDependency {
     var theme: Theme { get }
-    // TODO: Add any external dependency
 }
 
-private final class DashboardOverviewDependencyProvider: DependencyProvider<DashboardOverviewDependency> /* , ChildDependency */ {
-    // TODO: Create and return any dependency that should be limited
-    //       to DashboardOverview's scope or any child of DashboardOverview
-
-    // TODO: Replace `childBuilder` by a real child scope and adjust
-    //       `ChildDependency`
-    // var childBuilder: ChildBuildable {
-    //    return ChildBuilder(dependency: self)
-    // }
-}
+private final class DashboardOverviewDependencyProvider: DependencyProvider<DashboardOverviewDependency> {}
 
 final class DashboardOverviewBuilder: Builder<DashboardOverviewDependency>, DashboardOverviewBuildable {
-    func build(withListener listener: DashboardOverviewListener) -> ViewControllable {
+    func build(withData data: DashboardData, listener: DashboardOverviewListener) -> ViewControllable {
         let dependencyProvider = DashboardOverviewDependencyProvider(dependency: dependency)
 
         return DashboardOverviewViewController(listener: listener, theme: dependencyProvider.dependency.theme)

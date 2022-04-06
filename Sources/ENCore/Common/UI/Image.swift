@@ -95,6 +95,7 @@ extension UIImage {
 
     static var dashboardCardBackground: UIImage? { return Image.named("Dashboard/CardBackground") }
     static var dashboardDetailButtonBackground: UIImage? { return Image.named("Dashboard/DetailButtonBackground") }
+    static var dashboardIcuIcon: UIImage? { return Image.named("Dashboard/Icu") }
     static var dashboardHospitalIcon: UIImage? { return Image.named("Dashboard/Hospital") }
     static var dashboardTestsIcon: UIImage? { return Image.named("Dashboard/Tests") }
     static var dashboardUsersIcon: UIImage? { return Image.named("Dashboard/Users") }
