@@ -1,3 +1,33 @@
+"yesterday" = "Gisteren";
+"collapsed" = "Ingeklapt";
+"dayBeforeYesterday" = "Eergisteren";
+"expanded" = "Uitgeklapt";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Positief geteste mensen";
+"dashboard.coronaMelderUsers.header" = "Mensen die CoronaMelder gebruiken";
+"dashboard.hospitalAdmissions.header" = "Mensen met corona in ziekenhuis (zonder IC)";
+"dashboard.icuAdmissions.header" = "Mensen met corona op IC";
+"dashboard.vaccinationCoverage.header" = "Vaccinatiegraad";
+"dashboard.vaccinationCoverage.booster.label" = "Opkomst boosterprik (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Volledig gevaccineerd (18+)";
+"dashboard.title" = "Coronadashboard";
+"dashboard.moreInfo.header" = "Meer cijfers";
+"dashboard.positiveTestResults.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag positief getest op corona tussen %@ en %@. Van alle testen bij de GGD waren er <b>%@</b> positief.";
+"dashboard.coronaMelderUsers.summary" = "%@ gebruikten <b>%@</b> mensen de CoronaMelder-app om ontmoetingen bij te houden.";
+"dashboard.hospitalAdmissions.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag opgenomen in het ziekenhuis tussen %@ en %@. De afgelopen dagen tellen niet mee voor het gemiddelde, omdat de cijfers over deze dagen nog niet compleet zijn.";
+"dashboard.icuAdmissions.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag opgenomen op een intensive care-afdeling tussen %@ en %@. De afgelopen dagen tellen niet mee voor het gemiddelde, omdat de cijfers over deze dagen nog niet compleet zijn.";
+"dashboard.vaccinationCoverage.summary" = "Op dit moment is <b>%@</b> van de bevolking van 18 jaar en ouder volledig gevaccineerd tegen corona. <b>%@</b> van de bevolking heeft een boosterprik tegen corona gekregen.";
+"dashboard.moreInfo.link" = "Bekijk alle cijfers";
+"dashboard.header" = "De situatie nu in Nederland";
+"dashboard.summaryCardText" = "Bekijk de cijfers";
+"dashboard.summaryText" = "Je vindt hieronder een aantal belangrijke statistieken over het gebruik van CoronaMelder en hoe het in Nederland met corona gaat.";
+"dashboard.tag" = "Coronadashboard";
+"dashboard.serverError" = "Gegevens laden mislukt";
+"dashboard.datePrefix" = "Op %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Coronadashboard";
+"dashboard.settings.description" = "Het Coronadashboard laat een aantal belangrijke statistieken zien over het gebruik van CoronaMelder en hoe het in Nederland met corona gaat.";
 "enableInternetDescription" = "De app heeft internetverbinding nodig om te kunnen controleren of de mensen die jij hebt ontmoet later corona bleken te hebben.<br><br>Ga op wifi of zet mobiele data aan voor deze app.";
 "enableInternetStepTitle" = "Mobiele data aanzetten";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
 "retry" = "Probeer opnieuw";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
 "updateApp.title" = "De app heeft een update nodig";
@@ -593,3 +622,4 @@
 "notification.app.unpaused.title" = "Zet CoronaMelder weer aan";
 "notification.app.unpaused.description" = "De app is weer actief. Je ontmoetingen worden vanaf nu weer bijgehouden.";
 "notification.app.unpaused.manualunpause.description" = "Let op: de app is nog niet actief. Je moet deze zelf aanzetten in de app.";
+

@@ -1,3 +1,33 @@
+"yesterday" = "Ieri";
+"collapsed" = "Restrâns";
+"dayBeforeYesterday" = "Alaltăieri";
+"expanded" = "Desfășurat";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Persoane testate pozitiv";
+"dashboard.coronaMelderUsers.header" = "Persoane care folosesc CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "Persoane cu COVID în spital (fără ATI - terapie intensivă)";
+"dashboard.icuAdmissions.header" = "Persoane cu COVID la ATI - terapie intensivă";
+"dashboard.vaccinationCoverage.header" = "Procentul de vaccinare";
+"dashboard.vaccinationCoverage.booster.label" = "Procentaj booster (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Persoane vaccinate cu schemă completă (18+)";
+"dashboard.title" = "Tabloul de bord Corona";
+"dashboard.moreInfo.header" = "Mai multe cifre";
+"dashboard.positiveTestResults.summary" = "În medie, au fost testate pozitiv pentru COVID <b>%@</b> persoane pe zi între %@ și %@. Dintre toate testele efectuate la GGD, <b>%@</b> au fost pozitive.";
+"dashboard.coronaMelderUsers.summary" = "%@ <b>%@</b> de persoane au utilizat aplicația CoronaMelder pentru desfășurarea de întruniri.";
+"dashboard.hospitalAdmissions.summary" = "În medie, au fost internate în spital <b>%@</b> persoane pe zi între  %@ și %@. Ultimele zile nu sunt luate în considerare la calcularea mediei, deoarece cifrele pentru aceste zile încă nu sunt finalizate.";
+"dashboard.icuAdmissions.summary" = "În medie, au fost internate la terapie intensivă <b>%@</b> persoane pe zi între %@ și %@. Ultimele zile nu sunt luate în considerare la calcularea mediei, deoarece cifrele pentru aceste zile încă nu sunt finalizate.";
+"dashboard.vaccinationCoverage.summary" = "În acest moment, <b>%@</b> din populația cu vârsta de cel puțin 18 ani este complet vaccinată împotriva coronavirusului. <b>%@</b> din populație s-a vaccinat cu doza booster împotriva coronavirusului.";
+"dashboard.moreInfo.link" = "Consultați toate cifrele";
+"dashboard.header" = "Situația actuală din Țările de Jos";
+"dashboard.summaryCardText" = "Consultați cifrele";
+"dashboard.summaryText" = "Mai jos veți găsi câteva statistici importante despre utilizarea CoronaMelder și despre situația pandemiei de COVID în Țările de Jos.";
+"dashboard.tag" = "Tabloul de bord Corona";
+"dashboard.serverError" = "Încărcarea datelor a eșuat";
+"dashboard.datePrefix" = "În %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Tabloul de bord Corona";
+"dashboard.settings.description" = "Tabloul de bord Corona arată câteva statistici importante despre utilizarea CoronaMelder și despre situația pandemiei de COVID în Țările de Jos.";
 "enableInternetDescription" = "Aplicația are nevoie de conexiune la internet pentru a putea controla dacă persoanele întâlnite s-au dovedit a fi infectate cu coronavirus. <br><br>Conectați-vă la wifi sau activați datele celulare pentru această aplicație.";
 "enableInternetStepTitle" = "Activare date celulare";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Ceva nu a funcționat corect";
 "learnMore" = "Citiți mai mult";
 "retry" = "Încercați încă o dată";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store nu poate fi deschis";
 "updateApp.title" = "Aplicația trebuie actualizată";
@@ -593,3 +622,4 @@
 "notification.app.unpaused.title" = "Reactivați CoronaMelder";
 "notification.app.unpaused.description" = "Aplicația este reactivată. Începând de acum întâlnirile dumneavoastră vor fi înregistrate.";
 "notification.app.unpaused.manualunpause.description" = "Atenție: aplicația nu este activă. Trebuie ca dvs. să o reactivați în aplicație.";
+

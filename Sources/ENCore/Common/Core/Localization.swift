@@ -484,6 +484,11 @@ extension String {
     static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }
     static var moreInformationSettingsButton: String { return Localization.string(for: "moreInformation.settings.button") }
 
+    // MARK: - MoreInformation | Settings | Coronadashboard
+
+    static var moreInformationSettingsCoronadashboardTitle: String { return Localization.string(for: "dashboard.title") }
+    static var moreInformationSettingsCoronadashboardContent: String { return Localization.string(for: "dashboard.settings.description") }
+
     // MARK: - MoreInformation | Share
 
     static var moreInformationShareTitle: String { return Localization.string(for: "moreInformation.share.title") }

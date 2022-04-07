@@ -1,3 +1,33 @@
+"yesterday" = "Gestern";
+"collapsed" = "Eingeklappt";
+"dayBeforeYesterday" = "Vorgestern";
+"expanded" = "Ausgeklappt";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Positiv getestete Personen";
+"dashboard.coronaMelderUsers.header" = "Personen, die CoronaMelder nutzen";
+"dashboard.hospitalAdmissions.header" = "Personen mit Corona im Krankenhaus (ohne ITS)";
+"dashboard.icuAdmissions.header" = "Personen mit Corona auf ITS";
+"dashboard.vaccinationCoverage.header" = "Impfquote";
+"dashboard.vaccinationCoverage.booster.label" = "Anteil Boosterimpfung (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Vollständig geimpft (18+)";
+"dashboard.title" = "Corona-Dashboard";
+"dashboard.moreInfo.header" = "Weitere Zahlen";
+"dashboard.positiveTestResults.summary" = "Es wurden durchschnittlich <b>%@</b> Personen pro Tag positiv auf Corona getestet zwischen %@ und %@. Von allen Tests beim GGD waren <b>%@</b> positiv.";
+"dashboard.coronaMelderUsers.summary" = "%@ nutzten <b>%@</b> Personen die CoronaMelder-App, um Begegnungen zu erfassen.";
+"dashboard.hospitalAdmissions.summary" = "Es wurden durchschnittlich <b>%@</b> Personen pro Tag ins Krankenhaus aufgenommen zwischen %@ und %@. Die vergangenen Tage wurden bei der Berechnung des Durchschnitts nicht berücksichtigt, weil die Zahlen für diese Tage noch nicht vollständig erfasst sind.";
+"dashboard.icuAdmissions.summary" = "Es wurden durchschnittlich <b>%@</b> Personen pro Tag auf eine Intensivstation aufgenommen zwischen %@ und %@. Die vergangenen Tage wurden bei der Berechnung des Durchschnitts nicht berücksichtigt, weil die Zahlen für diese Tage noch nicht vollständig erfasst sind.";
+"dashboard.vaccinationCoverage.summary" = "Derzeit sind <b>%@</b> der Bevölkerung ab 18 Jahre vollständig gegen Corona geimpft. <b>%@</b> der Bevölkerung haben eine Boosterimpfung gegen Corona erhalten.";
+"dashboard.moreInfo.link" = "Alle Zahlen abrufen";
+"dashboard.header" = "Die aktuelle Lage in den Niederlanden";
+"dashboard.summaryCardText" = "Die Zahlen abrufen";
+"dashboard.summaryText" = "Weiter unten sehen Sie diverse wichtige Statistiken zur Nutzung der CoronaMelder-App und zur Coronalage in den Niederlanden.";
+"dashboard.tag" = "Corona-Dashboard";
+"dashboard.serverError" = "Daten konnten nicht geladen werden";
+"dashboard.datePrefix" = "Am %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Corona-Dashboard";
+"dashboard.settings.description" = "Im Corona-Dashboard stehen diverse wichtige Statistiken zur Nutzung der CoronaMelder-App und zur Coronalage in den Niederlanden.";
 "enableInternetDescription" = "Die App braucht eine Internetverbindung, um zu prüfen, ob bei den Personen, denen Sie begegnet sind, später Corona festgestellt wurde.<br><br>Nutzen Sie ein WLAN oder aktivieren Sie für diese App mobile Daten.";
 "enableInternetStepTitle" = "Mobile Daten aktivieren";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Es ist ein Fehler aufgetreten.";
 "learnMore" = "Lesen Sie weiter";
 "retry" = "Versuchen Sie es erneut.";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "Der App Store kann nicht geöffnet werden.";
 "updateApp.title" = "Die App muss aktualisiert werden.";
@@ -594,3 +623,4 @@ Klicken Sie auf die Nachricht, um CoronaMelder zu öffnen. Dort lesen Sie, was S
 "notification.app.unpaused.title" = "CoronaMelder wieder aktivieren";
 "notification.app.unpaused.description" = "Die App ist wieder aktiv. Ihre Begegnungen werden ab jetzt wieder registriert.";
 "notification.app.unpaused.manualunpause.description" = "Achtung: Die App ist noch nicht aktiv. Sie müssen sie selbst in der App aktivieren.";
+

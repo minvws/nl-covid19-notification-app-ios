@@ -88,6 +88,7 @@ extension UIImage {
     static var settingsPlain: UIImage? { return Image.named("SettingsPlain") }
     static var mobileData: UIImage? { return Image.named("MobileData") }
     static var digiD: UIImage? { return Image.named("DigiD") }
+    static var settingsCoronaDashboard: UIImage? { return Image.named("SettingsCoronaDashboard") }
 }
 
 extension UIImage {
