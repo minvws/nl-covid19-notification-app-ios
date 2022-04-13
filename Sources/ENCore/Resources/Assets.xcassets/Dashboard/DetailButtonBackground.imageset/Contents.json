@@ -20,6 +20,31 @@
       "scale" : "1x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "DetailButtonBackground-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 12,
+          "left" : 11,
+          "right" : 11,
+          "top" : 10
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 1
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "1x"
+    },
+    {
       "filename" : "DetailButtonBackground@2x.png",
       "idiom" : "universal",
       "resizing" : {
@@ -39,6 +64,31 @@
       "scale" : "2x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "DetailButtonBackground@2x-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 24,
+          "left" : 22,
+          "right" : 22,
+          "top" : 20
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 1
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "2x"
+    },
+    {
       "filename" : "DetailButtonBackground@3x.png",
       "idiom" : "universal",
       "resizing" : {
@@ -52,6 +102,31 @@
           "height" : 61,
           "mode" : "tile",
           "width" : 64
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "DetailButtonBackground@3x-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 36,
+          "left" : 33,
+          "right" : 33,
+          "top" : 30
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 1
         },
         "mode" : "9-part"
       },
