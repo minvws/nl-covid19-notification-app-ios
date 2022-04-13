@@ -110,7 +110,7 @@ final class DashboardCardView: UIControl, Themeable {
         accessibilityTraits = .button
         isExclusiveTouch = true
 
-        setContentHuggingPriority(.required, for: .horizontal)
+        setContentHuggingPriority(.required, for: .vertical)
     }
 
     @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
@@ -230,8 +230,8 @@ final class DashboardCardView: UIControl, Themeable {
         contentLayoutGuide.snp.makeConstraints { maker in
             maker.left.equalToSuperview().offset(16)
             maker.right.equalToSuperview().offset(-16)
-            maker.top.equalToSuperview().offset(Self.shadowMargin.top + 16)
-            maker.bottom.equalToSuperview().offset(-Self.shadowMargin.bottom - 16)
+            maker.top.equalToSuperview().offset(16)
+            maker.bottom.equalToSuperview().offset(-16)
         }
 
         outerStackView.snp.makeConstraints { maker in
@@ -242,8 +242,8 @@ final class DashboardCardView: UIControl, Themeable {
         chevron.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         backgroundView.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.bottom.equalToSuperview()
+            maker.top.equalToSuperview().offset(-Self.shadowMargin.top)
+            maker.bottom.equalToSuperview().offset(Self.shadowMargin.bottom)
             maker.left.equalToSuperview().offset(-Self.shadowMargin.left)
             maker.right.equalToSuperview().offset(Self.shadowMargin.right)
         }
@@ -258,7 +258,7 @@ final class DashboardCardView: UIControl, Themeable {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 256, height: 186 + Self.shadowMargin.top + Self.shadowMargin.bottom)
+        return CGSize(width: 256, height: 158 + Self.shadowMargin.top + Self.shadowMargin.bottom)
     }
 }
 
