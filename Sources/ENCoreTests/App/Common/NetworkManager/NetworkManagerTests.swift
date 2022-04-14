@@ -535,18 +535,6 @@ final class NetworkManagerTests: TestCase {
 
     // MARK: - getExposureKeySet
 
-    func test_getExposureKeySet_shouldUseSignatureFallbackURL() {
-        // Arrange
-        mockUrlSession(mockData: nil)
-        mockUseFallbackEndpoint(true)
-
-        // Act
-        sut.getExposureKeySet(identifier: "someIdentifier", completion: { _ in })
-
-        // Assert
-        XCTAssertEqual(mockUrlSession.resumableDataTaskArgValues.first?.url?.absoluteString, "https://test.coronamelder-dist.nl/\(mockNetworkConfigurationProvider.configuration.cdn.signatureFallbackPath!)/exposurekeyset/someIdentifier")
-    }
-
     func test_getExposureKeySet_requestFailedShouldReturnError() {
         mockUrlSession(mockData: nil)
 
@@ -787,15 +775,6 @@ final class NetworkManagerTests: TestCase {
     }
 
     // MARK: - Private Helper Functions
-
-    private func mockUseFallbackEndpoint(_ useFallback: Bool) {
-        mockStorageControlling.retrieveDataHandler = { key in
-            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEndpoint.asString {
-                return try! JSONEncoder().encode(useFallback)
-            }
-            return nil
-        }
-    }
 
     private func mockUrlSession(mockData: Data?) {
         let mockDataTask = URLSessionDataTaskProtocolMock()
