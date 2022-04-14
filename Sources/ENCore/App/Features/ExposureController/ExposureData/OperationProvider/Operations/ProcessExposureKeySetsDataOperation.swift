@@ -284,12 +284,26 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     switch error {
                     case .bluetoothOff, .disabled, .notAuthorized, .restricted:
                         observer(.failure(error.asExposureDataError))
-                    case .internalTypeMismatch, .rateLimited, .signatureValidationFailed:
+                    case .internalTypeMismatch:
+                        observer(.failure(ExposureDataError.internalError))
+                    case .rateLimited:
                         observer(.failure(ExposureDataError.internalError))
                     default:
                         // something else is going wrong with exposure detection
                         // mark all keysets as invalid so they will be redownloaded again
-                        let result = self.getInvalidDetectionOutput(applicationIsInBackground: applicationIsInBackground, invalidKeySetHolderResults: invalidKeySetHolderResults, keySetHoldersToProcess: keySetHoldersToProcess)
+                        let validKeySetHolderResults = keySetHoldersToProcess.map { keySetHolder in
+                            return ExposureKeySetDetectionResult(keySetHolder: keySetHolder,
+                                                                 processDate: nil,
+                                                                 isValid: false)
+                        }
+
+                        let keySetHolderResults = invalidKeySetHolderResults + validKeySetHolderResults
+                        let result = DetectionOutput(daysSinceLastExposure: nil,
+                                                     detectionHappenedInBackground: applicationIsInBackground,
+                                                     keySetDetectionResults: keySetHolderResults,
+                                                     exposureSummary: nil,
+                                                     exposureReport: nil)
+
                         observer(.success(result))
                     }
                 }
