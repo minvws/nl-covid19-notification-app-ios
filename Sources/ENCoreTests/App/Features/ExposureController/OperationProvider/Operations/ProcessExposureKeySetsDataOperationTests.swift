@@ -618,30 +618,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
     }
 
-    func test_onSignatureValidationFailure_shouldUpdateLastProcessingDate() {
-
-        // Arrange
-        let exp = expectation(description: "detectExposuresExpectation")
-
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.failure(.signatureValidationFailed))
-        }
-
-        // Act
-        sut.execute()
-            .subscribe(onCompleted: {
-                exp.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        // Assert
-        waitForExpectations(timeout: 2, handler: nil)
-
-        XCTAssertEqual(mockExposureManager.detectExposuresCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateCallCount, 1)
-        XCTAssertEqual(mockExposureDataController.updateLastSuccessfulExposureProcessingDateArgValues.first, currentDate())
-    }
-
     func test_onSignatureValidationFailure_shouldNotPersistKeySetHolders_andDeleteBinaries() {
 
         // Arrange
@@ -679,38 +655,6 @@ class ProcessExposureKeySetsDataOperationTests: TestCase {
         XCTAssertEqual(mockFileManager.removeItemCallCount, 2)
         XCTAssertEqual(mockFileManager.removeItemArgValues.first?.absoluteString, "http://someurl.com/signatureFilename")
         XCTAssertEqual(mockFileManager.removeItemArgValues.last?.absoluteString, "http://someurl.com/binaryFilename")
-    }
-
-    func test_onSignatureValidationFailure_shouldToggleFallbackEndpoint() {
-
-        // Arrange
-        let completionExpectation = expectation(description: "completionExpectation")
-        let fallbackEndpointExpectation = expectation(description: "fallbackEndpointExpectation")
-
-        mockStorageController.storeHandler = { data, key, completion in
-
-            if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEndpoint.asString {
-                let storedUseFallbackEndpoint = try! self.jsonDecoder.decode(Bool.self, from: data)
-                XCTAssertTrue(storedUseFallbackEndpoint)
-                fallbackEndpointExpectation.fulfill()
-            }
-
-            completion(nil)
-        }
-
-        mockExposureManager.detectExposuresHandler = { _, _, completion in
-            completion(.failure(.signatureValidationFailed))
-        }
-
-        // Act
-        sut.execute()
-            .subscribe(onCompleted: {
-                completionExpectation.fulfill()
-            })
-            .disposed(by: disposeBag)
-
-        // Assert
-        waitForExpectations()
     }
 
     // MARK: - Private Helper Functions

@@ -13,7 +13,6 @@ struct NetworkConfiguration {
         let host: String
         let port: Int?
         let path: String
-        let signatureFallbackPath: String?
         let sslFingerprints: [Certificate.Fingerprint]? // SSL pinning certificate, nil = no pinning
         let tokenParams: [String: String]
     }
@@ -36,7 +35,6 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: "v01",
-            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         ),
@@ -45,7 +43,6 @@ struct NetworkConfiguration {
             host: "localhost",
             port: 5004,
             path: "v01",
-            signatureFallbackPath: nil,
             sslFingerprints: nil,
             tokenParams: [:]
         )
@@ -58,7 +55,6 @@ struct NetworkConfiguration {
             host: "test.coronamelder-api.nl",
             port: nil,
             path: "v1",
-            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -67,7 +63,6 @@ struct NetworkConfiguration {
             host: "test.coronamelder-dist.nl",
             port: nil,
             path: "v5",
-            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -80,7 +75,6 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-api.nl",
             port: nil,
             path: "v1",
-            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -89,7 +83,6 @@ struct NetworkConfiguration {
             host: "acceptatie.coronamelder-dist.nl",
             port: nil,
             path: "v5",
-            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
@@ -102,7 +95,6 @@ struct NetworkConfiguration {
             host: "coronamelder-api.nl",
             port: nil,
             path: "v1",
-            signatureFallbackPath: nil,
             sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
             tokenParams: [:]
         ),
@@ -111,30 +103,29 @@ struct NetworkConfiguration {
             host: "productie.coronamelder-dist.nl",
             port: nil,
             path: "v5",
-            signatureFallbackPath: "v4",
             sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
             tokenParams: [:]
         )
     )
 
-    func manifestUrl(useFallback: Bool) -> URL? {
-        return self.combine(endpoint: Endpoint.manifest(version: useFallback ? cdn.signatureFallbackPath : nil), fromCdn: true, params: cdn.tokenParams)
+    var manifestUrl: URL? {
+        return self.combine(endpoint: Endpoint.manifest(version: nil), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func exposureKeySetUrl(useFallback: Bool, identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.exposureKeySet(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func exposureKeySetUrl(identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.exposureKeySet(version: nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func riskCalculationParametersUrl(useFallback: Bool, identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.riskCalculationParameters(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func riskCalculationParametersUrl(identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.riskCalculationParameters(version: nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func appConfigUrl(useFallback: Bool, identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.appConfig(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func appConfigUrl(identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.appConfig(version: nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
-    func treatmentPerspectiveUrl(useFallback: Bool, identifier: String) -> URL? {
-        return self.combine(endpoint: Endpoint.treatmentPerspective(version: useFallback ? cdn.signatureFallbackPath : nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
+    func treatmentPerspectiveUrl(identifier: String) -> URL? {
+        return self.combine(endpoint: Endpoint.treatmentPerspective(version: nil, identifier: identifier), fromCdn: true, params: cdn.tokenParams)
     }
 
     var registerUrl: URL? {

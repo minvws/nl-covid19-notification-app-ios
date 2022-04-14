@@ -37,7 +37,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let url = configuration.manifestUrl(useFallback: useFallbackEndpoint)
+        let url = configuration.manifestUrl
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
@@ -52,7 +52,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.json
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let url = configuration.treatmentPerspectiveUrl(useFallback: useFallbackEndpoint, identifier: identifier)
+        let url = configuration.treatmentPerspectiveUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: TreatmentPerspective.self, completion: completion)
@@ -65,7 +65,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let url = configuration.appConfigUrl(useFallback: useFallbackEndpoint, identifier: appConfig)
+        let url = configuration.appConfigUrl(identifier: appConfig)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: AppConfig.self, completion: completion)
@@ -77,7 +77,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let url = configuration.riskCalculationParametersUrl(useFallback: useFallbackEndpoint, identifier: identifier)
+        let url = configuration.riskCalculationParametersUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: RiskCalculationParameters.self, completion: completion)
@@ -92,10 +92,8 @@ final class NetworkManager: NetworkManaging, Logging {
         let expectedContentType = HTTPContentType.zip
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
-        let url = configuration.exposureKeySetUrl(useFallback: useFallbackEndpoint, identifier: identifier)
+        let url = configuration.exposureKeySetUrl(identifier: identifier)
         let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
-
-        self.logDebug("GAEN: Getting exposureKeySets from fallback endpoint? \(useFallbackEndpoint)")
 
         download(request: urlRequest) { result in
             switch result {
@@ -202,10 +200,6 @@ final class NetworkManager: NetworkManaging, Logging {
     }
 
     // MARK: - Construct Request
-
-    private var useFallbackEndpoint: Bool {
-        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.useFallbackEndpoint) ?? false
-    }
 
     private func constructRequest(url: URL?,
                                   method: HTTPMethod = .GET,

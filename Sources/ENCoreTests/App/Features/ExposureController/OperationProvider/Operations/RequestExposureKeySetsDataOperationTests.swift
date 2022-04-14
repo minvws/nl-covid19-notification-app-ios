@@ -206,8 +206,7 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
     }
 
     private func mockStorage(storedKeySetHolders: [ExposureKeySetHolder] = [],
-                             initialKeySetsIgnored: Bool? = nil,
-                             useFallbackEndpoint: Bool? = nil) {
+                             initialKeySetsIgnored: Bool? = nil) {
 
         mockStorageController.retrieveDataHandler = { key in
             if (key as? CodableStorageKey<[ExposureKeySetHolder]>)?.asString == ExposureDataStorageKey.exposureKeySetsHolders.asString {
@@ -215,8 +214,6 @@ class RequestExposureKeySetsDataOperationTests: TestCase {
 
             } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.initialKeySetsIgnored.asString {
                 return try! JSONEncoder().encode(initialKeySetsIgnored)
-            } else if (key as? CodableStorageKey<Bool>)?.asString == ExposureDataStorageKey.useFallbackEndpoint.asString {
-                return try! JSONEncoder().encode(useFallbackEndpoint)
             }
             return nil
         }

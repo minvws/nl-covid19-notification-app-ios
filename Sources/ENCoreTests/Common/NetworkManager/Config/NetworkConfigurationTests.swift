@@ -17,50 +17,27 @@ class NetworkConfigurationTests: TestCase {
     }
 
     func test_manifestUrl() {
-        XCTAssertEqual(sut.manifestUrl(useFallback: false)?.absoluteString,
+        XCTAssertEqual(sut.manifestUrl?.absoluteString,
                        "https://test.coronamelder-dist.nl/\(sut.cdn.path)/manifest")
     }
 
-    func test_manifestUrl_withFallbackUrl() {
-        XCTAssertEqual(sut.manifestUrl(useFallback: true)?.absoluteString,
-                       "https://test.coronamelder-dist.nl/\(sut.cdn.signatureFallbackPath!)/manifest")
-    }
-
     func test_exposureKeySetUrl() {
-        XCTAssertEqual(sut.exposureKeySetUrl(useFallback: false, identifier: "identifier")?.absoluteString,
+        XCTAssertEqual(sut.exposureKeySetUrl(identifier: "identifier")?.absoluteString,
                        "https://test.coronamelder-dist.nl/\(sut.cdn.path)/exposurekeyset/identifier")
     }
 
-    func test_exposureKeySetUrl_withFallbackUrl() {
-        XCTAssertEqual(sut.exposureKeySetUrl(useFallback: true, identifier: "identifier")?.absoluteString,
-                       "https://test.coronamelder-dist.nl/\(sut.cdn.signatureFallbackPath!)/exposurekeyset/identifier")
-    }
-
     func test_riskCalculationParametersUrl() {
-        XCTAssertEqual(sut.riskCalculationParametersUrl(useFallback: false, identifier: "identifier")?.absoluteString,
+        XCTAssertEqual(sut.riskCalculationParametersUrl(identifier: "identifier")?.absoluteString,
                        "https://test.coronamelder-dist.nl/\(sut.cdn.path)/riskcalculationparameters/identifier")
     }
 
-    func test_riskCalculationParametersUrl_withFallbackUrl() {
-        XCTAssertEqual(sut.riskCalculationParametersUrl(useFallback: true, identifier: "identifier")?.absoluteString,
-                       "https://test.coronamelder-dist.nl/\(sut.cdn.signatureFallbackPath!)/riskcalculationparameters/identifier")
-    }
-
     func test_appConfigUrl() {
-        XCTAssertEqual(sut.appConfigUrl(useFallback: false, identifier: "identifier")?.absoluteString,
+        XCTAssertEqual(sut.appConfigUrl(identifier: "identifier")?.absoluteString,
                        "https://test.coronamelder-dist.nl/\(sut.cdn.path)/appconfig/identifier")
     }
 
-    func test_appConfigUrl_withFallbackUrl() {
-        XCTAssertEqual(sut.appConfigUrl(useFallback: true, identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/\(sut.cdn.signatureFallbackPath!)/appconfig/identifier")
-    }
-
     func test_treatmentPerspectiveUrl() {
-        XCTAssertEqual(sut.treatmentPerspectiveUrl(useFallback: false, identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/\(sut.cdn.path)/resourcebundle/identifier")
-    }
-
-    func test_treatmentPerspectiveUrl_withFallbackUrl() {
-        XCTAssertEqual(sut.treatmentPerspectiveUrl(useFallback: true, identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/\(sut.cdn.signatureFallbackPath!)/resourcebundle/identifier")
+        XCTAssertEqual(sut.treatmentPerspectiveUrl(identifier: "identifier")?.absoluteString, "https://test.coronamelder-dist.nl/\(sut.cdn.path)/resourcebundle/identifier")
     }
 
     func test_registerUrl() {
