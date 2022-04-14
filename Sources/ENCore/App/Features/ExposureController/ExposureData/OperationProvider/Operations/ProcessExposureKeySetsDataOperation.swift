@@ -284,9 +284,7 @@ final class ProcessExposureKeySetsDataOperation: ProcessExposureKeySetsDataOpera
                     switch error {
                     case .bluetoothOff, .disabled, .notAuthorized, .restricted:
                         observer(.failure(error.asExposureDataError))
-                    case .internalTypeMismatch:
-                        observer(.failure(ExposureDataError.internalError))
-                    case .rateLimited:
+                    case .internalTypeMismatch, .rateLimited, .signatureValidationFailed:
                         observer(.failure(ExposureDataError.internalError))
                     default:
                         // something else is going wrong with exposure detection
