@@ -621,6 +621,9 @@
 "dashboard.serverError" = "Gegevens laden mislukt";
 "dashboard.DatePrefix" = "Op %@";
 
+"dashboard.graph.verticalAxisLabel" = "Aantal";
+"dashboard.graph.horizontalAxisLabel" = "Datum";
+
 /* MARK: - Dashboard | Settings */
 "dashboard.settings.title" = "Coronadashboard";
 "dashboard.settings.description" = "Het Coronadashboard laat een aantal belangrijke statistieken zien over het gebruik van CoronaMelder en hoe het in Nederland met corona gaat.";

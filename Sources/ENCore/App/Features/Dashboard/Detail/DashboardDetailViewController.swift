@@ -287,7 +287,12 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardPositiveTestResultsHeader
 
-        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+        graphStackView.insertArrangedSubview(
+            GraphView(theme: theme,
+                      title: .dashboardPositiveTestResultsHeader,
+                      data: GraphData(values: data.values),
+                      style: .normal),
+            at: 1)
     }
 
     func configureForCoronaMelderUsers(with data: DashboardData.CoronaMelderUsers) {
@@ -308,7 +313,12 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardCoronaMelderUsersHeader
 
-        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+        graphStackView.insertArrangedSubview(
+            GraphView(theme: theme,
+                      title: .dashboardCoronaMelderUsersHeader,
+                      data: GraphData(values: data.values),
+                      style: .normal),
+            at: 1)
     }
 
     func configureForHospitalAdmissions(with data: DashboardData.HospitalAdmissions) {
@@ -325,7 +335,12 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardHospitalAdmissionsHeader
 
-        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+        graphStackView.insertArrangedSubview(
+            GraphView(theme: theme,
+                      title: .dashboardHospitalAdmissionsHeader,
+                      data: GraphData(values: data.values),
+                      style: .normal),
+            at: 1)
     }
 
     func configureForIcuAdmissions(with data: DashboardData.IcuAdmissions) {
@@ -342,7 +357,12 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardIcuAdmissionsHeader
 
-        graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: data.values), style: .normal), at: 1)
+        graphStackView.insertArrangedSubview(
+            GraphView(theme: theme,
+                      title: .dashboardIcuAdmissionsHeader,
+                      data: GraphData(values: data.values),
+                      style: .normal),
+            at: 1)
     }
 
     func configureForVaccinationCoverage(with data: DashboardData.VaccinationCoverage) {
@@ -357,10 +377,15 @@ private final class DetailView: View {
 
         iconView.image = .dashboardIcuIcon
 
-        graphHeaderLabel.text = .dashboardIcuAdmissionsHeader
+        graphHeaderLabel.text = .dashboardVaccinationCoverageHeader
 
         if let values = data.values {
-            graphStackView.insertArrangedSubview(GraphView(theme: theme, data: GraphData(values: values), style: .normal), at: 1)
+            graphStackView.insertArrangedSubview(
+                GraphView(theme: theme,
+                          title: .dashboardVaccinationCoverageHeader,
+                          data: GraphData(values: values),
+                          style: .normal),
+                at: 1)
         }
     }
 

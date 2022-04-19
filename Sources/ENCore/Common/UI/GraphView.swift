@@ -79,17 +79,22 @@ final class GraphView: View {
     private let popupArrowView = UIImageView(image: .popupArrow)
     private let popupLabel = Label()
     private let style: Style
+    private let title: String
 
     private lazy var panningViews = [selectedDateLabel, markerView, selectionView, popupContainerView]
 
+    var accessibilityChartDescriptorStorage: Any?
+
     // MARK: - Init
 
-    init(theme: Theme, data: GraphData, style: Style) {
+    init(theme: Theme, title: String, data: GraphData, style: Style) {
         self.style = style
         self.data = data
+        self.title = title
         super.init(theme: theme)
 
         isUserInteractionEnabled = true
+        isAccessibilityElement = true
     }
 
     // MARK: - Overrides
@@ -102,6 +107,10 @@ final class GraphView: View {
             buildNormal()
         case .compact:
             buildCompact()
+        }
+
+        if #available(iOS 15.0, *) {
+            setupAudioGraph()
         }
     }
 
@@ -327,6 +336,48 @@ final class GraphView: View {
             markerView.center.x = drawingView.frame.width
             markerView.center.y = drawingView.graphOffset + (drawingView.frame.height - drawingView.graphOffset) * (1 - lastValue)
         }
+    }
+}
+
+@available(iOS 15.0, *)
+extension GraphView: AXChart {
+    var accessibilityChartDescriptor: AXChartDescriptor? {
+        get { accessibilityChartDescriptorStorage as? AXChartDescriptor }
+
+        set(accessibilityChartDescriptor) {
+            accessibilityChartDescriptorStorage = accessibilityChartDescriptor
+        }
+    }
+
+    fileprivate func setupAudioGraph() {
+        // Generate the data points from the model data.
+        let audiographValues = data.values.map {
+            (x: Self.shortDateFormatter.string(from: $0.date), y: Double($0.value))
+        }
+
+        let dataPoints = audiographValues.map { AXDataPoint(x: $0.x, y: $0.y) }
+
+        // Make the series descriptor.
+        let series = AXDataSeriesDescriptor(name: title,
+                                            isContinuous: true,
+                                            dataPoints: dataPoints)
+
+        // Make the axis descriptors.
+        let category = AXCategoricalDataAxisDescriptor(title: .dashboardGraphHorizontalAxisLabel,
+                                                       categoryOrder: audiographValues.map(\.x))
+
+        let amount = AXNumericDataAxisDescriptor(title: .dashboardGraphVerticalAxisLabel,
+                                                 range: 0 ... Double(data.graphUpperBound),
+                                                 gridlinePositions: []) {
+            Self.numberFormatter.string(from: $0 as NSNumber) ?? ""
+        }
+
+        // Make and set the chart descriptor.
+        accessibilityChartDescriptor = AXChartDescriptor(title: title,
+                                                         xAxis: category,
+                                                         yAxis: amount,
+                                                         additionalAxes: [],
+                                                         series: [series])
     }
 }
 
