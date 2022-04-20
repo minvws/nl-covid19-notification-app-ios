@@ -196,7 +196,7 @@ final class RequestAppManifestDataOperationTests: TestCase {
 
 private extension ApplicationConfiguration {
     static func testData(manifestRefreshFrequency: Int = 3600) -> ApplicationConfiguration {
-        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl", coronaTestURL: "https://coronatest.nl/ik-wil-me-laten-testen/online-een-afspraak-maken")
+        ApplicationConfiguration(version: 1, manifestRefreshFrequency: manifestRefreshFrequency, decoyProbability: 2, creationDate: currentDate(), identifier: "identifier", minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "appStoreURL", requestMinimumSize: 1, requestMaximumSize: 1, repeatedUploadDelay: 1, decativated: false, deactivationContent: nil, appointmentPhoneNumber: "appointmentPhoneNumber", featureFlags: [], notification: nil, shareKeyURL: "http://www.coronatest.nl", coronaTestURL: "https://coronatest.nl/ik-wil-me-laten-testen/online-een-afspraak-maken")
     }
 }
 

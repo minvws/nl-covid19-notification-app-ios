@@ -15,6 +15,7 @@ final class EndOfLifeViewControllerTests: TestCase {
 
     private var viewController: EndOfLifeViewController!
     private let listener = EndOfLifeListenerMock()
+    private let storageController = StorageControllingMock()
 
     // MARK: - Setup
 
@@ -23,7 +24,7 @@ final class EndOfLifeViewControllerTests: TestCase {
 
         recordSnapshots = false || forceRecordAllSnapshots
 
-        viewController = EndOfLifeViewController(listener: listener, theme: theme)
+        viewController = EndOfLifeViewController(listener: listener, theme: theme, storageController: storageController)
     }
 
     // MARK: - Tests
