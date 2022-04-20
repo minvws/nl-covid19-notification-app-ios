@@ -137,8 +137,8 @@
 "updateApp.button" = "Aktualisieren";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder wurde eingestellt.";
-"endOfLife.description" = "Das Ministerium für Gesundheit, Gemeinwohl und Sport hat beschlossen, dass die App nicht mehr erforderlich ist. Sie erhalten also keine Nachricht mehr, wenn Sie in der Nähe einer Person mit Corona waren.";
+"endOfLife.title" = "CoronaMelder is temporarily turned off";
+"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Helfen Sie dabei, die Verbreitung des Coronavirus zu stoppen.";

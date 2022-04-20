@@ -137,8 +137,8 @@
 "updateApp.button" = "Актуализиране";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder е спряно";
-"endOfLife.description" = "Министерството на здравеопазването, благосъстоянието и спорта реши, че приложението вече не е необходимо. Това означава, че повече няма да получаваш известия, ако си бил близо до някой с коронавирус.";
+"endOfLife.title" = "CoronaMelder is temporarily turned off";
+"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Съдействай за спиране на разпространението на коронавируса";

@@ -23,6 +23,7 @@ protocol EndOfLifeBuildable {
 
 protocol EndOfLifeDependency {
     var theme: Theme { get }
+    var storageController: StorageControlling { get }
 }
 
 private final class EndOfLifeDependencyProvider: DependencyProvider<EndOfLifeDependency> {}
@@ -30,6 +31,6 @@ private final class EndOfLifeDependencyProvider: DependencyProvider<EndOfLifeDep
 final class EndOfLifeBuilder: Builder<EndOfLifeDependency>, EndOfLifeBuildable {
     func build(withListener listener: EndOfLifeListener) -> ViewControllable {
         let dependencyProvider = EndOfLifeDependencyProvider(dependency: dependency)
-        return EndOfLifeViewController(listener: listener, theme: dependencyProvider.dependency.theme)
+        return EndOfLifeViewController(listener: listener, theme: dependencyProvider.dependency.theme, storageController: dependencyProvider.dependency.storageController)
     }
 }

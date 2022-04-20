@@ -54,6 +54,7 @@ extension AppConfig {
                                         requestMaximumSize: requestMaximumSize ?? 17000,
                                         repeatedUploadDelay: repeatedUploadDelay ?? 14400,
                                         decativated: coronaMelderDeactivated == "deactivated",
+                                        deactivationContent: .init(titleResourceKey: coronaMelderDeactivatedTitle, bodyResourceKey: coronaMelderDeactivatedBody),
                                         appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
                                         featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
                                         notification: notification?.asApplicationConfigurationNotification(),
