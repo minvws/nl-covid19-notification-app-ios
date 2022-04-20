@@ -22,6 +22,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let requestMaximumSize: Int
     let repeatedUploadDelay: Int
     let decativated: Bool
+    let deactivationContent: DeactivationContent?
     let appointmentPhoneNumber: String
     let featureFlags: [FeatureFlag]
     var notification: ScheduledNotification?
@@ -31,6 +32,11 @@ struct ApplicationConfiguration: Codable, Equatable {
     struct FeatureFlag: Codable, Equatable {
         let id: String
         let featureEnabled: Bool
+    }
+
+    struct DeactivationContent: Codable, Equatable {
+        let titleResourceKey: String?
+        let bodyResourceKey: String?
     }
 
     struct ScheduledNotification: Codable, Equatable, Logging {

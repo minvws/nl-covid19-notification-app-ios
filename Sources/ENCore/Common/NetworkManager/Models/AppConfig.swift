@@ -18,6 +18,8 @@ struct AppConfig: Codable {
     let requestMaximumSize: Int?
     let repeatedUploadDelay: Int?
     let coronaMelderDeactivated: String?
+    let coronaMelderDeactivatedTitle: String?
+    let coronaMelderDeactivatedBody: String?
     let appointmentPhoneNumber: String?
     let featureFlags: [FeatureFlag]
     var notification: ScheduledNotification?

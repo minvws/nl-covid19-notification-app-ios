@@ -18,8 +18,9 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
 
     private static let endOfLifeURL = "https://coronamelder.nl"
 
-    init(listener: EndOfLifeListener, theme: Theme) {
+    init(listener: EndOfLifeListener, theme: Theme, storageController: StorageControlling) {
         self.listener = listener
+        self.storageController = storageController
 
         super.init(theme: theme)
 
@@ -37,18 +38,42 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
         super.viewDidLoad()
 
         internalView.actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
+
+        setupContent()
     }
 
     // MARK: - Private
 
     private weak var listener: EndOfLifeListener?
     private lazy var internalView: EndOfLifeView = EndOfLifeView(theme: self.theme)
+    private let storageController: StorageControlling
 
     @objc private func didTapActionButton(sender: Button) {
         guard let url = URL(string: EndOfLifeViewController.endOfLifeURL) else {
             return logError("Cannot create URL from: \(EndOfLifeViewController.endOfLifeURL)")
         }
         listener?.endOfLifeRequestsRedirect(to: url)
+    }
+
+    private func setupContent() {
+        guard let applicationConfiguration = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration),
+            let resourceBundle: TreatmentPerspective = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.treatmentPerspective),
+            let titleKey = applicationConfiguration.deactivationContent?.titleResourceKey,
+            let bodyKey = applicationConfiguration.deactivationContent?.bodyResourceKey else {
+            // Falling back to default
+            return
+        }
+
+        let resource = resourceBundle.resources[.treatmentPerspectiveLanguage]
+        let fallbackResource = resourceBundle.resources["en"]
+
+        if let localizedTitle = resource?[titleKey], let localizedBody = resource?[bodyKey] {
+            internalView.set(title: localizedTitle, body: localizedBody)
+        } else if let fallbackTitle = fallbackResource?[titleKey], let fallbackBody = fallbackResource?[bodyKey] {
+            internalView.set(title: fallbackTitle, body: fallbackBody)
+        }
+
+        // else use default set values
     }
 }
 
@@ -135,5 +160,10 @@ private final class EndOfLifeView: View {
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
         }
+    }
+
+    func set(title: String, body: String) {
+        titleLabel.text = title
+        descriptionLabel.text = body
     }
 }
