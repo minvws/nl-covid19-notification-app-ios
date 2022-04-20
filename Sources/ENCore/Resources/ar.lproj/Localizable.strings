@@ -137,8 +137,8 @@
 "updateApp.button" = "تحديث";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "توقف CoronaMelder عن العمل";
-"endOfLife.description" = "قررت وزارة الصحة والرعاية والرياضة أن التطبيق لم يعد ضروريًا. لذلك لن تتلقى إشعارات بعد بَعد تواجدك بالقرب من شخص مصاب بكورونا.";
+"endOfLife.title" = "CoronaMelder is temporarily turned off";
+"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "ساهم في وقف انتشار فيروس كورونا";

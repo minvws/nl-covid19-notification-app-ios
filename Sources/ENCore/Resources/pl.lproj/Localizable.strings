@@ -137,8 +137,8 @@
 "updateApp.button" = "Zaktualizuj";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "Aplikacja CoronaMelder została zatrzymana";
-"endOfLife.description" = "Holenderskie Ministerstwo Zdrowia, Opieki Społecznej i Sportu uznało, że aplikacja nie jest już potrzebna. Nie otrzymasz więc już powiadomienia, gdy okaże się, że znajdowałeś się w pobliżu osoby z koronawirusem.";
+"endOfLife.title" = "CoronaMelder is temporarily turned off";
+"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Pomóż powstrzymać rozprzestrzenianie się koronawirusa";

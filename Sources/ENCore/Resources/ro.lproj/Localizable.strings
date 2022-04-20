@@ -137,8 +137,8 @@
 "updateApp.button" = "Actualizare";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder s-a oprit.";
-"endOfLife.description" = "Ministerul Sănătății publice, Bunăstării și Sportului din Țările de Jos a decis că aplicația nu mai este necesară. Deci, nu veți mai primi notificări după ce ați fost în preajma cuiva infectat cu coronavirus.";
+"endOfLife.title" = "CoronaMelder is temporarily turned off";
+"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Ajutați la oprirea răspândirii coronavirusului";
