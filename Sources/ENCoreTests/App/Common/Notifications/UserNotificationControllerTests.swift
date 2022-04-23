@@ -264,22 +264,22 @@ class UserNotificationControllerTests: TestCase {
         XCTAssertNil(notificationRequest.trigger)
     }
 
-    func test_display24HoursNoActivityNotification() throws {
-        // Arrange
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
-
-        // Act
-        sut.display24HoursNoActivityNotification(completion: { _ in })
-
-        // Assert
-        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
-        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
-        XCTAssertEqual(notificationRequest.content.sound, .default)
-        XCTAssertEqual(notificationRequest.content.badge, 0)
-        XCTAssertEqual(notificationRequest.content.title, "Technical problem")
-        XCTAssertEqual(notificationRequest.content.body, "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.")
-        XCTAssertNil(notificationRequest.trigger)
-    }
+//    func test_display24HoursNoActivityNotification() throws {
+//        // Arrange
+//        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 0)
+//
+//        // Act
+//        sut.display24HoursNoActivityNotification(completion: { _ in })
+//
+//        // Assert
+//        XCTAssertEqual(mockUserNotificationCenter.addCallCount, 1)
+//        let notificationRequest = try XCTUnwrap(mockUserNotificationCenter.addArgValues.first)
+//        XCTAssertEqual(notificationRequest.content.sound, .default)
+//        XCTAssertEqual(notificationRequest.content.badge, 0)
+//        XCTAssertEqual(notificationRequest.content.title, "Technical problem")
+//        XCTAssertEqual(notificationRequest.content.body, "The app wasn't able to check for 24 hours if the people you encountered later turned out to have corona.")
+//        XCTAssertNil(notificationRequest.trigger)
+//    }
 
     func test_displayUploadFailedNotification_shouldShowNotificationDuringGGDOpeningHours() {
         // Arrange
