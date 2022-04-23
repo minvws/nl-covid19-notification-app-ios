@@ -434,10 +434,15 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
             .subscribe { [weak self] isDeactivated, updateInformation in
                 if isDeactivated {
                     self?.detachLaunchScreenIfNeeded(animated: false) {
-                        self?.routeToEndOfLife()
-                        self?.exposureController.deactivate()
-                        self?.backgroundController.removeAllTasks()
-                        completion?(true)
+                        guard let self = self else { return }
+
+                        self.routeToEndOfLife()
+                        self.exposureController.activate().subscribe { event in
+                            self.exposureController.deactivate()
+                            self.backgroundController.removeAllTasks()
+                            completion?(true)
+                        }
+                        .disposed(by: self.disposeBag)
                     }
 
                     return

@@ -27,6 +27,7 @@ protocol ExposureControlling: AnyObject {
 
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ())
     func isAppDeactivated() -> Single<Bool>
+    func getStoredAppDeactivated() -> Bool
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
 
