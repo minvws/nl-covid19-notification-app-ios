@@ -168,10 +168,11 @@ class UserNotificationController: UserNotificationControlling, Logging {
     }
 
     func display24HoursNoActivityNotification(completion: @escaping (_ success: Bool) -> ()) {
-        addNotification(title: .statusAppStateInactiveNotificationTitle,
-                        body: .statusAppStateInactiveNotification,
-                        identifier: .inactive,
-                        completion: completion)
+        completion(true)
+//        addNotification(title: .statusAppStateInactiveNotificationTitle,
+//                        body: .statusAppStateInactiveNotification,
+//                        identifier: .inactive,
+//                        completion: completion)
     }
 
     func displayUploadFailedNotification() {

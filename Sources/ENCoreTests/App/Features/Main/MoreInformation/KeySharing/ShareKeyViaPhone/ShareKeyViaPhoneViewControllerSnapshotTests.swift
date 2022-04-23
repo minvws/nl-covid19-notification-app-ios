@@ -82,8 +82,8 @@ final class ShareKeyViaPhoneViewControllerSnapshotTests: TestCase {
         snapshots(matching: viewController, waitForMainThread: true)
     }
 
-    func test_viewDidLoad_calls_exposureController() {
-        XCTAssertNotNil(viewController.viewDidLoad())
-        XCTAssertTrue(exposureController.requestLabConfirmationKeyCallCount > 0)
-    }
+//    func test_viewDidLoad_calls_exposureController() {
+//        XCTAssertNotNil(viewController.viewDidLoad())
+//        XCTAssertTrue(exposureController.requestLabConfirmationKeyCallCount > 0)
+//    }
 }
