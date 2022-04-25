@@ -26,7 +26,7 @@ final class ExposureControllerTests: TestCase {
         super.setUp()
 
         mockCellularDataStream.restrictedState = .init(value: .notRestricted)
-        
+
         networkStatusStream.networkReachable = true
         networkStatusStream.networkReachableStream = .just(true)
 
@@ -68,12 +68,12 @@ final class ExposureControllerTests: TestCase {
 
         XCTAssertEqual(exposureManager.activateCallCount, 1)
     }
-    
+
     func test_activate_shouldNotCallActivateIfPaused() {
         let completionExpectation = expectation(description: "completionExpectation")
         exposureManager.activateHandler = { completion in completion(.active) }
         dataController.isAppPaused = true
-        
+
         XCTAssertEqual(exposureManager.activateCallCount, 0)
 
         controller.activate()
@@ -182,17 +182,17 @@ final class ExposureControllerTests: TestCase {
         XCTAssertNotNil(receivedEnabled)
         XCTAssertTrue(receivedEnabled)
     }
-    
+
     func test_requestExposureNotificationPermission_errorShouldReturnError() {
         let completionExpectation = expectation(description: "completionExpectation")
-        exposureManager.setExposureNotificationEnabledHandler = { enabled, completion in
+        exposureManager.setExposureNotificationEnabledHandler = { _, completion in
             completion(.failure(.disabled))
         }
 
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 0)
         XCTAssertEqual(mutableStateStream.updateCallCount, 0)
 
-        controller.requestExposureNotificationPermission { (error) in
+        controller.requestExposureNotificationPermission { error in
             XCTAssertEqual(error, .disabled)
             completionExpectation.fulfill()
         }
@@ -200,41 +200,41 @@ final class ExposureControllerTests: TestCase {
         waitForExpectations()
         XCTAssertEqual(exposureManager.setExposureNotificationEnabledCallCount, 1)
     }
-    
+
     func test_fetchAndProcessExposureKeySets() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
-        
+
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .empty()
         }
-        
+
         // Act
         controller.fetchAndProcessExposureKeySets()
             .subscribe(onCompleted: {
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
-        
+
         // Assert
         waitForExpectations()
     }
-    
+
     func test_fetchAndProcessExposureKeySets_withError() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
-        
+
         dataController.fetchAndProcessExposureKeySetsHandler = { _ in
             .error(ExposureDataError.internalError)
         }
-        
+
         // Act
         controller.fetchAndProcessExposureKeySets()
             .subscribe(onError: { _ in
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
-        
+
         // Assert
         waitForExpectations()
     }
@@ -267,7 +267,7 @@ final class ExposureControllerTests: TestCase {
         let expectation = expect(activeState: .active)
 
         triggerUpdateStream()
-        
+
         waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
@@ -279,7 +279,7 @@ final class ExposureControllerTests: TestCase {
         let expectation = expect(activeState: .inactive(.bluetoothOff))
 
         triggerUpdateStream()
-        
+
         waitForExpectations(timeout: 2, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
@@ -562,7 +562,7 @@ final class ExposureControllerTests: TestCase {
         let expectation = expect(activeState: .inactive(.noRecentNotificationUpdates))
 
         triggerUpdateStream()
-        
+
         waitForExpectations(timeout: 10, handler: nil)
         XCTAssertTrue(expectation.evaluate())
     }
@@ -659,9 +659,8 @@ final class ExposureControllerTests: TestCase {
     }
 
     func test_exposureNotificationStatusCheck_notActive_notifiesAfter24h() {
-        
         XCTAssertEqual(userNotificationController.displayNotActiveNotificationCallCount, 0)
-        
+
         exposureManager.getExposureNotificationStatusHandler = {
             .inactive(.disabled)
         }
@@ -681,37 +680,37 @@ final class ExposureControllerTests: TestCase {
     func test_appShouldUpdateCheck() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
-        
+
         dataController.getAppVersionInformationHandler = {
-            return .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
+            .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
         }
-        
+
         // Act
         controller
             .appShouldUpdateCheck()
-            .subscribe(onSuccess: { (appUpdateInformation) in
+            .subscribe(onSuccess: { appUpdateInformation in
                 // Assert
                 XCTAssertTrue(appUpdateInformation.shouldUpdate)
                 XCTAssertEqual(appUpdateInformation.versionInformation?.appStoreURL, "http://appStoreURL.com")
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
-        
+
         waitForExpectations()
     }
-    
+
     func test_sendNotificationIfAppShouldUpdate() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
-        
+
         dataController.getAppVersionInformationHandler = {
-            return .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
+            .just(.init(minimumVersion: "2.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://appStoreURL.com"))
         }
-        
+
         userNotificationController.displayAppUpdateRequiredNotificationHandler = { _, completion in
             completion(true)
         }
-        
+
         // Act
         controller
             .sendNotificationIfAppShouldUpdate()
@@ -722,28 +721,27 @@ final class ExposureControllerTests: TestCase {
                 completionExpectation.fulfill()
             })
             .disposed(by: disposeBag)
-        
+
         waitForExpectations()
     }
-    
+
     func test_updateTreatmentPerspective() {
         // Arrange
         XCTAssertEqual(dataController.updateTreatmentPerspectiveCallCount, 0)
-        dataController.updateTreatmentPerspectiveHandler = { return .empty() }
-        
+        dataController.updateTreatmentPerspectiveHandler = { .empty() }
+
         // Act
         controller.updateTreatmentPerspective()
             .subscribe()
             .disposed(by: disposeBag)
-        
+
         // Assert
         XCTAssertEqual(dataController.updateTreatmentPerspectiveCallCount, 1)
     }
-    
+
     func test_lastOpenedNotificationCheck_moreThan3Hours_postsNotification() {
-        
         XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
-        
+
         let timeInterval = TimeInterval(60 * 60 * 4) // 4 hours
         dataController.lastAppLaunchDate = currentDate().advanced(by: -(timeInterval + 1))
         dataController.lastExposure = ExposureReport(date: currentDate())
@@ -771,66 +769,66 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(userNotificationController.getAuthorizationStatusCallCount, 0)
         XCTAssertEqual(userNotificationController.displayExposureReminderNotificationCallCount, 0)
     }
-    
+
     func test_lastOpenedNotificationCheck_48Hours_ToDays() {
         let timeInterval = TimeInterval(60 * 60 * 48) // 48 hours
         dataController.lastExposure = ExposureReport(date: currentDate().advanced(by: -timeInterval))
-        
+
         let days = currentDate().days(sinceDate: dataController.lastExposure!.date)
-        
+
         XCTAssertEqual(days, 2)
     }
-    
+
     func test_notifyUser24HoursNoCheckIfRequired_shouldShowNotificationAfter25Hours() {
         // Arrange
         let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         DateTimeTestingOverrides.overriddenCurrentDate = date
         dataController.lastSuccessfulExposureProcessingDate = date.addingTimeInterval(.hours(-25))
         dataController.lastLocalNotificationExposureDate = nil
-        
+
         XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 0)
-        
+
         // Act
         controller.notifyUser24HoursNoCheckIfRequired()
-        
+
         // Assert
         XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 1)
     }
-    
+
     func test_notifyUser24HoursNoCheckIfRequired_shouldShowReminderNotificationAfter50Hours() {
         // Arrange
         let date = Date(timeIntervalSince1970: 1593538088) // 30/06/20 17:28
         DateTimeTestingOverrides.overriddenCurrentDate = date
         dataController.lastSuccessfulExposureProcessingDate = date.addingTimeInterval(.hours(-50))
         dataController.lastLocalNotificationExposureDate = date.addingTimeInterval(.hours(-25))
-        
+
         XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 0)
-        
+
         // Act
         controller.notifyUser24HoursNoCheckIfRequired()
-        
+
         // Assert
         XCTAssertEqual(userNotificationController.display24HoursNoActivityNotificationCallCount, 1)
     }
-    
+
     func test_updateLastExposureProcessingDateSubject() {
         // Arrange
         XCTAssertEqual(dataController.updateLastExposureProcessingDateSubjectCallCount, 0)
-        
+
         // Act
         controller.updateLastExposureProcessingDateSubject()
-        
+
         // Assert
         XCTAssertEqual(dataController.updateLastExposureProcessingDateSubjectCallCount, 1)
     }
-    
+
     func test_getAppVersionInformation_shouldCallDataController() {
         let completionExpectation = expectation(description: "completion")
-        
+
         dataController.getAppVersionInformationHandler = {
             .just(.init(minimumVersion: "1.0.0", minimumVersionMessage: "minimumVersionMessage", appStoreURL: "http://www.example.com"))
         }
-        
+
         controller.getAppVersionInformation { appVersionInformation in
             XCTAssertEqual(appVersionInformation?.minimumVersion, "1.0.0")
             completionExpectation.fulfill()
@@ -853,7 +851,7 @@ final class ExposureControllerTests: TestCase {
 
         waitForExpectations(timeout: 2, handler: nil)
     }
-    
+
     func test_getStoredAppConfigFeatureFlags_shouldCallDataController() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
@@ -870,7 +868,7 @@ final class ExposureControllerTests: TestCase {
         waitForExpectations()
         XCTAssertEqual(featureFlags, [.init(id: "someId", featureEnabled: true)])
     }
-    
+
     func test_getStoredShareKeyURL_shouldCallDataController() {
         // Arrange
         let completionExpectation = expectation(description: "completion")
@@ -913,12 +911,12 @@ final class ExposureControllerTests: TestCase {
             .subscribe(onCompleted: {
                 self.controller.postExposureManagerActivation()
                 completionExpectation.fulfill()
-                
+
             })
             .disposed(by: disposeBag)
 
         stream.onNext(.init(notifiedState: .notNotified, activeState: .active))
-        
+
         waitForExpectations(timeout: 2, handler: nil)
 
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
@@ -994,7 +992,7 @@ final class ExposureControllerTests: TestCase {
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.notifiedState, .notNotified)
         XCTAssertEqual(mutableStateStream.updateArgValues.last?.activeState, .active)
     }
-    
+
     func test_refreshStatus_shouldRunOnBackgroundThread() {
         // Arrange
         let updateStreamExpectation = expectation(description: "updateStream")
@@ -1003,15 +1001,37 @@ final class ExposureControllerTests: TestCase {
             XCTAssertTrue(Thread.current.qualityOfService == .userInitiated)
             updateStreamExpectation.fulfill()
         }
-        
+
         let completionExpectation = expectation(description: "completionExpectation")
-        
+
         // Act
         controller.refreshStatus {
             completionExpectation.fulfill()
         }
-        
+
         // Assert
+        waitForExpectations()
+    }
+
+    func test_appIsDeactivatedCheck() {
+        // Arrange
+        let completionExpectation = expectation(description: "completion")
+
+        dataController.isAppDeactivatedHandler = {
+            .just(true)
+        }
+
+        // Act
+        controller
+            .isAppDeactivated()
+            .subscribe(onSuccess: { deactivated in
+                // Assert
+                XCTAssertTrue(deactivated)
+                XCTAssertEqual(self.dataController.isAppDeactivatedCallCount, 1)
+                completionExpectation.fulfill()
+            })
+            .disposed(by: disposeBag)
+
         waitForExpectations()
     }
 

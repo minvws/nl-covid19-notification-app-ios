@@ -72,8 +72,7 @@ final class BackgroundController: BackgroundControlling, Logging {
                 .subscribe(onSuccess: { isDeactivated in
                     if isDeactivated {
                         self.logDebug("Background: ExposureController is deactivated - Removing all tasks")
-                        self.removePreviousExposureDateIfNeeded().subscribe().disposed(by: self.disposeBag)
-                        self.removeAllTasks()
+                        self.disableApp()
                     } else {
                         self.logDebug("Background: ExposureController is activated - Schedule refresh sequence")
                         self.scheduleRefresh()
@@ -222,6 +221,7 @@ final class BackgroundController: BackgroundControlling, Logging {
     // MARK: - Refresh
 
     func refresh(task: BackgroundTask?) {
+
         let sequence: [Completable]
 
         if dataController.isAppPaused {
@@ -236,7 +236,6 @@ final class BackgroundController: BackgroundControlling, Logging {
         } else {
             sequence = [
                 removePreviousExposureDateIfNeeded(),
-                activateExposureController(),
                 updateStatusStream(),
                 fetchAndProcessKeysets(),
                 processPendingUploads(),
@@ -251,23 +250,59 @@ final class BackgroundController: BackgroundControlling, Logging {
 
         logDebug("Background: starting refresh task")
 
-        let disposible = Completable.concat(sequence)
-            .subscribe {
-                // Note: We ignore the response
-                self.logDebug("--- Finished Background Refresh ---")
-                task?.setTaskCompleted(success: true)
-            } onError: { error in
-                self.logError("Background: Error completing sequence \(error.localizedDescription)")
-                task?.setTaskCompleted(success: false)
+        // Checks if we are allowed to run background work at all at the moment
+        // or wether the app should be deactivated right now
+        performPrecheckActions(task: task) { [weak self] in
+            guard let self = self else { return }
+
+            guard !self.appShouldBeDeactivated else {
+                return
             }
 
-        disposible.disposed(by: disposeBag)
+            let disposible = Completable.concat(sequence)
+                .subscribe {
+                    // Note: We ignore the response
+                    self.logDebug("--- Finished Background Refresh ---")
+                    task?.setTaskCompleted(success: true)
+                } onError: { error in
+                    self.logError("Background: Error completing sequence \(error.localizedDescription)")
+                    task?.setTaskCompleted(success: false)
+                }
+
+            disposible.disposed(by: self.disposeBag)
+
+            // Handle running out of time
+            if let task = task {
+                task.expirationHandler = {
+                    self.logError("Background: refresh task expired")
+                    disposible.dispose()
+                }
+            }
+        }
+    }
+
+    private func performPrecheckActions(task: BackgroundTask?, completion: @escaping () -> ()) {
+        // List of work that need to be done before we start the real refresh tasks
+        let precheckSequence = [
+            activateExposureController(), // Needed to perform any actions related to the framework
+            updateAppConfiguration(), // Gets the latest app config
+            disableAppIfNeededCompletable() // reads app config and disables app if the config says it should be disabled
+        ]
+
+        logDebug("Background: starting precheck actions")
+
+        let precheckDisposable = Completable.concat(precheckSequence)
+            .subscribe { _ in
+                completion()
+            }
+
+        precheckDisposable.disposed(by: self.disposeBag)
 
         // Handle running out of time
         if let task = task {
             task.expirationHandler = {
                 self.logError("Background: refresh task expired")
-                disposible.dispose()
+                precheckDisposable.dispose()
             }
         }
     }
@@ -304,6 +339,13 @@ final class BackgroundController: BackgroundControlling, Logging {
     }
 
     private func scheduleRefresh() {
+
+        guard !appShouldBeDeactivated else {
+            disableApp()
+            logDebug("Not scheduling refresh task since app is deactivated")
+            return
+        }
+
         let timeInterval = refreshInterval * 60
         let date = currentDate().addingTimeInterval(timeInterval)
 
@@ -523,6 +565,24 @@ final class BackgroundController: BackgroundControlling, Logging {
         }
     }
 
+    /// updates manifest and appconfiguration
+    private func updateAppConfiguration() -> Completable {
+        logDebug("Background: updateAppConfiguration()")
+        return dataController.updateAppConfiguration()
+    }
+    /// Disables app entirely if needed
+    private func disableAppIfNeededCompletable() -> Completable {
+        logDebug("Background: disableAppIfNeededCompletable()")
+
+        return .create { (observer) -> Disposable in
+            if self.appShouldBeDeactivated {
+                self.disableApp()
+            }
+            observer(.completed)
+            return Disposables.create()
+        }
+    }
+
     /// Removes stored previous exposure date in case it is longer than 14 days ago
     private func removePreviousExposureDateIfNeeded() -> Completable {
         logDebug("Background: removePreviousExposureDate()")
@@ -619,5 +679,27 @@ final class BackgroundController: BackgroundControlling, Logging {
         } else {
             return false
         }
+    }
+
+    private var appShouldBeDeactivated: Bool {
+        exposureController.getStoredAppDeactivated()
+    }
+
+    private func disableApp() {
+        // Activation is needed to call functions on the framework (and to disable it)
+        exposureController
+            .activate()
+            .subscribe { [weak self] event in
+                guard let self = self else { return }
+                switch event {
+                case .completed:
+                    self.logDebug("Disable app (remove exposure, removing bg tasks, deactivate exposure controller")
+                    self.removePreviousExposureDateIfNeeded().subscribe().disposed(by: self.disposeBag)
+                    self.removeAllTasks()
+                    self.exposureController.deactivate()
+                case .error:
+                    self.logDebug("Disabling app failed because EN framework could not be activated")
+                }
+            }.disposed(by: disposeBag)
     }
 }

@@ -66,6 +66,7 @@ protocol ExposureDataControlling: AnyObject {
 
     // MARK: - Misc
 
+    func updateAppConfiguration() -> Completable
     func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation>
     func getStoredAppConfigFeatureFlags() -> [ApplicationConfiguration.FeatureFlag]?
     func getScheduledNotificaton() -> ApplicationConfiguration.ScheduledNotification?
@@ -73,6 +74,7 @@ protocol ExposureDataControlling: AnyObject {
     func getStoredCoronaTestURL() -> String
 
     func isAppDeactivated() -> Single<Bool>
+    func getStoredAppDeactivated() -> Bool
     func getDecoyProbability() -> Single<Float>
     func getPadding() -> Single<Padding>
     func getAppointmentPhoneNumber() -> Single<String>

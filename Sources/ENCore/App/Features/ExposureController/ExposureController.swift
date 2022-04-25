@@ -166,6 +166,10 @@ final class ExposureController: ExposureControlling, Logging {
         }
     }
 
+    func updateAppConfiguration() -> Completable {
+        dataController.updateAppConfiguration()
+    }
+
     func getAppVersionInformation(_ completion: @escaping (ExposureDataAppVersionInformation?) -> ()) {
         return dataController
             .getAppVersionInformation()
@@ -179,6 +183,10 @@ final class ExposureController: ExposureControlling, Logging {
 
     func isAppDeactivated() -> Single<Bool> {
         return dataController.isAppDeactivated()
+    }
+
+    func getStoredAppDeactivated() -> Bool {
+        return dataController.getStoredAppDeactivated()
     }
 
     func getDecoyProbability() -> Single<Float> {

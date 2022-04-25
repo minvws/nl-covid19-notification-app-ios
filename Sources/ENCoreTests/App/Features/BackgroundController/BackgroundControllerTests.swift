@@ -59,6 +59,7 @@ final class BackgroundControllerTests: TestCase {
         exposureController.refreshStatusHandler = { completion in completion?() }
 
         dataController.removePreviousExposureDateIfNeededHandler = { .empty() }
+        dataController.updateAppConfigurationHandler = { .empty() }
     }
 
     // MARK: - Tests

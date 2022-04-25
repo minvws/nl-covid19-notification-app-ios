@@ -106,6 +106,10 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             }
     }
 
+    func updateAppConfiguration() -> Completable {
+        requestApplicationConfiguration().asCompletable()
+    }
+
     // MARK: - Exposure Detection
 
     func fetchAndProcessExposureKeySets(exposureManager: ExposureManaging) -> Completable {
@@ -263,6 +267,13 @@ final class ExposureDataController: ExposureDataControlling, Logging {
             .map { applicationConfiguration in
                 applicationConfiguration.decativated
             }
+    }
+
+    func getStoredAppDeactivated() -> Bool {
+        guard let storedAppConfig = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.appConfiguration) else {
+            return false
+        }
+        return storedAppConfig.decativated
     }
 
     func getAppVersionInformation() -> Single<ExposureDataAppVersionInformation> {
