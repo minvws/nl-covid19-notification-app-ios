@@ -16,6 +16,7 @@ final class EndOfLifeViewControllerTests: TestCase {
     private var viewController: EndOfLifeViewController!
     private let listener = EndOfLifeListenerMock()
     private let storageController = StorageControllingMock()
+    private let interfaceOrientationStream = InterfaceOrientationStreamingMock()
 
     // MARK: - Setup
 
@@ -24,7 +25,7 @@ final class EndOfLifeViewControllerTests: TestCase {
 
         recordSnapshots = false || forceRecordAllSnapshots
 
-        viewController = EndOfLifeViewController(listener: listener, theme: theme, storageController: storageController)
+        viewController = EndOfLifeViewController(listener: listener, theme: theme, storageController: storageController, interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests
