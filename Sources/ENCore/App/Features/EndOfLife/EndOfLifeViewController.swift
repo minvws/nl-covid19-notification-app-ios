@@ -7,6 +7,7 @@
 
 import ENFoundation
 import Foundation
+import RxSwift
 import SafariServices
 import SnapKit
 import UIKit
@@ -18,9 +19,13 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
 
     private static let endOfLifeURL = "https://coronamelder.nl"
 
-    init(listener: EndOfLifeListener, theme: Theme, storageController: StorageControlling) {
+    init(listener: EndOfLifeListener,
+         theme: Theme,
+         storageController: StorageControlling,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.storageController = storageController
+        self.interfaceOrientationStream = interfaceOrientationStream
 
         super.init(theme: theme)
 
@@ -40,6 +45,14 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
         internalView.actionButton.addTarget(self, action: #selector(didTapActionButton(sender:)), for: .touchUpInside)
 
         setupContent()
+
+        internalView.showVisual = !(interfaceOrientationStream.currentOrientationIsLandscape ?? false)
+
+        interfaceOrientationStream
+            .isLandscape
+            .subscribe { [weak self] isLandscape in
+                self?.internalView.showVisual = !isLandscape
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - Private
@@ -47,6 +60,8 @@ final class EndOfLifeViewController: ViewController, EndOfLifeViewControllable, 
     private weak var listener: EndOfLifeListener?
     private lazy var internalView: EndOfLifeView = EndOfLifeView(theme: self.theme)
     private let storageController: StorageControlling
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private var disposeBag = DisposeBag()
 
     @objc private func didTapActionButton(sender: Button) {
         guard let url = URL(string: EndOfLifeViewController.endOfLifeURL) else {
@@ -86,6 +101,13 @@ private final class EndOfLifeView: View {
 
     private let contentView: UIView
     private let scrollView: UIScrollView
+    private var imageCollapseConstraint: NSLayoutConstraint!
+
+    var showVisual: Bool = true {
+        didSet {
+            imageCollapseConstraint.isActive = !showVisual
+        }
+    }
 
     // MARK: - Init
 
@@ -133,8 +155,9 @@ private final class EndOfLifeView: View {
 
         headerImageView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalToSuperview()
-            maker.height.equalTo(headerImageView.snp.width).dividedBy(imageAspectRatio)
+            maker.height.equalTo(headerImageView.snp.width).dividedBy(imageAspectRatio).priority(.high)
         }
+        imageCollapseConstraint = headerImageView.heightAnchor.constraint(equalToConstant: 0)
         titleLabel.snp.makeConstraints { maker in
             maker.top.equalTo(headerImageView.snp.bottom).offset(40)
             maker.leading.trailing.equalToSuperview().inset(16)
@@ -147,15 +170,15 @@ private final class EndOfLifeView: View {
         contentView.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(scrollView)
             maker.bottom.equalTo(scrollView)
-            maker.leading.trailing.equalTo(self)
+            maker.leading.trailing.equalToSuperview()
+            maker.width.equalTo(scrollView.frameLayoutGuide)
         }
         scrollView.snp.makeConstraints { maker in
             maker.top.leading.trailing.equalTo(safeAreaLayoutGuide)
-            maker.width.equalToSuperview()
             maker.bottom.equalTo(actionButton.snp.top).inset(-16)
         }
         actionButton.snp.makeConstraints { maker in
-            maker.leading.trailing.equalToSuperview().inset(16)
+            maker.leading.trailing.equalTo(safeAreaLayoutGuide).inset(16)
             maker.height.greaterThanOrEqualTo(50)
 
             constrainToSafeLayoutGuidesWithBottomMargin(maker: maker)
