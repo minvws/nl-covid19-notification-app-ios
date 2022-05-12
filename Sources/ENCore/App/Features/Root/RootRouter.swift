@@ -19,7 +19,7 @@ import UIKit
 /// which is implemented by `RootRouter`.
 ///
 /// @mockable(history: present = true; dismiss = true; presentInNavigationController = true)
-protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, EndOfLifeListener, WebviewListener, ShareSheetListener {
+protocol RootViewControllable: ViewControllable, OnboardingListener, DeveloperMenuListener, MessageListener, CallGGDListener, EndOfLifeListener, NoInternetListener, WebviewListener, ShareSheetListener {
     var router: RootRouting? { get set }
 
     func presentInNavigationController(viewController: ViewControllable, animated: Bool, presentFullScreen: Bool)
@@ -48,6 +48,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
          onboardingBuilder: OnboardingBuildable,
          mainBuilder: MainBuildable,
          endOfLifeBuilder: EndOfLifeBuildable,
+         noInternetBuilder: NoInternetBuildable,
          messageBuilder: MessageBuildable,
          callGGDBuilder: CallGGDBuildable,
          exposureController: ExposureControlling,
@@ -69,6 +70,7 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         self.onboardingBuilder = onboardingBuilder
         self.mainBuilder = mainBuilder
         self.endOfLifeBuilder = endOfLifeBuilder
+        self.noInternetBuilder = noInternetBuilder
         self.messageBuilder = messageBuilder
         self.callGGDBuilder = callGGDBuilder
         self.developerMenuBuilder = developerMenuBuilder
@@ -357,6 +359,12 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         viewController.presentInNavigationController(viewController: shareViewController, animated: shouldAnimate, presentFullScreen: false)
     }
 
+    func retryNetworkRoute() {
+        detachNoInternetScreenIfNeeded(animated: true) { [weak self] in
+            self?.noInternetRetryHandler?()
+        }
+    }
+
     // MARK: - Private
 
     private func routeToMain() {
@@ -383,6 +391,30 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
         let endOfLifeViewController = endOfLifeBuilder.build(withListener: viewController)
         self.endOfLifeViewController = endOfLifeViewController
         viewController.presentInNavigationController(viewController: endOfLifeViewController, animated: false, presentFullScreen: true)
+    }
+
+    private func routeToNoInternet(retryHandler: @escaping () -> ()) {
+        guard noInternetViewController == nil else {
+            return
+        }
+
+        let noInternetViewController = noInternetBuilder.build(withListener: viewController)
+        self.noInternetViewController = noInternetViewController
+        self.noInternetRetryHandler = retryHandler
+        viewController.present(viewController: noInternetViewController, animated: false, completion: nil)
+    }
+
+    private func detachNoInternetScreenIfNeeded(animated: Bool, completion: (() -> ())?) {
+        guard let noInternetViewController = noInternetViewController else {
+            completion?()
+            return
+        }
+
+        self.noInternetViewController = nil
+
+        viewController.dismiss(viewController: noInternetViewController,
+                               animated: animated,
+                               completion: completion)
     }
 
     private func routeToCallGGD() {
@@ -478,12 +510,18 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
             } onError: { [weak self] error in
 
-                let exposureDataError = error.asExposureDataError
+                let exposureDataError = error as? ExposureDataError ?? error.asExposureDataError
 
                 if exposureDataError == .networkUnreachable ||
                     exposureDataError == .serverError ||
-                    exposureDataError == .internalError ||
-                    exposureDataError == .responseCached {
+                    exposureDataError == .internalError {
+                    self?.logError("Could not fetch an up to date app config")
+                    self?.routeToNoInternet { [weak self] in
+                        self?.routeToDeactivatedOrUpdateScreenIfNeeded(completion: completion)
+                    }
+//                    completion?(true)
+                    return
+                } else if exposureDataError == .responseCached {
                     guard let strongSelf = self else {
                         self?.logError("Root Router released before routing")
                         completion?(false)
@@ -567,6 +605,9 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
     private let endOfLifeBuilder: EndOfLifeBuildable
     private var endOfLifeViewController: ViewControllable?
 
+    private let noInternetBuilder: NoInternetBuildable
+    private var noInternetViewController: ViewControllable?
+
     private let messageBuilder: MessageBuildable
     private var messageViewController: ViewControllable?
 
@@ -596,6 +637,8 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
 
     private let shareBuilder: ShareSheetBuildable
     private var shareViewController: ViewControllable?
+
+    private var noInternetRetryHandler: (() -> ())?
 }
 
 private extension ExposureActiveState {

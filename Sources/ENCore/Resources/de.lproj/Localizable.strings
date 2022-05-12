@@ -136,6 +136,10 @@
 "updateApp.content" = "Aktualisieren Sie die App, damit diese weiterhin einwandfrei funktioniert.";
 "updateApp.button" = "Aktualisieren";
 
+// MARK: - No Internet
+"noInternet.error.title" = "Je hebt geen internetverbinding";
+"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+
 /* MARK: - EndOfLife */
 "endOfLife.title" = "CoronaMelder is temporarily turned off";
 "endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";

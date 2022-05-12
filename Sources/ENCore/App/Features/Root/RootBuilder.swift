@@ -41,7 +41,7 @@ public protocol AppEntryPoint {
 }
 
 /// Provides all dependencies to build the RootRouter
-private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency, ShareSheetDependency {
+private final class RootDependencyProvider: DependencyProvider<EmptyDependency>, MainDependency, ExposureControllerDependency, OnboardingDependency, DeveloperMenuDependency, NetworkControllerDependency, MessageDependency, CallGGDDependency, BackgroundDependency, UpdateAppDependency, EndOfLifeDependency, NoInternetDependency, WebviewDependency, ExposureDataControllerDependency, LaunchScreenDependency, UpdateOperatingSystemDependency, EnableSettingDependency, ShareSheetDependency {
 
     // MARK: - Child Builders
 
@@ -59,6 +59,10 @@ private final class RootDependencyProvider: DependencyProvider<EmptyDependency>,
 
     fileprivate var endOfLifeBuilder: EndOfLifeBuildable {
         return EndOfLifeBuilder(dependency: self)
+    }
+
+    fileprivate var noInternetBuilder: NoInternetBuildable {
+        return NoInternetBuilder(dependency: self)
     }
 
     fileprivate var messageBuilder: MessageBuildable {
@@ -246,6 +250,7 @@ final class RootBuilder: Builder<EmptyDependency>, RootBuildable, Logging {
                           onboardingBuilder: dependencyProvider.onboardingBuilder,
                           mainBuilder: dependencyProvider.mainBuilder,
                           endOfLifeBuilder: dependencyProvider.endOfLifeBuilder,
+                          noInternetBuilder: dependencyProvider.noInternetBuilder,
                           messageBuilder: dependencyProvider.messageBuilder,
                           callGGDBuilder: dependencyProvider.callGGDBuilder,
                           exposureController: dependencyProvider.exposureController,

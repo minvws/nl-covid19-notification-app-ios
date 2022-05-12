@@ -47,6 +47,9 @@ protocol RootRouting: Routing {
     /// Presents an webview
     func routeToWebview(url: URL)
 
+    /// Retries the route previously resulting in the no internet screen
+    func retryNetworkRoute()
+
     // Detaches the webview
     func detachWebview(shouldDismissViewController: Bool)
 
@@ -95,9 +98,15 @@ final class RootViewController: ViewController, RootViewControllable, Logging {
     }
 
     func present(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
-        present(viewController.uiviewController,
-                animated: animated,
-                completion: completion)
+        if let presentedModal = presentedViewController {
+            presentedModal.present(viewController.uiviewController,
+                                   animated: animated,
+                                   completion: completion)
+        } else {
+            present(viewController.uiviewController,
+                    animated: animated,
+                    completion: completion)
+        }
     }
 
     func dismiss(viewController: ViewControllable, animated: Bool, completion: (() -> ())?) {
@@ -145,6 +154,12 @@ final class RootViewController: ViewController, RootViewControllable, Logging {
 
     func endOfLifeRequestsRedirect(to url: URL) {
         router?.routeToWebview(url: url)
+    }
+
+    // MARK: - NoInternetListener
+
+    func noInternetRequestsRetry() {
+        router?.retryNetworkRoute()
     }
 
     // MARK: - WebviewListener
