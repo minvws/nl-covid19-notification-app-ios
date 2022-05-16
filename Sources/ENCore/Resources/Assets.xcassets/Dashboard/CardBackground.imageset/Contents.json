@@ -20,6 +20,31 @@
       "scale" : "1x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "CardBackground-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 32,
+          "left" : 30,
+          "right" : 24,
+          "top" : 16
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 20
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "1x"
+    },
+    {
       "filename" : "CardBackground@2x.png",
       "idiom" : "universal",
       "resizing" : {
@@ -39,6 +64,31 @@
       "scale" : "2x"
     },
     {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "CardBackground@2x-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 64,
+          "left" : 48,
+          "right" : 48,
+          "top" : 32
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 1
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "2x"
+    },
+    {
       "filename" : "CardBackground@3x.png",
       "idiom" : "universal",
       "resizing" : {
@@ -52,6 +102,31 @@
           "height" : 48,
           "mode" : "tile",
           "width" : 48
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "3x"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "CardBackground@3x-1.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 96,
+          "left" : 72,
+          "right" : 72,
+          "top" : 48
+        },
+        "center" : {
+          "height" : 1,
+          "mode" : "tile",
+          "width" : 1
         },
         "mode" : "9-part"
       },
