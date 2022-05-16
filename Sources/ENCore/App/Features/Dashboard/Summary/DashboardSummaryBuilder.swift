@@ -25,6 +25,7 @@ protocol DashboardSummaryBuildable {
 protocol DashboardSummaryDependency {
     var theme: Theme { get }
     var dataController: ExposureDataControlling { get }
+    var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
 private final class DashboardSummaryDependencyProvider: DependencyProvider<DashboardSummaryDependency> {
@@ -37,6 +38,10 @@ private final class DashboardSummaryDependencyProvider: DependencyProvider<Dashb
     var dataController: ExposureDataControlling {
         return dependency.dataController
     }
+
+    var interfaceOrientationStream: InterfaceOrientationStreaming {
+        return dependency.interfaceOrientationStream
+    }
 }
 
 final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
@@ -47,7 +52,8 @@ final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, Dashbo
         // let childBuilder = dependencyProvider.childBuilder
         let viewController = DashboardSummaryViewController(listener: listener,
                                                             theme: dependencyProvider.theme,
-                                                            dataController: dependencyProvider.dataController)
+                                                            dataController: dependencyProvider.dataController,
+                                                            interfaceOrientationStream: dependencyProvider.interfaceOrientationStream)
         return viewController
     }
 }

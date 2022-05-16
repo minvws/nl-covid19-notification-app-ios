@@ -109,6 +109,8 @@ final class GraphView: View {
             buildCompact()
         }
 
+        backgroundColor = .clear
+
         if #available(iOS 15.0, *) {
             setupAudioGraph()
         }
@@ -162,14 +164,14 @@ final class GraphView: View {
         endDateLabel.textColor = theme.colors.captionGray
 
         selectedDateLabel.font = theme.fonts.caption1Bold
-        selectedDateLabel.textColor = theme.colors.textDark
+        selectedDateLabel.textColor = theme.colors.textPrimary
         selectedDateLabel.textAlignment = .center
-        selectedDateLabel.backgroundColor = .white
+        selectedDateLabel.backgroundColor = theme.colors.viewControllerBackground
 
         popupLabel.font = theme.fonts.caption1
         popupLabel.textColor = theme.colors.captionGray
 
-        popupBubbleView.backgroundColor = .white
+        popupBubbleView.backgroundColor = theme.colors.graphBackground
         popupBubbleView.layer.cornerRadius = 8
 
         popupContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -177,6 +179,8 @@ final class GraphView: View {
         popupContainerView.layer.shadowRadius = 12
         popupContainerView.layer.shadowColor = UIColor.black.cgColor
         popupContainerView.layer.shadowOpacity = 0.1
+
+        popupArrowView.tintColor = theme.colors.graphBackground
 
         popupContainerView.addSubview(popupBubbleView)
         popupContainerView.addSubview(popupArrowView)
@@ -403,6 +407,7 @@ private class GraphDrawingView: View {
 
         super.init(theme: theme)
         setContentCompressionResistancePriority(.required, for: .vertical)
+        backgroundColor = .clear
     }
 
     override func layoutSubviews() {

@@ -69,6 +69,7 @@ public protocol Colors: AnyObject {
 
     var focusBorder: UIColor { get }
 
+    var graphBackground: UIColor { get }
     var graphFill: UIColor { get }
     var graphStroke: UIColor { get }
     var graphLine: UIColor { get }
@@ -268,6 +269,10 @@ final class ENColors: Colors, Logging {
 
     var focusBorder: UIColor {
         return color(for: "FocusBorder")
+    }
+
+    var graphBackground: UIColor {
+        return color(for: "Graph/Background")
     }
 
     var graphFill: UIColor {
