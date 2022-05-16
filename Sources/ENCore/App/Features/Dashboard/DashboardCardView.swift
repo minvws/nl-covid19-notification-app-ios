@@ -193,7 +193,7 @@ final class DashboardCardView: UIControl, Themeable {
         outerStackView.addArrangedSubview(titleStackView)
 
         if let graph = viewModel.graph {
-            graphView = GraphView(theme: theme, data: graph, style: .compact)
+            graphView = GraphView(theme: theme, title: viewModel.title, data: graph, style: .compact)
             outerStackView.addArrangedSubview(graphView)
         }
 

@@ -772,6 +772,9 @@ extension String {
     static var dashboardTag: String { return Localization.string(for: "dashboard.tag") }
     static var dashboardServerError: String { return Localization.string(for: "dashboard.serverError") }
 
+    static var dashboardGraphVerticalAxisLabel: String { return Localization.string(for: "dashboard.graph.verticalAxisLabel") }
+    static var dashboardGraphHorizontalAxisLabel: String { return Localization.string(for: "dashboard.graph.horizontalAxisLabel") }
+
     func attributed() -> NSMutableAttributedString {
         return NSMutableAttributedString(string: self)
     }
