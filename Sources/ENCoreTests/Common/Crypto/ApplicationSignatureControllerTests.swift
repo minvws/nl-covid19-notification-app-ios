@@ -188,7 +188,8 @@ class ApplicationSignatureControllerTests: TestCase {
             appointmentPhoneNumber: "",
             featureFlags: [],
             notification: nil,
-            shareKeyURL: "http://www.coronatest.nl"
+            shareKeyURL: "http://www.coronatest.nl",
+            coronaTestURL: "https://coronatest.nl/ik-wil-me-laten-testen/online-een-afspraak-maken"
         )
     }
 }

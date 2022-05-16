@@ -1,3 +1,33 @@
+"yesterday" = "Вчера";
+"collapsed" = "Сгънато";
+"dayBeforeYesterday" = "Преди два дни";
+"expanded" = "Разгънато";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Хора с положителен тест";
+"dashboard.coronaMelderUsers.header" = "Хора, използващи CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "Хора с коронавирус в болница (без интензивни отделения)";
+"dashboard.icuAdmissions.header" = "Хора с коронавирус в интензивни отделения";
+"dashboard.vaccinationCoverage.header" = "Степен на ваксинация";
+"dashboard.vaccinationCoverage.booster.label" = "С поставена бустерна доза (над 18 г.)";
+"dashboard.vaccinationCoverage.elder.label" = "Напълно ваксинирани (над 18 г.)";
+"dashboard.title" = "Табло с данни за коронавируса";
+"dashboard.moreInfo.header" = "Повече данни";
+"dashboard.positiveTestResults.summary" = "Между %@ и %@ е имало средно <b>%@</b> положителни теста за коронавирус на ден. От всички тестове, направени в GGD, положителни са били <b>%@</b>.";
+"dashboard.coronaMelderUsers.summary" = "На %@ <b>%@</b> души са използвали приложението CoronaMelder с цел проследяване на контактите си.";
+"dashboard.hospitalAdmissions.summary" = "Между %@ и %@ са били приети в болница средно <b>%@</b> човека на ден. Последните дни не се вземат предвид при определяне на средния брой, тъй като данните за тези дни все още са непълни.";
+"dashboard.icuAdmissions.summary" = "Между %@ и %@ са били приети в интензивни отделения средно <b>%@</b> човека на ден. Последните дни не се вземат предвид при определяне на средния брой, тъй като данните за тези дни все още са непълни.";
+"dashboard.vaccinationCoverage.summary" = "Към момента <b>%@</b> от населението на и над 18 годишна възраст е напълно ваксинирано срещу коронавирус. <b>%@</b> от населението е с поставена бустерна доза.";
+"dashboard.moreInfo.link" = "Вижте всички данни";
+"dashboard.header" = "Ситуацията в Нидерландия в момента";
+"dashboard.summaryCardText" = "Вижте данните";
+"dashboard.summaryText" = "По-долу са публикувани няколко важни статистики относно използването на CoronaMelder и ситуацията с коронавируса в Нидерландия.";
+"dashboard.tag" = "Табло с данни за коронавируса";
+"dashboard.serverError" = "Зареждането на данни неуспешно";
+"dashboard.datePrefix" = "На %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Табло с данни за коронавируса";
+"dashboard.settings.description" = "Таблото с данни за коронавируса съдържа няколко важни статистики относно използването на CoronaMelder и ситуацията с коронавируса в Нидерландия.";
 "enableInternetDescription" = "Приложението се нуждае от интернет връзка, за да може да проверява дали хората, които си срещнал, по-късно са се оказали заразени с коронавирус.<br><br>Премини на wifi или включи мобилни данни за това приложение.";
 "enableInternetStepTitle" = "Включване на мобилни данни";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Нещо се обърка";
 "learnMore" = "Повече информация";
 "retry" = "Опитай отново";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "App Store не се отваря.";
 "updateApp.title" = "Приложението се нуждае от актуализация";
@@ -592,3 +621,4 @@
 "notification.app.unpaused.title" = "Включи CoronaMelder отново";
 "notification.app.unpaused.description" = "Приложението отново е активно. От този момент продължават да се събират данни за контактите ти.";
 "notification.app.unpaused.manualunpause.description" = "Внимание: приложението все още не е активно. Трябва да го включиш сам в приложението.";
+

@@ -89,6 +89,8 @@ extension UIImage {
     static var mobileData: UIImage? { return Image.named("MobileData") }
     static var digiD: UIImage? { return Image.named("DigiD") }
 
+    static var settingsCoronaDashboard: UIImage? { return Image.named("SettingsCoronaDashboard") }
+
     static var graphMarker: UIImage? { return Image.named("GraphMarker") }
     static var graphSelection: UIImage? { return Image.named("GraphSelection") }
     static var popupArrow: UIImage? { return Image.named("PopupArrow") }

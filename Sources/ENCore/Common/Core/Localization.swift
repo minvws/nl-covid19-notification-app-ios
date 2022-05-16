@@ -103,9 +103,7 @@ extension String {
 
     static var helpDeskPhoneNumber = "0800-1280"
     static var coronaTestPhoneNumber = "0800-1202"
-    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected person
-    static var coronaTestWebUrl = "https://coronatest.nl"
-    static var coronaTestWebUrlInternational = "https://coronatest.nl/en"
+    static var coronaTestExposedPhoneNumber = "0800-2035" // Only shown/used when we know the user was exposed to an affected perso
     static var interoperabilityFAQLink = "https://coronamelder.nl/%@/faq/13-gebruik-app-uit-ander-land/"
     static var githubLink = "https://github.com/minvws"
 
@@ -485,6 +483,11 @@ extension String {
     static var moreInformationSettingsStep2: String { return Localization.string(for: "moreInformation.settings.step2") }
     static var moreInformationSettingsStep2RowTitle: String { return Localization.string(for: "moreInformation.settings.step2.row.title") }
     static var moreInformationSettingsButton: String { return Localization.string(for: "moreInformation.settings.button") }
+
+    // MARK: - MoreInformation | Settings | Coronadashboard
+
+    static var moreInformationSettingsCoronadashboardTitle: String { return Localization.string(for: "dashboard.title") }
+    static var moreInformationSettingsCoronadashboardContent: String { return Localization.string(for: "dashboard.settings.description") }
 
     // MARK: - MoreInformation | Share
 

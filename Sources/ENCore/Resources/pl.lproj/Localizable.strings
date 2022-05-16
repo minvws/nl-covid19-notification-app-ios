@@ -1,3 +1,33 @@
+"yesterday" = "Wczoraj";
+"collapsed" = "Zwinięte";
+"dayBeforeYesterday" = "Przedwczoraj";
+"expanded" = "Rozwinięte";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Osoby z pozytywnym wynikiem testu na koronawirusa";
+"dashboard.coronaMelderUsers.header" = "Osoby, które korzystają z aplikacji CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "Osoby zakażone koronawirusem w szpitalu (bez OIT)";
+"dashboard.icuAdmissions.header" = "Osoby zakażone koronawirusem na OIT";
+"dashboard.vaccinationCoverage.header" = "Poziom wyszczepienia";
+"dashboard.vaccinationCoverage.booster.label" = "Przyjęcie dawki przypominającej szczepienia (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "W pełni zaszczepieni (18+)";
+"dashboard.title" = "Covid-19 w liczbach";
+"dashboard.moreInfo.header" = "Więcej danych";
+"dashboard.positiveTestResults.summary" = "W okresie od %@ do %@ średnia dzienna liczba osób z pozytywnym wynikiem testu na koronawirusa wynosi  <b>%@</b>. Ze wszystkich testów wykonanych w GGD <b>%@</b> było pozytywnych.";
+"dashboard.coronaMelderUsers.summary" = "Na%@ <b>%@</b> osób korzystało z aplikacji CoronaMelder, aby zapisywać swoje kontakty.";
+"dashboard.hospitalAdmissions.summary" = "W okresie od %@ do %@ średnia dzienna liczba osób przyjętych do szpitala wynosi <b>%@</b>. Ostatnie dni nie zostały wliczone do obliczenia średniej, ponieważ dane te nie są jeszcze kompletne.";
+"dashboard.icuAdmissions.summary" = "W okresie od  %@ do  %@ średnia dzienna liczba osób przyjętych na oddziały intensywnej terapii wynosi <b>%@</b>. Ostatnie dni nie zostały wliczone do obliczenia średniej, ponieważ dane te nie są jeszcze kompletne.";
+"dashboard.vaccinationCoverage.summary" = "W tym momencie <b>%@</b> mieszkańców powyżej 18 r.ż. jest w pełni zaszczepionych przeciwko koronawirusowi. <b>%@</b> mieszkańców otrzymało dawkę przypominającą szczepienia.";
+"dashboard.moreInfo.link" = "Zobacz wszystkie dane";
+"dashboard.header" = "Aktualna sytuacja w Holandii";
+"dashboard.summaryCardText" = "Zobacz dane";
+"dashboard.summaryText" = "Poniżej znajdziesz niektóre ważne dane statystyczne dotyczące korzystania z aplikacji CoronaMelder i sytuacji związanej z koronawirusem w Holandii.";
+"dashboard.tag" = "Covid-19 w liczbach";
+"dashboard.serverError" = "Wczytywanie danych nie powiodło się";
+"dashboard.datePrefix" = "Na %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Covid-19 w liczbach";
+"dashboard.settings.description" = "W raporcie \"Covid-19 w liczbach\" znajdziesz niektóre ważne dane statystyczne dotyczące korzystania z aplikacji CoronaMelder i sytuacji związanej z koronawirusem w Holandii.";
 "enableInternetDescription" = "Aplikacja wymaga połączenia internetowego, aby móc kontrolować, czy wykryto koronawirusa u osób, które spotkałeś.<br><br>Włącz wi-fi lub korzystanie z danych komórkowych dla tej aplikacji.";
 "enableInternetStepTitle" = "Włącz dane komórkowe";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Coś poszło nie tak";
 "learnMore" = "Czytaj więcej";
 "retry" = "Spróbuj ponownie";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "Nie można otworzyć App Store.";
 "updateApp.title" = "Aplikacja wymaga aktualizacji";
@@ -592,3 +621,4 @@
 "notification.app.unpaused.title" = "Ponownie włącz CoronaMelder";
 "notification.app.unpaused.description" = "Aplikacja jest ponownie aktywna. Od tego momentu Twoje spotkania będą znowu monitorowane.";
 "notification.app.unpaused.manualunpause.description" = "Uwaga: aplikacja nie jest jeszcze aktywna. Musisz samodzielnie ją włączyć w aplikacji.";
+

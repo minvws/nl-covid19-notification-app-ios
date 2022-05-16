@@ -15,7 +15,6 @@ import UIKit
 protocol RequestTestViewControllable: ViewControllable {}
 
 final class RequestTestViewController: ViewController, RequestTestViewControllable, UIAdaptivePresentationControllerDelegate, Logging {
-
     // MARK: - Init
 
     init(listener: RequestTestListener,
@@ -38,8 +37,8 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
     // MARK: - ViewController Lifecycle
 
     override func loadView() {
-        self.view = internalView
-        self.view.frame = UIScreen.main.bounds
+        view = internalView
+        view.frame = UIScreen.main.bounds
     }
 
     override func viewDidLoad() {
@@ -53,14 +52,18 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 
         internalView.linkButtonActionHandler = { [weak self] in
 
-            let testWebsiteUrl: String = Localization.isUsingDutchLanguage ? .coronaTestWebUrl : .coronaTestWebUrlInternational
+            guard let coronaTestURL = self?.dataController.getStoredCoronaTestURL() else {
+                self?.logError("Unable to to retreive coronaTestURL from storage")
+                return
+            }
 
-            guard let url = URL(string: testWebsiteUrl) else {
-                self?.logError("Unable to open \(testWebsiteUrl)")
+            guard let url = URL(string: coronaTestURL) else {
+                self?.logError("Unable to open \(coronaTestURL)")
                 return
             }
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+
         internalView.phoneButtonActionHandler = { [weak self] in
             guard let strongSelf = self else { return }
             let phoneNumberLink: String = .phoneNumberLink(from: strongSelf.testPhoneNumber)
@@ -127,11 +130,11 @@ final class RequestTestViewController: ViewController, RequestTestViewControllab
 }
 
 private final class RequestTestView: View {
-
     var phoneButtonActionHandler: (() -> ())? {
         get { infoView.secondaryActionHandler }
         set { infoView.secondaryActionHandler = newValue }
     }
+
     var linkButtonActionHandler: (() -> ())? {
         get { infoView.actionHandler }
         set { infoView.actionHandler = newValue }
@@ -158,7 +161,6 @@ private final class RequestTestView: View {
     // MARK: - Init
 
     init(theme: Theme, testPhoneNumber: String) {
-
         self.testPhoneNumber = testPhoneNumber
         let callButtonTitle = formattedPhoneNumber
 
@@ -166,7 +168,7 @@ private final class RequestTestView: View {
                                     secondaryButtonTitle: callButtonTitle,
                                     headerImage: .coronatestHeader,
                                     stickyButtons: true)
-        self.infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
+        infoView = InfoView(theme: theme, config: config, itemSpacing: 24)
         super.init(theme: theme)
     }
 

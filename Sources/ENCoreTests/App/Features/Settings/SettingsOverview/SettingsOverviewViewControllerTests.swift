@@ -18,6 +18,7 @@ final class SettingsOverviewViewControllerTests: TestCase {
     private var mockPauseController: PauseControllingMock!
     private var mockExposureDataController: ExposureDataControllingMock!
     private var mockPushNotificationStream: PushNotificationStreamingMock!
+    private var mockStorageController: StorageControllingMock!
 
     private let pushNotificationSubject = BehaviorSubject<UNNotification?>(value: nil)
 
@@ -30,6 +31,7 @@ final class SettingsOverviewViewControllerTests: TestCase {
         mockExposureDataController = ExposureDataControllingMock()
         mockPauseController = PauseControllingMock()
         mockPushNotificationStream = PushNotificationStreamingMock()
+        mockStorageController = StorageControllingMock()
 
         mockPushNotificationStream.foregroundNotificationStream = pushNotificationSubject
             .subscribe(on: MainScheduler.instance)
@@ -46,7 +48,8 @@ final class SettingsOverviewViewControllerTests: TestCase {
                                              theme: theme,
                                              exposureDataController: mockExposureDataController,
                                              pauseController: mockPauseController,
-                                             pushNotificationStream: mockPushNotificationStream)
+                                             pushNotificationStream: mockPushNotificationStream,
+                                             storageController: mockStorageController)
     }
 
     // MARK: - Tests
@@ -57,6 +60,22 @@ final class SettingsOverviewViewControllerTests: TestCase {
 
     func testSnapshotSettingsOverviewViewController_paused() {
         mockExposureDataController.pauseEndDate = Date(timeIntervalSince1970: 1611408705)
+        snapshots(matching: sut)
+    }
+
+    func testSnapshotSettingsOverviewViewController_CoronadashboardEnabled() {
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(true)
+        }
+        snapshots(matching: sut)
+    }
+
+    func testSnapshotSettingsOverviewViewController_CoronadashboardDisabled() {
+        mockStorageController.retrieveDataHandler = { _ in
+            let jsonEncoder = JSONEncoder()
+            return try! jsonEncoder.encode(false)
+        }
         snapshots(matching: sut)
     }
 }
