@@ -12,6 +12,8 @@ import RxSwift
 protocol NetworkControlling {
     var applicationManifest: Single<ApplicationManifest> { get }
 
+    var dashboardData: Single<DashboardData> { get }
+
     func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective>
 
     func applicationConfiguration(identifier: String) -> Single<ApplicationConfiguration>

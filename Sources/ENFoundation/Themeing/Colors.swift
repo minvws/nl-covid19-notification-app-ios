@@ -68,6 +68,13 @@ public protocol Colors: AnyObject {
     var cardBodyText: UIColor { get }
 
     var focusBorder: UIColor { get }
+
+    var graphFill: UIColor { get }
+    var graphStroke: UIColor { get }
+    var graphLine: UIColor { get }
+
+    var dashboardHeaderBackground: UIColor { get }
+    var dashboardHeaderText: UIColor { get }
 }
 
 final class ENColors: Colors, Logging {
@@ -261,6 +268,26 @@ final class ENColors: Colors, Logging {
 
     var focusBorder: UIColor {
         return color(for: "FocusBorder")
+    }
+
+    var graphFill: UIColor {
+        return color(for: "Graph/Fill")
+    }
+
+    var graphStroke: UIColor {
+        return color(for: "Graph/Stroke")
+    }
+
+    var graphLine: UIColor {
+        return color(for: "Graph/Line")
+    }
+
+    var dashboardHeaderBackground: UIColor {
+        return color(for: "Dashboard/HeaderBackground")
+    }
+
+    var dashboardHeaderText: UIColor {
+        return color(for: "Dashboard/HeaderText")
     }
 
     // MARK: - Private

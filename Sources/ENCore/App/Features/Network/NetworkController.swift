@@ -42,6 +42,27 @@ final class NetworkController: NetworkControlling, Logging {
         return observable.observe(on: MainScheduler.instance)
     }
 
+    var dashboardData: Single<DashboardData> {
+        let observable: Single<DashboardData> = .create { [weak self] observer in
+            guard let strongSelf = self else {
+                observer(.failure(ExposureDataError.internalError))
+                return Disposables.create()
+            }
+
+            strongSelf.networkManager.getDashboardData { result in
+                switch result {
+                case let .failure(error):
+                    observer(.failure(error))
+                case let .success(data):
+                    observer(.success(data))
+                }
+            }
+            return Disposables.create()
+        }
+
+        return observable.observe(on: MainScheduler.instance)
+    }
+
     func treatmentPerspective(identifier: String) -> Single<TreatmentPerspective> {
         return Single.create(subscribe: { (observer) -> Disposable in
             self.networkManager.getTreatmentPerspective(identifier: identifier) { result in

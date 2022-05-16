@@ -13,7 +13,11 @@ import UserNotifications
 /// @mockable
 protocol MainRouting: Routing {
     func attachStatus(topAnchor: NSLayoutYAxisAnchor)
+    func attachDashboardSummary()
     func attachMoreInformation()
+
+    func routeToDashboardDetail(with identifier: DashboardIdentifier)
+    func detachDashboardDetail(shouldDismissViewController: Bool)
 
     func routeToAboutApp()
     func detachAboutApp(shouldHideViewController: Bool)
@@ -73,6 +77,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         super.viewDidLoad()
 
         router?.attachStatus(topAnchor: view.topAnchor)
+        router?.attachDashboardSummary()
         router?.attachMoreInformation()
 
         if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
@@ -180,6 +185,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         router?.detachWebview(shouldDismissViewController: shouldHideViewController)
     }
 
+    // MARK: - DashboardListener
+
+    func dashboardRequestsDismissal(shouldDismissViewController: Bool) {
+        router?.detachDashboardDetail(shouldDismissViewController: shouldDismissViewController)
+    }
+
     // MARK: - AboutListener
 
     func aboutRequestsDismissal(shouldHideViewController: Bool) {
@@ -267,6 +278,12 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func enableSettingDidTriggerAction() {
         router?.detachEnableSetting(shouldDismissViewController: true)
+    }
+
+    // MARK: - DashboardSummaryListener
+
+    func dashboardSummaryRequestsRouteToDetail(with identifier: DashboardIdentifier) {
+        router?.routeToDashboardDetail(with: identifier)
     }
 
     // MARK: - Private

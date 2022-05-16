@@ -158,6 +158,11 @@
 "error.title" = "Er ging iets mis";
 "learnMore" = "Lees meer";
 "retry" = "Probeer opnieuw";
+"yesterday" = "Gisteren";
+"dayBeforeYesterday" = "Eergisteren";
+"collapsed" = "Ingeklapt";
+"expanded" = "Uitgeklapt";
+
 /* MARK: - Update App */
 "updateApp.error.message" = "De App Store kan niet geopend worden.";
 "updateApp.title" = "De app heeft een update nodig";
@@ -339,7 +344,9 @@
 "help.pause_app.description" = "Ja, je kunt de app tijdelijk pauzeren. Dit doe je op het startscherm via <b>Instellingen > App pauzeren </b>. Als je de app pauzeert, worden je ontmoetingen tijdelijk niet bijgehouden. Ook kun je geen melding krijgen als je bij iemand in de buurt bent geweest die later corona blijkt te hebben.<br><br>Als de pauze is afgelopen, krijg je meteen een melding om de app weer aan te zetten. Nadat je de app hebt aangezet, kun je nog meldingen krijgen van ontmoetingen voordat je de app pauzeerde.<br><br>Het is meestal niet aan te raden om de app te pauzeren, omdat je misschien vergeet deze weer aan te zetten. Je kunt de app wel pauzeren in bijzondere situaties. Bijvoorbeeld als je in de buurt komt van (mogelijke) coronapatiënten, maar zeker weet dat je medische beschermingsmiddelen draagt.";
 
 "help.apps_other_countries.title" = "Werkt CoronaMelder ook samen met apps uit andere landen?";
-"help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger.   Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
+"help.apps_other_countries.description" = "CoronaMelder werkt samen met een aantal apps uit andere Europese landen. Onder andere Duitsland, Ierland en Italië.<br><br>Stel, je bent langere tijd in de buurt geweest bij een gebruiker van de Duitse Corona-Warn-App. Deze persoon wordt in Duitsland getest en blijkt corona te hebben. Als die persoon zijn codes deelt met de Duitse GGD, dan krijg jij via CoronaMelder een melding. Andersom geldt hetzelfde. Omdat de corona-apps onderling samenwerken, hoef je dus maar één app aan te hebben staan.<br><br>CoronaMelder controleert vanaf 30 november 2020 dagelijks de codes van gebruikers uit verschillende landen. Hierdoor verbruikt de app meer mobiele data dan vroeger. 
+
+Je kunt via <b>Instellingen</b> op het hoofdscherm instellen dat de app alleen via wifi controleert of je in de buurt bent geweest van iemand met corona.";
 
 /* MARK: - Message */
 "message.default.title" = "Je was in de buurt van iemand met corona";
@@ -623,3 +630,29 @@
 "notification.app.unpaused.description" = "De app is weer actief. Je ontmoetingen worden vanaf nu weer bijgehouden.";
 "notification.app.unpaused.manualunpause.description" = "Let op: de app is nog niet actief. Je moet deze zelf aanzetten in de app.";
 
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Positief geteste mensen";
+"dashboard.coronaMelderUsers.header" = "Mensen die CoronaMelder gebruiken";
+"dashboard.hospitalAdmissions.header" = "Mensen met corona in ziekenhuis (zonder IC)";
+"dashboard.icuAdmissions.header" = "Mensen met corona op IC";
+"dashboard.vaccinationCoverage.header" = "Vaccinatiegraad";
+"dashboard.vaccinationCoverage.elder.label" = "Volledig gevaccineerd (18+)";
+"dashboard.vaccinationCoverage.booster.label" = "Opkomst boosterprik (18+)";
+"dashboard.title" = "Coronadashboard";
+"dashboard.moreInfo.header" = "Meer cijfers";
+"dashboard.positiveTestResults.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag positief getest op corona tussen %@ en %@. Van alle testen bij de GGD waren er <b>%@</b> positief";
+"dashboard.coronaMelderUsers.summary" = "%@ gebruikten <b>%@</b> mensen de CoronaMelder-app om ontmoetingen bij te houden.";
+"dashboard.hospitalAdmissions.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag opgenomen in het ziekenhuis tussen %@ en %@. De afgelopen dagen tellen niet mee voor het gemiddelde, omdat de cijfers over deze dagen nog niet compleet zijn.";
+"dashboard.icuAdmissions.summary" = "Er zijn gemiddeld <b>%@</b> mensen per dag opgenomen op een intensive care-afdeling tussen %@ en %@. De afgelopen dagen tellen niet mee voor het gemiddelde, omdat de cijfers over deze dagen nog niet compleet zijn.";
+"dashboard.vaccinationCoverage.summary" = "Op dit moment is <b>%@</b> van de bevolking van 18 jaar en ouder volledig gevaccineerd tegen corona. <b>%@</b> van de bevolking heeft een boosterprik tegen corona gekregen.";
+"dashboard.moreInfo.link" = "Bekijk alle cijfers";
+"dashboard.header" = "De situatie nu in Nederland";
+"dashboard.summaryCardText" = "Bekijk de cijfers";
+"dashboard.summaryText" = "Je vindt hieronder een aantal belangrijke statistieken over het gebruik van CoronaMelder en hoe het in Nederland met corona gaat.";
+"dashboard.tag" = "Coronadashboard";
+"dashboard.serverError" = "Gegevens laden mislukt";
+"dashboard.DatePrefix" = "Op %@";
+
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Coronadashboard";
+"dashboard.settings.description" = "Het Coronadashboard laat een aantal belangrijke statistieken zien over het gebruik van CoronaMelder en hoe het in Nederland met corona gaat.";

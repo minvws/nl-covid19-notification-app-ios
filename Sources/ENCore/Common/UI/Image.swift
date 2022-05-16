@@ -88,7 +88,21 @@ extension UIImage {
     static var settingsPlain: UIImage? { return Image.named("SettingsPlain") }
     static var mobileData: UIImage? { return Image.named("MobileData") }
     static var digiD: UIImage? { return Image.named("DigiD") }
+
     static var settingsCoronaDashboard: UIImage? { return Image.named("SettingsCoronaDashboard") }
+
+    static var graphMarker: UIImage? { return Image.named("GraphMarker") }
+    static var graphSelection: UIImage? { return Image.named("GraphSelection") }
+    static var popupArrow: UIImage? { return Image.named("PopupArrow") }
+
+    static var dashboardCardBackground: UIImage? { return Image.named("Dashboard/CardBackground") }
+    static var dashboardDetailButtonBackground: UIImage? { return Image.named("Dashboard/DetailButtonBackground") }
+    static var dashboardIcuIcon: UIImage? { return Image.named("Dashboard/Icu") }
+    static var dashboardHospitalIcon: UIImage? { return Image.named("Dashboard/Hospital") }
+    static var dashboardTestsIcon: UIImage? { return Image.named("Dashboard/Tests") }
+    static var dashboardUsersIcon: UIImage? { return Image.named("Dashboard/Users") }
+    static var dashboardUsersIllustration: UIImage? { return Image.named("Dashboard/UsersIllustration") }
+    static var dashboardVaccinationsIcon: UIImage? { return Image.named("Dashboard/Vaccinations") }
 }
 
 extension UIImage {

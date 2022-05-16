@@ -10,7 +10,7 @@ import Foundation
 import SnapKit
 import UIKit
 
-protocol MoreInformationCellListner: AnyObject {
+protocol MoreInformationCellListener: AnyObject {
     func didSelect(identifier: MoreInformationIdentifier)
 }
 
@@ -28,7 +28,7 @@ final class MoreInformationCell: UIControl, Themeable {
 
     // MARK: - Init
 
-    init(listener: MoreInformationCellListner, theme: Theme, data: MoreInformation, borderIsHidden: Bool = false) {
+    init(listener: MoreInformationCellListener, theme: Theme, data: MoreInformation, borderIsHidden: Bool = false) {
         self.listener = listener
         self.identifier = data.identifier
         self.theme = theme
@@ -60,7 +60,7 @@ final class MoreInformationCell: UIControl, Themeable {
 
     // MARK: - Private
 
-    private weak var listener: MoreInformationCellListner?
+    private weak var listener: MoreInformationCellListener?
     private let identifier: MoreInformationIdentifier
 
     private let borderView: View

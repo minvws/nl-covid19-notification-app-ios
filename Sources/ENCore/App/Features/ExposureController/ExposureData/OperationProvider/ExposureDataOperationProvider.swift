@@ -87,6 +87,11 @@ final class ExposureDataOperationProviderImpl: ExposureDataOperationProvider, Lo
                                                storageController: storageController)
     }
 
+    var requestDashboardDataOperation: RequestDashboardDataOperationProtocol {
+        return RequestDashboardDataOperation(networkController: networkController,
+                                             storageController: storageController)
+    }
+
     var updateTreatmentPerspectiveDataOperation: UpdateTreatmentPerspectiveDataOperationProtocol {
         return UpdateTreatmentPerspectiveDataOperation(networkController: networkController,
                                                        storageController: storageController)

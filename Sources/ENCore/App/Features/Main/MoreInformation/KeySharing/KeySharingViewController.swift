@@ -5,10 +5,10 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
-import UIKit
 import ENFoundation
-import SnapKit
 import RxSwift
+import SnapKit
+import UIKit
 
 /// @mockable
 protocol KeySharingRouting: Routing {
@@ -19,28 +19,28 @@ protocol KeySharingRouting: Routing {
 }
 
 final class KeySharingViewController: ViewController, KeySharingViewControllable, KeySharingViewListener, UIAdaptivePresentationControllerDelegate {
-    
+
     // MARK: - KeySharingViewControllable
-    
+
     weak var router: KeySharingRouting?
     private var disposeBag = DisposeBag()
-    
+
     init(theme: Theme,
          interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
-    
+
     override func loadView() {
         self.view = choiceView
         self.view.frame = UIScreen.main.bounds
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = closeBarButtonItem
         router?.viewDidLoad()
-        
+
         interfaceOrientationStream
             .isLandscape
             .observe(on: MainScheduler.instance)
@@ -48,16 +48,16 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
                 self?.choiceView.contentBottomConstraint?.update(inset: isLandscape ? 16 : 64)
             }.disposed(by: disposeBag)
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setThemeNavigationBar(withTitle: .moreInformationInfectedTitle, topItem: navigationItem)
     }
-        
+
     func push(viewController: ViewControllable, animated: Bool) {
         navigationController?.pushViewController(viewController.uiviewController, animated: animated)
     }
-    
+
     func dismiss(viewController: ViewControllable) {
         if let navigationController = viewController.uiviewController.navigationController {
             navigationController.dismiss(animated: true, completion: nil)
@@ -65,7 +65,7 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
             viewController.uiviewController.dismiss(animated: true, completion: nil)
         }
     }
-    
+
     func didSelect(identifier: MoreInformationIdentifier) {
         switch identifier {
         case .shareKeyGGD:
@@ -76,45 +76,45 @@ final class KeySharingViewController: ViewController, KeySharingViewControllable
             return
         }
     }
-    
+
     // MARK: - UIAdaptivePresentationControllerDelegate
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         router?.keySharingWantsDismissal(shouldDismissViewController: false)
     }
-    
+
     @objc private func didTapCloseButton(sender: UIBarButtonItem) {
         router?.keySharingWantsDismissal(shouldDismissViewController: true)
     }
-    
+
     // MARK: - Private
-    
+
     private lazy var choiceView = KeySharingView(theme: self.theme, listener: self)
     private lazy var closeBarButtonItem = UIBarButtonItem.closeButton(target: self, action: #selector(didTapCloseButton))
     private var interfaceOrientationStream: InterfaceOrientationStreaming
 }
 
-fileprivate protocol KeySharingViewListener: AnyObject {
+private protocol KeySharingViewListener: AnyObject {
     func didSelect(identifier: MoreInformationIdentifier)
 }
 
-private final class KeySharingView: View, MoreInformationCellListner {
-    
+private final class KeySharingView: View, MoreInformationCellListener {
+
     private lazy var scrollableStackView = ScrollableStackView(theme: theme)
     private weak var listener: KeySharingViewListener?
     fileprivate var contentBottomConstraint: Constraint?
-    
+
     private lazy var contentContainer: UIView = {
         let view = UIView(frame: .zero)
         view.addSubview(titleLabel)
         view.addSubview(descriptionLabel)
         return view
     }()
-    
+
     private lazy var buttonContainer: UIStackView = {
         let stack = UIStackView(frame: .zero)
         stack.axis = .vertical
-        
+
         let cells = [
             MoreInformationCellViewModel(
                 identifier: .shareKeyWebsite,
@@ -127,15 +127,15 @@ private final class KeySharingView: View, MoreInformationCellListner {
                 title: .moreInformationKeySharingCoronaTestOption2Title,
                 subtitle: .moreInformationKeySharingCoronaTestOption2Content)
         ]
-        
+
         for (index, object) in cells.enumerated() {
             let view = MoreInformationCell(listener: self, theme: theme, data: object)
             stack.addListSubview(view, index: index, total: cells.count)
         }
-        
+
         return stack
     }()
-    
+
     private lazy var titleLabel: Label = {
         let label = Label(frame: .zero)
         label.isUserInteractionEnabled = true
@@ -146,7 +146,7 @@ private final class KeySharingView: View, MoreInformationCellListner {
         label.accessibilityTraits = .header
         return label
     }()
-    
+
     private lazy var descriptionLabel: Label = {
         let label = Label()
         label.numberOfLines = 0
@@ -156,24 +156,24 @@ private final class KeySharingView: View, MoreInformationCellListner {
         label.font = theme.fonts.body
         return label
     }()
-    
+
     // MARK: - Init
-    
+
     init(theme: Theme,
          listener: KeySharingViewListener) {
         self.listener = listener
         super.init(theme: theme)
     }
-    
+
     func didSelect(identifier: MoreInformationIdentifier) {
         listener?.didSelect(identifier: identifier)
     }
-    
+
     // MARK: - Overrides
-    
+
     override func build() {
         super.build()
-        
+
         addSubview(scrollableStackView)
         scrollableStackView.spacing = 0
         scrollableStackView.stackViewBottomMargin = 32
@@ -182,21 +182,21 @@ private final class KeySharingView: View, MoreInformationCellListner {
             buttonContainer
         ])
     }
-    
+
     override func setupConstraints() {
         super.setupConstraints()
-        
+
         scrollableStackView.snp.makeConstraints { maker in
             maker.leading.trailing.equalTo(safeAreaLayoutGuide)
             maker.top.bottom.equalToSuperview()
         }
-        
-        titleLabel.snp.makeConstraints { (maker) in
+
+        titleLabel.snp.makeConstraints { maker in
             maker.top.equalTo(contentContainer)
             maker.leading.trailing.equalTo(contentContainer.safeAreaLayoutGuide).inset(16)
         }
-        
-        descriptionLabel.snp.makeConstraints { (maker) in
+
+        descriptionLabel.snp.makeConstraints { maker in
             maker.top.equalTo(titleLabel.snp.bottom).offset(21)
             contentBottomConstraint = maker.bottom.equalTo(contentContainer).inset(64).constraint
             maker.leading.trailing.equalTo(contentContainer.safeAreaLayoutGuide).inset(16)

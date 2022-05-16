@@ -27,7 +27,7 @@ protocol MainDependency {
     var pushNotificationStream: PushNotificationStreaming { get }
 }
 
-final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
+final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDependency, DashboardSummaryDependency, DashboardDependency, MoreInformationDependency, AboutDependency, ShareSheetDependency, ReceivedNotificationDependency, RequestTestDependency, ShareKeyViaPhoneDependency, HelpDependency, MessageDependency, EnableSettingDependency, WebviewDependency, SettingsDependency, KeySharingDependency {
 
     var theme: Theme {
         return dependency.theme
@@ -47,6 +47,14 @@ final class MainDependencyProvider: DependencyProvider<MainDependency>, StatusDe
 
     var statusBuilder: StatusBuildable {
         return StatusBuilder(dependency: self)
+    }
+
+    var dashboardSummaryBuilder: DashboardSummaryBuildable {
+        return DashboardSummaryBuilder(dependency: self)
+    }
+
+    var dashboardBuilder: DashboardBuildable {
+        return DashboardBuilder(dependency: self)
     }
 
     var moreInformationBuilder: MoreInformationBuildable {
@@ -144,6 +152,8 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
 
         return MainRouter(viewController: viewController,
                           statusBuilder: dependencyProvider.statusBuilder,
+                          dashboardSummaryBuilder: dependencyProvider.dashboardSummaryBuilder,
+                          dashboardBuilder: dependencyProvider.dashboardBuilder,
                           moreInformationBuilder: dependencyProvider.moreInformationBuilder,
                           aboutBuilder: dependencyProvider.aboutBuilder,
                           shareBuilder: dependencyProvider.shareBuilder,

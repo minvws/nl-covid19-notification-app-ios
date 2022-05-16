@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "GraphSelection.pdf",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 0,
+          "top" : 3
+        },
+        "center" : {
+          "height" : 4,
+          "mode" : "tile"
+        },
+        "mode" : "3-part-vertical"
+      }
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

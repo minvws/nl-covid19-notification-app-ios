@@ -43,6 +43,19 @@ final class NetworkManager: NetworkManaging, Logging {
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: Manifest.self, completion: completion)
     }
 
+    /// Fetches the dashboard data from server
+    /// - Parameter completion: return
+    func getDashboardData(completion: @escaping (Result<DashboardData, NetworkError>) -> ()) {
+
+        let expectedContentType = HTTPContentType.zip
+        let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
+
+        let url = configuration.dashboardUrl(useFallback: useFallbackEndpoint)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+
+        downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: DashboardData.self, completion: completion)
+    }
+
     /// Fetches the treatment perspective message from server
     /// - Parameters:
     ///   - id: id of the resourceBundleId

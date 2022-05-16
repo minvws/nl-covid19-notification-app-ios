@@ -1,0 +1,65 @@
+{
+  "images" : [
+    {
+      "filename" : "DetailButtonBackground.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 23,
+          "left" : 24,
+          "right" : 22,
+          "top" : 22
+        },
+        "center" : {
+          "height" : 15,
+          "mode" : "tile",
+          "width" : 18
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "1x"
+    },
+    {
+      "filename" : "DetailButtonBackground@2x.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 38,
+          "left" : 40,
+          "right" : 43,
+          "top" : 37
+        },
+        "center" : {
+          "height" : 20,
+          "mode" : "tile",
+          "width" : 29
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "2x"
+    },
+    {
+      "filename" : "DetailButtonBackground@3x.png",
+      "idiom" : "universal",
+      "resizing" : {
+        "cap-insets" : {
+          "bottom" : 52,
+          "left" : 45,
+          "right" : 67,
+          "top" : 55
+        },
+        "center" : {
+          "height" : 61,
+          "mode" : "tile",
+          "width" : 64
+        },
+        "mode" : "9-part"
+      },
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

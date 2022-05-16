@@ -78,6 +78,7 @@ protocol ExposureDataControlling: AnyObject {
     func getAppointmentPhoneNumber() -> Single<String>
     func updateLastLocalNotificationExposureDate(_ date: Date)
     func updateTreatmentPerspective() -> Completable
+    func getDashboardData() -> Single<DashboardData>
     var isFirstRun: Bool { get }
     var didCompleteOnboarding: Bool { get set }
     var seenAnnouncements: [Announcement] { get set }

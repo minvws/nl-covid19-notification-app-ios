@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// @mockable(history: present = true)
-protocol MainViewControllable: ViewControllable, StatusListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
+protocol MainViewControllable: ViewControllable, StatusListener, DashboardSummaryListener, DashboardListener, MoreInformationListener, AboutListener, ShareSheetListener, ReceivedNotificationListener, RequestTestListener, HelpListener, MessageListener, EnableSettingListener, WebviewListener, SettingsListener, KeySharingListener {
 
     var router: MainRouting? { get set }
 
@@ -23,6 +23,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     init(viewController: MainViewControllable,
          statusBuilder: StatusBuildable,
+         dashboardSummaryBuilder: DashboardSummaryBuildable,
+         dashboardBuilder: DashboardBuildable,
          moreInformationBuilder: MoreInformationBuildable,
          aboutBuilder: AboutBuildable,
          shareBuilder: ShareSheetBuildable,
@@ -35,6 +37,8 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
          settingsBuilder: SettingsBuildable,
          applicationController: ApplicationControlling) {
         self.statusBuilder = statusBuilder
+        self.dashboardSummaryBuilder = dashboardSummaryBuilder
+        self.dashboardBuilder = dashboardBuilder
         self.moreInformationBuilder = moreInformationBuilder
         self.aboutBuilder = aboutBuilder
         self.shareBuilder = shareBuilder
@@ -62,6 +66,15 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         viewController.embed(stackedViewController: statusViewController)
     }
 
+    func attachDashboardSummary() {
+        guard dashboardSummaryViewController == nil else { return }
+
+        let dashboardSummaryViewController = dashboardSummaryBuilder.build(withListener: viewController)
+        self.dashboardSummaryViewController = dashboardSummaryViewController
+
+        viewController.embed(stackedViewController: dashboardSummaryViewController)
+    }
+
     func attachMoreInformation() {
         guard moreInformationViewController == nil else { return }
 
@@ -69,6 +82,26 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.moreInformationViewController = moreInformationViewController
 
         viewController.embed(stackedViewController: moreInformationViewController)
+    }
+
+    func routeToDashboardDetail(with identifier: DashboardIdentifier) {
+        guard dashboardRouter == nil else { return }
+
+        let dashboardRouter = dashboardBuilder.build(withListener: viewController, identifier: identifier)
+        self.dashboardRouter = dashboardRouter
+
+        viewController.present(viewController: dashboardRouter.viewControllable,
+                               animated: true)
+    }
+
+    func detachDashboardDetail(shouldDismissViewController: Bool) {
+        guard let dashboardDetailRouter = dashboardRouter else { return }
+
+        self.dashboardRouter = nil
+
+        if shouldDismissViewController {
+            viewController.dismiss(viewController: dashboardDetailRouter.viewControllable, animated: true)
+        }
     }
 
     func routeToAboutApp() {
@@ -177,7 +210,7 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
             // Dismisses all presented viewcontrollers
             applicationController.dismissAllPresentedViewController(animated: true, completion: nil)
         }
-        
+
         self.keySharingRouter = nil
     }
 
@@ -274,6 +307,12 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
     private let statusBuilder: StatusBuildable
     private var statusViewController: ViewControllable?
 
+    private let dashboardSummaryBuilder: DashboardSummaryBuildable
+    private var dashboardSummaryViewController: ViewControllable?
+
+    private let dashboardBuilder: DashboardBuildable
+    private var dashboardRouter: Routing?
+
     private let moreInformationBuilder: MoreInformationBuildable
     private var moreInformationViewController: ViewControllable?
 
@@ -303,6 +342,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
 
     private let webviewBuilder: WebviewBuildable
     private var webviewViewController: ViewControllable?
-    
+
     private let applicationController: ApplicationControlling
 }
