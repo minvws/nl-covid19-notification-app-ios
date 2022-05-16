@@ -26,6 +26,7 @@ protocol SettingsDependency {
     var dataController: ExposureDataControlling { get }
     var pauseController: PauseControlling { get }
     var pushNotificationStream: PushNotificationStreaming { get }
+    var storageController: StorageControlling { get }
 }
 
 private final class SettingsDependencyProvider: DependencyProvider<SettingsDependency>, SettingsOverviewDependency, MobileDataDependency, PauseConfirmationDependency {
@@ -56,6 +57,10 @@ private final class SettingsDependencyProvider: DependencyProvider<SettingsDepen
 
     var pushNotificationStream: PushNotificationStreaming {
         dependency.pushNotificationStream
+    }
+
+    var storageController: StorageControlling {
+        dependency.storageController
     }
 }
 

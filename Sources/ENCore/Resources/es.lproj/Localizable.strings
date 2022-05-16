@@ -1,3 +1,33 @@
+"yesterday" = "Ayer";
+"collapsed" = "Replegado";
+"dayBeforeYesterday" = "Antes de ayer";
+"expanded" = "Desplegado";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Personas que han dado positivo en test";
+"dashboard.coronaMelderUsers.header" = "Personas que utilizan CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "Personas hospitalizadas por coronavirus (no en UCI)";
+"dashboard.icuAdmissions.header" = "Personas con coronavirus en UCI";
+"dashboard.vaccinationCoverage.header" = "Grado de vacunación";
+"dashboard.vaccinationCoverage.booster.label" = "Dosis de refuerzo (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Vacunación completa (18+)";
+"dashboard.title" = "Panel de coronavirus";
+"dashboard.moreInfo.header" = "Otras cifras";
+"dashboard.positiveTestResults.summary" = "A diario dieron positivo de media <b>%@</b> personas por coronavirus entre %@ y %@. De todos los tests realizados por el GGD, <b>%@</b> fueron positivos.";
+"dashboard.coronaMelderUsers.summary" = "El %@ utilizaron <b>%@</b> personas la aplicación CoronaMelder para controlar las personas con las que se habían reunido.";
+"dashboard.hospitalAdmissions.summary" = "De media fueron ingresadas <b>%@</b> personas al día entre %@ y %@. No se tienen en cuenta los últimos días para la media, ya que las cifras para estos días aún no están completas.";
+"dashboard.icuAdmissions.summary" = "A diario, <b>%@</b> personas ingresaron de media en una unidad de cuidados intensivos entre %@ y %@. No se tienen en cuenta los últimos días para la media, ya que las cifras para estos días aún no están completas.";
+"dashboard.vaccinationCoverage.summary" = "Actualmente, un <b>%@</b> de la población mayor de 18 años ha recibido la pauta completa de vacunación contra el coronavirus. Un <b>%@</b> de la población ha recibido una dosis de refuerzo contra el coronavirus.";
+"dashboard.moreInfo.link" = "Vea todas las cifras";
+"dashboard.header" = "Situación actual en los Países Bajos";
+"dashboard.summaryCardText" = "Vea las cifras";
+"dashboard.summaryText" = "A continuación encontrará una serie de estadísticas importantes acerca del uso de CoronaMelder y de la evolución del coronavirus en los Países Bajos.";
+"dashboard.tag" = "Panel de coronavirus";
+"dashboard.serverError" = "Se ha producido un error al cargar los datos";
+"dashboard.datePrefix" = "El %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Panel de coronavirus";
+"dashboard.settings.description" = "El panel de coronavirus ofrece una serie de estadísticas importantes acerca del uso de CoronaMelder y de la evolución del coronavirus en los Países Bajos.";
 "enableInternetDescription" = "La app necesita una conexión a internet para poder controlar si las personas con las que te has encontrado resultaron tener coronavirus.<br><br> Conéctate al wifi o activa los datos móviles para esta app.";
 "enableInternetStepTitle" = "Activar datos móviles";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "Ha habido un error";
 "learnMore" = "Más información";
 "retry" = "Prueba otra vez";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "No se puede abrir la App Store.";
 "updateApp.title" = "La app necesita actualizarse";
@@ -475,7 +504,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.keysharing.coronatest.step1.button" = "Compartir códigos";
 "moreInformation.keysharing.coronatest.step1.done" = "Códigos compartidos";
 "moreInformation.keysharing.coronatest.step2.title" = "Escribe tu clave GGD o cópiala";
-"moreInformation.keysharing.coronatest.step3.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
+"moreInformation.keysharing.coronatest.step3.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras personas.";
 "moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
 "moreInformation.keysharing.coronatest.step3.button" = "Ir a coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "¿Ya has introducido tu clave GGD?";
@@ -594,3 +623,4 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "notification.app.unpaused.title" = "Volver a activar CoronaMelder";
 "notification.app.unpaused.description" = "La app vuelve a estar activada. A partir de ahora, se registrarán tus encuentros.";
 "notification.app.unpaused.manualunpause.description" = "Atención: la app aún no está activada. Tienes que activarla tú mismo en la app.";
+

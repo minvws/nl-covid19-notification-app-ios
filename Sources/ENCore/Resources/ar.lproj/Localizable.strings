@@ -1,3 +1,33 @@
+"yesterday" = "أمس";
+"collapsed" = "سقط";
+"dayBeforeYesterday" = "أول أمس";
+"expanded" = "توسع";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "الأفراد الذين ظهرت نتيجتهم إيجابية";
+"dashboard.coronaMelderUsers.header" = "الأفراد الذين يستخدمون تطبيق كورونا ميلدر";
+"dashboard.hospitalAdmissions.header" = "الأفراد المصابون بفيروس كورونا في المستشفى (خارج وحدة الرعاية المركزة)";
+"dashboard.icuAdmissions.header" = "الأفراد المصابون بفيروس كورونا داخل وحدة الرعاية المركزة";
+"dashboard.vaccinationCoverage.header" = "تغطية التلقيح";
+"dashboard.vaccinationCoverage.booster.label" = "مشاركة الجرعات المعززة (+18)";
+"dashboard.vaccinationCoverage.elder.label" = "ملقح بالكامل (+18)";
+"dashboard.title" = "لوحة قياس فيروس كورونا ";
+"dashboard.moreInfo.header" = "المزيد من الأرقام";
+"dashboard.positiveTestResults.summary" = "في المتوسط، ظهرت إيجابية نتيجة اختبار فيروس كورونا لـ <b>%@</b>  شخص في اليوم بين %@ و%@. ومن إجمالي الاختبارات التي أجريت في المعاهد الوطنية للصحة العامة ظهرت إيجابية اختبار <b>%@</b>.";
+"dashboard.coronaMelderUsers.summary" = "%@ <b>%@</b>  شخص يستخدم تطبيق كورونا ميلدر لتعقب المخالطين. ";
+"dashboard.hospitalAdmissions.summary" = "في المتوسط، دخل <b>%@</b> إلى المستشفى في اليوم فيما بين %@ و%@. ولم يتم إدراج آخر بضعة أيام في حساب المتوسط نظرًا لعدم استكمال الأرقام في هذه الأيام حتى الآن.";
+"dashboard.icuAdmissions.summary" = "في المتوسط، دخل <b>%@</b> شخص إلى وحدة الرعاية المركزة في اليوم فيما بين %@ و%@. ولم يتم إدراج الأيام السابقة في حساب المتوسط نظرًا لعدم استكمال الأرقام في هذه الأيام حتى الآن.";
+"dashboard.vaccinationCoverage.summary" = "في الوقت الحالي، تلقى <b>%@</b> من جميع السكان البالغين 18 عامًا فأكبر التلقيح الكامل ضد فيروس كورونا. وتلقى <b>%@</b> من السكان جرعة معززة ضد فيروس كورونا.";
+"dashboard.moreInfo.link" = "اعرض جميع الأرقام";
+"dashboard.header" = "الوضع في هولندا";
+"dashboard.summaryCardText" = "اعرض الأرقام";
+"dashboard.summaryText" = "فيما يلي أدناه، ستجد بعض الإحصاءات المهمة بشأن استخدام تطبيق كورونا ميلدر وكيفية تطور فيروس كورونا في هولندا.";
+"dashboard.tag" = "لوحة قياس فيروس كورونا";
+"dashboard.serverError" = "فشل تحميل البيانات";
+"dashboard.datePrefix" = "في %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "لوحة قياس فيروس كورونا";
+"dashboard.settings.description" = "تظهر لوحة القياس بعض الإحصاءات المهمة بشأن استخدام تطبيق كورونا ميلدر وكيفية تطور فيروس كورونا في هولندا.";
 "enableInternetDescription" = "يحتاج التطبيق إلى الاتصال بالإنترنت للتحقق مما إذا كان الأشخاص الذين قابلتهم لاحقًا مصابين بكورونا. <br><br> اتصل بـالـ WiFi أو شغّل للتطبيق خدمة تجوال البيانات.";
 "enableInternetStepTitle" = "تشغيل خدمة تجوال البيانات";
 /* MARK: - Accessibility */
@@ -128,7 +158,6 @@
 "error.title" = "حدث خطأ ما";
 "learnMore" = "إقرأ المزيد";
 "retry" = "حاول مجددًا";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "لا يمكن فتح متجر التطبيقات [App Store]";
 "updateApp.title" = "التطبيق بحاجة إلى تحديث";
@@ -599,3 +628,4 @@
 "notification.app.unpaused.title" = "قم بتشغيل CoronaMelder من جديد";
 "notification.app.unpaused.description" = "التطبيق نشط مرة أخرى. سيتم تعقب مصادفاتك من الآن فصاعدًا.";
 "notification.app.unpaused.manualunpause.description" = "انتبه: التطبيق غير نشط بعد. يجب عليك تشغيله مرة أخرى بنفسك.";
+

@@ -1,3 +1,33 @@
+"yesterday" = "Hier";
+"collapsed" = "Réduit";
+"dayBeforeYesterday" = "Avant-hier";
+"expanded" = "Déployé";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "Personnes testées positives";
+"dashboard.coronaMelderUsers.header" = "Personnes qui utilisent CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "Personnes positives à la Covid-19 et hospitalisées (hors soins intensifs)";
+"dashboard.icuAdmissions.header" = "Personnes positives à la Covid-19 aux soins intensifs";
+"dashboard.vaccinationCoverage.header" = "Taux de vaccination";
+"dashboard.vaccinationCoverage.booster.label" = "Dose de rappel reçue (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Entièrement vacciné (18+)";
+"dashboard.title" = "Tableau de bord Covid-19";
+"dashboard.moreInfo.header" = "Plus de chiffres";
+"dashboard.positiveTestResults.summary" = "En moyenne, on a compté <b>%@</b>  nouvelles infections à la Covid-19 par jour entre le %@ et le %@. <b>%@</b> de tous les tests effectués dans un GGD étaient positifs.";
+"dashboard.coronaMelderUsers.summary" = "Le %@, <b>%@</b> personnes utilisaient l'appli CoronaMelder pour suivre leurs contacts.";
+"dashboard.hospitalAdmissions.summary" = "En moyenne, <b>%@</b> personnes ont été admises par jour à l'hôpital entre le %@ et le %@. Les derniers jours ne sont pas pris en compte car on ne dispose pas encore des chiffres complets.";
+"dashboard.icuAdmissions.summary" = "En moyenne, <b>%@</b> personnes par jour ont été admises en soins intensifs entre le %@ et le %@. Les derniers jours ne sont pas pris en compte car on ne dispose pas encore des chiffres complets.";
+"dashboard.vaccinationCoverage.summary" = "Actuellement, <b>%@</b> de la population âgée d'au moins 18 ans est entièrement vaccinée contre la Covid-19, et <b>%@</b> de la population a reçu une dose de rappel.";
+"dashboard.moreInfo.link" = "Voir tous les chiffres";
+"dashboard.header" = "Situation à ce jour aux Pays-Bas";
+"dashboard.summaryCardText" = "Voir les chiffres";
+"dashboard.summaryText" = "Vous trouverez ci-dessous plusieurs statistiques clés sur l'utilisation de CoronaMelder et sur la situation actuelle de la Covid-19 aux Pays-Bas.";
+"dashboard.tag" = "Tableau de bord Covid-19";
+"dashboard.serverError" = "Échec du chargement des données";
+"dashboard.datePrefix" = "Le %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Tableau de bord Covid-19";
+"dashboard.settings.description" = "Le tableau de bord affiche plusieurs statistiques clés sur l'utilisation de CoronaMelder et sur la situation de la Covid-19 aux Pays-Bas.";
 "enableInternetDescription" = "L'application a besoin d'une connexion à Internet pour pouvoir contrôler si les personnes que vous avez rencontrées se sont avérées avoir le Covid-19 par la suite.<br><br>Connectez-vous au Wifi ou activez les données mobiles pour cette application.";
 "enableInternetStepTitle" = "Activer les données mobiles";
 /* MARK: - Accessibility */
@@ -130,7 +160,6 @@
 "error.title" = "Un problème est survenu";
 "learnMore" = "En savoir plus";
 "retry" = "Veuillez réessayer.";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "Impossible d'ouvrir l'App Store.";
 "updateApp.title" = "L'application a besoin d’être mise à jour";
@@ -595,3 +624,4 @@
 "notification.app.unpaused.title" = "Réactivez CoronaMelder";
 "notification.app.unpaused.description" = "L'application est réactivée. À partir de maintenant, vos rencontres sont à nouveau enregistrées.";
 "notification.app.unpaused.manualunpause.description" = "Attention : l'application n'est pas encore activée. Vous devez l'activer vous-même dans l'application.";
+
