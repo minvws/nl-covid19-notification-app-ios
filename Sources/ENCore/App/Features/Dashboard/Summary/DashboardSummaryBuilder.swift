@@ -27,7 +27,7 @@ protocol DashboardSummaryDependency {
     var dataController: ExposureDataControlling { get }
 }
 
-private final class DashboardSummaryDependencyProvider: DependencyProvider<DashboardSummaryDependency> /* , ChildDependency */ {
+private final class DashboardSummaryDependencyProvider: DependencyProvider<DashboardSummaryDependency> {
     // MARK: - Forwarding Dependencies
 
     var theme: Theme {
