@@ -8,6 +8,7 @@
 @testable import ENCore
 import ENFoundation
 import Foundation
+import RxSwift
 import SnapshotTesting
 import XCTest
 
@@ -16,6 +17,7 @@ final class EndOfLifeViewControllerTests: TestCase {
     private var viewController: EndOfLifeViewController!
     private let listener = EndOfLifeListenerMock()
     private let storageController = StorageControllingMock()
+    private let interfaceOrientationStream = InterfaceOrientationStreamingMock(isLandscape: BehaviorSubject(value: false), currentOrientationIsLandscape: false)
 
     // MARK: - Setup
 
@@ -24,7 +26,7 @@ final class EndOfLifeViewControllerTests: TestCase {
 
         recordSnapshots = false || forceRecordAllSnapshots
 
-        viewController = EndOfLifeViewController(listener: listener, theme: theme, storageController: storageController)
+        viewController = EndOfLifeViewController(listener: listener, theme: theme, storageController: storageController, interfaceOrientationStream: interfaceOrientationStream)
     }
 
     // MARK: - Tests
