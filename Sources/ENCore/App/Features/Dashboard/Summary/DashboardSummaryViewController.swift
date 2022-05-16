@@ -19,9 +19,11 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
 
     init(listener: DashboardSummaryListener,
          theme: Theme,
-         dataController: ExposureDataControlling) {
+         dataController: ExposureDataControlling,
+         interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.dataController = dataController
+        self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
 
@@ -48,12 +50,19 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
             }, onFailure: { error in
                 // TODO: Handle
             }).disposed(by: disposeBag)
+
+        interfaceOrientationStream
+            .isLandscape
+            .subscribe { [weak self] isLandscape in
+                self?.dashboardView.landscapeOrientation = isLandscape
+            }.disposed(by: disposeBag)
     }
 
     // MARK: - Private
 
     private var disposeBag = DisposeBag()
     private let dataController: ExposureDataControlling
+    private let interfaceOrientationStream: InterfaceOrientationStreaming
     private lazy var dashboardView: DashboardView = DashboardView(theme: self.theme)
 
     private func convertToCards(dashboardData: DashboardData) -> [DashboardCard] {
@@ -137,11 +146,20 @@ private final class DashboardView: View {
     private var headerStackView = UIStackView()
     private var headerBackgroundView = UIView()
     private var headerLabel = UILabel()
-    private var currentSituationLabelContainer = UIView()
     private var currentSituationLabel = UILabel()
 
+    private var landscapeConstraints = [NSLayoutConstraint]()
+
     override init(theme: Theme) {
+        landscapeOrientation = false
         super.init(theme: theme)
+    }
+
+    var landscapeOrientation: Bool {
+        didSet {
+            landscapeConstraints.forEach { $0.isActive = landscapeOrientation }
+            evaluateHeight()
+        }
     }
 
     // MARK: - Overrides
@@ -153,7 +171,7 @@ private final class DashboardView: View {
 
         addSubview(outerStackView)
 
-        outerStackView.spacing = 3
+        outerStackView.spacing = 12
         outerStackView.axis = .vertical
 
         headerBackgroundView.addSubview(headerLabel)
@@ -163,9 +181,11 @@ private final class DashboardView: View {
         headerLabel.textColor = theme.colors.dashboardHeaderText
         headerLabel.text = .dashboardTitle.uppercased()
         headerLabel.font = theme.fonts.caption1Bold
+        headerLabel.setContentHuggingPriority(.required, for: .vertical)
 
         currentSituationLabel.text = .dashboardHeader
         currentSituationLabel.font = theme.fonts.headlineBold
+        currentSituationLabel.setContentHuggingPriority(.required, for: .vertical)
 
         headerStackView.addArrangedSubview(headerBackgroundView)
         headerStackView.addArrangedSubview(currentSituationLabel)
@@ -177,7 +197,6 @@ private final class DashboardView: View {
         headerContainer.addSubview(headerStackView)
 
         outerStackView.addArrangedSubview(headerContainer)
-        outerStackView.addArrangedSubview(currentSituationLabelContainer)
         outerStackView.addArrangedSubview(scrollView)
 
         cardStackView.axis = .horizontal
@@ -212,8 +231,8 @@ private final class DashboardView: View {
         outerStackView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().offset(16)
             maker.bottom.equalToSuperview()
-            maker.left.equalToSuperview()
-            maker.right.equalToSuperview()
+            maker.left.equalTo(safeAreaLayoutGuide)
+            maker.right.equalTo(safeAreaLayoutGuide)
         }
 
         cardStackView.snp.makeConstraints { maker in
@@ -235,8 +254,22 @@ private final class DashboardView: View {
 
     fileprivate func set(data: [DashboardCard], listener: DashboardCardViewListener) {
         data.forEach {
-            cardStackView.addArrangedSubview(DashboardCardView(listener: listener, theme: theme, viewModel: $0))
+            let cardView = DashboardCardView(listener: listener, theme: theme, viewModel: $0)
+            cardStackView.addArrangedSubview(cardView)
+            setupConstraints(for: cardView)
         }
+    }
+
+    private func setupConstraints(for cardView: DashboardCardView) {
+        cardView.snp.makeConstraints { maker in
+            maker.width.equalTo(scrollView.frameLayoutGuide)
+                .offset(-64)
+                .priority(800)
+        }
+
+        let landscapeConstraint = cardView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5)
+        landscapeConstraint.isActive = landscapeOrientation
+        landscapeConstraints.append(landscapeConstraint)
     }
 
     /// Calculates the desired height for the current content
