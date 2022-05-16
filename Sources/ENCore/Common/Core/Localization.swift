@@ -146,6 +146,11 @@ extension String {
     static var endOfLifeTitle: String { return Localization.string(for: "endOfLife.title") }
     static var endOfLifeDescription: String { return Localization.string(for: "endOfLife.description") }
 
+    // MARK: - No Internet
+
+    static var noInternetErrorTitle: String { return Localization.string(for: "noInternet.error.title") }
+    static var noInternetErrorMessage: String { return Localization.string(for: "noInternet.error.message") }
+
     // MARK: - Onboarding Steps
 
     static var onboardingPermissionsTitle: String { return Localization.string(for: "onboarding.permissions.title") }

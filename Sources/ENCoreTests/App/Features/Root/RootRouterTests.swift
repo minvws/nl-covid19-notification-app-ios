@@ -17,6 +17,7 @@ final class RootRouterTests: TestCase {
     private let onboardingBuilder = OnboardingBuildableMock()
     private let mainBuilder = MainBuildableMock()
     private let endOfLifeBuilder = EndOfLifeBuildableMock()
+    private let noInternetBuilder = NoInternetBuildableMock()
     private let messageBuilder = MessageBuildableMock()
     private let callGGDBuilder = CallGGDBuildableMock()
     private let developerMenuBuilder = DeveloperMenuBuildableMock()
@@ -77,6 +78,7 @@ final class RootRouterTests: TestCase {
                             onboardingBuilder: onboardingBuilder,
                             mainBuilder: mainBuilder,
                             endOfLifeBuilder: endOfLifeBuilder,
+                            noInternetBuilder: noInternetBuilder,
                             messageBuilder: messageBuilder,
                             callGGDBuilder: callGGDBuilder,
                             exposureController: exposureController,
