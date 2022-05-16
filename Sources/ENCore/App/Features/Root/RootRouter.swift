@@ -519,7 +519,6 @@ final class RootRouter: Router<RootViewControllable>, RootRouting, AppEntryPoint
                     self?.routeToNoInternet { [weak self] in
                         self?.routeToDeactivatedOrUpdateScreenIfNeeded(completion: completion)
                     }
-//                    completion?(true)
                     return
                 } else if exposureDataError == .responseCached {
                     guard let strongSelf = self else {
