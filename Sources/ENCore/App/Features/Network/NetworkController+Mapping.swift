@@ -57,7 +57,8 @@ extension AppConfig {
                                         appointmentPhoneNumber: appointmentPhoneNumber ?? .coronaTestExposedPhoneNumber,
                                         featureFlags: featureFlags.map { $0.asApplicationConfigurationFeatureFlag() },
                                         notification: notification?.asApplicationConfigurationNotification(),
-                                        shareKeyURL: shareKeyURL)
+                                        shareKeyURL: shareKeyURL,
+                                        coronaTestURL: coronaTestURL)
     }
 }
 

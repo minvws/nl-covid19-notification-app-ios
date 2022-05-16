@@ -1,3 +1,33 @@
+"yesterday" = "Yesterday";
+"collapsed" = "Folded";
+"dayBeforeYesterday" = "The day before yesterday";
+"expanded" = "Unfolded";
+
+/* MARK: - Dashboard */
+"dashboard.positiveTestResults.header" = "People who tested positive";
+"dashboard.coronaMelderUsers.header" = "People using CoronaMelder";
+"dashboard.hospitalAdmissions.header" = "People with coronavirus in hospital (not on IC)";
+"dashboard.icuAdmissions.header" = "People with coronavirus on IC";
+"dashboard.vaccinationCoverage.header" = "Vaccination rate";
+"dashboard.vaccinationCoverage.booster.label" = "Booster vaccination turnout (18+)";
+"dashboard.vaccinationCoverage.elder.label" = "Fully vaccinated (18+)";
+"dashboard.title" = "Coronavirus dashboard";
+"dashboard.moreInfo.header" = "More figures";
+"dashboard.positiveTestResults.summary" = "On average <b>%@</b> people tested positive for coronavirus per day between %@ and %@. Out of all tests carried out by the GGD,  <b>%@</b> were positive.";
+"dashboard.coronaMelderUsers.summary" = "On %@, <b>%@</b> people used the CoronaMelder app to keep track of meetings.";
+"dashboard.hospitalAdmissions.summary" = "On average, <b>%@</b> people were admitted to hospital per day between %@ and %@. The past few days do not count towards the average as the figures for these days are not yet complete.";
+"dashboard.icuAdmissions.summary" = "On average, <b>%@</b> people were admitted to an intensive care unit per day between %@ and %@. The past few days do not count towards the average as the figures for these days are not yet complete.";
+"dashboard.vaccinationCoverage.summary" = "As of right now, <b>%@</b> of the population of 18 years and older is fully vaccinated against coronavirus. <b>%@</b> of the population has received a booster vaccination against coronavirus.";
+"dashboard.moreInfo.link" = "View all figures";
+"dashboard.header" = "The current situation in the Netherlands";
+"dashboard.summaryCardText" = "View the figures";
+"dashboard.summaryText" = "Below you'll find a number of important statistics about the use of CoronaMelder and how the coronavirus situation is progressing in the Netherlands.";
+"dashboard.tag" = "Corona dashboard";
+"dashboard.serverError" = "Failed to load data";
+"dashboard.datePrefix" = "On %@";
+/* MARK: - Dashboard | Settings */
+"dashboard.settings.title" = "Coronavirus dashboard";
+"dashboard.settings.description" = "The Coronavirus dashboard shows a number of important statistics about the use of CoronaMelder, and how the coronavirus situation is progressing in the Netherlands.";
 "enableInternetDescription" = "The app needs an internet connection to check if people you've encountered later turned out to have coronavirus.<br><br>
 
 Connect to Wi-Fi or turn on mobile data for this app.";
@@ -130,7 +160,6 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "error.title" = "Something went wrong";
 "learnMore" = "Read more";
 "retry" = "Try again";
-
 /* MARK: - Update App */
 "updateApp.error.message" = "Can't open the App Store";
 "updateApp.title" = "The app needs to be updated";
@@ -595,3 +624,4 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "notification.app.unpaused.title" = "Turn CoronaMelder on again";
 "notification.app.unpaused.description" = "The app is active again. From now on, your encounters are tracked again.";
 "notification.app.unpaused.manualunpause.description" = "The app is not active yet. You need to turn it on in the app itself.";
+

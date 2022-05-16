@@ -36,8 +36,6 @@ final class DashboardOverviewViewController: ViewController, DashboardOverviewVi
         internalView.set(data: objects, listener: self)
     }
 
-    // MARK: - DashboardOverviewViewControllable
-
     // MARK: - DashboardCardViewListener
 
     func didSelect(identifier: DashboardIdentifier) {

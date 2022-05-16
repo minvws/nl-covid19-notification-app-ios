@@ -26,6 +26,7 @@ struct ApplicationConfiguration: Codable, Equatable {
     let featureFlags: [FeatureFlag]
     var notification: ScheduledNotification?
     let shareKeyURL: String?
+    let coronaTestURL: String?
 
     struct FeatureFlag: Codable, Equatable {
         let id: String
