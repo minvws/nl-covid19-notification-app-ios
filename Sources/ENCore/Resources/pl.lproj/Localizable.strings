@@ -137,12 +137,12 @@
 "updateApp.button" = "Zaktualizuj";
 
 // MARK: - No Internet
-"noInternet.error.title" = "Je hebt geen internetverbinding";
-"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+"noInternet.error.title" = "Brak połączenia internetowego";
+"noInternet.error.message" = "Aby uruchomić aplikację potrzebne jest połączenie z internetem.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is temporarily turned off";
-"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
+"endOfLife.title" = "Działanie aplikacji CoronaMelder tymczasowo wstrzymane";
+"endOfLife.description" = "Aplikacja CoronaMelder przestała obecnie tymczasowo działać. Nie prześle Ci więc już powiadomienia, gdy znajdziesz się w pobliżu osoby zarażonej koronawirusem.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Pomóż powstrzymać rozprzestrzenianie się koronawirusa";
