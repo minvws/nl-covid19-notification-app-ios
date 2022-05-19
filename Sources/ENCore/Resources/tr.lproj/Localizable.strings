@@ -137,12 +137,12 @@
 "updateApp.button" = "Güncellemek";
 
 // MARK: - No Internet
-"noInternet.error.title" = "Je hebt geen internetverbinding";
-"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+"noInternet.error.title" = "İnternet bağlantınız yok";
+"noInternet.error.message" = "Uygulamayı çalıştırmak için internet bağlantısı gerekiyor.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is temporarily turned off";
-"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
+"endOfLife.title" = "CoronaMelder durdu";
+"endOfLife.description" = "Sağlık, Refah ve Spor Bakanlığı uygulamanın artık gerekli olmadığına karar verdi. Dolayısıyla, Korona bulasmış birinin etrafında bulunduktan sonra artık size bildirim gönderilmeyecektir.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Korona virüsünün yayılmasını durdurmaya yardımcı olun";

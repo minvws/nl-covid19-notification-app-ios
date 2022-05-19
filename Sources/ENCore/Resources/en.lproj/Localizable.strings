@@ -139,12 +139,12 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "updateApp.button" = "Update";
 
 // MARK: - No Internet
-"noInternet.error.title" = "Je hebt geen internetverbinding";
-"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+"noInternet.error.title" = "You're not connected to the internet";
+"noInternet.error.message" = "To start the app, you need to be connected to the internet.";
 
 /* MARK: - EndOfLife */
 "endOfLife.title" = "CoronaMelder is temporarily turned off";
-"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
+"endOfLife.description" = "At this moment, CoronaMelder is temporarily turned off. You will no longer receive a notification after you’ve been near someone with coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Help stop the spread of coronavirus";

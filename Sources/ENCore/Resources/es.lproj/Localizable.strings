@@ -137,12 +137,12 @@
 "updateApp.button" = "Actualizar";
 
 // MARK: - No Internet
-"noInternet.error.title" = "Je hebt geen internetverbinding";
-"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+"noInternet.error.title" = "No tienes conexión a Internet";
+"noInternet.error.message" = "Es necesario estar conectado para ejecutar la aplicación.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is temporarily turned off";
-"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
+"endOfLife.title" = "CoronaMelder se ha suspendido";
+"endOfLife.description" = "El Ministerio de Salud, Bienestar y Deporte ha decidido que ya no hace falta la app, así que ya no recibirás ninguna notificación cuando hayas estado cerca de alguien con coronavirus.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Ayuda a detener la propagación del coronavirus";
@@ -479,7 +479,7 @@ pero durante tan poco tiempo que la posibilidad de contagio es muy pequeña.";
 "moreInformation.keysharing.coronatest.step1.button" = "Compartir códigos";
 "moreInformation.keysharing.coronatest.step1.done" = "Códigos compartidos";
 "moreInformation.keysharing.coronatest.step2.title" = "Escribe tu clave GGD o cópiala";
-"moreInformation.keysharing.coronatest.step3.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
+"moreInformation.keysharing.coronatest.step3.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras personas.";
 "moreInformation.keysharing.coronatest.step3.nodeeplink.title" = "Inicia sesión en coronatest.nl con tu DigiD. A continuación, introduce tu clave GGD para avisar a otras  personas.";
 "moreInformation.keysharing.coronatest.step3.button" = "Ir a coronatest.nl";
 "moreInformation.keysharing.coronatest.step4.title" = "¿Ya has introducido tu clave GGD?";

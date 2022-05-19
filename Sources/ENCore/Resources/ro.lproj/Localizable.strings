@@ -137,12 +137,12 @@
 "updateApp.button" = "Actualizare";
 
 // MARK: - No Internet
-"noInternet.error.title" = "Je hebt geen internetverbinding";
-"noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
+"noInternet.error.title" = "Nu aveți conexiune la internet";
+"noInternet.error.message" = "Pentru a porni aplicația, aveți nevoie de internet.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is temporarily turned off";
-"endOfLife.description" = "CoronaMelder is currently temporarily suspended. You will no longer receive notifications after you have been near someone who has tested positive for the coronavirus.";
+"endOfLife.title" = "Aplicația CoronaMelder a fost oprită temporar.";
+"endOfLife.description" = "Aplicația CoronaMelder a fost oprită temporar. Prin urmare, nu veți mai primi notificări după ce ați fost în preajma unei persoane infectate cu coronavirusul.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Ajutați la oprirea răspândirii coronavirusului";
