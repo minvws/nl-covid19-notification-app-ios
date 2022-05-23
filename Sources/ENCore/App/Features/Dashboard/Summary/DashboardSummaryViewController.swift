@@ -20,9 +20,11 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     init(listener: DashboardSummaryListener,
          theme: Theme,
          dataController: ExposureDataControlling,
+         storageController: StorageControlling,
          interfaceOrientationStream: InterfaceOrientationStreaming) {
         self.listener = listener
         self.dataController = dataController
+        self.storageController = storageController
         self.interfaceOrientationStream = interfaceOrientationStream
         super.init(theme: theme)
     }
@@ -32,6 +34,16 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     weak var router: DashboardSummaryRouting?
     weak var listener: DashboardSummaryListener?
 
+    func updateVisibility() {
+        if isEnabled {
+            view.isHidden = false
+            setupIfNeeded()
+        } else {
+            view.isHidden = true
+            didSetup = false
+        }
+    }
+
     // MARK: - View Lifecycle
 
     override func loadView() {
@@ -40,6 +52,16 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        setupIfNeeded()
+        updateVisibility()
+    }
+
+    private func setupIfNeeded() {
+        guard isEnabled else { return }
+        guard !didSetup else { return }
+
+        disposeBag = DisposeBag()
 
         dataController
             .getDashboardData()
@@ -56,14 +78,23 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
             .subscribe { [weak self] isLandscape in
                 self?.dashboardView.landscapeOrientation = isLandscape
             }.disposed(by: disposeBag)
+
+        didSetup = true
     }
 
     // MARK: - Private
 
     private var disposeBag = DisposeBag()
     private let dataController: ExposureDataControlling
+    private let storageController: StorageControlling
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private lazy var dashboardView: DashboardView = DashboardView(theme: self.theme)
+
+    private var isEnabled: Bool {
+        storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.showCoronaDashboard) ?? true
+    }
+
+    private var didSetup: Bool = false
 
     private func convertToCards(dashboardData: DashboardData) -> [DashboardCard] {
         var objects = [(card: DashboardCard, sortingValue: Int)]()
