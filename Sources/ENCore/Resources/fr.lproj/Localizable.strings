@@ -138,6 +138,10 @@
 "updateApp.content" = "Mettez à jour l'application pour garantir son bon fonctionnement.";
 "updateApp.button" = "Mettre à jour";
 
+// MARK: - No Internet
+"noInternet.error.title" = "Vous n\'êtes pas connecté(e) à Internet.";
+"noInternet.error.message" = "Vous devez être connecté(e) à Internet pour lancer l\'application.";
+
 /* MARK: - EndOfLife */
 "endOfLife.title" = "CoronaMelder a été provisoirement désactivée.";
 "endOfLife.description" = "L'appli CoronaMelder est actuellement désactivée. Vous ne recevrez donc plus de notification après avoir été en contact avec une personne positive au coronavirus.";
