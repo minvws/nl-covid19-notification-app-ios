@@ -379,14 +379,12 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardVaccinationCoverageHeader
 
-        if let values = data.values {
-            graphStackView.insertArrangedSubview(
-                GraphView(theme: theme,
-                          title: .dashboardVaccinationCoverageHeader,
-                          data: GraphData(values: values),
-                          style: .normal),
-                at: 1)
-        }
+        graphStackView.insertArrangedSubview(
+            GraphView(theme: theme,
+                      title: .dashboardVaccinationCoverageHeader,
+                      data: GraphData(values: data.values ?? []),
+                      style: .normal),
+            at: 1)
     }
 
     func setButtons(_ buttons: [DashboardDetailButton]) {
