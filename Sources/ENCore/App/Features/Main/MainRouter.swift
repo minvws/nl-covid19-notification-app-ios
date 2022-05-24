@@ -14,6 +14,9 @@ protocol MainViewControllable: ViewControllable, StatusListener, DashboardSummar
     var router: MainRouting? { get set }
 
     func embed(stackedViewController: ViewControllable)
+    func embed(stackedViewController: ViewControllable, at index: Int)
+    func remove(stackedViewController: ViewControllable)
+
     func present(viewController: ViewControllable, animated: Bool)
     func present(viewController: ViewControllable, animated: Bool, inNavigationController: Bool)
     func dismiss(viewController: ViewControllable, animated: Bool)
@@ -66,15 +69,6 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         viewController.embed(stackedViewController: statusViewController)
     }
 
-    func attachDashboardSummary() {
-        guard dashboardSummaryViewController == nil else { return }
-
-        let dashboardSummaryViewController = dashboardSummaryBuilder.build(withListener: viewController)
-        self.dashboardSummaryViewController = dashboardSummaryViewController
-
-        viewController.embed(stackedViewController: dashboardSummaryViewController)
-    }
-
     func attachMoreInformation() {
         guard moreInformationViewController == nil else { return }
 
@@ -82,6 +76,23 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         self.moreInformationViewController = moreInformationViewController
 
         viewController.embed(stackedViewController: moreInformationViewController)
+    }
+
+    func attachDashboardSummary() {
+        guard dashboardSummaryViewController == nil else { return }
+
+        let dashboardSummaryViewController = dashboardSummaryBuilder.build(withListener: viewController)
+        self.dashboardSummaryViewController = dashboardSummaryViewController
+
+        viewController.embed(stackedViewController: dashboardSummaryViewController, at: 1)
+    }
+
+    func detachDashboardSummary() {
+        guard let dashboardSummaryViewController = dashboardSummaryViewController else { return }
+
+        viewController.remove(stackedViewController: dashboardSummaryViewController)
+
+        self.dashboardSummaryViewController = nil
     }
 
     func routeToDashboardDetail(with identifier: DashboardIdentifier) {

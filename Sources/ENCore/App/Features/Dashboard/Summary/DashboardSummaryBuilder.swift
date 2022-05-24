@@ -25,6 +25,7 @@ protocol DashboardSummaryBuildable {
 protocol DashboardSummaryDependency {
     var theme: Theme { get }
     var dataController: ExposureDataControlling { get }
+    var storageController: StorageControlling { get }
     var interfaceOrientationStream: InterfaceOrientationStreaming { get }
 }
 
