@@ -145,6 +145,9 @@ final class MainRouter: Router<MainViewControllable>, MainRouting {
         if shouldDismissViewController {
             viewController.dismiss(viewController: settingsRouter.viewControllable, animated: true)
         }
+
+        (dashboardSummaryViewController as? DashboardSummaryViewControllable)?
+            .updateVisibility()
     }
 
     func routeToSharing() {
