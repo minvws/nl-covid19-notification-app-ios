@@ -81,6 +81,8 @@ final class GraphView: View {
     private let style: Style
     private let title: String
 
+    private let errorLabel = Label()
+
     private lazy var panningViews = [selectedDateLabel, markerView, selectionView, popupContainerView]
 
     var accessibilityChartDescriptorStorage: Any?
@@ -138,6 +140,8 @@ final class GraphView: View {
     }()
 
     private func buildNormal() {
+        addSubview(errorLabel)
+
         addSubview(drawingView)
         addSubview(upperBoundLabel)
         addSubview(lowerBoundLabel)
@@ -193,8 +197,14 @@ final class GraphView: View {
         dateContainerView.axis = .horizontal
         dateContainerView.distribution = .equalSpacing
 
+        errorLabel.text = .dashboardServerError
+        errorLabel.font = theme.fonts.caption1
+        errorLabel.textAlignment = .center
+
         let panGestureRecognizer = ImmediatePanGestureRecognizer(target: self, action: #selector(handlePan))
         addGestureRecognizer(panGestureRecognizer)
+
+        showErrorIfNeeded()
     }
 
     private func buildCompact() {
@@ -203,6 +213,14 @@ final class GraphView: View {
 
         panningViews.forEach { $0.isHidden = true }
         markerView.isHidden = false
+    }
+
+    private func showErrorIfNeeded() {
+        let isError = data.values.isEmpty
+
+        subviews.forEach { $0.isHidden = isError }
+        panningViews.forEach { $0.isHidden = true }
+        errorLabel.isHidden = !isError
     }
 
     override func setupConstraints() {
@@ -217,6 +235,10 @@ final class GraphView: View {
     }
 
     private func setupConstraintsNormal() {
+        errorLabel.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
+
         drawingView.snp.makeConstraints { maker in
             maker.top.equalTo(upperBoundLabel.snp.bottom).offset(1)
             maker.leading.equalToSuperview()
@@ -280,6 +302,8 @@ final class GraphView: View {
 
     @objc
     private func handlePan(_ recognizer: UIPanGestureRecognizer) {
+        guard !data.values.isEmpty else { return }
+
         panningViews.forEach { $0.isHidden = [.ended, .cancelled, .failed].contains(recognizer.state) }
 
         let offset = recognizer.location(in: self).x
@@ -428,6 +452,8 @@ private class GraphDrawingView: View {
 
     override func draw(_ rect: CGRect) {
         super.draw(rect)
+
+        guard !data.values.isEmpty else { return }
 
         let graphWidth = bounds.width
         let graphHeight = bounds.height - graphOffset
