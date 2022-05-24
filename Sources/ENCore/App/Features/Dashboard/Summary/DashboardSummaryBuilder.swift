@@ -40,10 +40,6 @@ private final class DashboardSummaryDependencyProvider: DependencyProvider<Dashb
         return dependency.dataController
     }
 
-    var storageController: StorageControlling {
-        return dependency.storageController
-    }
-
     var interfaceOrientationStream: InterfaceOrientationStreaming {
         return dependency.interfaceOrientationStream
     }
@@ -58,7 +54,6 @@ final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, Dashbo
         let viewController = DashboardSummaryViewController(listener: listener,
                                                             theme: dependencyProvider.theme,
                                                             dataController: dependencyProvider.dataController,
-                                                            storageController: dependencyProvider.storageController,
                                                             interfaceOrientationStream: dependencyProvider.interfaceOrientationStream)
         return viewController
     }
