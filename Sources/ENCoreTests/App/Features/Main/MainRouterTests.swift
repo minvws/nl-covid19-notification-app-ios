@@ -13,6 +13,8 @@ final class MainRouterTests: TestCase {
 
     private let mockViewController = MainViewControllableMock()
     private let mockStatusBuilder = StatusBuildableMock()
+    private let dashboardSummaryBuilder = DashboardSummaryBuildableMock()
+    private let dashboardBuilder = DashboardBuildableMock()
     private let mockMoreInformationBuilder = MoreInformationBuildableMock()
     private let mockAboutBuilder = AboutBuildableMock()
     private let mockShareBuilder = ShareSheetBuildableMock()
@@ -32,6 +34,8 @@ final class MainRouterTests: TestCase {
 
         sut = MainRouter(viewController: mockViewController,
                          statusBuilder: mockStatusBuilder,
+                         dashboardSummaryBuilder: dashboardSummaryBuilder,
+                         dashboardBuilder: dashboardBuilder,
                          moreInformationBuilder: mockMoreInformationBuilder,
                          aboutBuilder: mockAboutBuilder,
                          shareBuilder: mockShareBuilder,

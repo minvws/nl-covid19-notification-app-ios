@@ -145,6 +145,7 @@ final class MainBuilder: Builder<MainDependency>, MainBuildable {
         let dependencyProvider = MainDependencyProvider(dependency: dependency)
         let viewController = MainViewController(theme: dependencyProvider.dependency.theme,
                                                 exposureController: dependencyProvider.exposureController,
+                                                storageController: dependencyProvider.storageController,
                                                 exposureStateStream: dependencyProvider.exposureStateStream,
                                                 userNotificationController: dependencyProvider.userNotificationController,
                                                 pauseController: dependencyProvider.pauseController,

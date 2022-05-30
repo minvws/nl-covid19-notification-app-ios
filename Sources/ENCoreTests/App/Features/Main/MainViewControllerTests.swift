@@ -16,6 +16,7 @@ final class MainViewControllerTests: TestCase {
     private let statusBuilder = StatusBuildableMock()
     private let moreInformationBuilder = MoreInformationBuildableMock()
     private let exposureController = ExposureControllingMock()
+    private let storageController = StorageControllingMock()
     private let exposureStateStream = ExposureStateStreamingMock()
     private var mockPauseController = PauseControllingMock()
     private var mockUserNotificationController = UserNotificationControllingMock()
@@ -28,6 +29,7 @@ final class MainViewControllerTests: TestCase {
 
         viewController = MainViewController(theme: theme,
                                             exposureController: exposureController,
+                                            storageController: storageController,
                                             exposureStateStream: exposureStateStream,
                                             userNotificationController: mockUserNotificationController,
                                             pauseController: mockPauseController,

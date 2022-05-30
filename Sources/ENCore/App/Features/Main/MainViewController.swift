@@ -13,8 +13,10 @@ import UserNotifications
 /// @mockable
 protocol MainRouting: Routing {
     func attachStatus(topAnchor: NSLayoutYAxisAnchor)
-    func attachDashboardSummary()
     func attachMoreInformation()
+
+    func attachDashboardSummary()
+    func detachDashboardSummary()
 
     func routeToDashboardDetail(with identifier: DashboardIdentifier)
     func detachDashboardDetail(shouldDismissViewController: Bool)
@@ -55,11 +57,13 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     init(theme: Theme,
          exposureController: ExposureControlling,
+         storageController: StorageControlling,
          exposureStateStream: ExposureStateStreaming,
          userNotificationController: UserNotificationControlling,
          pauseController: PauseControlling,
          alertControllerBuilder: AlertControllerBuildable) {
         self.exposureController = exposureController
+        self.storageController = storageController
         self.exposureStateStream = exposureStateStream
         self.pauseController = pauseController
         self.userNotificationController = userNotificationController
@@ -77,8 +81,9 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
         super.viewDidLoad()
 
         router?.attachStatus(topAnchor: view.topAnchor)
-        router?.attachDashboardSummary()
         router?.attachMoreInformation()
+
+        determineDashboardVisibility()
 
         if let shareLogs = Bundle.main.infoDictionary?["SHARE_LOGS_ENABLED"] as? Bool, shareLogs == true {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(didQuadrupleTap(sender:)))
@@ -91,14 +96,31 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
     // MARK: - Internal
 
     func embed(stackedViewController: ViewControllable) {
+        embed(stackedViewController: stackedViewController, at: mainView.stackView.arrangedSubviews.count)
+    }
+
+    func embed(stackedViewController: ViewControllable, at index: Int) {
         addChild(stackedViewController.uiviewController)
 
         let view: UIView = stackedViewController.uiviewController.view
 
-        mainView.stackView.addArrangedSubview(view)
+        if index <= mainView.stackView.arrangedSubviews.count {
+            mainView.stackView.insertArrangedSubview(view, at: index)
+        } else {
+            mainView.stackView.addArrangedSubview(view)
+        }
+
         view.widthAnchor.constraint(equalTo: mainView.widthAnchor).isActive = true
 
         stackedViewController.uiviewController.didMove(toParent: self)
+    }
+
+    func remove(stackedViewController: ViewControllable) {
+        let view: UIView = stackedViewController.uiviewController.view
+
+        view.removeFromSuperview()
+
+        stackedViewController.uiviewController.didMove(toParent: nil)
     }
 
     func present(viewController: ViewControllable, animated: Bool) {
@@ -146,6 +168,16 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
         if let viewController = viewControllerToDismiss {
             viewController.dismiss(animated: animated, completion: nil)
+        }
+    }
+
+    func determineDashboardVisibility() {
+        let dashboardEnabled = storageController.retrieveObject(identifiedBy: ExposureDataStorageKey.showCoronaDashboard) ?? true
+
+        if dashboardEnabled {
+            router?.attachDashboardSummary()
+        } else {
+            router?.detachDashboardSummary()
         }
     }
 
@@ -201,6 +233,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     func settingsWantsDismissal(shouldDismissViewController: Bool) {
         router?.detachSettings(shouldDismissViewController: shouldDismissViewController)
+        determineDashboardVisibility()
     }
 
     // MARK: - HelpListener
@@ -290,6 +323,7 @@ final class MainViewController: ViewController, MainViewControllable, StatusList
 
     private lazy var mainView: MainView = MainView(theme: self.theme)
     private let exposureController: ExposureControlling
+    private let storageController: StorageControlling
     private let exposureStateStream: ExposureStateStreaming
     private let pauseController: PauseControlling
     private let userNotificationController: UserNotificationControlling
