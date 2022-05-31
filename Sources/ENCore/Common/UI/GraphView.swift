@@ -21,8 +21,8 @@ struct GraphData {
     let scaledNormalizedValues: [CGFloat]
 
     init(values: [DashboardData.DatedValue]) {
-        self.values = values
-        let values = values.map { UInt($0.value) }
+        self.values = values.sorted { $0.date < $1.date }
+        let values = self.values.map { UInt($0.value) }
 
         maxValue = values.max() ?? 0
 
@@ -74,6 +74,10 @@ final class GraphView: View {
     private let markerView = UIImageView(image: .graphMarker)
     private let selectionView = UIImageView(image: .graphSelection)
 
+    // StackView with hidden but accessible views overlaying points in the graph
+    // For keyboard and switchkeys navigation
+    private let accessibilityHelperStackView = UIStackView()
+
     private let popupContainerView = UIView()
     private let popupBubbleView = UIView()
     private let popupArrowView = UIImageView(image: .popupArrow)
@@ -94,9 +98,10 @@ final class GraphView: View {
         self.data = data
         self.title = title
         super.init(theme: theme)
+    }
 
-        isUserInteractionEnabled = true
-        isAccessibilityElement = true
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     // MARK: - Overrides
@@ -107,15 +112,16 @@ final class GraphView: View {
         switch style {
         case .normal:
             buildNormal()
+            setupAccessibilityHelperViews()
+
+            if #available(iOS 15.0, *) {
+                setupAudioGraph()
+            }
         case .compact:
             buildCompact()
         }
 
         backgroundColor = .clear
-
-        if #available(iOS 15.0, *) {
-            setupAudioGraph()
-        }
     }
 
     // MARK: - Private
@@ -150,6 +156,7 @@ final class GraphView: View {
         addSubview(markerView)
         addSubview(selectedDateLabel)
         addSubview(popupContainerView)
+        addSubview(accessibilityHelperStackView)
 
         upperBoundLabel.font = theme.fonts.caption1
         upperBoundLabel.text = String(data.graphUpperBound)
@@ -234,6 +241,53 @@ final class GraphView: View {
         }
     }
 
+    override func didUpdateFocus(in context: UIFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        super.didUpdateFocus(in: context, with: coordinator)
+
+        highlightValue(at: accessibilityHelperStackView
+            .arrangedSubviews
+            .firstIndex(where: \.isFocused))
+    }
+
+    private func setupAccessibilityHelperViews() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(evaluateAccessibleState),
+                                               name: UIAccessibility.switchControlStatusDidChangeNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(evaluateAccessibleState),
+                                               name: UIAccessibility.voiceOverStatusDidChangeNotification,
+                                               object: nil)
+
+        accessibilityHelperStackView.axis = .horizontal
+        accessibilityHelperStackView.distribution = .equalSpacing
+
+        data.values.forEach { _ in
+            let view = UIView(frame: .zero)
+
+            view.isAccessibilityElement = true
+            view.isUserInteractionEnabled = true
+            view.accessibilityTraits = .link
+
+            accessibilityHelperStackView.addArrangedSubview(view)
+
+            view.snp.makeConstraints { maker in
+                maker.width.equalTo(1)
+            }
+        }
+
+        evaluateAccessibleState()
+    }
+
+    @objc private func evaluateAccessibleState() {
+        let shouldUseHelperViews = UIAccessibility.isSwitchControlRunning || !UIAccessibility.isVoiceOverRunning
+
+        // If the helper views for switch control and fulll keyboard access are active,
+        // don't mark the entire view as one accessible element
+        isAccessibilityElement = !shouldUseHelperViews
+        accessibilityHelperStackView.isHidden = !shouldUseHelperViews
+    }
+
     private func setupConstraintsNormal() {
         errorLabel.snp.makeConstraints { maker in
             maker.edges.equalToSuperview()
@@ -243,6 +297,10 @@ final class GraphView: View {
             maker.top.equalTo(upperBoundLabel.snp.bottom).offset(1)
             maker.leading.equalToSuperview()
             maker.trailing.equalToSuperview()
+        }
+
+        accessibilityHelperStackView.snp.makeConstraints { maker in
+            maker.edges.equalTo(drawingView)
         }
 
         upperBoundLabel.snp.makeConstraints { maker in
@@ -304,15 +362,31 @@ final class GraphView: View {
     private func handlePan(_ recognizer: UIPanGestureRecognizer) {
         guard !data.values.isEmpty else { return }
 
-        panningViews.forEach { $0.isHidden = [.ended, .cancelled, .failed].contains(recognizer.state) }
-
+        let isActive = ![.ended, .cancelled, .failed].contains(recognizer.state)
         let offset = recognizer.location(in: self).x
-
-        let segmentWidth = bounds.width / CGFloat(data.values.count - 1)
         let selectedIndex = max(min(Int(round(offset / segmentWidth)), data.values.count - 1), 0)
 
-        let horizontalOffset = CGFloat(selectedIndex) * segmentWidth
-        let verticalOffset = (1 - data.scaledNormalizedValues[selectedIndex]) * drawingView.bounds.height
+        if isActive {
+            highlightValue(at: selectedIndex)
+        } else {
+            highlightValue(at: nil)
+        }
+    }
+
+    private var segmentWidth: CGFloat {
+        bounds.width / CGFloat(data.values.count - 1)
+    }
+
+    private func highlightValue(at index: Int? = nil) {
+        guard let index = index, data.values.indices.contains(index) else {
+            panningViews.forEach { $0.isHidden = true }
+            return
+        }
+
+        panningViews.forEach { $0.isHidden = false }
+
+        let horizontalOffset = CGFloat(index) * segmentWidth
+        let verticalOffset = (1 - data.scaledNormalizedValues[index]) * drawingView.bounds.height
 
         markerView.center.x = horizontalOffset
         markerView.center.y = verticalOffset + drawingView.frame.minY
@@ -345,7 +419,7 @@ final class GraphView: View {
         popupContainerView.transform = CGAffineTransform(translationX: popupCenter - popupHalfWidth, y: 0)
         popupArrowView.transform = CGAffineTransform(translationX: popupHalfWidth + popupCenterDifference - arrowHalfWidth, y: 0)
 
-        let datedValue = data.values[selectedIndex]
+        let datedValue = data.values[index]
         selectedDateLabel.text = Self.shortDateFormatter.string(from: datedValue.date)
 
         // TODO: Add localized prefix string
