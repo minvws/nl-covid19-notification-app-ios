@@ -212,6 +212,7 @@ private final class DetailView: View {
 
         titleLabel.font = theme.fonts.title1
         titleLabel.numberOfLines = 0
+        titleLabel.accessibilityTraits = .header
 
         bodyLabel.numberOfLines = 0
 
@@ -228,6 +229,7 @@ private final class DetailView: View {
         graphHeaderLabel.text = .dashboardPositiveTestResultsHeader
         graphHeaderLabel.numberOfLines = 0
         graphHeaderLabel.font = theme.fonts.body
+        graphHeaderLabel.isAccessibilityElement = false
 
         graphHeaderStackView.addArrangedSubview(iconView)
         graphHeaderStackView.addArrangedSubview(graphHeaderLabel)
@@ -249,6 +251,7 @@ private final class DetailView: View {
         moreDataLabel.text = .dashboardMoreInfoHeader
         moreDataLabel.font = theme.fonts.title3
         moreDataLabel.numberOfLines = 0
+        moreDataLabel.accessibilityTraits = .header
 
         moreDataStackView.addArrangedSubview(buttonStackView)
 
@@ -448,6 +451,11 @@ private final class DashboardDetailButton: UIControl, Themeable {
         isAccessibilityElement = true
         accessibilityTraits = .button
         isExclusiveTouch = true
+
+        accessibilityLabel = title
+        accessibilityValue = [amountPrefix, amount]
+            .compactMap { $0 }
+            .joined(separator: ", ")
 
         setContentHuggingPriority(.required, for: .horizontal)
     }

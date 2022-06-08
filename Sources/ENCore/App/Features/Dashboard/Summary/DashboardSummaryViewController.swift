@@ -182,10 +182,12 @@ private final class DashboardView: View {
         headerLabel.text = .dashboardTitle.uppercased()
         headerLabel.font = theme.fonts.caption1Bold
         headerLabel.setContentHuggingPriority(.required, for: .vertical)
+        headerLabel.accessibilityTraits = .header
 
         currentSituationLabel.text = .dashboardHeader
         currentSituationLabel.font = theme.fonts.headlineBold
         currentSituationLabel.setContentHuggingPriority(.required, for: .vertical)
+        currentSituationLabel.accessibilityTraits = .header
 
         headerStackView.addArrangedSubview(headerBackgroundView)
         headerStackView.addArrangedSubview(currentSituationLabel)
