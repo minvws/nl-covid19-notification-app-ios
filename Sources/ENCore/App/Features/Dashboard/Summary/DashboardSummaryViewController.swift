@@ -20,10 +20,12 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     init(listener: DashboardSummaryListener,
          theme: Theme,
          dataController: ExposureDataControlling,
-         interfaceOrientationStream: InterfaceOrientationStreaming) {
+         interfaceOrientationStream: InterfaceOrientationStreaming,
+         exposureStateStream: ExposureStateStreaming) {
         self.listener = listener
         self.dataController = dataController
         self.interfaceOrientationStream = interfaceOrientationStream
+        self.exposureStateStream = exposureStateStream
         super.init(theme: theme)
     }
 
@@ -46,7 +48,7 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
             .observe(on: MainScheduler.instance)
             .subscribe(onSuccess: { [weak self] in
                 guard let self = self else { return }
-                self.dashboardView.set(data: self.convertToCards(dashboardData: $0), listener: self)
+                self.dashboardView.set(data: $0.convertToCards(), listener: self)
             }, onFailure: { error in
                 // TODO: Handle
             }).disposed(by: disposeBag)
@@ -56,6 +58,14 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
             .subscribe { [weak self] isLandscape in
                 self?.dashboardView.landscapeOrientation = isLandscape
             }.disposed(by: disposeBag)
+
+        exposureStateStream.exposureState
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                self?.updateDashboardState()
+            }).disposed(by: disposeBag)
+
+        updateDashboardState()
     }
 
     // MARK: - Private
@@ -63,12 +73,26 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     private var disposeBag = DisposeBag()
     private let dataController: ExposureDataControlling
     private let interfaceOrientationStream: InterfaceOrientationStreaming
+    private let exposureStateStream: ExposureStateStreaming
     private lazy var dashboardView: DashboardView = DashboardView(theme: self.theme)
 
-    private func convertToCards(dashboardData: DashboardData) -> [DashboardCard] {
+    private func updateDashboardState() {
+        dashboardView.showCompact = exposureStateStream.currentExposureState.shouldShowCompactDashboardView
+    }
+
+    // MARK: - DashboardCardViewListener
+
+    func didSelect(identifier: DashboardIdentifier) {
+        listener?.dashboardSummaryRequestsRouteToDetail(with: identifier)
+    }
+}
+
+private extension DashboardData {
+
+    func convertToCards() -> [DashboardCard] {
         var objects = [(card: DashboardCard, sortingValue: Int)]()
 
-        dashboardData.positiveTestResults.map {
+        positiveTestResults.map {
             objects.append(
                 (DashboardCardViewModel(identifier: .tests,
                                         icon: .dashboardTestsIcon,
@@ -79,7 +103,7 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
                  $0.sortingValue))
         }
 
-        dashboardData.coronaMelderUsers.map {
+        coronaMelderUsers.map {
             objects.append(
                 (DashboardCardViewModel(identifier: .users,
                                         icon: .dashboardUsersIcon,
@@ -90,7 +114,7 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
                  $0.sortingValue))
         }
 
-        dashboardData.hospitalAdmissions.map {
+        hospitalAdmissions.map {
             objects.append(
                 (DashboardCardViewModel(identifier: .hospitalAdmissions,
                                         icon: .dashboardHospitalIcon,
@@ -101,7 +125,7 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
                  $0.sortingValue))
         }
 
-        dashboardData.icuAdmissions.map {
+        icuAdmissions.map {
             objects.append(
                 (DashboardCardViewModel(identifier: .icuAdmissions,
                                         icon: .dashboardIcuIcon,
@@ -112,7 +136,7 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
                  $0.sortingValue))
         }
 
-        dashboardData.vaccinationCoverage.map {
+        vaccinationCoverage.map {
             objects.append(
                 (DashboardCardViewModel(identifier: .vaccinations,
                                         icon: .dashboardVaccinationsIcon,
@@ -128,11 +152,17 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
             .sorted { $0.sortingValue < $1.sortingValue }
             .map(\.card)
     }
+}
 
-    // MARK: - DashboardCardViewListener
+private extension ExposureState {
 
-    func didSelect(identifier: DashboardIdentifier) {
-        listener?.dashboardSummaryRequestsRouteToDetail(with: identifier)
+    var shouldShowCompactDashboardView: Bool {
+        switch (activeState, notifiedState) {
+        case (.active, .notNotified):
+            return false
+        case (_, _):
+            return true
+        }
     }
 }
 
@@ -147,17 +177,28 @@ private final class DashboardView: View {
     private var headerBackgroundView = UIView()
     private var headerLabel = UILabel()
     private var currentSituationLabel = UILabel()
+    private lazy var compactView = DashboardCompactView(theme: theme)
 
     private var landscapeConstraints = [NSLayoutConstraint]()
 
     override init(theme: Theme) {
         landscapeOrientation = false
+        showCompact = false
         super.init(theme: theme)
     }
 
     var landscapeOrientation: Bool {
         didSet {
             landscapeConstraints.forEach { $0.isActive = landscapeOrientation }
+            evaluateHeight()
+        }
+    }
+
+    var showCompact: Bool {
+        didSet {
+            compactView.isHidden = !showCompact
+            headerContainer.isHidden = showCompact
+            scrollView.isHidden = showCompact
             evaluateHeight()
         }
     }
@@ -198,6 +239,7 @@ private final class DashboardView: View {
 
         headerContainer.addSubview(headerStackView)
 
+        outerStackView.addArrangedSubview(compactView)
         outerStackView.addArrangedSubview(headerContainer)
         outerStackView.addArrangedSubview(scrollView)
 
@@ -255,6 +297,8 @@ private final class DashboardView: View {
     // MARK: - Private
 
     fileprivate func set(data: [DashboardCard], listener: DashboardCardViewListener) {
+        compactView.listener = listener
+
         data.forEach {
             let cardView = DashboardCardView(listener: listener, theme: theme, viewModel: $0)
             cardStackView.addArrangedSubview(cardView)
@@ -284,4 +328,101 @@ private final class DashboardView: View {
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
     }
+}
+
+private final class DashboardCompactView: UIControl, Themeable {
+
+    override var isHighlighted: Bool {
+        didSet {
+            UIButton.animate(withDuration: 0.2, animations: {
+                let scale: CGFloat = self.isHighlighted ? 0.98 : 1
+                self.transform = CGAffineTransform(scaleX: scale, y: scale)
+            })
+        }
+    }
+
+    let theme: Theme
+
+    init(theme: Theme) {
+        self.theme = theme
+
+        super.init(frame: .zero)
+
+        build()
+        setupConstraints()
+
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+    }
+
+    @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Private
+
+    private func build() {
+        addTarget(self, action: #selector(didTap), for: .touchUpInside)
+
+        containerView.isUserInteractionEnabled = false
+
+        containerView.layer.cornerRadius = 12
+        containerView.clipsToBounds = true
+        containerView.backgroundColor = theme.colors.cardBackgroundBlue
+
+        outerStackView.axis = .vertical
+        outerStackView.spacing = 8
+
+        addSubview(containerView)
+        containerView.addSubview(outerStackView)
+        containerView.addSubview(illustration)
+
+        outerStackView.addArrangedSubview(titleLabel)
+        outerStackView.addArrangedSubview(subtitleLabel)
+
+        titleLabel.text = .dashboardHeader
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.title3
+
+        subtitleLabel.text = .dashboardSummaryCardText
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.font = theme.fonts.body
+    }
+
+    private func setupConstraints() {
+
+        containerView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview()
+            maker.bottom.equalToSuperview()
+            maker.left.equalToSuperview().offset(16)
+            maker.right.equalToSuperview().offset(-16)
+            maker.height.greaterThanOrEqualTo(illustration).offset(17)
+        }
+
+        outerStackView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(16)
+            maker.bottom.equalToSuperview().offset(-16).priority(.low)
+            maker.left.equalToSuperview().offset(16)
+            maker.right.equalToSuperview().offset(-88)
+        }
+
+        illustration.snp.makeConstraints { maker in
+            maker.bottom.equalToSuperview()
+            maker.right.equalToSuperview()
+        }
+    }
+
+    @objc private func didTap() {
+        Haptic.light()
+        listener?.didSelect(identifier: .overview)
+    }
+
+    private lazy var containerView = View(theme: theme)
+    private let outerStackView = UIStackView()
+    private let titleLabel = Label()
+    private let subtitleLabel = Label()
+    private let illustration = UIImageView(image: .dashboardCompactIllustration)
+
+    weak var listener: DashboardCardViewListener?
 }

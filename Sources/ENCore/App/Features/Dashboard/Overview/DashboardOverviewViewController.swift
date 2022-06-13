@@ -123,6 +123,7 @@ private final class OverviewView: View {
         outerStackView.axis = .vertical
 
         currentSituationLabel.text = .dashboardHeader
+        currentSituationLabel.accessibilityTraits = .header
         currentSituationLabel.font = theme.fonts.title1
         currentSituationLabel.numberOfLines = 0
 
@@ -132,6 +133,7 @@ private final class OverviewView: View {
 
         headerLabel.textColor = theme.colors.dashboardHeaderText
         headerLabel.text = .dashboardTitle.uppercased()
+        headerLabel.accessibilityTraits = .header
         headerLabel.font = theme.fonts.caption1Bold
 
         headerStackView.addArrangedSubview(currentSituationLabel)
@@ -151,7 +153,7 @@ private final class OverviewView: View {
         outerStackView.addArrangedSubview(cardStackView)
 
         cardStackView.axis = .vertical
-        cardStackView.spacing = -16
+        cardStackView.spacing = 16
 
         scrollView.addSubview(outerStackView)
         scrollView.clipsToBounds = false
