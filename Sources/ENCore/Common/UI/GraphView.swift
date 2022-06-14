@@ -468,7 +468,7 @@ extension GraphView: AXChart {
         let category = AXCategoricalDataAxisDescriptor(title: .dashboardGraphHorizontalAxisLabel,
                                                        categoryOrder: audiographValues.map(\.x))
 
-        let amount = AXNumericDataAxisDescriptor(title: .dashboardGraphVerticalAxisLabel,
+        let amount = AXNumericDataAxisDescriptor(title: title,
                                                  range: 0 ... Double(data.graphUpperBound),
                                                  gridlinePositions: []) {
             Self.numberFormatter.string(from: $0 as NSNumber) ?? ""

@@ -157,6 +157,8 @@ final class DashboardCardView: UIControl, Themeable {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.subheadBold
 
+        accessibilityLabel = viewModel.title
+
         let iconView = UIImageView(image: viewModel.icon)
         iconView.setContentHuggingPriority(.required, for: .horizontal)
         iconView.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -179,6 +181,7 @@ final class DashboardCardView: UIControl, Themeable {
             dateLabel.font = theme.fonts.caption1
             dateLabel.textColor = theme.colors.captionGray
         } else {
+            dateLabel.text = nil
             dateLabel.isHidden = true
         }
 
@@ -186,7 +189,8 @@ final class DashboardCardView: UIControl, Themeable {
         numberFormatter.locale = Locale.current
         numberFormatter.numberStyle = .decimal
 
-        amountLabel.text = numberFormatter.string(for: viewModel.displayedAmount)
+        let displayedAmount = numberFormatter.string(for: viewModel.displayedAmount)
+        amountLabel.text = displayedAmount
         amountLabel.numberOfLines = 0
         amountLabel.font = theme.fonts.title2
 
@@ -214,6 +218,15 @@ final class DashboardCardView: UIControl, Themeable {
             barStackView.axis = .vertical
 
             outerStackView.addArrangedSubview(barStackView)
+
+            accessibilityValue = barViews
+                .map(\.accessibilityLabel)
+                .compactMap { $0 }
+                .joined(separator: ", ")
+        } else {
+            accessibilityValue = [dateLabel.text, displayedAmount]
+                .compactMap { $0 }
+                .joined(separator: ", ")
         }
 
         outerStackView.addArrangedSubview(dateLabel)
@@ -295,7 +308,8 @@ private final class BarView: View {
         numberFormatter.numberStyle = .percent
         numberFormatter.maximumFractionDigits = 1
 
-        percentageLabel.text = numberFormatter.string(from: NSNumber(value: amount))
+        let percentage = numberFormatter.string(from: NSNumber(value: amount)) ?? ""
+        percentageLabel.text = percentage
         percentageLabel.font = theme.fonts.caption1Bold
         percentageLabel.setContentHuggingPriority(.required, for: .horizontal)
 
@@ -303,6 +317,8 @@ private final class BarView: View {
         titleLabel.font = theme.fonts.caption1
         titleLabel.textColor = theme.colors.captionGray
         titleLabel.numberOfLines = 0
+
+        accessibilityLabel = label + ", " + percentage
 
         addSubview(barContainerView)
         barContainerView.layer.cornerRadius = 4
