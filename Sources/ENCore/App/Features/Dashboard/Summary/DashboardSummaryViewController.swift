@@ -388,6 +388,9 @@ private final class DashboardCompactView: UIControl, Themeable {
         subtitleLabel.text = .dashboardSummaryCardText
         subtitleLabel.numberOfLines = 0
         subtitleLabel.font = theme.fonts.body
+
+        accessibilityLabel = .dashboardHeader
+        accessibilityValue = .dashboardSummaryCardText
     }
 
     private func setupConstraints() {
