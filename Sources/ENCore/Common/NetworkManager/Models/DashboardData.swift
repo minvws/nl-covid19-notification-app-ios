@@ -48,7 +48,6 @@ struct DashboardData: Codable {
         let sortingValue: Int
         let vaccinationCoverage18Plus: Double
         let boosterCoverage18Plus: Double
-        let values: [DatedValue]?
         let highlightedValue: DatedValue?
         let moreInfoUrl: URL?
     }

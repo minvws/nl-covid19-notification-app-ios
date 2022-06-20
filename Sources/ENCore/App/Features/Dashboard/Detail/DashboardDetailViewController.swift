@@ -234,7 +234,6 @@ private final class DetailView: View {
         graphHeaderStackView.addArrangedSubview(iconView)
         graphHeaderStackView.addArrangedSubview(graphHeaderLabel)
 
-        // TODO: Handle button
         let allDataButton = Button(title: .dashboardMoreInfoLink, theme: theme)
         allDataButton.style = .info
         allDataButton.contentHorizontalAlignment = .leading
@@ -382,11 +381,19 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardVaccinationCoverageHeader
 
+        let bars: [(amount: Double, title: String)] = [
+            (data.vaccinationCoverage18Plus / 100, .dashboardVaccinationCoverageElderLabel),
+            (data.boosterCoverage18Plus / 100, .dashboardVaccinationCoverageBoosterLabel)
+        ]
+
+        let barViews = bars.map { DashboardBarView(theme: theme, amount: $0.amount, label: $0.title) }
+
+        let barStackView = UIStackView(arrangedSubviews: barViews)
+        barStackView.spacing = 16
+        barStackView.axis = .vertical
+
         graphStackView.insertArrangedSubview(
-            GraphView(theme: theme,
-                      title: .dashboardVaccinationCoverageHeader,
-                      data: GraphData(values: data.values ?? []),
-                      style: .normal),
+            barStackView,
             at: 1)
     }
 
