@@ -16,6 +16,7 @@ class Button: UIButton, Themeable {
         case tertiary
         case warning
         case info
+        case link
     }
 
     var style = ButtonType.primary {
@@ -58,11 +59,8 @@ class Button: UIButton, Themeable {
         titleLabel?.textAlignment = .center
 
         if let icon = icon {
-            transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
-            titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             setImage(icon.resizedTo(CGSize(width: 30, height: 30)), for: .normal)
             imageView?.contentMode = .scaleAspectFit
-            imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
             imageEdgeInsets = UIEdgeInsets(top: 15, left: 0, bottom: 15, right: 15)
         }
 
@@ -94,6 +92,23 @@ class Button: UIButton, Themeable {
     override func layoutSubviews() {
         super.layoutSubviews()
         updateRoundedCorners()
+
+        guard imageView?.image != nil else { return }
+
+        // If there is an image set, position it on the opposite of the default position
+        let imageFrame = imageView?.frame ?? .zero
+        let titleFrame = titleLabel?.frame ?? .zero
+
+        switch UIApplication.shared.userInterfaceLayoutDirection {
+        case .leftToRight:
+            titleLabel?.frame.origin.x = imageFrame.origin.x
+            imageView?.frame.origin.x = titleFrame.maxX - imageFrame.width
+        case .rightToLeft:
+            imageView?.frame.origin.x = titleFrame.origin.x
+            titleLabel?.frame.origin.x = imageFrame.maxX - titleFrame.width
+        @unknown default:
+            break
+        }
     }
 
     // MARK: - Private
@@ -123,6 +138,12 @@ class Button: UIButton, Themeable {
         case .info:
             backgroundColor = .clear
             setTitleColor(theme.colors.primary, for: .normal)
+        case .link:
+            backgroundColor = .clear
+            setTitleColor(theme.colors.primary, for: .normal)
+            setImage(.chevron?.withRenderingMode(.alwaysTemplate), for: .normal)
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 9)
+            imageView?.tintColor = theme.colors.primary
         }
 
         tintColor = .white
@@ -148,14 +169,12 @@ class Button: UIButton, Themeable {
         if useHapticFeedback { Haptic.light() }
 
         UIButton.animate(withDuration: 0.2, animations: {
-            guard self.imageView?.image == nil else { return }
             self.transform = CGAffineTransform(scaleX: 0.98, y: 0.98)
         })
     }
 
     @objc private func touchUpAnimation() {
         UIButton.animate(withDuration: 0.2, animations: {
-            guard self.imageView?.image == nil else { return }
             self.transform = CGAffineTransform.identity
         })
     }

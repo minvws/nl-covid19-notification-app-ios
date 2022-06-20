@@ -5,6 +5,7 @@
  *  SPDX-License-Identifier: EUPL-1.2
  */
 
+import ENFoundation
 import UIKit
 
 /// @mockable
@@ -15,7 +16,7 @@ protocol DashboardViewControllable: ViewControllable, DashboardOverviewListener,
     func replaceSameOrPush(viewController: ViewControllable, animated: Bool)
 }
 
-final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting {
+final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting, Logging {
 
     // MARK: - Initialisation
 
@@ -43,6 +44,14 @@ final class DashboardRouter: Router<DashboardViewControllable>, DashboardRouting
         let detailViewController = detailBuilder.build(withData: data, listener: viewController, identifier: identifier)
 
         viewController.replaceSameOrPush(viewController: detailViewController, animated: animated)
+    }
+
+    func routeToExternalURL(_ url: URL) {
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        } else {
+            logError("Unable to open \(url)")
+        }
     }
 
     // MARK: - Private
