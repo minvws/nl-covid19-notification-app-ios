@@ -17,10 +17,8 @@ final class DashboardDetailRouter: Router<DashboardDetailViewControllable>, Dash
     // MARK: - Initialisation
 
     init(listener: DashboardDetailListener,
-         viewController: DashboardDetailViewControllable /* ,
-          childBuilder: ChildBuildable */ ) {
+         viewController: DashboardDetailViewControllable) {
         self.listener = listener
-        // self.childBuilder = childBuilder
 
         super.init(viewController: viewController)
 

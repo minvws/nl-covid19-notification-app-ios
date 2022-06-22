@@ -13,6 +13,7 @@ import UIKit
 protocol DashboardRouting: Routing {
     func routeToOverview(with data: DashboardData)
     func routeToDetail(with identifier: DashboardIdentifier, data: DashboardData, animated: Bool)
+    func routeToExternalURL(_ url: URL)
 }
 
 final class DashboardViewController: NavigationController, DashboardViewControllable, UIAdaptivePresentationControllerDelegate {
@@ -89,6 +90,10 @@ final class DashboardViewController: NavigationController, DashboardViewControll
     func dashboardDetailRequestsRouteToDetail(with identifier: DashboardIdentifier) {
         guard let data = dashboardData else { return }
         router?.routeToDetail(with: identifier, data: data, animated: true)
+    }
+
+    func dashboardDetailRequestsRouteToURL(_ url: URL) {
+        router?.routeToExternalURL(url)
     }
 
     // MARK: - Private
