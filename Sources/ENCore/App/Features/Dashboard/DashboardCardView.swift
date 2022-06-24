@@ -128,9 +128,9 @@ final class DashboardCardView: UIControl, Themeable {
     private let titleStackView = UIStackView()
     private let amountStackView = UIStackView()
     private let visualView = UIImageView()
-    private let amountLabel = UILabel()
-    private let titleLabel = UILabel()
-    private let dateLabel = UILabel()
+    private let amountLabel = Label()
+    private let titleLabel = Label()
+    private let dateLabel = Label()
     private let chevron = UIImageView(image: .chevron)
     private let viewModel: DashboardCard
 
@@ -155,6 +155,7 @@ final class DashboardCardView: UIControl, Themeable {
 
         titleLabel.text = viewModel.title
         titleLabel.numberOfLines = 0
+        titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.font = theme.fonts.subheadBold
 
         accessibilityLabel = viewModel.title
@@ -192,6 +193,7 @@ final class DashboardCardView: UIControl, Themeable {
         let displayedAmount = numberFormatter.string(for: viewModel.displayedAmount)
         amountLabel.text = displayedAmount
         amountLabel.numberOfLines = 0
+        amountLabel.lineBreakMode = .byWordWrapping
         amountLabel.font = theme.fonts.title2
 
         outerStackView.addArrangedSubview(titleStackView)
@@ -271,6 +273,8 @@ final class DashboardCardView: UIControl, Themeable {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 256, height: 158 + Self.shadowMargin.top + Self.shadowMargin.bottom)
+        return CGSize(width: 256, height: (158 * scaleSize) + Self.shadowMargin.top + Self.shadowMargin.bottom)
     }
+
+    private var scaleSize: CGFloat { return titleLabel.font.pointSize / 14 }
 }
