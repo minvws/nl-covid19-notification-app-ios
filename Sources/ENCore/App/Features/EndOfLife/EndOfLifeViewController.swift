@@ -133,6 +133,7 @@ private final class EndOfLifeView: View {
         titleLabel.numberOfLines = 0
         titleLabel.font = theme.fonts.title2
         titleLabel.text = .endOfLifeTitle
+        titleLabel.accessibilityTraits = .header
 
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = theme.fonts.body
