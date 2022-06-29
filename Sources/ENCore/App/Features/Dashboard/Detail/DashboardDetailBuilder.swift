@@ -11,6 +11,7 @@ import Foundation
 /// @mockable
 protocol DashboardDetailListener: AnyObject {
     func dashboardDetailRequestsRouteToDetail(with identifier: DashboardIdentifier)
+    func dashboardDetailRequestsRouteToURL(_ url: URL)
 }
 
 /// @mockable

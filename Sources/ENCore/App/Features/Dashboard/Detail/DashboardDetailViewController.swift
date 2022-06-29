@@ -73,7 +73,9 @@ final class DashboardDetailViewController: ViewController, DashboardDetailViewCo
             break
         }
 
-        internalView.setButtons(buttons)
+        internalView.set(buttons: buttons, moreInfoHandler: { [weak self] in
+            self?.listener?.dashboardDetailRequestsRouteToURL($0)
+        })
     }
 
     // MARK: - DashboardDetailViewControllable
@@ -234,13 +236,13 @@ private final class DetailView: View {
         graphHeaderStackView.addArrangedSubview(iconView)
         graphHeaderStackView.addArrangedSubview(graphHeaderLabel)
 
-        // TODO: Handle button
-        let allDataButton = Button(title: .dashboardMoreInfoLink, theme: theme)
-        allDataButton.style = .info
-        allDataButton.contentHorizontalAlignment = .leading
+        let moreInfoButton = Button(title: .dashboardMoreInfoLink, theme: theme)
+        moreInfoButton.style = .link
+        moreInfoButton.contentHorizontalAlignment = .leading
+        moreInfoButton.addTarget(self, action: #selector(openAllData), for: .touchUpInside)
 
         graphStackView.addArrangedSubview(graphHeaderStackView)
-        graphStackView.addArrangedSubview(allDataButton)
+        graphStackView.addArrangedSubview(moreInfoButton)
 
         outerStackView.addArrangedSubview(moreDataStackView)
         moreDataStackView.spacing = 16
@@ -276,6 +278,8 @@ private final class DetailView: View {
     }
 
     func configureForPositiveTests(with data: DashboardData.PositiveTestResults) {
+        moreInfoURL = data.moreInfoUrl
+
         titleLabel.text = .dashboardPositiveTestResultsHeader
 
         let summary: String = .dashboardPositiveTestResultsSummary(
@@ -299,6 +303,8 @@ private final class DetailView: View {
     }
 
     func configureForCoronaMelderUsers(with data: DashboardData.CoronaMelderUsers) {
+        moreInfoURL = data.moreInfoUrl
+
         titleLabel.text = .dashboardCoronaMelderUsersHeader
 
         let daysAgo = currentDate().days(sinceDate: data.highlightedValue.date) ?? 0
@@ -325,6 +331,8 @@ private final class DetailView: View {
     }
 
     func configureForHospitalAdmissions(with data: DashboardData.HospitalAdmissions) {
+        moreInfoURL = data.moreInfoUrl
+
         titleLabel.text = .dashboardHospitalAdmissionsHeader
 
         let summary: String = .dashboardHospitalAdmissionsSummary(
@@ -347,6 +355,8 @@ private final class DetailView: View {
     }
 
     func configureForIcuAdmissions(with data: DashboardData.IcuAdmissions) {
+        moreInfoURL = data.moreInfoUrl
+
         titleLabel.text = .dashboardIcuAdmissionsHeader
 
         let summary: String = .dashboardIcuAdmissionsSummary(
@@ -369,6 +379,8 @@ private final class DetailView: View {
     }
 
     func configureForVaccinationCoverage(with data: DashboardData.VaccinationCoverage) {
+        moreInfoURL = data.moreInfoUrl
+
         titleLabel.text = .dashboardVaccinationCoverageHeader
         let fullyVaccinated = (data.vaccinationCoverage18Plus / 100) as NSNumber
         let boostered = (data.boosterCoverage18Plus / 100) as NSNumber
@@ -382,19 +394,37 @@ private final class DetailView: View {
 
         graphHeaderLabel.text = .dashboardVaccinationCoverageHeader
 
+        let bars: [(amount: Double, title: String)] = [
+            (data.vaccinationCoverage18Plus / 100, .dashboardVaccinationCoverageElderLabel),
+            (data.boosterCoverage18Plus / 100, .dashboardVaccinationCoverageBoosterLabel)
+        ]
+
+        let barViews = bars.map { DashboardBarView(theme: theme, amount: $0.amount, label: $0.title) }
+
+        let barStackView = UIStackView(arrangedSubviews: barViews)
+        barStackView.spacing = 16
+        barStackView.axis = .vertical
+
         graphStackView.insertArrangedSubview(
-            GraphView(theme: theme,
-                      title: .dashboardVaccinationCoverageHeader,
-                      data: GraphData(values: data.values ?? []),
-                      style: .normal),
+            barStackView,
             at: 1)
     }
 
-    func setButtons(_ buttons: [DashboardDetailButton]) {
+    func set(buttons: [DashboardDetailButton], moreInfoHandler: @escaping (URL) -> ()) {
         buttons.forEach(buttonStackView.addArrangedSubview(_:))
+        self.moreInfoHandler = moreInfoHandler
     }
 
     // MARK: - Private
+
+    @objc private func openAllData() {
+        guard let moreInfoHandler = moreInfoHandler, let moreInfoURL = moreInfoURL else { return }
+
+        moreInfoHandler(moreInfoURL)
+    }
+
+    private var moreInfoHandler: ((URL) -> ())?
+    private var moreInfoURL: URL?
 
     private var scrollView = UIScrollView()
     private var outerStackView = UIStackView()

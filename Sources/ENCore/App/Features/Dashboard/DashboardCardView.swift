@@ -128,9 +128,9 @@ final class DashboardCardView: UIControl, Themeable {
     private let titleStackView = UIStackView()
     private let amountStackView = UIStackView()
     private let visualView = UIImageView()
-    private let amountLabel = UILabel()
-    private let titleLabel = UILabel()
-    private let dateLabel = UILabel()
+    private let amountLabel = Label()
+    private let titleLabel = Label()
+    private let dateLabel = Label()
     private let chevron = UIImageView(image: .chevron)
     private let viewModel: DashboardCard
 
@@ -155,6 +155,7 @@ final class DashboardCardView: UIControl, Themeable {
 
         titleLabel.text = viewModel.title
         titleLabel.numberOfLines = 0
+        titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.font = theme.fonts.subheadBold
 
         accessibilityLabel = viewModel.title
@@ -192,6 +193,7 @@ final class DashboardCardView: UIControl, Themeable {
         let displayedAmount = numberFormatter.string(for: viewModel.displayedAmount)
         amountLabel.text = displayedAmount
         amountLabel.numberOfLines = 0
+        amountLabel.lineBreakMode = .byWordWrapping
         amountLabel.font = theme.fonts.title2
 
         outerStackView.addArrangedSubview(titleStackView)
@@ -211,7 +213,7 @@ final class DashboardCardView: UIControl, Themeable {
         }
 
         if let bars = viewModel.bars {
-            let barViews = bars.map { BarView(theme: theme, amount: $0.amount, label: $0.title) }
+            let barViews = bars.map { DashboardBarView(theme: theme, amount: $0.amount, label: $0.title) }
 
             let barStackView = UIStackView(arrangedSubviews: barViews)
             barStackView.spacing = 16
@@ -271,84 +273,8 @@ final class DashboardCardView: UIControl, Themeable {
     }
 
     override var intrinsicContentSize: CGSize {
-        return CGSize(width: 256, height: 158 + Self.shadowMargin.top + Self.shadowMargin.bottom)
-    }
-}
-
-private final class BarView: View {
-
-    private let percentageLabel = UILabel()
-    private let titleLabel = UILabel()
-    private let stackView = UIStackView()
-
-    private let amount: Double
-    private let label: String
-
-    private let barContainerView = UIView()
-    private let barFillView = UIView()
-
-    init(theme: Theme, amount: Double, label: String) {
-        self.amount = amount
-        self.label = label
-
-        super.init(theme: theme)
+        return CGSize(width: 256, height: (158 * scaleSize) + Self.shadowMargin.top + Self.shadowMargin.bottom)
     }
 
-    // MARK: - Overrides
-
-    override func build() {
-        stackView.addArrangedSubview(percentageLabel)
-        stackView.addArrangedSubview(titleLabel)
-        stackView.spacing = 4
-
-        addSubview(stackView)
-
-        let numberFormatter = NumberFormatter()
-        numberFormatter.locale = Locale.current
-        numberFormatter.numberStyle = .percent
-        numberFormatter.maximumFractionDigits = 1
-
-        let percentage = numberFormatter.string(from: NSNumber(value: amount)) ?? ""
-        percentageLabel.text = percentage
-        percentageLabel.font = theme.fonts.caption1Bold
-        percentageLabel.setContentHuggingPriority(.required, for: .horizontal)
-
-        titleLabel.text = label
-        titleLabel.font = theme.fonts.caption1
-        titleLabel.textColor = theme.colors.captionGray
-        titleLabel.numberOfLines = 0
-
-        accessibilityLabel = label + ", " + percentage
-
-        addSubview(barContainerView)
-        barContainerView.layer.cornerRadius = 4
-        barContainerView.backgroundColor = theme.colors.graphFill
-
-        barFillView.layer.cornerRadius = 4
-        barFillView.backgroundColor = theme.colors.graphStroke
-        barContainerView.addSubview(barFillView)
-    }
-
-    override func setupConstraints() {
-        stackView.snp.makeConstraints { maker in
-            maker.left.equalToSuperview()
-            maker.right.equalToSuperview()
-            maker.top.equalToSuperview()
-            maker.bottom.equalToSuperview().offset(-12)
-        }
-
-        barContainerView.snp.makeConstraints { maker in
-            maker.left.equalToSuperview()
-            maker.right.equalToSuperview()
-            maker.bottom.equalToSuperview()
-            maker.height.equalTo(8)
-        }
-
-        barFillView.snp.makeConstraints { maker in
-            maker.top.equalToSuperview()
-            maker.bottom.equalToSuperview()
-            maker.left.equalToSuperview()
-            maker.width.equalToSuperview().multipliedBy(amount)
-        }
-    }
+    private var scaleSize: CGFloat { return titleLabel.font.pointSize / 14 }
 }

@@ -196,8 +196,8 @@ private final class DashboardView: View {
     private var headerContainer = UIView()
     private var headerStackView = UIStackView()
     private var headerBackgroundView = UIView()
-    private var headerLabel = UILabel()
-    private var currentSituationLabel = UILabel()
+    private var headerLabel = Label()
+    private var currentSituationLabel = Label()
     private lazy var compactView = DashboardCompactView(theme: theme)
     private lazy var errorView = DashboardErrorView(theme: theme)
 
@@ -242,11 +242,13 @@ private final class DashboardView: View {
         headerLabel.textColor = theme.colors.dashboardHeaderText
         headerLabel.text = .dashboardTitle.uppercased()
         headerLabel.font = theme.fonts.caption1Bold
+        headerLabel.numberOfLines = 0
         headerLabel.setContentHuggingPriority(.required, for: .vertical)
         headerLabel.accessibilityTraits = .header
 
         currentSituationLabel.text = .dashboardHeader
         currentSituationLabel.font = theme.fonts.headlineBold
+        currentSituationLabel.numberOfLines = 0
         currentSituationLabel.setContentHuggingPriority(.required, for: .vertical)
         currentSituationLabel.accessibilityTraits = .header
 
@@ -363,7 +365,7 @@ private final class DashboardView: View {
         guard bounds.width > 0 else { return }
 
         heightConstraint?.isActive = false
-        let size = systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
+        let size = systemLayoutSizeFitting(UIView.layoutFittingExpandedSize)
         heightConstraint?.constant = size.height
         heightConstraint?.isActive = true
     }
