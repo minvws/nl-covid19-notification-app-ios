@@ -51,7 +51,7 @@ final class NetworkManager: NetworkManaging, Logging {
         let headers = [HTTPHeaderKey.acceptedContentType: expectedContentType.rawValue]
 
         let url = configuration.dashboardUrl(useFallback: useFallbackEndpoint)
-        let urlRequest = constructRequest(url: url, method: .GET, headers: headers, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData)
+        let urlRequest = constructRequest(url: url, method: .GET, headers: headers)
 
         downloadAndDecodeURL(withURLRequest: urlRequest, decodeAsType: DashboardData.self, completion: completion)
     }
