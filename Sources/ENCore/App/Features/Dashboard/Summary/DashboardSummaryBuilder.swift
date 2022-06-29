@@ -48,6 +48,10 @@ private final class DashboardSummaryDependencyProvider: DependencyProvider<Dashb
     var exposureStateStream: ExposureStateStreaming {
         return dependency.exposureStateStream
     }
+
+    var applicationLifecycleStream: ApplicationLifecycleStreaming {
+        return ApplicationLifecycleStream()
+    }
 }
 
 final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, DashboardSummaryBuildable {
@@ -60,7 +64,8 @@ final class DashboardSummaryBuilder: Builder<DashboardSummaryDependency>, Dashbo
                                                             theme: dependencyProvider.theme,
                                                             dataController: dependencyProvider.dataController,
                                                             interfaceOrientationStream: dependencyProvider.interfaceOrientationStream,
-                                                            exposureStateStream: dependencyProvider.exposureStateStream)
+                                                            exposureStateStream: dependencyProvider.exposureStateStream,
+                                                            applicationLifecycleStream: dependencyProvider.applicationLifecycleStream)
         return viewController
     }
 }

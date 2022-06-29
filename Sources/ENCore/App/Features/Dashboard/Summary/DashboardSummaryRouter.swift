@@ -10,6 +10,8 @@ import UIKit
 /// @mockable
 protocol DashboardSummaryViewControllable: ViewControllable {
     var router: DashboardSummaryRouting? { get set }
+
+    func reload()
 }
 
 final class DashboardSummaryRouter: Router<DashboardSummaryViewControllable>, DashboardSummaryRouting {
