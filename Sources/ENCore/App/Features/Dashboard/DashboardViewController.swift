@@ -73,8 +73,10 @@ final class DashboardViewController: NavigationController, DashboardViewControll
                 guard let self = self else { return }
                 self.dashboardData = $0
                 self.performInitialRoute(with: $0)
-            }, onFailure: { error in
-                // TODO: Handle
+            }, onFailure: { [weak self] error in
+                guard let self = self else { return }
+                // Close on error
+                self.didTapClose()
             }).disposed(by: disposeBag)
     }
 

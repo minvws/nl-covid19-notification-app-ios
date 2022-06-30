@@ -85,7 +85,10 @@ final class GraphView: View {
     private let style: Style
     private let title: String
 
+    private let errorIcon = UIImageView(image: .dashboardErrorGrey)
     private let errorLabel = Label()
+
+    private lazy var errorViews = [errorIcon, errorLabel]
 
     private lazy var panningViews = [selectedDateLabel, markerView, selectionView, popupContainerView]
 
@@ -147,6 +150,7 @@ final class GraphView: View {
 
     private func buildNormal() {
         addSubview(errorLabel)
+        addSubview(errorIcon)
 
         addSubview(drawingView)
         addSubview(upperBoundLabel)
@@ -205,7 +209,7 @@ final class GraphView: View {
         dateContainerView.distribution = .equalSpacing
 
         errorLabel.text = .dashboardServerError
-        errorLabel.font = theme.fonts.caption1
+        errorLabel.font = theme.fonts.subhead(limitMaximumSize: false)
         errorLabel.textAlignment = .center
 
         let panGestureRecognizer = ImmediatePanGestureRecognizer(target: self, action: #selector(handlePan))
@@ -227,7 +231,7 @@ final class GraphView: View {
 
         subviews.forEach { $0.isHidden = isError }
         panningViews.forEach { $0.isHidden = true }
-        errorLabel.isHidden = !isError
+        errorViews.forEach { $0.isHidden = !isError }
     }
 
     override func setupConstraints() {
@@ -290,7 +294,13 @@ final class GraphView: View {
 
     private func setupConstraintsNormal() {
         errorLabel.snp.makeConstraints { maker in
-            maker.edges.equalToSuperview()
+            maker.centerX.equalToSuperview()
+            maker.centerY.equalToSuperview().offset(8)
+        }
+
+        errorIcon.snp.makeConstraints { maker in
+            maker.centerX.equalTo(errorLabel)
+            maker.bottom.equalTo(errorLabel.snp.top).offset(-8)
         }
 
         drawingView.snp.makeConstraints { maker in

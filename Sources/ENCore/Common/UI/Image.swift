@@ -104,6 +104,8 @@ extension UIImage {
     static var dashboardUsersIllustration: UIImage? { return Image.named("Dashboard/UsersIllustration") }
     static var dashboardVaccinationsIcon: UIImage? { return Image.named("Dashboard/Vaccinations") }
     static var dashboardCompactIllustration: UIImage? { return Image.named("Dashboard/CompactIllustration") }
+    static var dashboardErrorRed: UIImage? { return Image.named("Dashboard/Error/Red") }
+    static var dashboardErrorGrey: UIImage? { return Image.named("Dashboard/Error/Grey") }
 }
 
 extension UIImage {

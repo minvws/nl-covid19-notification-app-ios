@@ -13,7 +13,7 @@ import UIKit
 /// @mockable
 protocol DashboardSummaryRouting: Routing {}
 
-final class DashboardSummaryViewController: ViewController, DashboardSummaryViewControllable, DashboardCardViewListener {
+final class DashboardSummaryViewController: ViewController, DashboardSummaryViewControllable {
 
     // MARK: - Init
 
@@ -21,11 +21,13 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
          theme: Theme,
          dataController: ExposureDataControlling,
          interfaceOrientationStream: InterfaceOrientationStreaming,
-         exposureStateStream: ExposureStateStreaming) {
+         exposureStateStream: ExposureStateStreaming,
+         applicationLifecycleStream: ApplicationLifecycleStreaming) {
         self.listener = listener
         self.dataController = dataController
         self.interfaceOrientationStream = interfaceOrientationStream
         self.exposureStateStream = exposureStateStream
+        self.applicationLifecycleStream = applicationLifecycleStream
         super.init(theme: theme)
     }
 
@@ -43,16 +45,6 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        dataController
-            .getDashboardData()
-            .observe(on: MainScheduler.instance)
-            .subscribe(onSuccess: { [weak self] in
-                guard let self = self else { return }
-                self.dashboardView.set(data: $0.convertToCards(), listener: self)
-            }, onFailure: { error in
-                // TODO: Handle
-            }).disposed(by: disposeBag)
-
         interfaceOrientationStream
             .isLandscape
             .subscribe { [weak self] isLandscape in
@@ -65,7 +57,29 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
                 self?.updateDashboardState()
             }).disposed(by: disposeBag)
 
+        applicationLifecycleStream.didBecomeActive
+            .subscribe(onNext: { [weak self] in
+                self?.reload()
+            })
+            .disposed(by: disposeBag)
+
+        reload()
         updateDashboardState()
+    }
+
+    @objc
+    func reload() {
+
+        dataController
+            .getDashboardData()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onSuccess: { [weak self] in
+                guard let self = self else { return }
+                self.dashboardView.set(data: $0.convertToCards(), listener: self)
+            }, onFailure: { [weak self] error in
+                guard let self = self else { return }
+                self.dashboardView.set(error: error, listener: self)
+            }).disposed(by: disposeBag)
     }
 
     // MARK: - Private
@@ -74,16 +88,23 @@ final class DashboardSummaryViewController: ViewController, DashboardSummaryView
     private let dataController: ExposureDataControlling
     private let interfaceOrientationStream: InterfaceOrientationStreaming
     private let exposureStateStream: ExposureStateStreaming
+    private let applicationLifecycleStream: ApplicationLifecycleStreaming
     private lazy var dashboardView: DashboardView = DashboardView(theme: self.theme)
 
     private func updateDashboardState() {
         dashboardView.showCompact = exposureStateStream.currentExposureState.shouldShowCompactDashboardView
     }
+}
 
-    // MARK: - DashboardCardViewListener
-
+extension DashboardSummaryViewController: DashboardCardViewListener {
     func didSelect(identifier: DashboardIdentifier) {
         listener?.dashboardSummaryRequestsRouteToDetail(with: identifier)
+    }
+}
+
+extension DashboardSummaryViewController: DashboardErrorViewListener {
+    func didSelectReload() {
+        reload()
     }
 }
 
@@ -178,6 +199,7 @@ private final class DashboardView: View {
     private var headerLabel = Label()
     private var currentSituationLabel = Label()
     private lazy var compactView = DashboardCompactView(theme: theme)
+    private lazy var errorView = DashboardErrorView(theme: theme)
 
     private var landscapeConstraints = [NSLayoutConstraint]()
 
@@ -185,6 +207,7 @@ private final class DashboardView: View {
         landscapeOrientation = false
         showCompact = false
         super.init(theme: theme)
+        errorView.isHidden = true
     }
 
     var landscapeOrientation: Bool {
@@ -196,10 +219,7 @@ private final class DashboardView: View {
 
     var showCompact: Bool {
         didSet {
-            compactView.isHidden = !showCompact
-            headerContainer.isHidden = showCompact
-            scrollView.isHidden = showCompact
-            evaluateHeight()
+            updateCompactState()
         }
     }
 
@@ -243,6 +263,7 @@ private final class DashboardView: View {
 
         outerStackView.addArrangedSubview(compactView)
         outerStackView.addArrangedSubview(headerContainer)
+        outerStackView.addArrangedSubview(errorView)
         outerStackView.addArrangedSubview(scrollView)
 
         cardStackView.axis = .horizontal
@@ -298,14 +319,32 @@ private final class DashboardView: View {
 
     // MARK: - Private
 
+    private func updateCompactState() {
+        compactView.isHidden = !showCompact
+        headerContainer.isHidden = showCompact
+        scrollView.isHidden = showCompact
+        evaluateHeight()
+    }
+
     fileprivate func set(data: [DashboardCard], listener: DashboardCardViewListener) {
         compactView.listener = listener
+        errorView.isHidden = true
+        updateCompactState()
 
         data.forEach {
             let cardView = DashboardCardView(listener: listener, theme: theme, viewModel: $0)
             cardStackView.addArrangedSubview(cardView)
             setupConstraints(for: cardView)
         }
+    }
+
+    fileprivate func set(error: Error, listener: DashboardErrorViewListener) {
+        errorView.isHidden = false
+        compactView.isHidden = true
+        scrollView.isHidden = true
+        headerContainer.isHidden = false
+        errorView.listener = listener
+        evaluateHeight()
     }
 
     private func setupConstraints(for cardView: DashboardCardView) {
@@ -430,4 +469,81 @@ private final class DashboardCompactView: UIControl, Themeable {
     private let illustration = UIImageView(image: .dashboardCompactIllustration)
 
     weak var listener: DashboardCardViewListener?
+}
+
+private protocol DashboardErrorViewListener: AnyObject {
+    func didSelectReload()
+}
+
+private final class DashboardErrorView: UIControl, Themeable {
+
+    override var isHighlighted: Bool {
+        didSet {
+            UIButton.animate(withDuration: 0.2, animations: {
+                let scale: CGFloat = self.isHighlighted ? 0.98 : 1
+                self.transform = CGAffineTransform(scaleX: scale, y: scale)
+            })
+        }
+    }
+
+    let theme: Theme
+
+    init(theme: Theme) {
+        self.theme = theme
+
+        super.init(frame: .zero)
+
+        build()
+        setupConstraints()
+
+        isAccessibilityElement = true
+        accessibilityTraits = .button
+    }
+
+    @available(*, unavailable, message: "NSCoder and Interface Builder is not supported. Use Programmatic layout.")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Private
+
+    private func build() {
+        addTarget(self, action: #selector(didTap), for: .touchUpInside)
+
+        outerStackView.axis = .vertical
+        outerStackView.spacing = 8
+        outerStackView.alignment = .center
+        outerStackView.isUserInteractionEnabled = false
+
+        addSubview(outerStackView)
+
+        outerStackView.addArrangedSubview(icon)
+        outerStackView.addArrangedSubview(titleLabel)
+
+        titleLabel.text = .dashboardServerError
+        titleLabel.numberOfLines = 0
+        titleLabel.font = theme.fonts.subhead(limitMaximumSize: false)
+
+        accessibilityLabel = .dashboardServerError
+    }
+
+    private func setupConstraints() {
+        outerStackView.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().offset(16)
+            maker.bottom.equalToSuperview().offset(-16)
+            maker.left.equalToSuperview().offset(16)
+            maker.right.equalToSuperview().offset(-16)
+        }
+    }
+
+    @objc private func didTap() {
+        Haptic.light()
+        listener?.didSelectReload()
+    }
+
+    private let outerStackView = UIStackView()
+    private let titleLabel = Label()
+    private let icon = UIImageView(image: .dashboardErrorRed)
+
+    weak var listener: DashboardErrorViewListener?
 }
