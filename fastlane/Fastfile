@@ -1,0 +1,32 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+
+
+  # - Firebase deploy
+
+  desc "Build and deploy via Firebase from CI"
+  lane :deploy_ci do
+    # setup_ci(provider: "travis", force: true)
+    # prepare_certificate
+    # install_provisioning_profile(path: "fastlane/profiles/GGD_DBCO_Ad_Hoc.mobileprovision")
+
+    # deploy_to_firebase
+  end
+
+end

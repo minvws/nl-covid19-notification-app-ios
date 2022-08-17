@@ -1,0 +1,26 @@
+name: firebase deploy
+
+on: workflow_dispatch
+
+jobs:
+  firebase:
+    runs-on: macOS-11
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Load certificate
+      env:
+        CERTIFICATE_CONTENTS: ${{ secrets.DIST_CERT_CONTENTS }}
+      run: |
+        mkdir fastlane/certificates
+        echo "$CERTIFICATE_CONTENTS" | base64 -D > fastlane/certificates/distribution.p12
+    - name: Build and deploy
+      timeout-minutes: 30
+      env:
+        CERTIFICATE_PATH: fastlane/certificates/distribution.p12
+        CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        # SLACK_URL: ${{ secrets.SLACK_URL }}
+      run: |
+        bundle install
+        bundle exec fastlane ios deploy_ci
