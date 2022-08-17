@@ -14,12 +14,17 @@ jobs:
       run: |
         mkdir fastlane/certificates
         echo "$CERTIFICATE_CONTENTS" | base64 -D > fastlane/certificates/distribution.p12
+    - name: Firebase Credentials
+      env:
+        SERVICE_CREDENTIALS_FILE: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS_FILE }}
+      run: |
+        echo '$SERVICE_CREDENTIALS_FILE' > firebase.json
     - name: Build and deploy
       timeout-minutes: 30
       env:
         CERTIFICATE_PATH: fastlane/certificates/distribution.p12
         CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
-        FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        GOOGLE_APPLICATION_CREDENTIALS: firebase.json
         # SLACK_URL: ${{ secrets.SLACK_URL }}
       run: |
         bundle install
