@@ -23,7 +23,7 @@ fi
 
 if [ -z "$BUILD_ID" ]
 then
-      BUILD_ID="1"
+      BUILD_ID="$(( $GITHUB_RUN_NUMBER + 179478 ))"
 fi
 
 if [ -z "$BUNDLE_IDENTIFIER" ]

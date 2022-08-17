@@ -15,13 +15,21 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## iOS
 
-### ios custom_lane
+### ios test_ci
 
 ```sh
-[bundle exec] fastlane ios custom_lane
+[bundle exec] fastlane ios test_ci
 ```
 
-Description of what the lane does
+Run tests for integration purposes
+
+### ios deploy_ci
+
+```sh
+[bundle exec] fastlane ios deploy_ci
+```
+
+Build and deploy via Firebase from CI
 
 ----
 
