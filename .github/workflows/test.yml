@@ -1,0 +1,31 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - 'master'
+      - 'release/**'
+
+jobs:
+  test:
+    runs-on: macOS-12
+    timeout-minutes: 30
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generate TST Project
+      env: 
+        RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
+        NETWORK_CONFIGURATION: Test
+        LOG_LEVEL: debug
+        BUNDLE_DISPLAY_NAME: "🐞 CoronaMelder"
+        BUNDLE_SHORT_VERSION: tst
+        USE_DEVELOPER_MENU: true
+        SHARE_LOGS_ENABLED: true
+        EN_DEVELOPER_REGION: "TEST_NL_TEST"
+      run: |
+        ./tools/scripts/pre-build.sh
+    - name: Build and test
+      run: |
+        bundle install
+        bundle exec fastlane ios test_ci

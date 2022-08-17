@@ -17,16 +17,50 @@ default_platform(:ios)
 
 platform :ios do
 
+  # - Testing 
+  desc "Run tests for integration purposes"
+  lane :test_ci do
+    run_tests(
+      device: "iPhone 13 Pro",
+      scheme: "EN",
+      force_quit_simulator: true,
+      prelaunch_simulator: true
+    )
+  end
+
 
   # - Firebase deploy
 
   desc "Build and deploy via Firebase from CI"
   lane :deploy_ci do
-    # setup_ci(provider: "travis", force: true)
-    # prepare_certificate
-    # install_provisioning_profile(path: "fastlane/profiles/GGD_DBCO_Ad_Hoc.mobileprovision")
+    setup_ci(provider: "travis", force: true)
+    prepare_certificate
+    install_provisioning_profile(path: "fastlane/profiles/CoronaMelder_ACC.mobileprovision")
+    install_provisioning_profile(path: "fastlane/profiles/CoronaMelder_PROD.mobileprovision")
 
-    # deploy_to_firebase
+    # Build:
+    build_ios_app(
+      scheme: "EN",
+      configuration: ENV["CONFIGURATION"],
+      export_options: {
+        method: "ad-hoc"
+      }
+    )
+
+    firebase_app_distribution(
+      app: "1:937920499570:ios:3fa1c661e8189087f957eb",
+      groups: ENV["TEST_GROUP"],
+      release_notes: ENV["RELEASE_NOTES"]
+    )
+  end
+
+  private_lane :prepare_certificate do
+  import_certificate(
+    certificate_path: ENV["CERTIFICATE_PATH"],
+    certificate_password: ENV["CERTIFICATE_PASSWORD"],
+    keychain_name: ENV["MATCH_KEYCHAIN_NAME"],
+    keychain_password: ""
+  )
   end
 
 end
