@@ -1,30 +1,80 @@
----
-name: CI
+name: Build and deploy
 on:
-  [push, pull_request]
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: macOS-11
+  firebase:
+    runs-on: macOS-12
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: CIprep
-        run: ./tools/scripts/ci/010_ciprep
-      - name: CIbuild
-        run: ./tools/scripts/ci/030_cibuild
-      - name: CItest-iphone13
-        run: |
-          sudo xcode-select -s /Applications/Xcode_13.0.app
-          xcodebuild clean test -version \
-          -project EN.xcodeproj \
-          -scheme ENCore \
-          -destination "platform=iOS Simulator,OS=15.0,name=iPhone 13" \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          ONLY_ACTIVE_ARCH=NO
-      - name: CIartifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: buildinfo
-          path: .buildinfo
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Load certificate
+      env:
+        CERTIFICATE_CONTENTS: ${{ secrets.DIST_CERT_CONTENTS }}
+      run: |
+        mkdir fastlane/certificates
+        echo "$CERTIFICATE_CONTENTS" | base64 -D > fastlane/certificates/distribution.p12
+    - name: Setup provisioning profiles
+      env:
+        PROVISIONING_PASSWORD: ${{ secrets.PROVISIONING_PASSWORD }}
+      run: |
+        gpg --quiet --batch --yes --decrypt --passphrase="$PROVISIONING_PASSWORD" --output fastlane/profiles/CoronaMelder_ACC.mobileprovision fastlane/profiles/CoronaMelder_ACC.mobileprovision.gpg
+        gpg --quiet --batch --yes --decrypt --passphrase="$PROVISIONING_PASSWORD" --output fastlane/profiles/CoronaMelder_PROD.mobileprovision fastlane/profiles/CoronaMelder_PROD.mobileprovision.gpg
+    - name: Firebase Credentials
+      env:
+        SERVICE_CREDENTIALS_FILE: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS_FILE }}
+      run: |
+        echo "$SERVICE_CREDENTIALS_FILE" > firebase.json
+    - name: Generate TST Project
+      env: 
+        RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
+        NETWORK_CONFIGURATION: Test
+        LOG_LEVEL: debug
+        BUNDLE_DISPLAY_NAME: "🐞 CoronaMelder"
+        BUNDLE_SHORT_VERSION: tst
+        USE_DEVELOPER_MENU: true
+        SHARE_LOGS_ENABLED: true
+        EN_DEVELOPER_REGION: "TEST_NL_TEST"
+      run: |
+        ./tools/scripts/pre-build.sh
+    - name: Build and deploy TST
+      timeout-minutes: 30
+      env:
+        CERTIFICATE_PATH: fastlane/certificates/distribution.p12
+        CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+        GOOGLE_APPLICATION_CREDENTIALS: firebase.json
+        CONFIGURATION: Debug
+        RELEASE_NOTES: ${{ github.event.head_commit.message }}
+        TEST_GROUP: "ios-latest"
+        # SLACK_URL: ${{ secrets.SLACK_URL }}
+      run: |
+        bundle install
+        bundle exec fastlane ios deploy_ci
+    - name: Generate ACC Project
+      env: 
+        RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
+        NETWORK_CONFIGURATION: ACC
+        LOG_LEVEL: debug
+        BUNDLE_DISPLAY_NAME: "β CoronaMelder"
+        BUNDLE_SHORT_VERSION: acc
+        USE_DEVELOPER_MENU: false
+        SHARE_LOGS_ENABLED: true
+        EN_DEVELOPER_REGION: "TEST_NL_ACC"
+      run: |
+        ./tools/scripts/pre-build.sh
+    - name: Build and deploy ACC
+      timeout-minutes: 30
+      env:
+        CERTIFICATE_PATH: fastlane/certificates/distribution.p12
+        CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+        GOOGLE_APPLICATION_CREDENTIALS: firebase.json
+        CONFIGURATION: Release
+        RELEASE_NOTES: ${{ github.event.head_commit.message }}
+        TEST_GROUP: "ios-acceptance"
+        # SLACK_URL: ${{ secrets.SLACK_URL }}
+      run: |
+        bundle install
+        bundle exec fastlane ios deploy_ci
