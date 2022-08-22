@@ -3,46 +3,46 @@
    |    | <ENCore.HelpTableView; baseClass = UITableView; frame = (0 0; 320 480); clipsToBounds = YES; gestureRecognizers = <NSArray>; layer = <CALayer>; contentOffset: {0, 0}; contentSize: {320, 2005.6666870117185}; adjustedContentInset: {0, 0, 0, 0}; dataSource: <ENCore.AboutOverviewViewController>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 952.667; 320 48.3333); text = 'How do I recognize a noti...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 47.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 20.3333); text = 'How do I recognize a noti...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 17; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 20.3333); text = 'How do I recognize a noti...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 17; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 882.333; 320 70.3333); text = 'Can I send others a notif...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 69.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 42.3333); text = 'Can I send others a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 28; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 42.3333); text = 'Can I send others a notif...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 28; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 812; 320 70.3333); text = 'When does the app send no...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 69.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 42.3333); text = 'When does the app send no...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 28; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 42.3333); text = 'When does the app send no...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 28; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 763.667; 320 48.3333); text = 'Can the app see my locati...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 47.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 20.3333); text = 'Can the app see my locati...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 17; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 20.3333); text = 'Can the app see my locati...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 17; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 693.333; 320 70.3333); text = 'Does the app know who I a...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 69.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 42.3333); text = 'Does the app know who I a...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 28; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 70.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 42.3333); text = 'Does the app know who I a...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 28; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 645; 320 48.3333); text = 'Why is this app important...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 47.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 20.3333); text = 'Why is this app important...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 17; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 48.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 20.3333); text = 'Why is this app important...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 17; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <ENCore.HelpTableViewCell; baseClass = UITableViewCell; frame = (0 552.667; 320 92.3333); text = 'I have been vaccinated or...'; hidden = YES; autoresize = W; layer = <CALayer>>
    |    |    |    | <UIView; frame = (14 91.3333; 306 1); layer = <CALayer>>
-   |    |    |    | <UITableViewCellContentView; frame = (0 0; 292.667 92.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
-   |    |    |    |    | <UITableViewLabel; frame = (16 14; 260.667 64.3333); text = 'I have been vaccinated or...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
-   |    |    |    | <_UITableCellAccessoryButton; frame = (292.667 39; 11.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
-   |    |    |    |    | <UIImageView; frame = (0 0; 11.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    | <UITableViewCellContentView; frame = (0 0; 293.667 92.3333); gestureRecognizers = <NSArray>; layer = <CALayer>>
+   |    |    |    |    | <UITableViewLabel; frame = (16 14; 261.667 64.3333); text = 'I have been vaccinated or...'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
+   |    |    |    | <_UITableCellAccessoryButton; frame = (293.667 39; 10.3333 14); opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
+   |    |    |    |    | <UIImageView; frame = (0 0; 10.3333 14); clipsToBounds = YES; opaque = NO; userInteractionEnabled = NO; layer = <CALayer>>
    |    |    | <UIView; frame = (0 1985.67; 320 0); layer = <CALayer>>
    |    |    | <_TtC6ENCoreP33_BE0F5152644A38BF9F618D4A1FE1760A17SectionHeaderView; frame = (0 0; 320 552.667); autoresize = W; layer = <CALayer>>
    |    |    |    | <ENCore.Label; baseClass = UILabel; frame = (16 16; 288 40.6667); text = 'About this app'; userInteractionEnabled = NO; layer = <_UILabelLayer>>
