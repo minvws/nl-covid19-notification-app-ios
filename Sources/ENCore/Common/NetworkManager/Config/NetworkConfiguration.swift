@@ -52,18 +52,18 @@ struct NetworkConfiguration {
         name: "Test",
         api: .init(
             scheme: "https",
-            host: "test.coronamelder-api.nl",
+            host: "api.test.coronamelder.nl",
             port: nil,
             path: "v1",
-            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "test.coronamelder-dist.nl",
+            host: "dist.test.coronamelder.nl",
             port: nil,
             path: "v5",
-            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         )
     )
@@ -72,18 +72,18 @@ struct NetworkConfiguration {
         name: "ACC",
         api: .init(
             scheme: "https",
-            host: "acceptatie.coronamelder-api.nl",
+            host: "api.acc.coronamelder.nl",
             port: nil,
             path: "v1",
-            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "acceptatie.coronamelder-dist.nl",
+            host: "dist.acc.coronamelder.nl",
             port: nil,
             path: "v5",
-            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         )
     )
@@ -92,18 +92,18 @@ struct NetworkConfiguration {
         name: "Production",
         api: .init(
             scheme: "https",
-            host: "coronamelder-api.nl",
+            host: "api.coronamelder.nl",
             port: nil,
             path: "v1",
-            sslFingerprints: [Certificate.SSL.apiFingerprint, Certificate.SSL.apiV2Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         ),
         cdn: .init(
             scheme: "https",
-            host: "productie.coronamelder-dist.nl",
+            host: "dist.coronamelder.nl",
             port: nil,
             path: "v5",
-            sslFingerprints: [Certificate.SSL.cdnFingerprint, Certificate.SSL.cdnV2V3Fingerprint],
+            sslFingerprints: nil,
             tokenParams: [:]
         )
     )
