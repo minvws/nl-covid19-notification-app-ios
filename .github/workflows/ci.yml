@@ -46,10 +46,9 @@ jobs:
         CERTIFICATE_PATH: fastlane/certificates/distribution.p12
         CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
         GOOGLE_APPLICATION_CREDENTIALS: firebase.json
-        CONFIGURATION: Debug
+        CONFIGURATION: Release
         RELEASE_NOTES: ${{ github.event.head_commit.message }}
         TEST_GROUP: "ios-latest"
-        # SLACK_URL: ${{ secrets.SLACK_URL }}
       run: |
         bundle install
         bundle exec fastlane ios deploy_ci
@@ -74,7 +73,6 @@ jobs:
         CONFIGURATION: Release
         RELEASE_NOTES: ${{ github.event.head_commit.message }}
         TEST_GROUP: "ios-acceptance"
-        # SLACK_URL: ${{ secrets.SLACK_URL }}
       run: |
         bundle install
         bundle exec fastlane ios deploy_ci
