@@ -18,6 +18,7 @@ default_platform(:ios)
 platform :ios do
 
   # - Testing 
+
   desc "Run tests for integration purposes"
   lane :test_ci do
     run_tests(
@@ -36,9 +37,8 @@ platform :ios do
     setup_ci(provider: "travis", force: true)
     prepare_certificate
     install_provisioning_profile(path: "fastlane/profiles/CoronaMelder_ACC.mobileprovision")
-    install_provisioning_profile(path: "fastlane/profiles/CoronaMelder_PROD.mobileprovision")
 
-    # Build:
+
     build_ios_app(
       scheme: "EN",
       configuration: ENV["CONFIGURATION"],
@@ -51,6 +51,35 @@ platform :ios do
       app: "1:937920499570:ios:3fa1c661e8189087f957eb",
       groups: ENV["TEST_GROUP"],
       release_notes: ENV["RELEASE_NOTES"]
+    )
+  end
+
+  # -- TestFlight --
+
+  desc "Build and deploy production app to TestFlight"
+  lane :deploy_to_appstore do
+    setup_ci(provider: "travis", force: true)
+    prepare_certificate
+    install_provisioning_profile(path: "fastlane/profiles/CoronaMelder_PROD.mobileprovision")
+
+    build_ios_app(
+      scheme: "EN",
+      configuration: "Release",
+      export_options: {
+        method: "app-store"
+      }
+    )
+
+    app_store_connect_api_key(
+      key_id: ENV['APP_STORE_API_KEY_ID'],
+      issuer_id: ENV["APP_STORE_API_KEY_ISSUER"],
+      key_filepath: "appstore-apikey.p8",
+      duration: 1200,
+    )
+
+    upload_to_testflight(
+      skip_submission: true,
+      skip_waiting_for_build_processing: true
     )
   end
 
