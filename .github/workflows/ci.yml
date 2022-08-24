@@ -11,23 +11,27 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+
     - name: Load certificate
       env:
         CERTIFICATE_CONTENTS: ${{ secrets.DIST_CERT_CONTENTS }}
       run: |
         mkdir fastlane/certificates
         echo "$CERTIFICATE_CONTENTS" | base64 -D > fastlane/certificates/distribution.p12
+
     - name: Setup provisioning profiles
       env:
         PROVISIONING_PASSWORD: ${{ secrets.PROVISIONING_PASSWORD }}
       run: |
         gpg --quiet --batch --yes --decrypt --passphrase="$PROVISIONING_PASSWORD" --output fastlane/profiles/CoronaMelder_ACC.mobileprovision fastlane/profiles/CoronaMelder_ACC.mobileprovision.gpg
         gpg --quiet --batch --yes --decrypt --passphrase="$PROVISIONING_PASSWORD" --output fastlane/profiles/CoronaMelder_PROD.mobileprovision fastlane/profiles/CoronaMelder_PROD.mobileprovision.gpg
+    
     - name: Firebase Credentials
       env:
         SERVICE_CREDENTIALS_FILE: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS_FILE }}
       run: |
         echo "$SERVICE_CREDENTIALS_FILE" > firebase.json
+    
     - name: Generate TST Project
       env: 
         RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
@@ -40,6 +44,7 @@ jobs:
         EN_DEVELOPER_REGION: "TEST_NL_TEST"
       run: |
         ./tools/scripts/pre-build.sh
+    
     - name: Build and deploy TST
       timeout-minutes: 30
       env:
@@ -52,6 +57,7 @@ jobs:
       run: |
         bundle install
         bundle exec fastlane ios deploy_ci
+    
     - name: Generate ACC Project
       env: 
         RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
@@ -64,6 +70,7 @@ jobs:
         EN_DEVELOPER_REGION: "TEST_NL_ACC"
       run: |
         ./tools/scripts/pre-build.sh
+    
     - name: Build and deploy ACC
       timeout-minutes: 30
       env:
@@ -76,3 +83,44 @@ jobs:
       run: |
         bundle install
         bundle exec fastlane ios deploy_ci
+
+    - name: Write p8 Key
+      env:
+        APP_STORE_API_KEY_P8_BASE64: ${{ secrets.APP_STORE_API_KEY_P8 }}
+      run: | 
+        echo $APP_STORE_API_KEY_P8_BASE64 | base64 --decode > $APPSTORE_KEY_BASE64_FILENAME
+
+    - name: Generate PROD Project
+      env: 
+        RELEASE_PROVISIONING_PROFILE: "CoronaMelder_PROD"
+        NETWORK_CONFIGURATION: Production
+        LOG_LEVEL: none
+        BUNDLE_DISPLAY_NAME: "CoronaMelder"
+        EN_DEVELOPER_REGION: "NL"
+      run: |
+        ./tools/scripts/pre-build.sh
+
+    - name: Build and deploy PROD
+      timeout-minutes: 120
+      env:
+        CERTIFICATE_PATH: fastlane/certificates/distribution.p12
+        CERTIFICATE_PASSWORD: ${{ secrets.DIST_CERT_PASSWORD }}
+        APP_STORE_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }}
+        APP_STORE_API_KEY_ISSUER: ${{ secrets.APP_STORE_API_KEY_ISSUER }}
+      run: |
+        bundle install
+        bundle exec fastlane ios deploy_to_appstore
+
+    - name: Archive app
+      uses: actions/upload-artifact@v2
+      with:
+        name: App
+        path: EN.ipa
+        retention-days: 30
+
+    - name: Archive app dSYMs
+      uses: actions/upload-artifact@v2
+      with:
+        name: App dSYMs
+        path: EN.app.dSYM.zip
+        retention-days: 30
