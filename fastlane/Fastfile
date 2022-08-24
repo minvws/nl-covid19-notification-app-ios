@@ -77,7 +77,10 @@ platform :ios do
       duration: 1200,
     )
 
-    upload_to_testflight(skip_submission: true)
+    upload_to_testflight(
+      skip_submission: true,
+      skip_waiting_for_build_processing: true
+    )
   end
 
   private_lane :prepare_certificate do
