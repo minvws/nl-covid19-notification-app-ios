@@ -1,8 +1,0 @@
-#!/bin/sh
-echo "*********************"
-echo "*     CI tests      *"
-echo "*********************"
-
-# make test
-
-exit 0
