@@ -88,7 +88,7 @@ jobs:
       env:
         APP_STORE_API_KEY_P8_BASE64: ${{ secrets.APP_STORE_API_KEY_P8 }}
       run: | 
-        echo $APP_STORE_API_KEY_P8_BASE64 | base64 --decode > $APPSTORE_KEY_BASE64_FILENAME
+        echo $APP_STORE_API_KEY_P8_BASE64 | base64 --decode > appstore-apikey.p8
 
     - name: Generate PROD Project
       env: 
