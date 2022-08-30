@@ -62,7 +62,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "dist.test.coronamelder.nl",
             port: nil,
-            path: "v5",
+            path: "v6",
             sslFingerprints: nil,
             tokenParams: [:]
         )
@@ -82,7 +82,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "dist.acc.coronamelder.nl",
             port: nil,
-            path: "v5",
+            path: "v6",
             sslFingerprints: nil,
             tokenParams: [:]
         )
@@ -102,7 +102,7 @@ struct NetworkConfiguration {
             scheme: "https",
             host: "dist.coronamelder.nl",
             port: nil,
-            path: "v5",
+            path: "v6",
             sslFingerprints: nil,
             tokenParams: [:]
         )
