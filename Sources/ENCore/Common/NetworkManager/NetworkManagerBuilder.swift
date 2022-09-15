@@ -87,13 +87,17 @@ private final class NetworkManagerDependencyProvider: DependencyProvider<Network
 final class NetworkManagerBuilder: Builder<NetworkManagerDependency>, NetworkManagerBuildable {
     func build() -> NetworkManaging {
 
-        let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
+//        Disable network traffic
 
-        return NetworkManager(configurationProvider: dependencyProvider.dependency.networkConfigurationProvider,
-                              responseHandlerProvider: dependencyProvider.responseHandlerProvider,
-                              storageController: dependencyProvider.dependency.storageController,
-                              session: dependencyProvider.session,
-                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
-                              urlResponseSaver: dependencyProvider.urlResponseSaver)
+//        let dependencyProvider = NetworkManagerDependencyProvider(dependency: dependency)
+
+//        return NetworkManager(configurationProvider: dependencyProvider.dependency.networkConfigurationProvider,
+//                              responseHandlerProvider: dependencyProvider.responseHandlerProvider,
+//                              storageController: dependencyProvider.dependency.storageController,
+//                              session: dependencyProvider.session,
+//                              sessionDelegate: dependencyProvider.sessionDelegate as? URLSessionDelegateProtocol,
+//                              urlResponseSaver: dependencyProvider.urlResponseSaver)
+
+        return EOLNetworkManager()
     }
 }

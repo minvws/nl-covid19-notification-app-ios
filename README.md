@@ -16,6 +16,7 @@ This repository contains the native iOS implementation of the Dutch COVID-19 Not
 1.1 [App Requirements](#requirements)
 1.2 [Feature overview](#featureoverview)
 1.3 [Dependencies](#dependencies)
+1.4 [Deactivation](#deactivation)
 2. [Development & Contribution process](#development)
 2.1 [Build Requirements](#developmentrequirements)
 2.2 [Getting started](#gettingstarted)
@@ -68,6 +69,10 @@ Other functions of the app that are automatically performed and are not availabl
 The app uses a number of external dependencies. To make sure we always use the correct version of these dependencies and to mitigate the risk of contaminating the codebase with unwanted code, the source code of these dependencies can be found within the repository in the `vendor/` folder.
 
 Here is an overview of what dependencies are used and why.
+
+<a name="deactivation"></a>
+### 1.4 Deactivation
+Currently the app has been deactivated, ceasing all server communications, revert [1cef3786](1cef3786e2f1e8caf34da7c7be142eb8f62fe469) to enable communication with the CDN again.
 
 - **CocoaLumberjack**
 Logging framework. When the app is build with debugging enabled, the app logs information to a local logfile that can be exported via the developer menu (sidebar menu that can be accessed by swiping to the left with 2 fingers on the screen). When the app is built for release, this logging is disabled. This means that builds that are published to the App Store do **not** log any information.
