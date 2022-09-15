@@ -110,7 +110,7 @@ targets:
       - package: Reachability
       - framework: ExposureNotification.framework
         optional: true
-      - framework: vendor/OpenSSL-for-iPhone/openssl.framework
+      - framework: vendor/OpenSSL-for-iPhone/OpenSSL.xcframework
     deploymentTarget: '12.5'
     platform: iOS
     scheme:
