@@ -141,8 +141,8 @@
 "noInternet.error.message" = "Sie benötigen eine Internetverbindung, um die App zu starten.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder wurde vorübergehend eingestellt";
-"endOfLife.description" = "CoronaMelder wurde vorübergehend eingestellt. Sie erhalten also keine Nachricht mehr, wenn Sie sich in der Nähe einer Person mit Corona infizierten Person aufgehalten haben.";
+"endOfLife.title" = "CoronaMelder wurde eingestellt.";
+"endOfLife.description" = "Das Ministerium für Gesundheit, Gemeinwohl und Sport hat beschlossen, dass die App nicht mehr erforderlich ist. Sie erhalten also keine Nachricht mehr, wenn Sie in der Nähe einer Person mit Corona waren.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Helfen Sie dabei, die Verbreitung des Coronavirus zu stoppen.";

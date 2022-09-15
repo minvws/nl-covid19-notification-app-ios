@@ -141,8 +141,8 @@
 "noInternet.error.message" = "Om de app op te starten heb je internet nodig.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is tijdelijk gestopt";
-"endOfLife.description" = "CoronaMelder is op dit moment tijdelijk stopgezet. Je krijgt dus geen melding meer nadat je in de buurt bent geweest van iemand met corona.";
+"endOfLife.title" = "CoronaMelder is gestopt";
+"endOfLife.description" = "Het Ministerie van Volksgezondheid, Welzijn en Sport heeft besloten dat de app niet meer nodig is. Je krijgt dus geen melding meer nadat je in de buurt bent geweest van iemand met corona.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Help de verspreiding van het coronavirus te stoppen";
