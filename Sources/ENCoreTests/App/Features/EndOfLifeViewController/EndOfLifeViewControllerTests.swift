@@ -31,7 +31,7 @@ final class EndOfLifeViewControllerTests: TestCase {
 
     // MARK: - Tests
 
-    func test_snapshot_endOfLifeViewController() {
+    func disabled_test_snapshot_endOfLifeViewController() {
         snapshots(matching: viewController)
     }
 }
