@@ -143,7 +143,7 @@ Connect to Wi-Fi or turn on mobile data for this app.";
 "noInternet.error.message" = "To start the app, you need to be connected to the internet.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder is closed";
+"endOfLife.title" = "CoronaMelder is suspended";
 "endOfLife.description" = "The Ministry of Health, Welfare and Sports has decided that the app is no longer necessary. From now on, you won't get a notification after you've been near someone who has coronavirus.";
 
 /* MARK: - Onboarding Steps */
