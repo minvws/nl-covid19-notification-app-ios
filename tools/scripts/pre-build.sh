@@ -78,7 +78,7 @@ fi
 
 cat project.yml
 
-if [ ! -f vendor/XcodeGen/.build/release/xcodegen ] || [ ! -f vendor/mockolo/.build/release/mockolo ];
+if [ ! -f vendor/XcodeGen/.build/apple/Products/Release/xcodegen ] || [ ! -f vendor/mockolo/.build/release/mockolo ];
 then
       make install_ci_deps
 fi
