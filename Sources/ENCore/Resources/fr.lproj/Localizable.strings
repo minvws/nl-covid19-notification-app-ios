@@ -143,8 +143,8 @@
 "noInternet.error.message" = "Vous devez être connecté(e) à Internet pour lancer l\'application.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "CoronaMelder n'existe plus";
-"endOfLife.description" = "Le Ministère de la Santé publique, du Bien-être et des Sports a décidé que l'application n'est plus nécessaire. Vous ne recevrez donc plus de notification après avoir été proche de quelqu'un qui a le Covid-19.";
+"endOfLife.title" = "CoronaMelder s’est arrêté";
+"endOfLife.description" = "Le Ministère de la Santé publique, du Bien-être et des Sports a décidé que l'application n'est plus nécessaire. Donc, vous ne recevrez plus de notification après avoir été proche de quelqu'un qui a le Covid-19.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Contribuez à stoppez la propagation du Covid-19";
