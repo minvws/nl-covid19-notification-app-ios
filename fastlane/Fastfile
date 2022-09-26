@@ -24,8 +24,11 @@ platform :ios do
     run_tests(
       device: "iPhone 13 Pro",
       scheme: "EN",
+      destination: "platform=iOS Simulator,name=iPhone 13 Pro,OS=15.5",
       force_quit_simulator: true,
-      prelaunch_simulator: true
+      prelaunch_simulator: true,
+      ensure_devices_found: true,
+      reset_simulator: true
     )
   end
 

@@ -141,8 +141,8 @@
 "noInternet.error.message" = "Pentru a porni aplicația, aveți nevoie de internet.";
 
 /* MARK: - EndOfLife */
-"endOfLife.title" = "Aplicația CoronaMelder a fost oprită temporar.";
-"endOfLife.description" = "Aplicația CoronaMelder a fost oprită temporar. Prin urmare, nu veți mai primi notificări după ce ați fost în preajma unei persoane infectate cu coronavirusul.";
+"endOfLife.title" = "CoronaMelder s-a oprit.";
+"endOfLife.description" = "Ministerul Sănătății publice, Bunăstării și Sportului a decis că aplicația nu mai este necesară. Deci, nu veți mai primi notificări după ce ați fost în cuiva contaminat cu corona.";
 
 /* MARK: - Onboarding Steps */
 "step1Title" = "Ajutați la oprirea răspândirii coronavirusului";
