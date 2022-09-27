@@ -1,0 +1,18 @@
+name: cache-tools
+description: "Cache CI tools"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Cache Xcodegen binary
+      uses: actions/cache@v3
+      with:
+        path: |
+          vendor/XcodeGen/.build/apple/Products/Release/xcodegen          
+        key: ${{ runner.os }}-xcodegen-${{ hashFiles('vendor/XcodeGen/Sources') }}      
+    - name: Cache mockolo
+      uses: actions/cache@v3
+      with:
+        path: |
+          vendor/mockolo/.build/release/mockolo         
+        key: ${{ runner.os }}-mockolo-${{ hashFiles('vendor/mockolo/Sources') }}      

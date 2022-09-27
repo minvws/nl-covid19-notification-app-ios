@@ -32,6 +32,9 @@ jobs:
       run: |
         echo "$SERVICE_CREDENTIALS_FILE" > firebase.json
     
+    - name: Cache tools
+      uses: ./.github/actions/cache-tools
+
     - name: Generate TST Project
       env: 
         RELEASE_PROVISIONING_PROFILE: "CoronaMelder_ACC"
