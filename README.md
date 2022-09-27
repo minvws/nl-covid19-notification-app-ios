@@ -72,7 +72,7 @@ Here is an overview of what dependencies are used and why.
 
 <a name="deactivation"></a>
 ### 1.4 Deactivation
-Currently the app has been deactivated, ceasing all server communications, revert [1cef3786](1cef3786e2f1e8caf34da7c7be142eb8f62fe469) to enable communication with the CDN again.
+Currently the app has been deactivated, ceasing all server communications, revert [1cef3786](https://github.com/minvws/nl-covid19-notification-app-ios/commit/1cef3786e2f1e8caf34da7c7be142eb8f62fe469) to enable communication with the CDN again.
 
 - **CocoaLumberjack**
 Logging framework. When the app is build with debugging enabled, the app logs information to a local logfile that can be exported via the developer menu (sidebar menu that can be accessed by swiping to the left with 2 fingers on the screen). When the app is built for release, this logging is disabled. This means that builds that are published to the App Store do **not** log any information.
